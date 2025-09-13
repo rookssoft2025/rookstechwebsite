@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Hero from "./Hero";
 import Navbar from "../../components/layout/Navbar";
-import Info from "./Info";
-import Clients from "./Clients";
-import Services from "./Services";
 import Footer from "../../components/layout/Footer";
+import Hero from "../home/Hero";
+import AboutHero from "./AboutHero";
 
-export default function Home() {
+export default function About() {
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [initialLoad, setInitialLoad] = useState(true);
@@ -36,7 +34,7 @@ export default function Home() {
 
   return (
     <div>
-      <div className="relative min-h-screen bg-[#071730] px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="relative bg-[#071730] px-4 sm:px-6 lg:px-8 overflow-hidden pb-10">
         {/* Stars Background with multiple layers */}
         <div className="absolute inset-0 w-full h-full pointer-events-none"
           style={{
@@ -54,7 +52,7 @@ export default function Home() {
             backgroundSize: "300px 300px",
           }}>
         </div>
-        
+
         {/* Moving Stars Layer */}
         <div className="absolute inset-0 w-full h-full pointer-events-none animate-moveStars"
           style={{
@@ -68,7 +66,7 @@ export default function Home() {
             backgroundSize: "250px 250px",
           }}>
         </div>
-        
+
         {/* Blinking Stars Layer */}
         <div className="absolute inset-0 w-full h-full pointer-events-none"
           style={{
@@ -83,13 +81,13 @@ export default function Home() {
             backgroundSize: "280px 280px",
           }}>
           {/* Individual blinking stars with different animation delays */}
-          <div className="absolute top-[10%] left-[10%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{animationDelay: '0s'}}></div>
-          <div className="absolute top-[25%] left-[75%] w-0.5 h-0.5 bg-white rounded-full animate-pulseStar" style={{animationDelay: '1.5s'}}></div>
-          <div className="absolute top-[40%] left-[30%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{animationDelay: '0.7s'}}></div>
-          <div className="absolute top-[60%] left-[60%] w-0.5 h-0.5 bg-white rounded-full animate-pulseStar" style={{animationDelay: '2.2s'}}></div>
-          <div className="absolute top-[80%] left-[20%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{animationDelay: '1s'}}></div>
-          <div className="absolute top-[15%] left-[50%] w-0.5 h-0.5 bg-white rounded-full animate-pulseStar" style={{animationDelay: '0.5s'}}></div>
-          <div className="absolute top-[70%] left-[85%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{animationDelay: '1.8s'}}></div>
+          <div className="absolute top-[10%] left-[10%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{ animationDelay: '0s' }}></div>
+          <div className="absolute top-[25%] left-[75%] w-0.5 h-0.5 bg-white rounded-full animate-pulseStar" style={{ animationDelay: '1.5s' }}></div>
+          <div className="absolute top-[40%] left-[30%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{ animationDelay: '0.7s' }}></div>
+          <div className="absolute top-[60%] left-[60%] w-0.5 h-0.5 bg-white rounded-full animate-pulseStar" style={{ animationDelay: '2.2s' }}></div>
+          <div className="absolute top-[80%] left-[20%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute top-[15%] left-[50%] w-0.5 h-0.5 bg-white rounded-full animate-pulseStar" style={{ animationDelay: '0.5s' }}></div>
+          <div className="absolute top-[70%] left-[85%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{ animationDelay: '1.8s' }}></div>
         </div>
 
         {/* Navbar */}
@@ -107,19 +105,18 @@ export default function Home() {
 
         {/* Hero Section */}
         <div className={`pt-[calc(80px+24px)]`}> {/* padding top = navbar height + gap */}
-          <Hero />
-        </div>
-        <div>
-          <Info />
-        </div>
-        <div className="">
-          <Services />
-        </div>
-        <div>
-          <Clients />
+          <AboutHero />
+          <div className=" absolute top-[150px] sm:top-[200px] left-1/2 -translate-x-1/2">
+            <div className="w-[500px] h-[300px]  rounded-full 
+                bg-[radial-gradient(ellipse,rgba(100,220,255,1)_0%,rgba(0,180,255,0.6)_40%,transparent_100%)] 
+                blur-[80px] sm:blur-[100px] lg:blur-[120px]">
+            </div>
+          </div>
         </div>
       </div>
-      <Footer />
+      <div>
+            <Footer />
+      </div>
     </div>
   );
 }

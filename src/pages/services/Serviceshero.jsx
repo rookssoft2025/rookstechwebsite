@@ -1,0 +1,93 @@
+import React from "react";
+import gearImg from "../../assets/serviceimg.svg";
+import gearImg1 from "../../assets/serviceimg2.svg";
+import securityImg from "../../assets/services/lock.svg";
+import cloudImg from "../../assets/services/cloud.svg";
+import officeImg from "../../assets/services/office.svg";
+import supportImg from "../../assets/services/support.svg";
+import managementImg from "../../assets/services/management.svg";
+import backupImg from "../../assets/services/backup.svg";
+import shieldImg from "../../assets/services/Security.svg";
+import systemImg from "../../assets/services/system.svg";
+import { div } from "framer-motion/client";
+
+export default function ServicesHero() {
+  const services = [
+    { title: "CCTV & Security Systems", img: securityImg },
+    { title: "Remote & Onsite Support", img: supportImg },
+    { title: "Hardware Procurement & Maintenance", img: systemImg },
+    { title: "Cloud & Network Solutions", img: cloudImg },
+    { title: "Data Backup & Recovery", img: backupImg },
+    { title: "IT Infrastructure Management", img: managementImg },
+    { title: "Smart Office & IoT Solutions", img: officeImg },
+    { title: "Cybersecurity & Firewall Management", img: shieldImg },
+  ];
+
+  return (
+    <div className="relative overflow-hidden">
+      <div className="w-full flex flex-col justify-center text-white relative ">
+        <div className="flex items-center justify-center relative">
+          <h1 className="font-goodtimes text-[50px] sm:text-[100px] md:text-[140px] lg:text-[170px] leading-tight whitespace-nowrap text-white relative blur-fade">
+            IT SERVICES
+          </h1>
+
+          <img
+            src={gearImg1}
+            alt="gear"
+            className="hidden md:block absolute right-10 z-50 top-75 -translate-y-1/2 w-full  md:w-[400px] object-cover animate-[spin_20s_linear_infinite]"
+          />
+        </div>
+
+        <p className="mt-8 font-semibold text-start text-[20px] md:text-[50px] leading-snug max-w-4xl relative z-10">
+          WE MANAGE YOUR <br /> TECHNOLOGY, SO YOU CAN <br /> FOCUS ON WHAT MATTERS
+        </p>
+        <div
+          className="absolute inset-0 block md:hidden bg-center bg-no-repeat bg-contain animate-[spin_20s_linear_infinite] opacity-60"
+          style={{ backgroundImage: `url(${gearImg1})` }}
+        ></div>
+       
+      </div>
+
+      <div className="mt-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {services.map((service, index) => (
+          <div
+            key={index}
+            className={`
+         bg-[#0F2239]
+        p-6 rounded-2xl shadow-lg flex flex-col jusstify-between 
+        transition-transform duration-300 hover:scale-105
+        ${service.title === "Remote & Onsite Support" ? "lg:row-span-2 lg:col-start-2" : ""}
+      `}
+          >
+            <div className={`text-white ${service.title === "Remote & Onsite Support" ? "flex items-center justify-between sm:block" : "flex items-center justify-between"}`}>
+
+              {service.title === "Remote & Onsite Support" && <div className="hidden  sm:flex justify-center"> <img src={service.img} alt={service.title} className="w-70  mb-4" /></div>}
+              <h3 className="text-[24px] font-semibold mb-2">{service.title}</h3>
+              {service.title != "Remote & Onsite Support" ? <img src={service.img} alt={service.title} className="w-30  mb-4" /> :
+                <img src={service.img} alt={service.title} className=" slock sm:hidden w-30  mb-4" />
+              }
+            </div>
+            <p className="text-md text-gray-300">
+              {service.title === "CCTV & Security Systems" &&
+                "Comprehensive installation, monitoring, and maintenance to secure your premises."}
+              {service.title === "Cloud & Network Solutions" &&
+                "Reliable cloud integration, secure networks, and scalable connectivity for your business."}
+              {service.title === "Smart Office & IoT Solutions" &&
+                "Automate and optimize office operations with IoT-driven smart technologies."}
+              {service.title === "Remote & Onsite Support" &&
+                "Quick troubleshooting, technical support, and hands-on assistance whenever you need it."}
+              {service.title === "IT Infrastructure Management" &&
+                "End-to-end management of servers, networks, and systems ensuring peak performance."}
+              {service.title === "Hardware Procurement & Maintenance" &&
+                "Supply, installation, and maintenance of computers, servers, and IT equipment."}
+              {service.title === "Data Backup & Recovery" &&
+                "Ensure data backup solutions and disaster recovery to minimize downtime."}
+              {service.title === "Cybersecurity & Firewall Management" &&
+                "Protect your business with advanced firewall monitoring and cybersecurity systems."}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
