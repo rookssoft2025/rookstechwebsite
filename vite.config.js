@@ -14,19 +14,26 @@ export default defineConfig({
                 "0%": { opacity: "0", transform: "translateX(-50px)" },
                 "100%": { opacity: "1", transform: "translateX(0)" },
               },
-              moveStars: {
-          "0%": { transform: "translateY(0)" },
-          "100%": { transform: "translateY(-1000px)" },
-        },
-       
               fadeInRight: {
                 "0%": { opacity: "0", transform: "translateX(50px)" },
                 "100%": { opacity: "1", transform: "translateX(0)" },
               },
+              moveStars: {
+                "0%": { "background-position": "0 0" },
+                "100%": { "background-position": "500px 500px" },
+              },
+              pulseStar: {
+                "0%": { opacity: "0.2", transform: "scale(0.8)" },
+                "50%": { opacity: "1", transform: "scale(1.2)" },
+                "100%": { opacity: "0.2", transform: "scale(0.8)" },
+              }
             },
-             animation: {
-        moveStars: "moveStars 200s linear infinite",
-      },
+            animation: {
+              fadeInLeft: "fadeInLeft 0.5s ease-out forwards",
+              fadeInRight: "fadeInRight 0.5s ease-out forwards",
+              moveStars: "moveStars 100s linear infinite",
+              pulseStar: "pulseStar 3s ease-in-out infinite",
+            },
           },
         },
       },
