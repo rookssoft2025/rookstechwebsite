@@ -29,7 +29,7 @@ const Navbar = () => {
                 <li onClick={() => navigate("/about")} className="cursor-pointer hover:text-[#0B3470] hover:[text-shadow:0_0_8px_white,0_0_16px_white]">
                     About
                 </li>
-                <li onClick={() => navigate("/works")} className="cursor-pointer hover:text-[#0B3470] hover:[text-shadow:0_0_8px_white,0_0_16px_white]">
+                <li onClick={() => navigate("/work")} className="cursor-pointer hover:text-[#0B3470] hover:[text-shadow:0_0_8px_white,0_0_16px_white]">
                     Works
                 </li>
                 <li onClick={() => navigate("/careers")} className="cursor-pointer hover:text-[#0B3470] hover:[text-shadow:0_0_8px_white,0_0_16px_white]">

@@ -4,6 +4,7 @@ import Home from "./pages/home/Home";
 import Services from "./pages/services/Service";
 import Solutions from "./pages/solutions/Solutions";
 import About from "./pages/about/About";
+import Work from "./pages/works/Works";
 // import HomePage from "./pages/HomePage"; // create later if needed
 // import AboutPage from "./pages/AboutPage";
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/solutions" element={<Solutions />} />
         <Route path="/about" element={<About />} />
+        <Route path="/work" element={<Work />} />
       </Routes>
     </>
   );

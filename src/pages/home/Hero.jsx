@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../components/layout/Navbar";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
 import group1 from "../../assets/group1.svg";
 import group2 from "../../assets/group2.svg";
 import holo from "../../assets/holo.svg";
@@ -24,8 +24,10 @@ export default function Hero() {
                     />
                 </div>
                 {/* Hero Badge */}
+               
                 <div className="relative z-10 flex justify-center items-center mx-auto mt-5">
-                    <div className="bg-white/10 backdrop-blur text-white px-3 sm:px-6 py-2 sm:py-3 rounded-full border border-[#FFFFFF1A] shadow-md">
+                    <div className=" flex items-center gap-3 bg-white/10 backdrop-blur text-white px-3 sm:px-6 py-2 sm:py-3 rounded-full border border-[#FFFFFF1A] shadow-md">
+                     <Sparkles className="w-12 text-cyan-400" />
                         <p className="text-center text-lg sm:text-2xl md:text-3xl lg:text-[36px] font-bold whitespace-nowrap">
                             Next-Gen IT, Today
                         </p>
@@ -37,11 +39,11 @@ export default function Hero() {
                     <p className="font-goodtimes text-2xl sm:text-3xl md:text-4xl lg:text-[45px] text-center text-white leading-tight">
                         <span className="block sm:inline">Complete IT Solutions Under One Roof</span>
                         <br className="hidden sm:block" />
-                        <span className="block sm:inline mt-2 sm:mt-0">Web, Apps, Cloud & Security</span>
+                        <span className="block sm:inline mt-2 sm:mt-0 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Web, Apps, Cloud & Security</span>
                     </p>
                 </div>
 
-                {/* Action Buttons */}
+                {/* Action Buttons  className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"*/}
                 <div className="relative z-10 mt-10 flex flex-col sm:flex-row gap-5 justify-center items-center">
                     <AnimatedButton label="Let's Work Together" />
                     {/* Secondary Button */}

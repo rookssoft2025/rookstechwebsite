@@ -1,4 +1,4 @@
-@import "tailwindcss";
+/* @import "tailwindcss";
 @font-face {
   font-family: "Good Times";
   src: url("./assets/fonts/GoodTimes.ttf") format("truetype");
@@ -8,6 +8,24 @@
 .font-goodtimes {
   font-family: "Good Times", sans-serif;
 }
+
+
+ */
+
+ @import "tailwindcss";
+
+@font-face {
+  font-family: "Good Times";
+  src: url("/fonts/GoodTimes.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+.font-goodtimes {
+  font-family: "Good Times", sans-serif;
+}
+
 .blur-fade {
   mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%);
   -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%);
@@ -17,5 +35,3 @@
   -webkit-mask-size: 100% 100%;
   filter: blur(0.5px);
 }
-
-
