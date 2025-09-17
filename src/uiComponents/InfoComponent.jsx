@@ -12,7 +12,7 @@ export default function InfoBlock({ title, description, className = "" }) {
 
       {/* Description */}
       <div className="mt-5 text-justify">
-        <h1 className="text-white font-bold text-xl sm:text-2xl md:text-3xl lg:text-[36px] leading-snug">
+        <h1 className="text-white font-bold text-xl sm:text-2xl md:text-3xl lg:text-[20px] leading-snug">
           {description}
         </h1>
       </div>

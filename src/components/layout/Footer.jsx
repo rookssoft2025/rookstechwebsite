@@ -1,101 +1,270 @@
-import React from "react";
+import React, { useState } from "react";
 import { Mail, Phone, MapPin, ArrowUpRight } from "lucide-react";
 import AnimatedButton from "../../uiComponents/AnimatedButton";
 
 export default function Footer() {
-  return (
-    <div className="relative w-full min-h-screen flex items-center justify-center bg-[#0b1220]">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0b1220] via-[#05253d] to-[#0f614d] opacity-90"></div>
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: ""
+  });
 
-      <div className="relative max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 lg:gap-16 p-4 sm:p-8 md:p-10 lg:p-12 text-white">
+  const [focusedField, setFocusedField] = useState(null);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleFocus = (fieldName) => {
+    setFocusedField(fieldName);
+  };
+
+  const handleBlur = (fieldName) => {
+    if (!formData[fieldName]) {
+      setFocusedField(null);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted:", formData);
+  };
+
+  return (
+    <div className="relative w-full min-h-screen  bg-[#0F2239] flex items-center justify-center overflow-hidden">
+      {/* Base dark background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0b1220] via-[#05253d] to-[#0b3470] opacity-90"></div>
+      
+      {/* Enhanced gradient overlay with more visibility at bottom */}
+      <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-[#071730]/30 "></div>
+      
+      
+      {/* Additional atmospheric gradient with stronger bottom presence */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900/40 via-blue-900/50 to-[#000]/85 "></div>
+
+       <div className="absolute inset-0 w-full h-full pointer-events-none"
+          style={{
+            backgroundImage: `
+              radial-gradient(2px 2px at 20px 30px, white, transparent),
+              radial-gradient(1px 1px at 40px 70px, white, transparent),
+              radial-gradient(2px 2px at 80px 130px, white, transparent),
+              radial-gradient(1px 1px at 90px 160px, white, transparent),
+              radial-gradient(1.5px 1.5px at 120px 40px, white, transparent),
+              radial-gradient(1px 1px at 160px 90px, white, transparent),
+              radial-gradient(2px 2px at 200px 60px, white, transparent),
+              radial-gradient(1px 1px at 220px 120px, white, transparent)
+            `,
+            backgroundRepeat: "repeat",
+            backgroundSize: "300px 300px",
+          }}>
+        </div>
+        
+        {/* Moving Stars Layer */}
+        <div className="absolute inset-0 w-full h-full pointer-events-none animate-moveStars"
+          style={{
+            backgroundImage: `
+              radial-gradient(2px 2px at 50px 150px, white, transparent),
+              radial-gradient(1px 1px at 100px 250px, white, transparent),
+              radial-gradient(2px 2px at 150px 80px, white, transparent),
+              radial-gradient(1px 1px at 200px 180px, white, transparent)
+            `,
+            backgroundRepeat: "repeat",
+            backgroundSize: "250px 250px",
+          }}>
+        </div>
+        
+
+      <div className="relative max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 p-8 text-white z-10">
         {/* Left Section */}
-        <div>
-          <button className="px-4 py-1.5 sm:px-5 sm:py-2 border border-gray-400 rounded-full text-xs sm:text-sm mb-3 sm:mb-4">
+        <div className="space-y-8 ">
+          <div className="w-[120px] h-[60px] flex items-center justify-center border border-slate-500/50 rounded-full text-[18px] text-white  backdrop-blur-sm bg-white/5">
             Contact Us
-          </button>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 leading-snug">
-            let’s work together
+          </div>
+          
+          <h1 className="text-5xl md:text-6xl font-bold leading-tight">
+            let's work together
           </h1>
 
-          <div className="space-y-3 sm:space-y-4">
+          <div className="space-y-4 mt-12">
             {/* Email */}
-            <div className="flex items-center justify-between bg-white/5 border border-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-md">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div className="flex items-center justify-between backdrop-blur-md bg-white/5 border border-white/10 p-5 rounded-2xl hover:bg-white/10 transition-all duration-300 group cursor-pointer shadow-sm shadow-slate-600">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 backdrop-blur-sm bg-white/10 rounded-xl flex items-center justify-center">
+                  <Mail className="w-6 h-6 text-white" />
+                </div>
                 <div>
-                  <p className="text-xs sm:text-sm opacity-80">Email Us</p>
-                  <p className="text-sm sm:text-base font-semibold break-all">
+                  <p className="text-sm text-slate-300 mb-1">Email Us</p>
+                  <p className="text-base font-medium text-white">
                     support@rooksitservices.com
                   </p>
                 </div>
               </div>
-              <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6 opacity-70" />
+              <div className="w-[50px] h-[50px] rounded-[50%] flex items-center justify-center border border-slate-400 /10 backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all duration-300">
+                <ArrowUpRight className="w-7 h-7  text-slate-400 group-hover:text-white group-hover:group-hover:rotate-45 transition-all duration-300" />
+              </div>
             </div>
 
             {/* Phone */}
-            <div className="flex items-center justify-between bg-white/5 border border-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-md">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div className="flex items-center justify-between backdrop-blur-md bg-white/5 border border-white/10 p-5 rounded-2xl hover:bg-white/10 transition-all duration-300 group cursor-pointer shadow-sm shadow-slate-600">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 backdrop-blur-sm bg-white/10 rounded-xl flex items-center justify-center">
+                  <Phone className="w-6 h-6 text-white" />
+                </div>
                 <div>
-                  <p className="text-xs sm:text-sm opacity-80">Call Us</p>
-                  <p className="text-sm sm:text-base font-semibold">
+                  <p className="text-sm text-slate-300 mb-1">Call Us</p>
+                  <p className="text-base font-medium text-white">
                     +91 75987 07071
                   </p>
                 </div>
               </div>
-              <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6 opacity-70" />
+                <div className="w-[50px] h-[50px] rounded-[50%] flex items-center justify-center border border-slate-400 /10 backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all duration-300">
+                <ArrowUpRight className="w-7 h-7  text-slate-400 group-hover:text-white group-hover:rotate-45 transition-all duration-300" />
+              </div>
             </div>
 
             {/* Location */}
-            <div className="flex items-center justify-between bg-white/5 border border-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-md">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div className="flex items-center justify-between backdrop-blur-md bg-white/5 border border-white/10 p-5 rounded-2xl hover:bg-white/10 transition-all duration-300 group cursor-pointer shadow-sm shadow-slate-600">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 backdrop-blur-sm bg-white/10 rounded-xl flex items-center justify-center">
+                  <MapPin className="w-6 h-6 text-white" />
+                </div>
                 <div>
-                  <p className="text-xs sm:text-sm opacity-80">Our Location</p>
-                  <p className="text-sm sm:text-base font-semibold">
+                  <p className="text-sm text-slate-300 mb-1">Our Location</p>
+                  <p className="text-base font-medium text-white">
                     Ramavarmapuram, Nagercoil
                   </p>
                 </div>
               </div>
-              <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6 opacity-70" />
+               <div className="w-[50px] h-[50px] rounded-[50%] flex items-center justify-center border border-slate-400 /10 backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all duration-300">
+                <ArrowUpRight className="w-7 h-7  text-slate-400 group-hover:text-white group-hover:rotate-45 transition-all duration-300" />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Right Section - Form */}
-        <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-4 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl shadow-md">
-          <form className="space-y-3 sm:space-y-4">
-            <input
-              type="text"
-              placeholder="Name"
-              className="w-full p-2.5 sm:p-3 rounded-lg bg-transparent border border-white/20 text-white placeholder-gray-400 focus:outline-none text-sm sm:text-base"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full p-2.5 sm:p-3 rounded-lg bg-transparent border border-white/20 text-white placeholder-gray-400 focus:outline-none text-sm sm:text-base"
-            />
-            <input
-              type="tel"
-              placeholder="Phone Number"
-              className="w-full p-2.5 sm:p-3 rounded-lg bg-transparent border border-white/20 text-white placeholder-gray-400 focus:outline-none text-sm sm:text-base"
-            />
-            <textarea
-              placeholder="Message"
-              rows="4"
-              className="w-full p-2.5 sm:p-3 rounded-lg bg-transparent border border-white/20 text-white placeholder-gray-400 focus:outline-none text-sm sm:text-base"
-            ></textarea>
-            <div className="flex items-center justify-end">
-              <AnimatedButton label="Submit" />
+        {/* Right Section - Ultra Glassy Form Container */}
+        <div className="relative">
+          {/* Glass container with heavy blur and transparency */}
+          <div className="backdrop-blur-3xl bg-white/5 border border-white/10 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+            {/* Additional inner glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/3 rounded-3xl"></div>
+            
+            <div className="relative space-y-6">
+              {/* Name Field */}
+              <div className="relative">
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  onFocus={() => handleFocus('name')}
+                  onBlur={() => handleBlur('name')}
+                  className="w-full h-14 px-4 pt-6 pb-2 rounded-xl backdrop-blur-sm bg-white/5 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 focus:bg-white/10 transition-all duration-300"
+                  placeholder=" "
+                />
+                <label 
+                  htmlFor="name"
+                  className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+                    focusedField === 'name' || formData.name 
+                      ? 'top-1.5 text-xs text-blue-400 font-medium' 
+                      : 'top-4 text-base text-slate-400'
+                  }`}
+                >
+                  Name *
+                </label>
+              </div>
+
+              {/* Email Field */}
+              <div className="relative">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  onFocus={() => handleFocus('email')}
+                  onBlur={() => handleBlur('email')}
+                  className="w-full h-14 px-4 pt-6 pb-2 rounded-xl backdrop-blur-sm bg-white/5 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 focus:bg-white/10 transition-all duration-300"
+                  placeholder=" "
+                />
+                <label 
+                  htmlFor="email"
+                  className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+                    focusedField === 'email' || formData.email 
+                      ? 'top-1.5 text-xs text-blue-400 font-medium' 
+                      : 'top-4 text-base text-slate-400'
+                  }`}
+                >
+                  Email*
+                </label>
+              </div>
+
+              {/* Phone Field */}
+              <div className="relative">
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  onFocus={() => handleFocus('phone')}
+                  onBlur={() => handleBlur('phone')}
+                  className="w-full h-14 px-4 pt-6 pb-2 rounded-xl backdrop-blur-sm bg-white/5 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 focus:bg-white/10 transition-all duration-300"
+                  placeholder=" "
+                />
+                <label 
+                  htmlFor="phone"
+                  className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+                    focusedField === 'phone' || formData.phone 
+                      ? 'top-1.5 text-xs text-blue-400 font-medium' 
+                      : 'top-4 text-base text-slate-400'
+                  }`}
+                >
+                  Phone Number*
+                </label>
+              </div>
+
+              {/* Message Field */}
+              <div className="relative">
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="5"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  onFocus={() => handleFocus('message')}
+                  onBlur={() => handleBlur('message')}
+                  className="w-full px-4 pt-7 pb-3 rounded-xl backdrop-blur-sm bg-white/5 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 focus:bg-white/10 transition-all duration-300 resize-none"
+                  placeholder=" "
+                ></textarea>
+                <label 
+                  htmlFor="message"
+                  className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+                    focusedField === 'message' || formData.message 
+                      ? 'top-1.5 text-xs text-blue-400 font-medium' 
+                      : 'top-4 text-base text-slate-400'
+                  }`}
+                >
+                  Message
+                </label>
+              </div>
+
+              <div className="flex justify-end pt-4">
+                 <AnimatedButton label="Get Started" />
+              </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="absolute bottom-2 sm:bottom-4 text-center w-full text-gray-400 text-xs sm:text-sm px-2">
-        Copyright © 2025 Rooks & Brooks. All rights reserved
+      <div className="absolute bottom-6 text-center w-full mt-5 z-10">
+        <p className="text-white text-sm">
+          Copyright © 2023 Rooks and Brooks Technologies Pvt. Ltd - All Rights Reserved.
+        </p>
       </div>
     </div>
   );

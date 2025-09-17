@@ -3,6 +3,7 @@ import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import Hero from "../home/Hero";
 import AboutHero from "./AboutHero";
+import CoreValues from "./CoreValues";
 
 export default function About() {
   const [showNavbar, setShowNavbar] = useState(true);
@@ -106,6 +107,7 @@ export default function About() {
         {/* Hero Section */}
         <div className={`pt-[calc(80px+24px)]`}> {/* padding top = navbar height + gap */}
           <AboutHero />
+          <CoreValues/>
           <div className=" absolute top-[150px] sm:top-[200px] left-1/2 -translate-x-1/2">
             <div className="w-[500px] h-[300px]  rounded-full 
                 bg-[radial-gradient(ellipse,rgba(100,220,255,1)_0%,rgba(0,180,255,0.6)_40%,transparent_100%)] 
