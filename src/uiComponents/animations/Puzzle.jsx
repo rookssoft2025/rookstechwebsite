@@ -1,4 +1,4 @@
-import React from "react";
+
 import Lottie from "lottie-react";
 import puzzle from "../../json/Puzzle.json"
 
@@ -7,7 +7,7 @@ export default function Puzzle() {
         <Lottie
             animationData={puzzle}
             loop={true}
-            style={{ width: 400, height: 400 }}
+            style={{ width: 200, height: 200 }}
         />
     )
 }

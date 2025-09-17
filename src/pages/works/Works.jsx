@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import WorkHero from "./WorkHero";
+import WorkCards from "./WorkCards";
 
 
 export default function Work() {
@@ -34,7 +35,7 @@ export default function Work() {
 
     return (
         <div>
-            <div className="relative bg-[#071730] px-4 sm:px-6 lg:px-8 overflow-hidden pb-10">
+            <div className="relative bg-[#071730] px-4 sm:px-6 lg:px-8 overflow-hidden pb-10 ">
                 {/* Stars Background with multiple layers */}
                 <div className="absolute inset-0 w-full h-full pointer-events-none"
                     style={{
@@ -104,7 +105,6 @@ export default function Work() {
                 </div>
                 <div className={`pt-[calc(80px+24px)]`}> {/* padding top = navbar height + gap */}
                     <WorkHero />
-                    {/* <CoreValues/> */}
                     <div className=" absolute top-[150px] sm:top-[200px] left-1/2 -translate-x-1/2">
                         <div className="w-[500px] h-[300px]  rounded-full 
                                        bg-[radial-gradient(ellipse,rgba(100,220,255,1)_0%,rgba(0,180,255,0.6)_40%,transparent_100%)] 

@@ -1,6 +1,6 @@
 import React from "react";
 import gearImg from "../../assets/serviceimg.svg";
-import gearImg1 from "../../assets/serviceimg2.svg";
+import gearImg1 from "../../assets/services/serviceHolo.svg";
 import securityImg from "../../assets/services/lock.svg";
 import cloudImg from "../../assets/services/cloud.svg";
 import officeImg from "../../assets/services/office.svg";
@@ -9,7 +9,7 @@ import managementImg from "../../assets/services/management.svg";
 import backupImg from "../../assets/services/backup.svg";
 import shieldImg from "../../assets/services/Security.svg";
 import systemImg from "../../assets/services/system.svg";
-import { div } from "framer-motion/client";
+import { motion } from "framer-motion";
 
 export default function ServicesHero() {
   const services = [
@@ -22,40 +22,88 @@ export default function ServicesHero() {
     { title: "Smart Office & IoT Solutions", img: officeImg },
     { title: "Cybersecurity & Firewall Management", img: shieldImg },
   ];
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1 },
+  };
 
   return (
-    <div className="relative overflow-hidden">
-      <div className="w-full flex flex-col justify-center text-white relative ">
+     <motion.div
+        className="relative overflow-hidden"
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.8 }}
+        variants={fadeUp}
+      >
+      {/* <div className="w-full flex flex-col justify-center text-white relative ">
         <div className="flex items-center justify-center relative">
-          <h1 className="font-goodtimes text-[50px] sm:text-[100px] md:text-[140px] lg:text-[170px] leading-tight whitespace-nowrap text-white relative blur-fade">
+          <h1 className="text-center font-goodtimes text-[38px] sm:text-[80px] md:text-[140px]  leading-tight whitespace-nowrap text-white relative blur-fade">
             IT SERVICES
           </h1>
 
           <img
             src={gearImg1}
             alt="gear"
-            className="hidden md:block absolute right-10 z-50 top-75 -translate-y-1/2 w-full  md:w-[400px] object-cover animate-[spin_20s_linear_infinite]"
+            className="opacity-70 hidden md:block absolute right-10 z-50 top-75 -translate-y-1/2 w-full  md:w-[400px] object-cover animate-[spin_20s_linear_infinite]"
           />
+
         </div>
 
-        <p className="mt-8 font-semibold text-start text-[20px] md:text-[50px] leading-snug max-w-4xl relative z-10">
+        <p className="mt-8 font-semibold text-center md:text-start text-[20px] md:text-[36px] leading-snug max-w-4xl relative z-10">
           WE MANAGE YOUR <br /> TECHNOLOGY, SO YOU CAN <br /> FOCUS ON WHAT MATTERS
         </p>
         <div
           className="absolute inset-0 block md:hidden bg-center bg-no-repeat bg-contain animate-[spin_20s_linear_infinite] opacity-60"
           style={{ backgroundImage: `url(${gearImg1})` }}
         ></div>
-       
-      </div>
 
-      <div className="mt-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      </div> */}
+      <div className="w-full flex flex-col justify-center text-white relative mb-10">
+                <div className="flex items-center justify-center relative">
+                  <motion.h1
+                    className="text-center font-goodtimes text-[38px] sm:text-[80px] md:text-[140px]  leading-tight whitespace-nowrap text-white relative blur-fade"
+                    initial={{ opacity: 0, y: -60 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1 }}
+                  >
+                    IT SERVICES
+                  </motion.h1>
+      
+                  <motion.img
+                    src={gearImg1}
+                    alt="gear"
+                    className="hidden md:block absolute right-30 z-50 top-70 -translate-y-1/2 w-full md:w-[400px] object-cover animate-[spin_20s_linear_infinite] opacity-0"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 0.6, scale: 1 }}   // 👈 stays at 40% opacity
+                    transition={{ duration: 1, delay: 0.3 }}
+                  />
+      
+                </div>
+      
+                {/* ✅ Fixed Paragraph Animation */}
+                <motion.p
+                  className="mt-8 font-semibold text-center md:text-start text-[20px] md:text-[36px] leading-snug max-w-4xl relative z-10"
+                  initial={{ opacity: 0, x: -80 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.9 }}
+                >
+                 WE MANAGE YOUR <br /> TECHNOLOGY, SO YOU CAN <br /> FOCUS ON WHAT MATTERS
+                </motion.p>
+      
+                <div
+                  className="absolute inset-0 block md:hidden bg-center bg-no-repeat bg-contain animate-[spin_20s_linear_infinite] opacity-60"
+                  style={{ backgroundImage: `url(${gearImg1})` }}
+                ></div>
+              </div>
+
+      <div className="mt-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {services.map((service, index) => (
           <div
             key={index}
             className={`
          bg-[#0F2239]
         p-6 rounded-2xl shadow-lg flex flex-col jusstify-between 
-        transition-transform duration-300 hover:scale-105
+        transition-transform duration-300 hover:scale-97
         ${service.title === "Remote & Onsite Support" ? "lg:row-span-2 lg:col-start-2" : ""}
       `}
           >
@@ -88,6 +136,7 @@ export default function ServicesHero() {
           </div>
         ))}
       </div>
-    </div>
+    </motion.div>
+
   );
 }

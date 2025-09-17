@@ -7,7 +7,7 @@ export default function Growth() {
         <Lottie
             animationData={growth}
             loop={true}
-            style={{ width: 400, height: 400 }}
+            style={{ width: 200, height: 200 }}
         />
     )
 }

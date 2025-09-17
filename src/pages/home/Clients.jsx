@@ -71,8 +71,7 @@ export default function Clients() {
 
     return (
         <div className="py-12">
-            {/* Info Section */}
-            <div>
+            <div className="sm:px-10">
                 {info.map((item, index) => (
                     <InfoBlock
                         key={index}
@@ -82,13 +81,12 @@ export default function Clients() {
                 ))}
             </div>
 
-            {/* Client Carousel Section */}
             <div
                 ref={carouselRef}
                 className="flex gap-5 sm:gap-15 overflow-x-auto px-4 mt-8 sm:mt-10"
                 style={{
-                    scrollbarWidth: "none", // Firefox
-                    msOverflowStyle: "none", // Internet Explorer 10+
+                    scrollbarWidth: "none", 
+                    msOverflowStyle: "none",
                 }}
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
@@ -99,7 +97,6 @@ export default function Clients() {
           }
         `}</style>
 
-                {/* Duplicate list for smooth infinite loop */}
                 {[...clients, ...clients].map((item, index) => (
                     <div
                         key={index}

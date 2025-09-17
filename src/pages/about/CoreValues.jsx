@@ -3,6 +3,7 @@ import InfoBlock from "../../uiComponents/InfoComponent";
 import gearImg1 from "../../assets/about/aboutHolo.svg";
 import flowImg from "../../assets/about/flowImg.svg";
 import Timeline from "./Timeline";
+import HomeAnimation from "../../uiComponents/animations/HomeAnimation";
 
 export default function CoreValues() {
     const info1 = [
@@ -66,7 +67,7 @@ export default function CoreValues() {
                 ))}
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-8 sm:mx-20">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-8 sm:mr-20">
                 {/* Left section */}
                 <motion.div
                     className="cols-span-1 space-y-10"
@@ -75,8 +76,9 @@ export default function CoreValues() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
                 >
-                    <div className="w-[340px]">
-                        <img src={gearImg1} alt="" />
+                    <div className="">
+                        {/* <img src={gearImg1} alt="" /> */}
+                        <HomeAnimation/>
                     </div>
                     <div className="text-white text-[30px] font-semibold ">
                         <p>
@@ -110,15 +112,15 @@ export default function CoreValues() {
                             transition={{ duration: 0.6, delay: index * 0.2 }}
                             variants={fadeUp}
                         >
-                           {( item.id === "01" || item.id === "03") && <div className="w-2/6 flex items-center justify-center p-5">
-                                <h1 className="text-[150px] font-semibold">{item.id}</h1>
+                            {(item.id === "01" || item.id === "03") && <div className="w-2/6 flex items-center justify-center p-5">
+                                <h1 className="text-[100px] font-semibold">{item.id}</h1>
                             </div>}
-                            <div className="space-y-10 pr-5 pl-5">
-                                <p className="text-[36px] font-semibold">{item.title}</p>
-                                <p className="text-[24px] font-semibold">{item.description}</p>
+                            <div className="space-y-5 pr-5 pl-5">
+                                <p className="text-[30px] font-semibold">{item.title}</p>
+                                <p className="text-[20px] font-semibold">{item.description}</p>
                             </div>
-                             {( item.id === "02" || item.id === "04")   && <div className="w-2/6 flex items-center justify-center p-5">
-                                <h1 className="text-[150px] font-semibold">{item.id}</h1>
+                            {(item.id === "02" || item.id === "04") && <div className="w-2/6 flex items-center justify-center p-5">
+                                <h1 className="text-[100px] font-semibold">{item.id}</h1>
                             </div>}
                         </motion.div>
                     ))}
@@ -147,23 +149,23 @@ export default function CoreValues() {
                     ))}
                 </motion.div>
             </div>
-           <motion.div
-  className="mt-11 w-full overflow-x-auto hide-scrollbar"
-  initial={{ scale: 0, opacity: 0 }}
-  whileInView={{ scale: 1, opacity: 1 }}
-  viewport={{ once: true }}
-  transition={{ duration: 1, ease: "easeOut" }}
->
-  <motion.div
-    className="min-w-[1100px] flex items-center justify-start"
-    initial={{ scaleX: 0, opacity: 0, transformOrigin: "center" }}
-    animate={{ scaleX: 1, opacity: 1 }}
-    transition={{ duration: 1.2, ease: "easeInOut" }}
-  >
-    <img src={flowImg} alt="" className="w-full" />
-    {/* <Timeline /> */}
-  </motion.div>
-</motion.div>
+            <motion.div
+                className="mt-11 w-full overflow-x-auto hide-scrollbar"
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, ease: "easeOut" }}
+            >
+                <motion.div
+                    className="min-w-[1100px] flex items-center justify-start"
+                    initial={{ scaleX: 0, opacity: 0, transformOrigin: "center" }}
+                    animate={{ scaleX: 1, opacity: 1 }}
+                    transition={{ duration: 2.3, ease: "easeInOut" }}
+                >
+                    <img src={flowImg} alt="" className="w-full" />
+                    {/* <Timeline /> */}
+                </motion.div>
+            </motion.div>
 
 
         </>

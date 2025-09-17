@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import gearImg1 from "../../assets/about/aboutHolo.svg";
+import gearImg1 from "../../assets/services/serviceHolo.svg";
 import InfoBlock from "../../uiComponents/InfoComponent";
 import HandShack from "../../uiComponents/animations/HandShack";
 import Growth from "../../uiComponents/animations/Growth";
@@ -16,7 +16,8 @@ export default function AboutHero() {
     },
     {
       title: "Mission",
-      description: "To empower businesses with design, technology, and strategy that drives growth.",
+      description:
+        "To empower businesses with design, technology, and strategy that drives growth.",
     },
   ];
 
@@ -28,7 +29,8 @@ export default function AboutHero() {
     },
     {
       title: "Puzzle",
-      description: "To combine design, technology and strategy for measurable impact.",
+      description:
+        "To combine design, technology and strategy for measurable impact.",
       image: <Puzzle />,
     },
     {
@@ -61,10 +63,10 @@ export default function AboutHero() {
         transition={{ duration: 0.8 }}
         variants={fadeUp}
       >
-        <div className="w-full flex flex-col justify-center text-white relative">
+        <div className="w-full flex flex-col justify-center text-white relative mb-10">
           <div className="flex items-center justify-center relative">
             <motion.h1
-              className="text-center font-goodtimes text-[50px] sm:text-[100px] md:text-[140px] lg:text-[170px] leading-tight whitespace-nowrap text-white relative blur-fade"
+              className="text-center font-goodtimes text-[38px] sm:text-[80px] md:text-[140px]  leading-tight whitespace-nowrap text-white relative blur-fade"
               initial={{ opacity: 0, y: -60 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
@@ -75,21 +77,23 @@ export default function AboutHero() {
             <motion.img
               src={gearImg1}
               alt="gear"
-              className="hidden md:block absolute right-30 z-50 top-80 -translate-y-1/2 w-full md:w-[400px] object-cover animate-[spin_20s_linear_infinite]"
+              className="hidden md:block absolute right-30 z-50 top-70 -translate-y-1/2 w-full md:w-[400px] object-cover animate-[spin_20s_linear_infinite] opacity-0"
               initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
+              animate={{ opacity: 0.6, scale: 1 }}   // 👈 stays at 40% opacity
               transition={{ duration: 1, delay: 0.3 }}
             />
+
           </div>
 
+          {/* ✅ Fixed Paragraph Animation */}
           <motion.p
-            className="mt-8 font-semibold text-start text-[20px] md:text-[50px] leading-snug max-w-4xl relative z-10"
+            className="mt-8 font-semibold text-center md:text-start text-[20px] md:text-[36px] leading-snug max-w-4xl relative z-10"
             initial={{ opacity: 0, x: -80 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9 }}
           >
-            WE CREATE DIGITAL <br /> EXPERIENCES THAT HELP <br /> BRANDS GROW THROUGH <br /> DESIGN, TECHNOLOGY, AND <br /> INNOVATION.
+            WE CREATE DIGITAL EXPERIENCES<br />  THAT HELP BRANDS GROW
+            THROUGH <br />  DESIGN, TECHNOLOGY, AND <br /> INNOVATION.
           </motion.p>
 
           <div
@@ -101,7 +105,7 @@ export default function AboutHero() {
 
       {/* Vision / Mission */}
       <motion.div
-        className="mt-10"
+        className="mt-5"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
@@ -136,13 +140,15 @@ export default function AboutHero() {
         {info2.map((item, index) => (
           <motion.div
             key={index}
-            className="bg-[#0F2239] rounded-2xl text-white p-5 shadow-md border border-[#FFFFFF1A]"
+            className="bg-[#0F2239] rounded-2xl text-white p-5 shadow-md border border-[#FFFFFF1A] "
             variants={fadeUp}
             transition={{ duration: 0.7 }}
           >
             <div className="flex flex-col items-center justify-center">
               <div>{item.image}</div>
-              <p className="text-[24px] font-semibold mt-4 mb-2">{item.description}</p>
+              <p className="text-[20px] font-semibold mt-4 mb-2">
+                {item.description}
+              </p>
             </div>
           </motion.div>
         ))}

@@ -52,17 +52,13 @@ const Timeline = () => {
                 style={{ 
                   left: `${20 + (index * 20)}%`,
                   top: index % 2 === 0 ? '-160px' : '60px'
-                }}
-              >
+                }} >
                 <div className="flex flex-col items-center text-center max-w-xs">
-                  {/* Icon container */}
                   <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-gray-600">
                     <div className="text-gray-300">
                       {item.icon}
                     </div>
                   </div>
-                  
-                  {/* Content */}
                   <div className="space-y-2">
                     <h3 className="text-gray-300 font-medium text-sm leading-tight">
                       {item.title}
@@ -75,8 +71,6 @@ const Timeline = () => {
               </div>
             ))}
           </div>
-
-          {/* Bottom icons */}
           <div className="absolute" style={{ top: '200px' }}>
             {bottomIcons.map((item, index) => (
               <div
@@ -91,8 +85,6 @@ const Timeline = () => {
               </div>
             ))}
           </div>
-
-          {/* Why Choose Us circle */}
           <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2">
             <div className="w-48 h-48 rounded-full border-2 border-gray-600 flex items-center justify-center">
               <div className="text-center">

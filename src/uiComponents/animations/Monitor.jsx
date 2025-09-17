@@ -7,7 +7,7 @@ export default function Monitor() {
         <Lottie
             animationData={monitor}
             loop={true}
-            style={{ width: 400, height: 400 }}
+            style={{ width: 200, height: 200 }}
         />
     )
 }

@@ -109,13 +109,13 @@ export default function Home() {
         <div className={`pt-[calc(80px+24px)]`}> {/* padding top = navbar height + gap */}
           <Hero />
         </div>
-        <div>
+        <div className="sm:px-10">
           <Info />
         </div>
-        <div className="">
+        <div className="sm:px-10">
           <Services />
         </div>
-        <div>
+        <div >
           <Clients />
         </div>
       </div>
