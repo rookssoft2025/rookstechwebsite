@@ -39,7 +39,7 @@ export default function WorkHero() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9 }}
             >
-              FROM STARTUPS TO ENTERPRISES WE CRAFT DIGITAL SOLUTIONS THAT DRIVE IMPACT.
+              FROM STARTUPS TO ENTERPRISES WE CRAFT DIGITAL SOLUTIONS THAT DRIVE IMPACT
             </motion.p>
             <div className="mt-10 sm:mt-0 relative">
               <FloatingElement className="">

@@ -81,7 +81,7 @@ export default function AboutHero() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9 }}
             >
-              WE CREATE DIGITAL EXPERIENCES THAT HELP BRANDS GROW THROUGH DESIGN, TECHNOLOGY, AND INNOVATION.
+              WE CREATE DIGITAL EXPERIENCES THAT HELP BRANDS GROW THROUGH DESIGN, TECHNOLOGY, AND INNOVATION
             </motion.p>
             <div className="mt-10 sm:mt-0 relative">
               <FloatingElement className="">

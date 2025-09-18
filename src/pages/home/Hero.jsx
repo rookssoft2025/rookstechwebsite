@@ -400,7 +400,7 @@ export default function Hero() {
               <span className="font-goodtimes text-3xl md:text-4xl  text-white leading-tight block">
                 Complete IT Solutions
               </span>
-              <span className="font-goodtimes text-2xl text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500 leading-tight block mt-2">
+              <span className="font-goodtimes text-4xl text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500 leading-tight block mt-2">
                 Under One Roof
               </span>
             </motion.h1>
@@ -411,7 +411,7 @@ export default function Hero() {
             >
               <p className=" text-xl md:text-2xl text-white/90 leading-relaxed">
                 Smart IT, Seamless Research, and Scalable Products Built for You.
-                From Web, Apps, and Cloud to Security, Research, and Product Innovation.
+                From Web, Apps, and Cloud to Security, Research, and Product Innovation
               </p>
             </motion.div>
             <motion.div

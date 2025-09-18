@@ -38,7 +38,7 @@ export default function CareerHero() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9 }}
             >
-             WE’RE BUILDING DIGITAL SOLUTIONS THAT SHAPE THE FUTURE — AND WE’D LOVE YOU TO BE PART OF IT.
+             WE’RE BUILDING DIGITAL SOLUTIONS THAT SHAPE THE FUTURE — AND WE’D LOVE YOU TO BE PART OF IT
             </motion.p>
             <div className="mt-10 sm:mt-0 relative">
               <FloatingElement className="">

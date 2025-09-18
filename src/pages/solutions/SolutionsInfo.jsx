@@ -44,9 +44,9 @@ export default function SolutionsInfo() {
   ];
   const info = [
     {
-      title: "Why Choose Rooks Tech?",
+      title: "Why Choose Rooks & Brooks Tech?",
       description:
-        "At Rooks Tech, we go beyond delivering solutions — we build lasting partnerships. With a team of experts, innovative strategies, and customer-first approach, we ensure every project drives measurable growth, efficiency, and long-term success for your business.",
+        "At Rooks & Brooks   Tech, we go beyond delivering solutions — we build lasting partnerships. With a team of experts, innovative strategies, and customer-first approach, we ensure every project drives measurable growth, efficiency, and long-term success for your business.",
     },
   ];
 
@@ -93,7 +93,7 @@ export default function SolutionsInfo() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9 }}
           >
-            WE BUILD DIGITAL SOLUTIONS THAT DRIVE GROWTH, BOOST EFFICIENCY, AND GIVE YOUR BUSINESS A COMPETITIVE EDGE.
+            WE BUILD DIGITAL SOLUTIONS THAT DRIVE GROWTH, BOOST EFFICIENCY, AND GIVE YOUR BUSINESS A COMPETITIVE EDGE
           </motion.p>
           <div className="mt-10 sm:mt-0 relative">
             <FloatingElement className="">

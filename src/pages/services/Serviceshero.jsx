@@ -54,7 +54,7 @@ export default function ServicesHero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9 }}
           >
-            WE MANAGE YOUR TECHNOLOGY, SO YOU CAN FOCUS ON WHAT MATTERS.
+            WE MANAGE YOUR TECHNOLOGY, SO YOU CAN FOCUS ON WHAT MATTERS
           </motion.p>
           <div className=" relative">
             <FloatingElement className="">
