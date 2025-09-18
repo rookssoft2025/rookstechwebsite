@@ -1,10 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
-import gearImg1 from "../../assets/careers/3Dcareer.svg";
+import gearImg1 from "../../assets/reserch/3Dreserch.svg";
 import ServiceCards from "../../uiComponents/AnimatedCard";
+import ResearchServiceCards from "./ReserchServiceCards";
+import ResearchDomains from "./ReserchDomain";
 import FloatingElement from "../../uiComponents/FloatImg";
 
-export default function CareerHero() {
+export default function ResearchHero() {
   const fadeUp = {
     hidden: { opacity: 0, y: 40, scale: 0.95 },
     visible: { opacity: 1, y: 0, scale: 1 },
@@ -27,7 +29,7 @@ export default function CareerHero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
             >
-              CAREERS
+              RESERCH
             </motion.h1>
           </div>
 
@@ -38,16 +40,35 @@ export default function CareerHero() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9 }}
             >
-             WE’RE BUILDING DIGITAL SOLUTIONS THAT SHAPE THE FUTURE — AND WE’D LOVE YOU TO BE PART OF IT.
+              EXPERT RESEARCH & PUBLICATION ASSISTANCE – THESIS, PHD, JOURNALS &GLOBAL RECOGNITION.
             </motion.p>
-            <div className="mt-10 sm:mt-0 relative">
+            <div className="mt-10 sm:mt-0relative">
               <FloatingElement className="">
-                 <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
                 <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
               </FloatingElement>
             </div>
           </div>
         </div>
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <ResearchServiceCards />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <ResearchDomains />
+        </motion.div>
+
+
       </motion.div>
     </>
   );

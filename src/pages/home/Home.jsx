@@ -5,39 +5,30 @@ import Info from "./Info";
 import Clients from "./Clients";
 import Services from "./Services";
 import Footer from "../../components/layout/Footer";
-
 export default function Home() {
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [initialLoad, setInitialLoad] = useState(true);
-
-  const navbarHeight = 80; // approximate height of navbar
-
+  const navbarHeight = 80;
   useEffect(() => {
     const timer = setTimeout(() => setInitialLoad(false), 500);
     return () => clearTimeout(timer);
   }, []);
-
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > lastScrollY) {
-        // scrolling down
         setShowNavbar(false);
       } else {
-        // scrolling up
         setShowNavbar(true);
       }
       setLastScrollY(window.scrollY);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
-
   return (
     <div>
-      <div className="relative min-h-screen bg-[#071730] px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Stars Background with multiple layers */}
+      <div className="relative min-h-screen bg-[#071730] px-4 sm:px-6 lg:px-15 overflow-hidden">
         <div className="absolute inset-0 w-full h-full pointer-events-none"
           style={{
             backgroundImage: `
@@ -54,21 +45,19 @@ export default function Home() {
             backgroundSize: "300px 300px",
           }}>
         </div>
-        
         {/* Moving Stars Layer */}
         <div className="absolute inset-0 w-full h-full pointer-events-none animate-moveStars"
           style={{
             backgroundImage: `
-              radial-gradient(2px 2px at 50px 150px, white, transparent),
-              radial-gradient(1px 1px at 100px 250px, white, transparent),
-              radial-gradient(2px 2px at 150px 80px, white, transparent),
-              radial-gradient(1px 1px at 200px 180px, white, transparent)
+              radial-gradient(3px 2px at 150px 150px, white, transparent),
+              radial-gradient(3px 3px at 100px 250px, white, transparent),
+              radial-gradient(3px 2px at 150px 180px, white, transparent),
+              radial-gradient(3px 3px at 200px 180px, white, transparent)
             `,
             backgroundRepeat: "repeat",
             backgroundSize: "250px 250px",
           }}>
         </div>
-        
         {/* Blinking Stars Layer */}
         <div className="absolute inset-0 w-full h-full pointer-events-none"
           style={{
@@ -82,7 +71,6 @@ export default function Home() {
             backgroundRepeat: "repeat",
             backgroundSize: "280px 280px",
           }}>
-          {/* Individual blinking stars with different animation delays */}
           <div className="absolute top-[10%] left-[10%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{animationDelay: '0s'}}></div>
           <div className="absolute top-[25%] left-[75%] w-0.5 h-0.5 bg-white rounded-full animate-pulseStar" style={{animationDelay: '1.5s'}}></div>
           <div className="absolute top-[40%] left-[30%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{animationDelay: '0.7s'}}></div>
@@ -91,8 +79,6 @@ export default function Home() {
           <div className="absolute top-[15%] left-[50%] w-0.5 h-0.5 bg-white rounded-full animate-pulseStar" style={{animationDelay: '0.5s'}}></div>
           <div className="absolute top-[70%] left-[85%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{animationDelay: '1.8s'}}></div>
         </div>
-
-        {/* Navbar */}
         <div
           className={`
           fixed left-0 w-full z-20 transition-transform duration-500 ease-in-out
@@ -100,13 +86,11 @@ export default function Home() {
           ${initialLoad ? "-translate-y-full" : ""}
         `}
         >
-          <div className="mt-4 mx-4"> {/* gap from top */}
+          <div className="mt-4 mx-4"> 
             <Navbar />
           </div>
         </div>
-
-        {/* Hero Section */}
-        <div className={`pt-[calc(80px+24px)]`}> {/* padding top = navbar height + gap */}
+        <div className={`pt-[calc(80px+24px)]`}> 
           <Hero />
         </div>
         <div className="sm:px-10">

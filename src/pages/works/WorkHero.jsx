@@ -1,8 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import gearImg1 from "../../assets/services/serviceHolo.svg";
+import gearImg1 from "../../assets/work/3Dwork.svg";
 import ServiceCards from "../../uiComponents/AnimatedCard";
 import WorkCards from "./WorkCards";
+import FloatingElement from "../../uiComponents/FloatImg";
 
 export default function WorkHero() {
   const fadeUp = {
@@ -19,45 +20,35 @@ export default function WorkHero() {
         transition={{ duration: 0.8 }}
         variants={fadeUp}
       >
-        <div className="w-full flex flex-col justify-center text-white relative mb-10 md:mb-20">
+        <div className="w-full flex flex-col justify-center text-white relative mb-10">
           <div className="flex items-center justify-center relative">
             <motion.h1
-              className="text-center font-goodtimes text-[38px] sm:text-[80px] md:text-[140px]  leading-tight whitespace-nowrap text-white relative blur-fade"
+              className="text-center font-goodtimes text-[38px] sm:text-[80px] md:text-[130px]  leading-tight whitespace-nowrap text-white relative blur-fade"
               initial={{ opacity: 0, y: -60 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
             >
-              WORKS
+              Works
             </motion.h1>
-            <motion.img
-              src={gearImg1}
-              alt="gear"
-              className="hidden md:block absolute right-20 z-50 top-70 -translate-y-1/2 w-full md:w-[400px] object-cover animate-[spin_20s_linear_infinite]"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 0.6, scale: 1 }}
-              transition={{ duration: 1, delay: 0.3 }}
-            />
           </div>
 
-          <motion.p
-            className="mt-8 font-semibold text-center md:text-start text-[20px] md:text-[36px] leading-snug max-w-4xl relative z-10"
-            initial={{ opacity: 0, x: -80 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9 }}
-          >
-            FROM STARTUPS TO ENTERPRISES <br /> WE CRAFT DIGITAL SOLUTIONS <br /> THAT DRIVE IMPACT.
-          </motion.p>
-
-          {/* Mobile Gear */}
-          <motion.div
-            className="absolute inset-0 block md:hidden bg-center bg-no-repeat bg-contain animate-[spin_20s_linear_infinite]"
-            style={{ backgroundImage: `url(${gearImg1})` }}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 0.6, scale: 1 }}
-            transition={{ duration: 1, delay: 0.3 }}
-          />
+          <div className="flex items-center justify-around flex-col md:flex-row md:space-x-6 px-4">
+            <motion.p
+              className="mt-8 font-semibold text-center text-[20px] md:text-[36px] leading-snug max-w-4xl relative z-10"
+              initial={{ opacity: 0, x: -80 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.9 }}
+            >
+              FROM STARTUPS TO ENTERPRISES WE CRAFT DIGITAL SOLUTIONS THAT DRIVE IMPACT.
+            </motion.p>
+            <div className="mt-10 sm:mt-0 relative">
+              <FloatingElement className="">
+                 <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
+                <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
+              </FloatingElement>
+            </div>
+          </div>
         </div>
-
         <div className="">
           <WorkCards />
         </div>

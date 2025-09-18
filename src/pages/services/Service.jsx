@@ -3,13 +3,14 @@ import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import Hero from "../home/Hero";
 import ServicesHero from "./Serviceshero";
+import ServiceFeature from "./ServiceFeature";
 
 export default function Services() {
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [initialLoad, setInitialLoad] = useState(true);
 
-  const navbarHeight = 80; // approximate height of navbar
+  const navbarHeight = 80;
 
   useEffect(() => {
     const timer = setTimeout(() => setInitialLoad(false), 500);
@@ -19,10 +20,8 @@ export default function Services() {
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > lastScrollY) {
-        // scrolling down
         setShowNavbar(false);
       } else {
-        // scrolling up
         setShowNavbar(true);
       }
       setLastScrollY(window.scrollY);
@@ -34,8 +33,7 @@ export default function Services() {
 
   return (
     <div>
-      <div className="relative bg-[#071730] px-4 sm:px-6 lg:px-8 overflow-hidden pb-10">
-        {/* Stars Background with multiple layers */}
+      <div className="relative bg-[#071730] px-4 sm:px-6 lg:px-15 overflow-hidden pb-10">
         <div className="absolute inset-0 w-full h-full pointer-events-none"
           style={{
             backgroundImage: `
@@ -53,7 +51,6 @@ export default function Services() {
           }}>
         </div>
 
-        {/* Moving Stars Layer */}
         <div className="absolute inset-0 w-full h-full pointer-events-none animate-moveStars"
           style={{
             backgroundImage: `
@@ -67,7 +64,6 @@ export default function Services() {
           }}>
         </div>
 
-        {/* Blinking Stars Layer */}
         <div className="absolute inset-0 w-full h-full pointer-events-none"
           style={{
             backgroundImage: `
@@ -80,7 +76,6 @@ export default function Services() {
             backgroundRepeat: "repeat",
             backgroundSize: "280px 280px",
           }}>
-          {/* Individual blinking stars with different animation delays */}
           <div className="absolute top-[10%] left-[10%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{ animationDelay: '0s' }}></div>
           <div className="absolute top-[25%] left-[75%] w-0.5 h-0.5 bg-white rounded-full animate-pulseStar" style={{ animationDelay: '1.5s' }}></div>
           <div className="absolute top-[40%] left-[30%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{ animationDelay: '0.7s' }}></div>
@@ -89,8 +84,6 @@ export default function Services() {
           <div className="absolute top-[15%] left-[50%] w-0.5 h-0.5 bg-white rounded-full animate-pulseStar" style={{ animationDelay: '0.5s' }}></div>
           <div className="absolute top-[70%] left-[85%] w-1 h-1 bg-white rounded-full animate-pulseStar" style={{ animationDelay: '1.8s' }}></div>
         </div>
-
-        {/* Navbar */}
         <div
           className={`
           fixed left-0 w-full z-20 transition-transform duration-500 ease-in-out
@@ -98,20 +91,13 @@ export default function Services() {
           ${initialLoad ? "-translate-y-full" : ""}
         `}
         >
-          <div className="mt-4 mx-4"> {/* gap from top */}
+          <div className="mt-4 mx-4">
             <Navbar />
           </div>
         </div>
-
-        {/* Hero Section */}
-        <div className={`pt-[calc(80px+24px)]`}> {/* padding top = navbar height + gap */}
+        <div className={`pt-[calc(80px+24px)]`}>
           <ServicesHero />
-          <div className=" absolute top-[150px] sm:top-[200px] left-1/2 -translate-x-1/2">
-            <div className="w-[500px] h-[300px]  rounded-full 
-                bg-[radial-gradient(ellipse,rgba(100,220,255,1)_0%,rgba(0,180,255,0.6)_40%,transparent_100%)] 
-                blur-[80px] sm:blur-[100px] lg:blur-[120px]">
-            </div>
-          </div>
+          <ServiceFeature/>
         </div>
       </div>
       <div>

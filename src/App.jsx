@@ -8,8 +8,9 @@ import About from "./pages/about/About";
 import Work from "./pages/works/Works";
 import Careers from "./pages/careers/Career";
 import SplashScreen from "./components/SplashScreen";
+import ScrollToTop from "./components/layout/ScrollTop";
+import Research from "./pages/reserch/Reserch";
 
-// Context so Navbar (and others) can trigger splash
 export const SplashContext = createContext();
 
 function App() {
@@ -22,13 +23,14 @@ function App() {
 
   return (
     <SplashContext.Provider value={{ showSplash, setShowSplash }}>
-      {showSplash && <SplashScreen />} {/* overlay splash */}
+      {showSplash && <SplashScreen />}
 
-      {/* <Navbar /> */}
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/services" element={<Services />} />
         <Route path="/solutions" element={<Solutions />} />
+        <Route path="/research" element={<Research />} />
         <Route path="/about" element={<About />} />
         <Route path="/work" element={<Work />} />
         <Route path="/careers" element={<Careers />} />
@@ -38,4 +40,3 @@ function App() {
 }
 
 export default App;
-

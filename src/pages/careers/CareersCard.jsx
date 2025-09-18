@@ -1,7 +1,4 @@
 import { motion } from "framer-motion";
-import InfoBlock from "../../uiComponents/InfoComponent";
-import gearImg1 from "../../assets/about/aboutHolo.svg";
-import HomeAnimation from "../../uiComponents/animations/HomeAnimation";
 import BotAnimation from "../../uiComponents/animations/Bot";
 
 export default function CareersCard() {
@@ -32,8 +29,6 @@ export default function CareersCard() {
                 "We continuously innovate to ensure our clients stay adaptive, competitive, and ahead of the curve.",
         },
     ];
-
-    // Animation variants
     const fadeUp = {
         hidden: { opacity: 0, y: 40, scale: 0.95 },
         visible: { opacity: 1, y: 0, scale: 1 },
@@ -42,7 +37,6 @@ export default function CareersCard() {
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-8 sm:mr-20">
-                {/* Left section */}
                 <motion.div
                     className="cols-span-1 space-y-10"
                     initial={{ opacity: 0, x: -60 }}
@@ -51,8 +45,7 @@ export default function CareersCard() {
                     transition={{ duration: 0.8 }}
                 >
                     <div className="">
-                        {/* <img src={gearImg1} alt="" /> */}
-                         <BotAnimation/>
+                        <BotAnimation />
                     </div>
                     <div className="text-white text-[30px] font-semibold ">
                         <p>
@@ -61,8 +54,6 @@ export default function CareersCard() {
                         </p>
                     </div>
                 </motion.div>
-
-                {/* Right section with scroll */}
                 <div
                     className="flex flex-col gap-5 items-center w-full col-span-2 max-h-[600px] overflow-y-auto pt-5"
                     style={{
