@@ -46,7 +46,6 @@ export default function CoreValues() {
                 "Founded with a vision to bridge the gap between businesses and technology, our journey began with small-scale design and development projects. Over time, we’ve grown into a full-service digital solutions provider, working with startups, enterprises, and global brands.",
         },
     ];
-    // Animation variants
     const fadeUp = {
         hidden: { opacity: 0, y: 40, scale: 0.95 },
         visible: { opacity: 1, y: 0, scale: 1 },
@@ -68,7 +67,6 @@ export default function CoreValues() {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-8 sm:mr-20">
-                {/* Left section */}
                 <motion.div
                     className="cols-span-1 space-y-10"
                     initial={{ opacity: 0, x: -60 }}
@@ -77,7 +75,6 @@ export default function CoreValues() {
                     transition={{ duration: 0.8 }}
                 >
                     <div className="">
-                        {/* <img src={gearImg1} alt="" /> */}
                         <HomeAnimation/>
                     </div>
                     <div className="text-white text-[30px] font-semibold ">
@@ -87,8 +84,6 @@ export default function CoreValues() {
                         </p>
                     </div>
                 </motion.div>
-
-                {/* Right section with scroll */}
                 <div
                     className="flex flex-col gap-5 items-center w-full col-span-2 max-h-[600px] overflow-y-auto pt-5"
                     style={{
@@ -163,7 +158,6 @@ export default function CoreValues() {
                     transition={{ duration: 2.3, ease: "easeInOut" }}
                 >
                     <img src={flowImg} alt="" className="w-full" />
-                    {/* <Timeline /> */}
                 </motion.div>
             </motion.div>
 

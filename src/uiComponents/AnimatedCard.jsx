@@ -59,12 +59,14 @@ export default function ServiceCards() {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleApply = (title) => {
-    console.log(`Applying for: ${title}`);
-    alert(`Applying for: ${title}`);
+    window.open(formLink, "_blank");
   };
 
-  // Duplicate services for seamless loop
   const duplicatedServices = [...services, ...services];
+
+
+  const formLink = "https://docs.google.com/forms/d/e/1FAIpQLSe23_Z8nM45Gd4Fx2jxUvpCBGdS_4kTP6FuNd_nq5X4c_Kfsw/viewform?usp=header";
+
 
   return (
     <>
@@ -129,9 +131,9 @@ export default function ServiceCards() {
           margin: 0 auto;
         }
       `}</style>
-      
+
       <div className="carousel-container p-5">
-        <div 
+        <div
           className={`carousel-track ${isHovered ? 'paused' : ''}`}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
@@ -142,7 +144,6 @@ export default function ServiceCards() {
               className="flip-card w-[220px] h-[80px] mx-4 flex-shrink-0"
             >
               <div className="flip-card-inner shadow-xl">
-                {/* Front of card */}
                 <div className="flip-card-front bg-neutral-900 text-white overflow-hidden">
                   <div className="absolute inset-0">
                     <div
@@ -162,8 +163,6 @@ export default function ServiceCards() {
                     </div>
                   </div>
                 </div>
-                
-                {/* Back of card */}
                 <div className="flip-card-back bg-neutral-900 flex flex-col items-center justify-center text-white p-4">
                   <button
                     onClick={() => handleApply(service.title)}
@@ -171,6 +170,7 @@ export default function ServiceCards() {
                   >
                     Apply Now
                   </button>
+
                 </div>
               </div>
             </div>

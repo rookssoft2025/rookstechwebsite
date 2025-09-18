@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import InfoBlock from "../../uiComponents/InfoComponent";
-import { Star } from "lucide-react"; // star icon
+import { Star } from "lucide-react";
 
 export default function Clients() {
     const info = [
@@ -55,8 +55,6 @@ export default function Clients() {
             scrollInterval = setInterval(() => {
                 if (carouselRef.current) {
                     carouselRef.current.scrollLeft += 1;
-
-                    // reset when scrolled halfway (end of first set)
                     if (
                         carouselRef.current.scrollLeft >=
                         carouselRef.current.scrollWidth / 2

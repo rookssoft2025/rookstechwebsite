@@ -1,6 +1,6 @@
 import React from "react";
 import gearImg from "../../assets/serviceimg.svg";
-import gearImg1 from "../../assets/services/serviceHolo.svg";
+import gearImg1 from "../../assets/services/3Dservice.svg";
 import securityImg from "../../assets/services/lock.svg";
 import cloudImg from "../../assets/services/cloud.svg";
 import officeImg from "../../assets/services/office.svg";
@@ -10,6 +10,7 @@ import backupImg from "../../assets/services/backup.svg";
 import shieldImg from "../../assets/services/Security.svg";
 import systemImg from "../../assets/services/system.svg";
 import { motion } from "framer-motion";
+import FloatingElement from "../../uiComponents/FloatImg";
 
 export default function ServicesHero() {
   const services = [
@@ -28,92 +29,72 @@ export default function ServicesHero() {
   };
 
   return (
-     <motion.div
-        className="relative overflow-hidden"
-        initial="hidden"
-        animate="visible"
-        transition={{ duration: 0.8 }}
-        variants={fadeUp}
-      >
-      {/* <div className="w-full flex flex-col justify-center text-white relative ">
-        <div className="flex items-center justify-center relative">
-          <h1 className="text-center font-goodtimes text-[38px] sm:text-[80px] md:text-[140px]  leading-tight whitespace-nowrap text-white relative blur-fade">
-            IT SERVICES
-          </h1>
-
-          <img
-            src={gearImg1}
-            alt="gear"
-            className="opacity-70 hidden md:block absolute right-10 z-50 top-75 -translate-y-1/2 w-full  md:w-[400px] object-cover animate-[spin_20s_linear_infinite]"
-          />
-
-        </div>
-
-        <p className="mt-8 font-semibold text-center md:text-start text-[20px] md:text-[36px] leading-snug max-w-4xl relative z-10">
-          WE MANAGE YOUR <br /> TECHNOLOGY, SO YOU CAN <br /> FOCUS ON WHAT MATTERS
-        </p>
-        <div
-          className="absolute inset-0 block md:hidden bg-center bg-no-repeat bg-contain animate-[spin_20s_linear_infinite] opacity-60"
-          style={{ backgroundImage: `url(${gearImg1})` }}
-        ></div>
-
-      </div> */}
+    <motion.div
+      className="relative overflow-hidden"
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 0.8 }}
+      variants={fadeUp}
+    >
       <div className="w-full flex flex-col justify-center text-white relative mb-10">
-                <div className="flex items-center justify-center relative">
-                  <motion.h1
-                    className="text-center font-goodtimes text-[38px] sm:text-[80px] md:text-[140px]  leading-tight whitespace-nowrap text-white relative blur-fade"
-                    initial={{ opacity: 0, y: -60 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1 }}
-                  >
-                    IT SERVICES
-                  </motion.h1>
-      
-                  <motion.img
-                    src={gearImg1}
-                    alt="gear"
-                    className="hidden md:block absolute right-30 z-50 top-70 -translate-y-1/2 w-full md:w-[400px] object-cover animate-[spin_20s_linear_infinite] opacity-0"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 0.6, scale: 1 }}   // 👈 stays at 40% opacity
-                    transition={{ duration: 1, delay: 0.3 }}
-                  />
-      
-                </div>
-      
-                {/* ✅ Fixed Paragraph Animation */}
-                <motion.p
-                  className="mt-8 font-semibold text-center md:text-start text-[20px] md:text-[36px] leading-snug max-w-4xl relative z-10"
-                  initial={{ opacity: 0, x: -80 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.9 }}
-                >
-                 WE MANAGE YOUR <br /> TECHNOLOGY, SO YOU CAN <br /> FOCUS ON WHAT MATTERS
-                </motion.p>
-      
-                <div
-                  className="absolute inset-0 block md:hidden bg-center bg-no-repeat bg-contain animate-[spin_20s_linear_infinite] opacity-60"
-                  style={{ backgroundImage: `url(${gearImg1})` }}
-                ></div>
-              </div>
-
-      <div className="mt-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="flex items-center justify-center relative">
+          <motion.h1
+            className="text-center font-goodtimes text-[38px] sm:text-[80px] md:text-[130px]  leading-tight whitespace-nowrap text-white relative blur-fade"
+            initial={{ opacity: 0, y: -60 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
+            IT SERVICES
+          </motion.h1>
+        </div>
+        <div className="flex items-center justify-around flex-col gap-10 md:flex-row md:space-x-6 px-4">
+          <motion.p
+            className="mt-8 font-semibold text-center text-[20px] md:text-[36px] leading-snug max-w-4xl relative z-10"
+            initial={{ opacity: 0, x: -80 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9 }}
+          >
+            WE MANAGE YOUR TECHNOLOGY, SO YOU CAN FOCUS ON WHAT MATTERS.
+          </motion.p>
+          <div className=" relative">
+            <FloatingElement className="">
+              <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
+              <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
+            </FloatingElement>
+          </div>
+        </div>      </div>
+      <div className="sm:mt-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {services.map((service, index) => (
           <div
             key={index}
             className={`
-         bg-[#0F2239]
-        p-6 rounded-2xl shadow-lg flex flex-col jusstify-between 
+        bg-[#0F2239]
+        p-6 rounded-2xl shadow-lg flex flex-col justify-between 
         transition-transform duration-300 hover:scale-97
         ${service.title === "Remote & Onsite Support" ? "lg:row-span-2 lg:col-start-2" : ""}
       `}
           >
-            <div className={`text-white ${service.title === "Remote & Onsite Support" ? "flex items-center justify-between sm:block" : "flex items-center justify-between"}`}>
-
-              {service.title === "Remote & Onsite Support" && <div className="hidden  sm:flex justify-center"> <img src={service.img} alt={service.title} className="w-70  mb-4" /></div>}
+            <div
+              className={`text-white ${service.title === "Remote & Onsite Support"
+                ? "flex items-center justify-between sm:block"
+                : "flex items-center justify-between"
+                }`}
+            >
+              {service.title === "Remote & Onsite Support" && (
+                <div className="hidden sm:flex justify-center">
+                  <img src={service.img} alt={service.title} className="w-70 mb-4" />
+                </div>
+              )}
               <h3 className="text-[24px] font-semibold mb-2">{service.title}</h3>
-              {service.title != "Remote & Onsite Support" ? <img src={service.img} alt={service.title} className="w-30  mb-4" /> :
-                <img src={service.img} alt={service.title} className=" slock sm:hidden w-30  mb-4" />
-              }
+              {service.title !== "Remote & Onsite Support" ? (
+                <img src={service.img} alt={service.title} className="w-30 mb-4" />
+              ) : (
+                <img
+                  src={service.img}
+                  alt={service.title}
+                  className="slock sm:hidden w-30 mb-4"
+                />
+              )}
             </div>
             <p className="text-md text-gray-300">
               {service.title === "CCTV & Security Systems" &&

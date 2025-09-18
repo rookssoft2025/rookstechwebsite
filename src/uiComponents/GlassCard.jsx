@@ -34,7 +34,6 @@ const GlassCard = ({
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Liquid glass effect elements */}
         <div className="absolute -top-10 -left-10 w-20 h-20 rounded-full opacity-20 blur-xl"></div>
         <div className="absolute -bottom-8 -right-8 w-24 h-24 rounded-full opacity-20 blur-xl"></div>
 

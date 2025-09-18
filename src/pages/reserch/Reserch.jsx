@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
-import Hero from "../home/Hero";
-import SolutionsInfo from "./SolutionsInfo";
-
-export default function Solutions() {
+import ResearchHero from "./ReserchHero";
+export default function Research() {
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [initialLoad, setInitialLoad] = useState(true);
-
   const navbarHeight = 80;
   useEffect(() => {
     const timer = setTimeout(() => setInitialLoad(false), 500);
     return () => clearTimeout(timer);
   }, []);
-
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > lastScrollY) {
@@ -24,14 +20,12 @@ export default function Solutions() {
       }
       setLastScrollY(window.scrollY);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
-
   return (
     <div>
-      <div className="relative bg-[#071730] px-4 sm:px-6 lg:px-15 overflow-hidden pb-10">
+      <div className="relative min-h-screen bg-[#071730] px-4 sm:px-6 lg:px-15 overflow-hidden">
         <div className="absolute inset-0 w-full h-full pointer-events-none"
           style={{
             backgroundImage: `
@@ -51,10 +45,10 @@ export default function Solutions() {
         <div className="absolute inset-0 w-full h-full pointer-events-none animate-moveStars"
           style={{
             backgroundImage: `
-              radial-gradient(2px 2px at 50px 150px, white, transparent),
-              radial-gradient(1px 1px at 100px 250px, white, transparent),
-              radial-gradient(2px 2px at 150px 80px, white, transparent),
-              radial-gradient(1px 1px at 200px 180px, white, transparent)
+              radial-gradient(3px 2px at 150px 150px, white, transparent),
+              radial-gradient(3px 3px at 100px 250px, white, transparent),
+              radial-gradient(3px 2px at 150px 180px, white, transparent),
+              radial-gradient(3px 3px at 200px 180px, white, transparent)
             `,
             backgroundRepeat: "repeat",
             backgroundSize: "250px 250px",
@@ -87,18 +81,15 @@ export default function Solutions() {
           ${initialLoad ? "-translate-y-full" : ""}
         `}
         >
-          <div className="mt-4 mx-4">
+          <div className="mt-4 mx-4"> 
             <Navbar />
           </div>
         </div>
-        <div className={`pt-[calc(80px+24px)]`}>
-          <SolutionsInfo />
-          
+        <div className={`pt-[calc(80px+24px)]`}> 
+          <ResearchHero />
         </div>
       </div>
-      <div>
-            <Footer />
-      </div>
+      <Footer />
     </div>
   );
 }

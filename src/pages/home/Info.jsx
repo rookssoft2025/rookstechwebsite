@@ -2,22 +2,21 @@ import React, { useState, useEffect } from "react";
 import Services from "./Services";
 import InfoBlock from "../../uiComponents/InfoComponent";
 
-// Counter Component
 const Counter = ({ end, duration = 1000, suffix = "", start = false }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!start) return; // Only animate when start = true
+    if (!start) return;
 
     let startVal = 0;
-    const increment = end / (duration / 16); // ~60fps
+    const increment = end / (duration / 16);
     const step = () => {
       startVal += increment;
       if (startVal < end) {
         setCount(Math.floor(startVal));
         requestAnimationFrame(step);
       } else {
-        setCount(end); // ensure exact end
+        setCount(end); 
       }
     };
     requestAnimationFrame(step);
@@ -48,11 +47,11 @@ export default function Info() {
   ];
 
   const info2 = [
-    {
-      title: "Crafted with Passion, Delivered with Precision",
-      description:
-        "A glimpse into our projects that blend creativity, innovation, and technology to drive real business results.",
-    },
+    // {
+    //   title: "Crafted with Passion, Delivered with Precision",
+    //   description:
+    //     "A glimpse into our projects that blend creativity, innovation, and technology to drive real business results.",
+    // },
     {
       title: "End-to-End IT Expertise",
       description:

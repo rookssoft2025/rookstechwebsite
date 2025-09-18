@@ -20,13 +20,11 @@ const AnimatedButton = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Default State - Only text button visible, primary button separate */}
       <div
         className={`absolute inset-0 flex items-center justify-center sm:justify-end space-x-3 transition-all duration-500 ease-out ${
           isHovered ? "opacity-100" : "opacity-100"
         }`}
       >
-        {/* Primary Icon Button - hides on hover */}
         <button
           onClick={handleClick}
           className={`w-10 h-10 flex items-center justify-center rounded-full border border-gray-500 bg-[#0B3470] text-white hover:bg-[#0A2E63] transition-all duration-300 ${
@@ -35,14 +33,12 @@ const AnimatedButton = ({
         >
           {primaryIcon}
         </button>
-        {/* Text Button - base position */}
         <button
           onClick={handleClick}
           className={`relative overflow-hidden px-4 py-3 rounded-full bg-[#0B3470] text-white text-sm font-semibold hover:bg-[#0A2E63] transition-all duration-500 whitespace-nowrap ${
             isHovered ? "pl-12" : "pl-4"
           }`}
         >
-          {/* Primary icon that slides in from right with background and rotation */}
           <span
             className={`absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full transition-all duration-500 ease-out ${
               isHovered
@@ -54,13 +50,11 @@ const AnimatedButton = ({
               {primaryIcon}
             </span>
           </span>
-          {/* Button text */}
           <span className={`transition-all duration-500 ${isHovered ? "ml-2" : "ml-0"}`}>
             {label}
           </span>
         </button>
       </div>
-      {/* Click ripple effect */}
       {isClicked && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="w-12 h-12 rounded-full bg-white/20 animate-ping"></div>

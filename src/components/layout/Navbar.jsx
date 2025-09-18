@@ -7,30 +7,38 @@ import { SplashContext } from "../../App";
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
-    const { setShowSplash } = useContext(SplashContext); // 👈 get setter
+    const { setShowSplash } = useContext(SplashContext);
 
     const handleNavigate = (path, withSplash = false) => {
         if (withSplash) {
-            setShowSplash(true); // 👈 trigger splash
-            setTimeout(() => navigate(path), 1200); // delay navigation until splash fades
+            setShowSplash(true); 
+            setTimeout(() => navigate(path), 1200); 
         } else {
             navigate(path);
         }
         setIsMobileMenuOpen(false);
     };
     const navItems = [
+        { label: "Technology", path: "/solutions" },
         { label: "IT Services", path: "/services" },
-        { label: "Tech Solutions", path: "/solutions" },
+        { label: "Research", path: "/research" },
         { label: "About", path: "/about" },
         { label: "Works", path: "/work" },
         { label: "Careers", path: "/careers" }
     ];
+    const scrollToBottom = () => {
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth",
+        });
+    };
+
     return (
         <>
             <nav className="w-full bg-white/10 backdrop-blur-sm text-white px-4 sm:px-6 py-2 rounded-[24px] shadow-md border border-[#FFFFFF1A] flex justify-between items-center relative z-50">
                 <div className="font-bold text-sm tracking-wide block">
                     <img
-                        onClick={() => handleNavigate("/", true)} // 👈 with splash
+                        onClick={() => handleNavigate("/", true)} 
                         src={logoName}
                         alt="logo"
                         className="max-w-full h-auto w-auto max-h-12 cursor-pointer transition-all duration-100 hover:drop-shadow-[0_0_16px_white]"
@@ -47,9 +55,10 @@ const Navbar = () => {
                         </li>
                     ))}
                 </ul>
-                <div className="hidden lg:block">
-                    <AnimatedButton label="Get Started" />
+                <div className="hidden lg:block cursor-pointer">
+                    <AnimatedButton label="Get Started" onClick={scrollToBottom} />
                 </div>
+
                 <button
                     className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full border border-gray-400 hover:bg-white/10 transition-all duration-300"
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

@@ -7,7 +7,6 @@ const SplashScreen = ({ duration = 1500, children }) => {
   const [progress, setProgress] = useState(0);
   const canvasRef = useRef(null);
 
-  // Particle animation effect
   useEffect(() => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
@@ -91,7 +90,6 @@ const SplashScreen = ({ duration = 1500, children }) => {
     };
   }, []);
 
-  // Progress + fade out trigger
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((oldProgress) => {
@@ -105,7 +103,7 @@ const SplashScreen = ({ duration = 1500, children }) => {
 
     const timer = setTimeout(() => {
       setFadeOut(true);
-      setTimeout(() => setDone(true), 1000); // match fade animation duration
+      setTimeout(() => setDone(true), 1000); 
     }, duration);
 
     return () => {
@@ -116,20 +114,14 @@ const SplashScreen = ({ duration = 1500, children }) => {
 
   return (
     <div className="relative w-full h-full">
-      {/* Underlying App */}
       {children}
-
-      {/* Splash overlay */}
       {!done && (
         <div
           className={`fixed inset-0 bg-gray-900 flex flex-col items-center justify-center z-50 overflow-hidden transition-opacity duration-1000 ${
             fadeOut ? "opacity-0" : "opacity-100"
           }`}
         >
-          {/* Canvas */}
           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-
-          {/* Neon glow effect container */}
           <div className="relative z-10 flex flex-col items-center justify-center p-8 rounded-3xl bg-gray-900 bg-opacity-80 border border-blue-500 border-opacity-30 shadow-2xl">
             <div className="absolute -inset-2 bg-blue-400 rounded-3xl opacity-40 blur-lg"></div>
             <div className="relative flex flex-col items-center justify-center">
@@ -146,8 +138,6 @@ const SplashScreen = ({ duration = 1500, children }) => {
               </div>
             </div>
           </div>
-
-          {/* Progress */}
           <div className="absolute flex gap-10 bottom-8 left-8 z-20">
             <div className="w-[300px]">
               <div

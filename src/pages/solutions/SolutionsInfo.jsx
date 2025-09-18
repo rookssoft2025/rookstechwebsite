@@ -7,7 +7,10 @@ import softwareImg from "../../assets/solutions/software.svg";
 import cartImg from "../../assets/solutions/cart.svg";
 import botImg from "../../assets/solutions/bot.svg";
 import strategyImg from "../../assets/solutions/strategy.svg";
-import gearImg1 from "../../assets/services/serviceHolo.svg";
+import gearImg1 from "../../assets/solutions/3Dtech.svg";
+import { motion } from "framer-motion";
+import FloatingElement from "../../uiComponents/FloatImg";
+import InfoBlock from "../../uiComponents/InfoComponent";
 
 export default function SolutionsInfo() {
 
@@ -21,32 +24,86 @@ export default function SolutionsInfo() {
     { title: "Digital Consulting & Strategy", img: strategyImg },
     { title: "Maintenance & Support", img: supportImg },
   ];
-  return (
-    <div className="relative overflow-hidden">
-      <div className="w-full flex flex-col justify-center text-white relative ">
-        <div className="flex items-center justify-center relative">
-          <h1 className="text-center font-goodtimes text-[38px] sm:text-[80px] md:text-[140px]  leading-tight whitespace-nowrap text-white relative blur-fade">
-            TECH SOLUTIONS
-          </h1>
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1 },
+  };
+  const reasons = [
+    {
+      title: "Expert Team",
+      desc: "Skilled professionals with proven expertise across multiple domains.",
+    },
+    {
+      title: "Tailored Solutions",
+      desc: "Custom-built strategies that align with your unique goals.",
+    },
+    {
+      title: "End-to-End Support",
+      desc: "From planning to execution, we cover the entire lifecycle.",
+    },
+  ];
+  const info = [
+    {
+      title: "Why Choose Rooks Tech?",
+      description:
+        "At Rooks Tech, we go beyond delivering solutions — we build lasting partnerships. With a team of experts, innovative strategies, and customer-first approach, we ensure every project drives measurable growth, efficiency, and long-term success for your business.",
+    },
+  ];
 
-          <img
-            src={gearImg1}
-            alt="gear"
-            className="hidden md:block absolute right-30 z-10 top-70 -translate-y-1/2 w-full  md:w-[400px] object-cover animate-[spin_20s_linear_infinite] opacity-60"
-          />
+  const caseStudies = [
+    {
+      title: "E-Commerce Growth",
+      desc: "Helped a retail brand increase online sales by 250% with a scalable e-commerce platform.",
+    },
+    {
+      title: "AI-powered Analytics",
+      desc: "Delivered predictive insights for a logistics company, cutting costs by 30%.",
+    },
+    {
+      title: "Cloud Migration",
+      desc: "Migrated enterprise infrastructure to cloud, improving uptime and reducing maintenance.",
+    },
+  ];
+
+
+  return (
+    <motion.div
+      className="relative overflow-hidden"
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 0.8 }}
+      variants={fadeUp}
+    >
+      <div className="w-full flex flex-col justify-center text-white relative mb-10">
+        <div className="flex items-center justify-center relative">
+          <motion.h1
+            className="text-center font-goodtimes text-[38px] sm:text-[80px] md:text-[130px]  leading-tight whitespace-nowrap text-white relative blur-fade"
+            initial={{ opacity: 0, y: -60 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
+            TECHNOLOGY
+          </motion.h1>
         </div>
 
-        <p className="mt-8 font-semibold text-center md:text-start text-[20px] md:text-[36px] leading-snug max-w-4xl relative z-10">
-          WE BUILD DIGITAL SOLUTIONS <br /> THAT DRIVE GROWTH, BOOST <br /> EFFICIENCY, AND GIVE YOUR <br /> BUSINESS A COMPETITIVE EDGE.
-        </p>
-        <div
-          className="absolute inset-0 block md:hidden bg-center bg-no-repeat bg-contain animate-[spin_20s_linear_infinite] opacity-60"
-          style={{ backgroundImage: `url(${gearImg1})` }}
-        ></div>
-
+        <div className="flex items-center justify-around flex-col md:flex-row md:space-x-6 px-4">
+          <motion.p
+            className="mt-8 font-semibold text-center text-[20px] md:text-[36px] leading-snug max-w-4xl relative z-10"
+            initial={{ opacity: 0, x: -80 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9 }}
+          >
+            WE BUILD DIGITAL SOLUTIONS THAT DRIVE GROWTH, BOOST EFFICIENCY, AND GIVE YOUR BUSINESS A COMPETITIVE EDGE.
+          </motion.p>
+          <div className="mt-10 sm:mt-0 relative">
+            <FloatingElement className="">
+              <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
+              <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
+            </FloatingElement>
+          </div>
+        </div>
       </div>
-
-      <div className="mt-10 md:mt-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="mt-10 sm:mt-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {services.map((service, index) => (
           <div
             key={index}
@@ -86,6 +143,42 @@ export default function SolutionsInfo() {
           </div>
         ))}
       </div>
-    </div>
+      <div className="mt-10 text-center">
+        <p className="text-3xl font-semibold text-white">Proven Results</p>
+      </div>
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {caseStudies.map((study, idx) => (
+          <div
+            key={idx}
+            className="bg-[#0F2239] p-6 rounded-2xl shadow-lg hover:scale-105 transition-transform"
+          >
+            <h3 className="text-xl font-semibold text-white mb-3">{study.title}</h3>
+            <p className="text-gray-300 text-sm">{study.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="">
+        {info.map((item, index) => (
+          <InfoBlock
+            key={index}
+            title={item.title}
+            description={item.description}
+          />
+        ))}
+      </div>
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {reasons.map((reason, idx) => (
+          <div
+            key={idx}
+            className="bg-[#0F2239] p-6 rounded-2xl shadow-lg hover:scale-105 transition-transform"
+          >
+            <h3 className="text-xl font-semibold text-white mb-2">{reason.title}</h3>
+            <p className="text-gray-300 text-sm">{reason.desc}</p>
+          </div>
+        ))}
+      </div>
+
+    </motion.div>
   );
 }
