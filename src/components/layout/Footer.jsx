@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Mail, Phone, MapPin, ArrowUpRight } from "lucide-react";
+import { Mail, Phone, MapPin, ArrowUpRight, MessageCircle } from "lucide-react";
 import AnimatedButton from "../../uiComponents/AnimatedButton";
 import { motion } from "framer-motion";
 
@@ -13,7 +13,7 @@ export default function Footer() {
   });
 
   const [focusedField, setFocusedField] = useState(null);
-
+  const [submitted, setSubmitted] = useState(false);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -31,19 +31,20 @@ export default function Footer() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSubmitted(true);
     console.log("Form submitted:", formData);
   };
 
-const handleEmailClick = () => {
-  const email = "support@rooksitservices.com";
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (isMobile) {
-    window.location.href = `mailto:${email}`;
-  } else {
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
-    window.open(gmailUrl, "_blank");
-  }
-};
+  const handleEmailClick = () => {
+    const email = "support@rooksitservices.com";
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = `mailto:${email}`;
+    } else {
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+      window.open(gmailUrl, "_blank");
+    }
+  };
 
   const handleLocationClick = () => {
     const location = 'First Floor, 17, Jawahar St, Ramavarmapuram, Nagercoil, Tamil Nadu 629001';
@@ -70,6 +71,11 @@ const handleEmailClick = () => {
       window.location.href = `tel:+917598707071`;
     }
   };
+
+  const isFormValid =
+    formData.name.trim() !== "" &&
+    formData.email.trim() !== "" &&
+    formData.phone.trim() !== "";
 
 
   return (
@@ -209,16 +215,16 @@ const handleEmailClick = () => {
                   type="text"
                   value={formData.name}
                   onChange={handleInputChange}
-                  onFocus={() => handleFocus('name')}
-                  onBlur={() => handleBlur('name')}
+                  onFocus={() => handleFocus("name")}
+                  onBlur={handleBlur}
                   className="w-full h-14 px-4 pt-6 pb-2 rounded-xl backdrop-blur-sm bg-white/5 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 focus:bg-white/10 transition-all duration-300"
                   placeholder=" "
                 />
                 <label
                   htmlFor="name"
-                  className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === 'name' || formData.name
-                    ? 'top-1.5 text-xs text-blue-400 font-medium'
-                    : 'top-4 text-base text-slate-400'
+                  className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "name" || formData.name
+                    ? "top-1.5 text-xs text-blue-400 font-medium"
+                    : "top-4 text-base text-slate-400"
                     }`}
                 >
                   Name *
@@ -231,19 +237,19 @@ const handleEmailClick = () => {
                   type="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  onFocus={() => handleFocus('email')}
-                  onBlur={() => handleBlur('email')}
+                  onFocus={() => handleFocus("email")}
+                  onBlur={handleBlur}
                   className="w-full h-14 px-4 pt-6 pb-2 rounded-xl backdrop-blur-sm bg-white/5 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 focus:bg-white/10 transition-all duration-300"
                   placeholder=" "
                 />
                 <label
                   htmlFor="email"
-                  className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === 'email' || formData.email
-                    ? 'top-1.5 text-xs text-blue-400 font-medium'
-                    : 'top-4 text-base text-slate-400'
+                  className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "email" || formData.email
+                    ? "top-1.5 text-xs text-blue-400 font-medium"
+                    : "top-4 text-base text-slate-400"
                     }`}
                 >
-                  Email*
+                  Email *
                 </label>
               </div>
               <div className="relative">
@@ -253,19 +259,19 @@ const handleEmailClick = () => {
                   type="tel"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  onFocus={() => handleFocus('phone')}
-                  onBlur={() => handleBlur('phone')}
+                  onFocus={() => handleFocus("phone")}
+                  onBlur={handleBlur}
                   className="w-full h-14 px-4 pt-6 pb-2 rounded-xl backdrop-blur-sm bg-white/5 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 focus:bg-white/10 transition-all duration-300"
                   placeholder=" "
                 />
                 <label
                   htmlFor="phone"
-                  className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === 'phone' || formData.phone
-                    ? 'top-1.5 text-xs text-blue-400 font-medium'
-                    : 'top-4 text-base text-slate-400'
+                  className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "phone" || formData.phone
+                    ? "top-1.5 text-xs text-blue-400 font-medium"
+                    : "top-4 text-base text-slate-400"
                     }`}
                 >
-                  Phone Number*
+                  Phone Number *
                 </label>
               </div>
               <div className="relative">
@@ -275,24 +281,36 @@ const handleEmailClick = () => {
                   rows="5"
                   value={formData.message}
                   onChange={handleInputChange}
-                  onFocus={() => handleFocus('message')}
-                  onBlur={() => handleBlur('message')}
+                  onFocus={() => handleFocus("message")}
+                  onBlur={handleBlur}
                   className="w-full px-4 pt-7 pb-3 rounded-xl backdrop-blur-sm bg-white/5 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 focus:bg-white/10 transition-all duration-300 resize-none"
                   placeholder=" "
-                ></textarea>
+                />
                 <label
                   htmlFor="message"
-                  className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === 'message' || formData.message
-                    ? 'top-1.5 text-xs text-blue-400 font-medium'
-                    : 'top-4 text-base text-slate-400'
+                  className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "message" || formData.message
+                    ? "top-1.5 text-xs text-blue-400 font-medium"
+                    : "top-4 text-base text-slate-400"
                     }`}
                 >
                   Message
                 </label>
               </div>
 
+              {submitted && (
+                <div>
+                  <p className="text-green-800">
+                    Your message has been sent successfully!
+                  </p>
+                </div>
+              )}
+
               <div className="flex justify-end pt-4">
-                <AnimatedButton label="Save" />
+                <AnimatedButton
+                  label="Save"
+                  onClick={handleSubmit}
+                  disabled={!isFormValid}
+                />
               </div>
             </div>
           </div>

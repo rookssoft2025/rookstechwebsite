@@ -3,7 +3,7 @@ import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import CareerHero from "./CareerHero";
 import CoreValues from "./CareersCard";
-import ServiceCards from "../../uiComponents/AnimatedCard";
+import ServiceCards from "./AnimatedCard";
 
 
 export default function Careers() {

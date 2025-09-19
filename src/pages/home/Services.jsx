@@ -5,8 +5,11 @@ import uiImg from "../../assets/uiux.svg";
 import ecommerceImg from "../../assets/eCom.svg";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import AnimatedButton from "../../uiComponents/AnimatedButton";
+import { useNavigate } from "react-router-dom";
 
 export default function Services() {
+
+  const navigate = useNavigate();
   const services = [
     {
       title: "Software & Mobile Apps",
@@ -60,7 +63,7 @@ export default function Services() {
         ))}
       </div>
       <div className="flex justify-center mt-10">
-        <AnimatedButton label="View All Services" />
+        <AnimatedButton label="View All Services"  onClick={() => navigate("/solutions")} />
       </div>
     </>
   );

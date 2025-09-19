@@ -11,6 +11,7 @@ import shieldImg from "../../assets/services/Security.svg";
 import systemImg from "../../assets/services/system.svg";
 import { motion } from "framer-motion";
 import FloatingElement from "../../uiComponents/FloatImg";
+import ServiceAnimation from "../../uiComponents/animations/Service";
 
 export default function ServicesHero() {
   const services = [
@@ -60,6 +61,7 @@ export default function ServicesHero() {
             <FloatingElement className="">
               <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
               <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
+              {/* <ServiceAnimation/> */}
             </FloatingElement>
           </div>
         </div>      </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import gearImg1 from "../../assets/work/3Dwork.svg";
-import ServiceCards from "../../uiComponents/AnimatedCard";
+import ServiceCards from "../careers/AnimatedCard";
 import WorkCards from "./WorkCards";
 import FloatingElement from "../../uiComponents/FloatImg";
 

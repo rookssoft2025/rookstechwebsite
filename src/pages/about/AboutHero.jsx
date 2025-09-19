@@ -7,6 +7,7 @@ import Growth from "../../uiComponents/animations/Growth";
 import Puzzle from "../../uiComponents/animations/Puzzle";
 import Monitor from "../../uiComponents/animations/Monitor";
 import FloatingElement from "../../uiComponents/FloatImg";
+import AboutAnimation from "../../uiComponents/animations/AboutUs";
 
 export default function AboutHero() {
   const info1 = [
@@ -87,6 +88,7 @@ export default function AboutHero() {
               <FloatingElement className="">
                 <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
                 <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
+                {/* <AboutAnimation/> */}
               </FloatingElement>
             </div>
           </div>

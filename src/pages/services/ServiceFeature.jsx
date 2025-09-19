@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import FloatingElement from "../../uiComponents/FloatImg";
+import AnimatedButton from "../../uiComponents/AnimatedButton";
 
 export default function ServiceFeature() {
 
@@ -25,22 +26,21 @@ export default function ServiceFeature() {
 
     const testimonials = [
         {
-            name: "Sarah Johnson",
-            company: "TechNova Inc.",
-            comment: "Their IT support transformed our business operations. Response time is exceptional!",
-            avatar: "https://randomuser.me/api/portraits/women/44.jpg"
+            name: "Mr. Mari Selvam",
+            company: "Founder – GR Furniture",
+            comment: "Partnering with this IT team has transformed the way we manage our business operations. From inventory tracking to seamless customer communication, their solutions have made our processes faster and smarter. Their support is always reliable, and I truly value their commitment to innovation.",
+         
         },
         {
-            name: "Michael Chen",
-            company: "Global Solutions Ltd.",
-            comment: "The cybersecurity implementation has given us peace of mind. Highly recommended!",
-            avatar: "https://randomuser.me/api/portraits/men/32.jpg"
+            name: "Mr. Vijaya Kumar",
+            company: "Vijay Hardwares",
+            comment: "We wanted a trusted partner who could modernize our systems without disrupting our workflow, and that’s exactly what we got. The IT services provided have helped us streamline billing, manage data securely, and improve efficiency across departments. It has been a game-changer for our growth.",
+          
         },
         {
-            name: "Emily Rodriguez",
-            company: "Innovate Partners",
-            comment: "Their cloud solutions helped us scale effortlessly during our rapid growth phase.",
-            avatar: "https://randomuser.me/api/portraits/women/63.jpg"
+            name: "Mr. Benet Jayasingh",
+            company: "Quality Marbles",
+            comment: "Technology was always a challenge for us until we started working with this IT service provider. They built customized solutions that perfectly fit our requirements, from secure data handling to cloud integration. Their expertise has not only saved us time but also boosted our productivity and customer satisfaction.",
         }
     ];
 
@@ -106,11 +106,11 @@ export default function ServiceFeature() {
                                 <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-blue-400 rounded-lg blur opacity-30 group-hover:opacity-70 transition duration-300"></div>
                                 <div className="relative bg-[#0a1f3a] p-6 rounded-lg border border-purple-500/20 h-full flex flex-col">
                                     <div className="flex items-center mb-4">
-                                        <img
+                                        {/* <img
                                             src={testimonial.avatar}
                                             alt={testimonial.name}
                                             className="w-12 h-12 rounded-full mr-4 object-cover"
-                                        />
+                                        /> */}
                                         <div>
                                             <h3 className="text-white font-semibold">{testimonial.name}</h3>
                                             <p className="text-blue-200 text-sm">{testimonial.company}</p>
@@ -147,21 +147,22 @@ export default function ServiceFeature() {
                             Schedule a free consultation with our experts to discuss your IT needs and develop a customized solution for your business.
                         </p>
                         <div className="flex flex-col sm:flex-row justify-center gap-4">
-                            <button
-                                onClick={() => {
-                                    window.scrollTo({
-                                        top: document.body.scrollHeight,
-                                        behavior: "smooth",
-                                    });
-                                }}
-                                className="cursor-pointer relative bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white px-8 py-3 rounded-lg font-medium transition shadow-lg"
+                            
+                            <AnimatedButton label="Get Started Today" onClick={() => {
+                                window.scrollTo({
+                                    top: document.body.scrollHeight,
+                                    behavior: "smooth",
+                                });
+                            }} />
+                            <a
+                                href="https://wa.me/917598707071"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="relative bg-transparent hover:bg-blue-800/30 border border-blue-500 text-white px-8 py-3 rounded-lg font-medium transition"
                             >
-                                Get Started Today
-                            </button>
+                                Call Us: +91 7598707071
+                            </a>
 
-                            <button className="relative bg-transparent hover:bg-blue-800/30 border border-blue-500 text-white px-8 py-3 rounded-lg font-medium transition">
-                                Call Us: +91 73586 77670
-                            </button>
                         </div>
                     </motion.div>
                 </div>

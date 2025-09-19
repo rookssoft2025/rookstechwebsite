@@ -11,6 +11,7 @@ import gearImg1 from "../../assets/solutions/3Dtech.svg";
 import { motion } from "framer-motion";
 import FloatingElement from "../../uiComponents/FloatImg";
 import InfoBlock from "../../uiComponents/InfoComponent";
+import TechAnimation from "../../uiComponents/animations/Tech";
 
 export default function SolutionsInfo() {
 
@@ -99,6 +100,7 @@ export default function SolutionsInfo() {
             <FloatingElement className="">
               <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
               <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
+              {/* <TechAnimation/> */}
             </FloatingElement>
           </div>
         </div>

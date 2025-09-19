@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Cpu, Cloud, Leaf, Zap, Eye, Clock } from 'lucide-react';
+import { Cpu, Cloud, Leaf, Zap, Eye, Clock, Hospital, Car, GraduationCap, Factory } from 'lucide-react';
 
 export default function FutureWork() {
   const [activeTab, setActiveTab] = useState(0);
-  
+
   const highlights = [
     {
       title: 'AI-Powered Adaptive Systems',
@@ -73,7 +73,7 @@ export default function FutureWork() {
 
   const applications = [
     {
-      emoji: '🏥',
+      emoji: <Hospital />,
       title: 'Healthcare Revolution',
       description: 'ML-powered diagnostic tools that can detect diseases earlier and with greater accuracy than human doctors.',
       features: [
@@ -83,7 +83,7 @@ export default function FutureWork() {
       ]
     },
     {
-      emoji: '🚗',
+      emoji: <Car />,
       title: 'Autonomous Systems',
       description: 'Self-driving cars, drones, and robotics that can navigate complex environments safely and efficiently.',
       features: [
@@ -93,7 +93,7 @@ export default function FutureWork() {
       ]
     },
     {
-      emoji: '🎓',
+      emoji: <GraduationCap />,
       title: 'Personalized Education',
       description: 'Adaptive learning platforms that customize educational content based on individual student needs and learning styles.',
       features: [
@@ -103,7 +103,7 @@ export default function FutureWork() {
       ]
     },
     {
-      emoji: '🏭',
+      emoji: <Factory />,
       title: 'Smart Industries',
       description: 'Intelligent systems that optimize manufacturing, logistics, and energy consumption across industries.',
       features: [
@@ -128,7 +128,7 @@ export default function FutureWork() {
             </p>
           </div>
         </div>
-        
+
         {/* Animated background elements */}
         <div className="absolute top-0 left-0 w-full h-full -z-10 overflow-hidden">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -138,7 +138,7 @@ export default function FutureWork() {
 
       <section className=" relative">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center">
+          <div className="text-center pb-10">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Research Focus</span>
             </h2>
@@ -146,10 +146,10 @@ export default function FutureWork() {
               Our next-phase roadmap blends research and production to deliver responsible, realtime, and energy-efficient AI.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {highlights.map((item, index) => (
-              <div 
+              <div
                 key={index}
                 className="relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/30 to-slate-800/20 backdrop-blur-md border border-slate-700/50 hover:border-cyan-400/30 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/10"
               >
@@ -162,7 +162,7 @@ export default function FutureWork() {
                   <h3 className="text-xl font-semibold mb-3 text-slate-100">{item.title}</h3>
                   <p className="text-slate-400 flex-grow">{item.desc}</p>
                 </div>
-                
+
                 {/* Liquid glass effect overlay */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-400/5 to-cyan-400/5 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
@@ -181,29 +181,28 @@ export default function FutureWork() {
               Explore the cutting-edge technologies shaping the future of AI and machine learning.
             </p>
           </div>
-          
+
           <div className="flex flex-wrap justify-center gap-4 mb-12">
             {['All', 'AI/ML', 'Cloud', 'DevOps'].map((tab, index) => (
               <button
                 key={index}
                 onClick={() => setActiveTab(index)}
-                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                  activeTab === index 
-                    ? 'bg-gradient-to-r from-blue-400 to-cyan-400 shadow-lg shadow-blue-500/30' 
+                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${activeTab === index
+                    ? 'bg-gradient-to-r from-blue-400 to-cyan-400 shadow-lg shadow-blue-500/30'
                     : 'bg-slate-800/50 hover:bg-slate-700/50'
-                }`}
+                  }`}
               >
                 {tab}
               </button>
             ))}
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {technologies
               .filter(item => activeTab === 0 || item.category === ['All', 'AI/ML', 'Cloud', 'DevOps'][activeTab])
               .map((tech, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className="relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/30 to-slate-800/20 backdrop-blur-md border border-slate-700/50 hover:border-purple-400/30 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/10"
                 >
                   <h3 className="text-xl font-semibold mb-4 text-slate-100">{tech.name}</h3>
@@ -211,7 +210,7 @@ export default function FutureWork() {
                   <span className="inline-block px-4 py-2 bg-slate-800/50 text-sm rounded-full border border-slate-700/50">
                     {tech.category}
                   </span>
-                  
+
                   {/* Liquid glass effect overlay */}
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-400/5 to-blue-400/5 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                 </div>
@@ -222,7 +221,7 @@ export default function FutureWork() {
 
       <section id="ml-future" className="py-10 relative">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center pb-5">
+          <div className="text-center pb-10">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Machine Learning: <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">The Future</span>
             </h2>
@@ -230,11 +229,11 @@ export default function FutureWork() {
               How ML will continue to revolutionize software development in the coming years
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div className="space-y-8">
               {mlFutureItems.map((item) => (
-                <div 
+                <div
                   key={item.number}
                   className="relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/30 to-slate-800/20 backdrop-blur-md border border-slate-700/50 hover:border-blue-400/30 transition-all duration-300"
                 >
@@ -248,13 +247,13 @@ export default function FutureWork() {
                 </div>
               ))}
             </div>
-            
+
             <div className="relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/30 to-slate-800/20 backdrop-blur-md border border-slate-700/50">
               <div className="flex justify-between items-center mb-8">
                 <h3 className="text-2xl font-semibold">ML Adoption Timeline</h3>
                 <span className="text-sm text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full">Projected Growth</span>
               </div>
-              
+
               <div className="space-y-6">
                 {timelineData.map((item, index) => (
                   <div key={index}>
@@ -279,25 +278,25 @@ export default function FutureWork() {
 
       <section id="applications" className="py-10  relative">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center pb-5">
+          <div className="text-center pb-10">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Future <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Applications</span>
+              Future <span className="text-transparent bg-clip-text bg-gradient-to-r  from-blue-400 to-cyan-400">Applications</span>
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
               Discover how machine learning will transform various industries in the near future
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {applications.map((app, index) => (
-              <div 
+              <div
                 key={index}
-                className="relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/30 to-slate-800/20 backdrop-blur-md border border-slate-700/50 hover:border-purple-400/30 transition-all duration-300 group"
+                className="relative p-8 rounded-2xl bg-gradient-to-br from-slate-900/30 to-slate-800/20 border border-slate-700/50 hover:border-cyan-400/30 transition-all duration-300 group"
               >
                 <div className="text-5xl mb-6">{app.emoji}</div>
                 <h3 className="text-2xl font-semibold mb-4 text-slate-100">{app.title}</h3>
                 <p className="text-slate-400 mb-6">{app.description}</p>
-                
+
                 <ul className="space-y-3">
                   {app.features.map((feature, i) => (
                     <li key={i} className="flex items-center text-slate-300">
@@ -310,8 +309,6 @@ export default function FutureWork() {
                     </li>
                   ))}
                 </ul>
-                
-                {/* Liquid glass effect overlay */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-400/5 to-blue-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
             ))}

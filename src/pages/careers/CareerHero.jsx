@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import gearImg1 from "../../assets/careers/3Dcareer.svg";
-import ServiceCards from "../../uiComponents/AnimatedCard";
+import ServiceCards from "./AnimatedCard";
 import FloatingElement from "../../uiComponents/FloatImg";
 
 export default function CareerHero() {

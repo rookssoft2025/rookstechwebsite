@@ -10,6 +10,7 @@ import Careers from "./pages/careers/Career";
 import SplashScreen from "./components/SplashScreen";
 import ScrollToTop from "./components/layout/ScrollTop";
 import Research from "./pages/reserch/Reserch";
+import ScrollToTopButton from "./uiComponents/Watsapp";
 
 export const SplashContext = createContext();
 
@@ -35,6 +36,7 @@ function App() {
         <Route path="/work" element={<Work />} />
         <Route path="/careers" element={<Careers />} />
       </Routes>
+      <ScrollToTopButton/>
     </SplashContext.Provider>
   );
 }

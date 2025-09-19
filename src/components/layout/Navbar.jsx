@@ -11,8 +11,8 @@ const Navbar = () => {
 
     const handleNavigate = (path, withSplash = false) => {
         if (withSplash) {
-            setShowSplash(true); 
-            setTimeout(() => navigate(path), 1200); 
+            setShowSplash(true);
+            setTimeout(() => navigate(path), 1200);
         } else {
             navigate(path);
         }
@@ -38,7 +38,7 @@ const Navbar = () => {
             <nav className="w-full bg-white/10 backdrop-blur-sm text-white px-4 sm:px-6 py-2 rounded-[24px] shadow-md border border-[#FFFFFF1A] flex justify-between items-center relative z-50">
                 <div className="font-bold text-sm tracking-wide block">
                     <img
-                        onClick={() => handleNavigate("/", true)} 
+                        onClick={() => handleNavigate("/", true)}
                         src={logoName}
                         alt="logo"
                         className="max-w-full h-auto w-auto max-h-12 cursor-pointer transition-all duration-100 hover:drop-shadow-[0_0_16px_white]"
@@ -103,7 +103,10 @@ const Navbar = () => {
                     </ul>
                     <div className="mt-12 px-4">
                         <button
-                            onClick={() => handleNavigate("/contact")}
+                            onClick={() => {
+                                scrollToBottom();
+                                setIsMobileMenuOpen(false);
+                            }}
                             className="w-full bg-white text-[#0B3470] py-4 rounded-xl font-semibold text-md hover:bg-white/90 transition-all duration-300 flex items-center justify-center space-x-2 group"
                         >
                             <span>Get Started</span>

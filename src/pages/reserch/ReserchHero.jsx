@@ -1,9 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 import gearImg1 from "../../assets/reserch/3Dreserch.svg";
-import ServiceCards from "../../uiComponents/AnimatedCard";
+import ServiceCards from "../careers/AnimatedCard";
 import FloatingElement from "../../uiComponents/FloatImg";
 import FutureWork from "./ResearchFuture";
+import ResearchAnimation from "../../uiComponents/animations/Research";
 
 export default function ResearchHero() {
   const fadeUp = {
@@ -39,35 +40,25 @@ export default function ResearchHero() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9 }}
             >
-             We blend cutting-edge technology with deep expertise in AI, ML, and DL to deliver innovative, future-ready IT solutions
+              We blend cutting-edge technology with deep expertise in AI, ML, and DL to deliver innovative, future-ready IT solutions
             </motion.p>
             <div className="mt-10 sm:mt-0relative">
               <FloatingElement className="">
                 <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
                 <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
+                {/* <ResearchAnimation/> */}
               </FloatingElement>
             </div>
           </div>
         </div>
-        {/* {/* <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <ResearchServiceCards />
-        </motion.div> */}
-
         <motion.div
           initial={{ opacity: 0, y: 60 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          viewport={{ once: true, margin: "-50px" }} // triggers earlier & safer
+          transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          {/* <ResearchDomains /> */}
-          <FutureWork/>
-        </motion.div> 
-
+          <FutureWork />
+        </motion.div>
 
       </motion.div>
     </>

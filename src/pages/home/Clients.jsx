@@ -13,39 +13,34 @@ export default function Clients() {
 
     const clients = [
         {
-            name: "Rahul Menon",
-            title: "Product Manager",
-            org: "EduTech Solution",
+            name: "Dr.Srnivasan",
+            title: " SRINIVASA HOSPITALS",
             rating: "4.5",
             description:
                 "Their expertise in UI/UX design helped us launch an engaging platform that our customers love. The attention to detail was impressive",
         },
         {
-            name: "Arun Prakash",
-            title: "Director",
-            org: "BuildRight Constructions",
+            name: "Dr.Susan William",
+            title: "William Hospital",
             rating: "4.8",
             description:
                 "A reliable tech partner who truly understands business needs. Their solutions help us scale with confidence.",
         },
         {
-            name: "Sophia Iyer",
-            title: "Founder",
-            org: "GreenLeaf Organics",
+            name: "Dr.Sunjay",
+            title: "Kani Hospital",
             rating: "4.7",
             description:
                 "We loved how professional and innovative the team was. Their creative solutions exceeded our expectations.",
         },
         {
-            name: "Karthik Rao",
-            title: "CTO",
-            org: "FinTech Hub",
+            name: "Dr.Gopalakrishnan",
+            title: "GS Lifts",
             rating: "5.0",
             description:
                 "Excellent collaboration and flawless execution. Highly recommend them for complex digital projects.",
         },
     ];
-
     const carouselRef = useRef(null);
     const [isPaused, setIsPaused] = useState(false);
 

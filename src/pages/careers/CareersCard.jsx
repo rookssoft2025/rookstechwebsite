@@ -30,7 +30,7 @@ export default function CareersCard() {
         },
     ];
     const fadeUp = {
-        hidden: { opacity: 0, y: 40, scale: 0.95 },
+        hidden: { opacity: 0, y: 40, scale: 0.95 },   
         visible: { opacity: 1, y: 0, scale: 1 },
     };
 
@@ -38,22 +38,23 @@ export default function CareersCard() {
         <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-8 sm:mr-20">
                 <motion.div
-                    className="cols-span-1 space-y-10"
+                    className="col-span-1 space-y-10 flex flex-col sm:flex-col"
                     initial={{ opacity: 0, x: -60 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                >
-                    <div className="">
-                        <BotAnimation />
-                    </div>
-                    <div className="text-white text-[30px] font-semibold ">
+                >     
+                    <div className="text-white text-[30px] font-semibold order-1 sm:order-2">
                         <p>
                             A clear vision, a strong mission, and values that guide everything
                             we create
                         </p>
                     </div>
+                    <div className="order-2 sm:order-1">
+                        <BotAnimation />
+                    </div>
                 </motion.div>
+
                 <div
                     className="flex flex-col gap-5 items-center w-full col-span-2 max-h-[600px] overflow-y-auto pt-5"
                     style={{
@@ -70,22 +71,22 @@ export default function CareersCard() {
                     {info2.map((item, index) => (
                         <motion.div
                             key={index}
-                            className="bg-[#0F2239] flex gap-10 text-white items-center justify-between rounded-3xl"
+                            className="bg-[#0F2239] flex gap-2 sm:gap-10 text-white items-center justify-between rounded-3xl"
                             initial="hidden"
                             whileInView="visible"
                             viewport={{ once: false, amount: 0.2 }}
                             transition={{ duration: 0.6, delay: index * 0.2 }}
                             variants={fadeUp}
                         >
-                            {(item.id === "01" || item.id === "03") && <div className="w-2/6 flex items-center justify-center p-5">
-                                <h1 className="text-[100px] font-semibold">{item.id}</h1>
+                            {(item.id === "01" || item.id === "03") && <div className="w-2/6 flex items-center justify-center p-2 sm:p-5">
+                                <h1 className="text-[70px] sm:text-[100px] font-semibold">{item.id}</h1>
                             </div>}
-                            <div className="space-y-5 pr-5 pl-5">
+                            <div className="space-y-5 px-2 sm:px-5 py-2">
                                 <p className="text-[30px] font-semibold">{item.title}</p>
                                 <p className="text-[20px] font-semibold">{item.description}</p>
                             </div>
-                            {(item.id === "02" || item.id === "04") && <div className="w-2/6 flex items-center justify-center p-5">
-                                <h1 className="text-[100px] font-semibold">{item.id}</h1>
+                            {(item.id === "02" || item.id === "04") && <div className="w-2/6 flex items-center justify-center p-2 sm:p-5">
+                                <h1 className="text-[70px] sm:text-[100px] font-semibold">{item.id}</h1>
                             </div>}
                         </motion.div>
                     ))}

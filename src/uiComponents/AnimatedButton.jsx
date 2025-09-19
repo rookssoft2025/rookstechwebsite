@@ -1,66 +1,47 @@
-import React, { useState } from "react";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
-const AnimatedButton = ({
-  label = "Let's Work Together",
-  primaryIcon = <ArrowUpRight size={16} />,
-  secondaryIcon = <ArrowRight size={16} />,
+import React from "react";
+import { ArrowUpRight } from "lucide-react";
+
+export default function AnimatedButton({
+  label = "Click Me",
   onClick,
   className = "",
-}) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isClicked, setIsClicked] = useState(false);
-  const handleClick = () => {
-    setIsClicked(true);
-    setTimeout(() => setIsClicked(false), 300);
-    if (onClick) onClick();
-  };
+  disabled = false
+}) {
   return (
     <div
-      className={`relative group w-full sm:w-[300px] h-[48px] overflow-hidden ${className}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className={`
+        relative inline-flex items-center group 
+        ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} 
+        ${className}
+      `}
+      onClick={!disabled ? onClick : undefined} // prevent click if disabled
     >
+      {/* Background hover effect */}
       <div
-        className={`absolute inset-0 flex items-center justify-center sm:justify-end space-x-3 transition-all duration-500 ease-out ${
-          isHovered ? "opacity-100" : "opacity-100"
-        }`}
+        className={`absolute -left-2 right-0 h-12 bg-[#0B3470] rounded-full transition-all duration-400 
+          ${disabled ? "opacity-30" : "opacity-0 group-hover:opacity-100"}
+        `}
+      />
+
+      {/* Arrow Icon */}
+      <div
+        className={`relative z-10 rounded-full p-2 transition-all duration-500 
+          ${disabled ? "bg-gray-500" : "bg-[#0B3470] group-hover:bg-black group-hover:rotate-45"}
+        `}
       >
-        <button
-          onClick={handleClick}
-          className={`w-10 h-10 flex items-center justify-center rounded-full border border-gray-500 bg-[#0B3470] text-white hover:bg-[#0A2E63] transition-all duration-300 ${
-            isHovered ? "opacity-0 scale-0" : "opacity-100 scale-100"
-          }`}
-        >
-          {primaryIcon}
-        </button>
-        <button
-          onClick={handleClick}
-          className={`relative overflow-hidden px-4 py-3 rounded-full bg-[#0B3470] text-white text-sm font-semibold hover:bg-[#0A2E63] transition-all duration-500 whitespace-nowrap ${
-            isHovered ? "pl-12" : "pl-4"
-          }`}
-        >
-          <span
-            className={`absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full transition-all duration-500 ease-out ${
-              isHovered
-                ? "opacity-100 translate-x-0 bg-black rotate-45"
-                : "opacity-0 translate-x-8 bg-transparent rotate-0"
-            }`}
-          >
-            <span className={`transition-transform duration-500 ${isHovered ? "rotate-0" : "rotate-0"}`}>
-              {primaryIcon}
-            </span>
-          </span>
-          <span className={`transition-all duration-500 ${isHovered ? "ml-2" : "ml-0"}`}>
-            {label}
-          </span>
-        </button>
+        <ArrowUpRight className="text-white" />
       </div>
-      {isClicked && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-12 h-12 rounded-full bg-white/20 animate-ping"></div>
-        </div>
-      )}
+
+      <div className="w-4" />
+
+      {/* Label */}
+      <div
+        className={`text-white relative z-10 rounded-full px-4 py-2 h-12 flex items-center text-center transition 
+          ${disabled ? "bg-gray-500" : "bg-[#0B3470]"}
+        `}
+      >
+        {label}
+      </div>
     </div>
   );
-};
-export default AnimatedButton;
+}
