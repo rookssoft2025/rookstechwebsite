@@ -1,15 +1,16 @@
  @import "tailwindcss";
 
 @font-face {
-  font-family: "Good Times";
-  src: url("/fonts/GoodTimes.ttf") format("truetype");
+  font-family: "GoodTimes";
+  src: url("/fonts/GoodTimes-Regular.woff2") format("woff2"),
+       url("/fonts/GoodTimes-Regular.woff") format("woff");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
-
 .font-goodtimes {
-  font-family: "Good Times", sans-serif;
+  font-family: "GoodTimes", Arial, sans-serif;
 }
 
 .blur-fade {

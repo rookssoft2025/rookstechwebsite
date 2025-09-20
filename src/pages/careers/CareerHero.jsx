@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import gearImg1 from "../../assets/careers/3Dcareer.svg";
 import ServiceCards from "./AnimatedCard";
 import FloatingElement from "../../uiComponents/FloatImg";
+import CareersAnimation from "../../uiComponents/animations/Careers";
 
 export default function CareerHero() {
   const fadeUp = {
@@ -40,12 +41,13 @@ export default function CareerHero() {
             >
              WE’RE BUILDING DIGITAL SOLUTIONS THAT SHAPE THE FUTURE — AND WE’D LOVE YOU TO BE PART OF IT
             </motion.p>
-            <div className="mt-10 sm:mt-0 relative">
+            {/* <div className="mt-10 sm:mt-0 relative">
               <FloatingElement className="">
                  <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
                 <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
-              </FloatingElement>
-            </div>
+              </FloatingElement> */}
+              <CareersAnimation/>
+            {/* </div> */}
           </div>
         </div>
       </motion.div>

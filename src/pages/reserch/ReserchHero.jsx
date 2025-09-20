@@ -42,13 +42,13 @@ export default function ResearchHero() {
             >
               We blend cutting-edge technology with deep expertise in AI, ML, and DL to deliver innovative, future-ready IT solutions
             </motion.p>
-            <div className="mt-10 sm:mt-0relative">
+            {/* <div className="mt-10 sm:mt-0relative">
               <FloatingElement className="">
                 <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
-                <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
-                {/* <ResearchAnimation/> */}
-              </FloatingElement>
-            </div>
+                <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" /> */}
+                <ResearchAnimation/>
+              {/* </FloatingElement>
+            </div> */}
           </div>
         </div>
         <motion.div

@@ -57,13 +57,13 @@ export default function ServicesHero() {
           >
             WE MANAGE YOUR TECHNOLOGY, SO YOU CAN FOCUS ON WHAT MATTERS
           </motion.p>
-          <div className=" relative">
+          {/* <div className=" relative">
             <FloatingElement className="">
               <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
-              <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
-              {/* <ServiceAnimation/> */}
-            </FloatingElement>
-          </div>
+              <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" /> */}
+              <ServiceAnimation/>
+            {/* </FloatingElement>
+          </div> */}
         </div>      </div>
       <div className="sm:mt-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {services.map((service, index) => (

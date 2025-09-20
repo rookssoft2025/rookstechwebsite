@@ -90,7 +90,7 @@ export default function Home() {
             <Navbar />
           </div>
         </div>
-        <div className={`pt-[calc(80px+24px)]`}> 
+        <div className={`pt-[calc(50px+24px)]`}> 
           <Hero />
         </div>
         <div className="sm:px-10">

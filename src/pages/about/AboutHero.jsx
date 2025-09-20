@@ -84,13 +84,13 @@ export default function AboutHero() {
             >
               WE CREATE DIGITAL EXPERIENCES THAT HELP BRANDS GROW THROUGH DESIGN, TECHNOLOGY, AND INNOVATION
             </motion.p>
-            <div className="mt-10 sm:mt-0 relative">
+            {/* <div className="mt-10 sm:mt-0 relative">
               <FloatingElement className="">
                 <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
-                <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
-                {/* <AboutAnimation/> */}
-              </FloatingElement>
-            </div>
+                <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" /> */}
+                <AboutAnimation/>
+              {/* </FloatingElement>
+            </div> */}
           </div>
         </div>
       </motion.div>

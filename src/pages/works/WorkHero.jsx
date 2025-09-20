@@ -4,6 +4,8 @@ import gearImg1 from "../../assets/work/3Dwork.svg";
 import ServiceCards from "../careers/AnimatedCard";
 import WorkCards from "./WorkCards";
 import FloatingElement from "../../uiComponents/FloatImg";
+import Work from "./Works";
+import WorkAnimation from "../../uiComponents/animations/Works";
 
 export default function WorkHero() {
   const fadeUp = {
@@ -41,12 +43,13 @@ export default function WorkHero() {
             >
               FROM STARTUPS TO ENTERPRISES WE CRAFT DIGITAL SOLUTIONS THAT DRIVE IMPACT
             </motion.p>
-            <div className="mt-10 sm:mt-0 relative">
+            {/* <div className="mt-10 sm:mt-0 relative">
               <FloatingElement className="">
                  <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
                 <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
-              </FloatingElement>
-            </div>
+              </FloatingElement> */}
+              <WorkAnimation/>
+            {/* </div> */}
           </div>
         </div>
         <div className="">

@@ -178,7 +178,7 @@ export default function Hero() {
               className="relative z-10 mt-8 text-center sm:text-left"
               variants={fadeInUp}
             >
-              <span className="font-goodtimes text-3xl md:text-4xl  text-white leading-tight block">
+              <span style={{ fontFamily: "GoodTimes, sans-serif" }} className="font-goodtimes text-4xl  text-white leading-tight block">
                 Complete IT Solutions
               </span>
               <span className="font-goodtimes text-4xl text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500 leading-tight block mt-2">
