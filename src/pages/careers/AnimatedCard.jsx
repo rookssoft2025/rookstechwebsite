@@ -144,18 +144,7 @@ export default function ServiceCards() {
               className="flip-card w-[220px] h-[80px] mx-4 flex-shrink-0"
             >
               <div className="flip-card-inner shadow-xl">
-                <div className="flip-card-front bg-neutral-900 text-white overflow-hidden">
-                  <div className="absolute inset-0">
-                    <div
-                      className={`absolute w-24 h-24 rounded-full ${service.circles[0]} blur-xl animate-bounce`}
-                    ></div>
-                    <div
-                      className={`absolute w-36 h-36 top-10 left-10 rounded-full ${service.circles[1]} blur-2xl animate-pulse`}
-                    ></div>
-                    <div
-                      className={`absolute w-16 h-16 bottom-10 right-6 rounded-full ${service.circles[2]} blur-lg animate-float`}
-                    ></div>
-                  </div>
+                <div className="flip-card-front bg-[#0F2239] text-white overflow-hidden transition-transform hover:border-blue-400 border border-transparent">
                   <div className="absolute inset-0 flex items-center justify-center p-4">
                     <div>
                       <p className="text-sm font-bold">{service.title}</p>
@@ -163,15 +152,16 @@ export default function ServiceCards() {
                     </div>
                   </div>
                 </div>
-                <div className="flip-card-back bg-neutral-900 flex flex-col items-center justify-center text-white p-4">
+                <div className="flip-card-back bg-[#0F2239] flex flex-col items-center justify-center text-white p-4
+                transition-transform hover:border-blue-400 border border-transparent">
                   <button
                     onClick={() => handleApply(service.title)}
                     className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm transition-colors duration-200 cursor-pointer"
                   >
                     Apply Now
                   </button>
-
                 </div>
+
               </div>
             </div>
           ))}
