@@ -7,18 +7,19 @@ import { div } from "framer-motion/client";
 
 export default function WorkCards() {
     const workCards = [
-        {
-            title: "Jothi",
-            description:
-                "Jothi is a mobile application that helps you find the best deals on cars, motorcycles, and bicycles.",
-            video: jothiVideo,
-        },
-        {
-            title: "Rooks",
-            description:
-                "Rooks is a mobile application that helps you find the best deals on cars, motorcycles, and bicycles.",
-            video: rooks,
-        },
+    {
+    title: "Jothi",
+    description:
+        "Designed and developed jothidecor.in, a website for Jothi Rajalekshmi curtains and furnishing shop, offering a wide range of elegant curtains, fabrics, and home décor solutions.",
+    video: jothiVideo,
+},
+{
+    title: "Rooks",
+    description:
+        "We developed Rooks CST, a mobile application for construction site management, helping teams streamline tasks, track progress, and manage resources efficiently.",
+    video: rooks,
+},
+
     ];
 
     const fadeUp = {
