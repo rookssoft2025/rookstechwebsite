@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Cpu, Cloud, Leaf, Zap, Eye, Clock, Hospital, Car, GraduationCap, Factory } from 'lucide-react';
+import { Cpu, Cloud, Leaf, Zap, Eye, Clock, Hospital, Car, GraduationCap, Factory, Sparkles } from 'lucide-react';
 
 export default function FutureWork() {
   const [activeTab, setActiveTab] = useState(0);
@@ -139,9 +139,13 @@ export default function FutureWork() {
       <section className=" relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center pb-10">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Centre for Research in<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">  Intelligence and Computing</span>
-            </h2>
+            <div className="inline-block  bg-white/10 backdrop-blur-md text-white px-8 py-3 rounded-full border border-[#FFFFFF1A] shadow-lg">
+             
+              <h2 className="text-4xl text-center md:text-4xl font-bold ">
+                Centre for Research in Intelligence and Computing
+              </h2>
+            </div> 
+
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
               Our next-phase roadmap blends research and production to deliver responsible, realtime, and energy-efficient AI.
             </p>
@@ -188,8 +192,8 @@ export default function FutureWork() {
                 key={index}
                 onClick={() => setActiveTab(index)}
                 className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${activeTab === index
-                    ? 'bg-gradient-to-r from-blue-400 to-cyan-400 shadow-lg shadow-blue-500/30'
-                    : 'bg-slate-800/50 hover:bg-slate-700/50'
+                  ? 'bg-gradient-to-r from-blue-400 to-cyan-400 shadow-lg shadow-blue-500/30'
+                  : 'bg-slate-800/50 hover:bg-slate-700/50'
                   }`}
               >
                 {tab}
