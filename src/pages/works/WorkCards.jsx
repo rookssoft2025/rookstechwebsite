@@ -10,7 +10,7 @@ export default function WorkCards() {
     {
     title: "Jothi",
     description:
-        "Designed and developed jothidecor.in, a website for Jothi Rajalekshmi curtains and furnishing shop, offering a wide range of elegant curtains, fabrics, and home décor solutions.",
+        "Designed and developed jothidecor.in, a website for Jothi Rajalekshmi curtains and furnishing shop, offering a wide range of elegant curtains, fabrics, and home decor solutions.",
     video: jothiVideo,
 },
 {

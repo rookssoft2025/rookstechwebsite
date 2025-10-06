@@ -140,7 +140,7 @@ export default function FutureWork() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center pb-10">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Research Focus</span>
+              Centre for Research in<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">  Intelligence and Computing</span>
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
               Our next-phase roadmap blends research and production to deliver responsible, realtime, and energy-efficient AI.

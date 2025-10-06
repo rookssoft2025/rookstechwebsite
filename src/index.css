@@ -47,3 +47,77 @@
 }
 
 
+  @keyframes moveStarsRightToLeft {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-250px);
+          }
+        }
+
+        @keyframes moveStarsTopToBottom {
+          0% {
+            transform: translateY(0);
+          }
+          100% {
+            transform: translateY(-300px);
+          }
+        }
+
+        @keyframes moveStarsDiagonal {
+          0% {
+            transform: translate(0, 0);
+          }
+          100% {
+            transform: translate(-350px, -350px);
+          }
+        }
+
+        @keyframes moveHorizontal {
+          0% {
+            transform: translateX(0);
+          }
+          50% {
+            transform: translateX(-20px);
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes moveVertical {
+          0% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-15px);
+          }
+          100% {
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes moveDiagonal {
+          0% {
+            transform: translate(0, 0);
+          }
+          50% {
+            transform: translate(-15px, -10px);
+          }
+          100% {
+            transform: translate(0, 0);
+          }
+        }
+
+        .moveStarHorizontal {
+          animation: moveHorizontal 8s ease-in-out infinite;
+        }
+
+        .moveStarVertical {
+          animation: moveVertical 6s ease-in-out infinite;
+        }
+
+        .moveStarDiagonal {
+          animation: moveDiagonal 10s ease-in-out infinite;
+        }
