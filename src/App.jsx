@@ -11,6 +11,9 @@ import SplashScreen from "./components/SplashScreen";
 import ScrollToTop from "./components/layout/ScrollTop";
 import Research from "./pages/reserch/Reserch";
 import ScrollToTopButton from "./uiComponents/Watsapp";
+import Login from "./pages/login/login";
+import Dashboard from "./pages/login/components/Dashboard";
+import ProposalPage from "./pages/login/components/Proposal/ProposalPage";
 
 export const SplashContext = createContext();
 
@@ -35,6 +38,9 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/work" element={<Work />} />
         <Route path="/careers" element={<Careers />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard/proposal" element={<ProposalPage />} />
       </Routes>
       <ScrollToTopButton/>
     </SplashContext.Provider>

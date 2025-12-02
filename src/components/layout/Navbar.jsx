@@ -4,6 +4,7 @@ import logoName from "../../assets/rbName.svg";
 import AnimatedButton from "../../uiComponents/AnimatedButton";
 import { useNavigate } from "react-router-dom";
 import { SplashContext } from "../../App";
+
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
@@ -18,14 +19,17 @@ const Navbar = () => {
         }
         setIsMobileMenuOpen(false);
     };
+
     const navItems = [
         { label: "Technology", path: "/solutions" },
         { label: "IT Services", path: "/services" },
         { label: "Research", path: "/research" },
         { label: "About", path: "/about" },
         { label: "Works", path: "/work" },
-        { label: "Careers", path: "/careers" }
+        { label: "Careers", path: "/careers" },
+        { label: "Login", path: "/login" }
     ];
+
     const scrollToBottom = () => {
         window.scrollTo({
             top: document.body.scrollHeight,
@@ -126,4 +130,5 @@ const Navbar = () => {
         </>
     );
 };
+
 export default Navbar;
