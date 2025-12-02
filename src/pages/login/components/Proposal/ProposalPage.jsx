@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   Plus,
   Users,
@@ -10,6 +10,12 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
+  AlertTriangle,
+  User,
+  CalendarDays,
+  FileEdit,
+  CalendarClock,
+  Filter,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
@@ -33,6 +39,9 @@ const ProposalPage = () => {
   const [proposals, setProposals] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
 
+  // Filter state
+  const [statusFilter, setStatusFilter] = useState("all");
+
   // Modal + form states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
@@ -48,6 +57,10 @@ const ProposalPage = () => {
     status: "Pending",
     details: "",
   });
+
+  // Refs for date inputs so we can open native picker on touch/click
+  const startDateRef = useRef(null);
+  const endDateRef = useRef(null);
 
   // Research team
   const teamMembers = [
@@ -65,14 +78,23 @@ const ProposalPage = () => {
     },
   ];
 
-  // Status options
+  // Status options for filter and display
   const statusOptions = [
+    {
+      value: "all",
+      label: "All Proposals",
+      color: "text-gray-400",
+      bg: "bg-gray-400/10",
+      icon: Filter,
+      count: 0, // Will be calculated
+    },
     {
       value: "Pending",
       label: "Pending",
       color: "text-yellow-400",
       bg: "bg-yellow-400/10",
       icon: Clock,
+      count: 0,
     },
     {
       value: "In Progress",
@@ -80,6 +102,7 @@ const ProposalPage = () => {
       color: "text-blue-400",
       bg: "bg-blue-400/10",
       icon: AlertCircle,
+      count: 0,
     },
     {
       value: "Completed",
@@ -87,6 +110,7 @@ const ProposalPage = () => {
       color: "text-green-400",
       bg: "bg-green-400/10",
       icon: CheckCircle,
+      count: 0,
     },
   ];
 
@@ -99,6 +123,61 @@ const ProposalPage = () => {
     };
     load();
   }, []);
+
+  // Calculate counts for each status filter
+  useEffect(() => {
+    if (proposals.length > 0) {
+      // Calculate counts for each status
+      const counts = {
+        all: proposals.length,
+        Pending: proposals.filter(p => p.status === "Pending").length,
+        "In Progress": proposals.filter(p => p.status === "In Progress").length,
+        Completed: proposals.filter(p => p.status === "Completed").length,
+      };
+
+      // Update status options with counts
+      statusOptions.forEach(option => {
+        option.count = counts[option.value] || 0;
+      });
+    }
+  }, [proposals]);
+
+  // Filter proposals based on selected filter
+  const filteredProposals = useMemo(() => {
+    if (statusFilter === "all") {
+      return proposals;
+    }
+    return proposals.filter(proposal => proposal.status === statusFilter);
+  }, [proposals, statusFilter]);
+
+  // Check if deadline is today or passed
+  const checkDeadlineStatus = (endDate) => {
+    if (!endDate) return null;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const deadline = new Date(endDate);
+    deadline.setHours(0, 0, 0, 0);
+
+    // Calculate difference in days
+    const diffTime = deadline - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return { status: "overdue", days: diffDays, text: "Overdue" };
+    } else if (diffDays === 0) {
+      return { status: "today", days: 0, text: "Due today" };
+    } else if (diffDays <= 3) {
+      return {
+        status: "approaching",
+        days: diffDays,
+        text: `Due in ${diffDays} days`,
+      };
+    }
+
+    return null;
+  };
 
   // Logout
   const handleLogout = async () => {
@@ -215,15 +294,100 @@ const ProposalPage = () => {
           </div>
         </div>
 
+        {/* STATUS FILTER SECTION */}
+        <div className="glass-card rounded-2xl p-4 mb-6 border border-gray-800">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center">
+              <Filter className="w-5 h-5 text-cyan-400 mr-2" />
+              <h3 className="text-lg font-semibold text-white">
+                Filter by Status
+              </h3>
+            </div>
+            <div className="text-sm text-gray-400">
+              Showing {filteredProposals.length} of {proposals.length} proposals
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {statusOptions.map((option) => {
+              const Icon = option.icon;
+              const isActive = statusFilter === option.value;
+              return (
+                <button
+                  key={option.value}
+                  onClick={() => setStatusFilter(option.value)}
+                  className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
+                    isActive
+                      ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
+                      : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                  }`}
+                >
+                  <Icon
+                    className={`w-5 h-5 mr-3 ${
+                      isActive ? option.color : "text-gray-400"
+                    }`}
+                  />
+                  <span
+                    className={`font-medium ${
+                      isActive ? option.color : "text-gray-300"
+                    }`}
+                  >
+                    {option.label}
+                  </span>
+                  <span
+                    className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
+                      isActive
+                        ? "bg-gray-800 text-white"
+                        : "bg-gray-800/70 text-gray-400"
+                    }`}
+                  >
+                    {option.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Deadline Legend */}
+        <div className="glass-card rounded-2xl p-4 mb-6 border border-gray-800">
+          <div className="flex items-center mb-3">
+            <AlertTriangle className="w-5 h-5 text-red-400 mr-2" />
+            <h3 className="text-lg font-semibold text-white">
+              Deadline Indicators
+            </h3>
+          </div>
+          <div className="flex flex-wrap gap-4">
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse mr-2"></div>
+              <span className="text-gray-300">Due today / Overdue</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+              <span className="text-gray-300">Due in 1-3 days</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+              <span className="text-gray-300">More than 3 days</span>
+            </div>
+          </div>
+        </div>
+
         {/* ADD BUTTON */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">Proposals</h2>
+          <div>
+            <h2 className="text-2xl font-bold text-white">Proposals</h2>
+            <p className="text-gray-400 text-sm mt-1">
+              {statusFilter === "all"
+                ? "Showing all proposals"
+                : `Showing ${statusFilter} proposals only`}
+            </p>
+          </div>
           <button
             onClick={() => {
               setEditMode(false);
               setIsModalOpen(true);
             }}
-            className="flex items-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl"
+            className="flex items-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
           >
             <Plus className="w-5 h-5 mr-2" /> Add New Paper
           </button>
@@ -231,234 +395,575 @@ const ProposalPage = () => {
 
         {/* TABLE */}
         <DataTable
-  columns={[
-    { key: "paperName", label: "Paper Name" },
-    { key: "proposalTakenBy", label: "Researcher" },
-    { key: "timeline", label: "Timeline" },
-    { key: "status", label: "Status" },
-    { key: "details", label: "Details" },
-    { key: "actions", label: "Actions" },
-  ]}
-  data={proposals.map((proposal) => {
-    const statusInfo = statusOptions.find((s) => s.value === proposal.status);
-    const StatusIcon = statusInfo?.icon;
+          columns={[
+            { key: "deadline", label: "Deadline" },
+            { key: "paperName", label: "Paper Name" },
+            { key: "proposalTakenBy", label: "Researcher" },
+            { key: "timeline", label: "Timeline" },
+            { key: "status", label: "Status" },
+            { key: "details", label: "Details" },
+            { key: "actions", label: "Actions" },
+          ]}
+          data={filteredProposals.map((proposal) => {
+            const statusInfo = statusOptions.find(
+              (s) => s.value === proposal.status
+            );
+            const StatusIcon = statusInfo?.icon;
+            const deadlineStatus = checkDeadlineStatus(proposal.endDate);
 
-    return {
-      ...proposal,
+            return {
+              ...proposal,
 
-      // properly passed!
-      renderRow: (item, onRowExpand) => (
-        <tr
-          onClick={() => onRowExpand(item.id)}
-          className="border-b border-gray-800 hover:bg-gray-900/50 cursor-pointer"
-        >
-          <td className="py-4 px-6 text-white">{item.paperName}</td>
-
-          <td className="py-4 px-6 text-gray-300">
-            {item.proposalTakenBy}
-          </td>
-
-          <td className="py-4 px-6 text-gray-300">
-            {formatDate(item.startDate)} - {formatDate(item.endDate)}
-          </td>
-
-          <td className="py-4 px-6">
-            <div
-              className={`px-3 py-1 rounded-full ${statusInfo.bg} inline-flex items-center`}
-            >
-              <StatusIcon className={`w-4 h-4 mr-2 ${statusInfo.color}`} />
-              <span className={statusInfo.color}>{item.status}</span>
-            </div>
-          </td>
-
-          <td className="py-4 px-6 text-cyan-400">
-            {expandedRow === item.id ? <ChevronUp /> : <ChevronDown />}
-          </td>
-
-          <td className="py-4 px-6">
-            <div className="flex gap-3">
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openEdit(item);
-                }}
-                className="text-blue-400 hover:text-blue-300"
-              >
-                Edit
-              </button>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(item.id);
-                }}
-                className="text-red-400 hover:text-red-300"
-              >
-                Delete
-              </button>
-            </div>
-          </td>
-        </tr>
-      ),
-
-      expandContent: (
-        <>
-          <h4 className="text-lg font-semibold text-white mb-3">
-            Paper Details
-          </h4>
-          <p className="text-gray-300">{proposal.details}</p>
-        </>
-      ),
-    };
-  })}
-  expandedRow={expandedRow}
-  onRowExpand={toggleRowExpansion}
-/>
-
-
-        {/* MODAL */}
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-            <div className="glass-card rounded-2xl w-full max-w-lg border border-cyan-500/20 p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-white">
-                  {editMode ? "Edit Paper" : "Add New Paper"}
-                </h3>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="text-gray-400 hover:text-white"
+              // properly passed!
+              renderRow: (item, onRowExpand) => (
+                <tr
+                  onClick={() => onRowExpand(item.id)}
+                  className="border-b border-gray-800 hover:bg-gray-900/50 cursor-pointer transition-colors"
                 >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-
-              <form onSubmit={editMode ? handleUpdate : handleSubmit}>
-                {/* FORM INPUTS */}
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm text-cyan-300">Paper Name</label>
-                    <input
-                      id="paperName"
-                      value={newPaper.paperName}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-sm text-cyan-300">Start Date</label>
-                    <input
-                      type="date"
-                      id="startDate"
-                      value={newPaper.startDate}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 bg-gray-900/50 border-gray-700 border rounded-xl text-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-sm text-cyan-300">End Date</label>
-                    <input
-                      type="date"
-                      id="endDate"
-                      value={newPaper.endDate}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 bg-gray-900/50 border-gray-700 border rounded-xl text-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-sm text-cyan-300">Details</label>
-                    <textarea
-                      id="details"
-                      value={newPaper.details}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-900/50 border-gray-700 rounded-xl text-white"
-                      rows={3}
-                    ></textarea>
-                  </div>
-
-                  {/* Researcher */}
-                  <div>
-                    <label className="text-sm text-cyan-300">
-                      Proposal Taken By
-                    </label>
-                    <select
-                      value={newPaper.proposalTakenBy}
-                      onChange={(e) =>
-                        setNewPaper((p) => ({
-                          ...p,
-                          proposalTakenBy: e.target.value,
-                        }))
-                      }
-                      required
-                      className="w-full px-4 py-3 bg-gray-900/50 border-gray-700 rounded-xl text-white"
-                    >
-                      <option value="">Select researcher</option>
-                      {teamMembers.map((m) => (
-                        <option key={m.id} value={m.name}>
-                          {m.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Status */}
-                  <div>
-                    <label className="text-sm text-cyan-300">Status</label>
-                    <div className="flex gap-2">
-                      {statusOptions.map((option) => {
-                        const Icon = option.icon;
-                        return (
-                          <button
-                            type="button"
-                            key={option.value}
-                            onClick={() =>
-                              setNewPaper((prev) => ({
-                                ...prev,
-                                status: option.value,
-                              }))
-                            }
-                            className={`flex-1 flex items-center justify-center px-4 py-3 rounded-xl border ${
-                              newPaper.status === option.value
-                                ? `${option.bg} border-cyan-500`
-                                : "bg-gray-900/50 border-gray-700"
+                  {/* Deadline Indicator Column */}
+                  <td className="py-4 px-4 text-center">
+                    {deadlineStatus && (
+                      <div className="flex flex-col items-center">
+                        <div
+                          className={`w-3 h-3 rounded-full mb-1 ${
+                            deadlineStatus.status === "overdue"
+                              ? "bg-red-500 animate-pulse"
+                              : deadlineStatus.status === "today"
+                              ? "bg-red-500"
+                              : deadlineStatus.status === "approaching"
+                              ? "bg-yellow-500"
+                              : "bg-green-500"
+                          }`}
+                        />
+                        {deadlineStatus && (
+                          <span
+                            className={`text-xs ${
+                              deadlineStatus.status === "overdue"
+                                ? "text-red-400"
+                                : deadlineStatus.status === "today"
+                                ? "text-red-400"
+                                : deadlineStatus.status === "approaching"
+                                ? "text-yellow-400"
+                                : "text-green-400"
                             }`}
                           >
-                            <Icon className={`w-4 h-4 mr-2 ${option.color}`} />
-                            <span className={option.color}>{option.label}</span>
-                          </button>
-                        );
-                      })}
+                            {deadlineStatus.text}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </td>
+
+                  <td className="py-4 px-6 text-white font-medium">
+                    {item.paperName}
+                  </td>
+
+                  <td className="py-4 px-6 text-gray-300">
+                    {item.proposalTakenBy}
+                  </td>
+
+                  <td className="py-4 px-6 text-gray-300">
+                    <div className="flex flex-col">
+                      <span>{formatDate(item.startDate)}</span>
+                      <span className="text-sm text-gray-400">to</span>
+                      <span
+                        className={
+                          deadlineStatus?.status === "overdue" ||
+                          deadlineStatus?.status === "today"
+                            ? "text-red-400 font-medium"
+                            : deadlineStatus?.status === "approaching"
+                            ? "text-yellow-400"
+                            : "text-gray-300"
+                        }
+                      >
+                        {formatDate(item.endDate)}
+                      </span>
+                    </div>
+                  </td>
+
+                  <td className="py-4 px-6">
+                    <div
+                      className={`px-3 py-1 rounded-full ${statusInfo.bg} inline-flex items-center border border-gray-700`}
+                    >
+                      <StatusIcon
+                        className={`w-4 h-4 mr-2 ${statusInfo.color}`}
+                      />
+                      <span className={`${statusInfo.color} font-medium`}>
+                        {item.status}
+                      </span>
+                    </div>
+                  </td>
+
+                  <td className="py-4 px-6 text-cyan-400">
+                    {expandedRow === item.id ? (
+                      <ChevronUp className="w-5 h-5" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5" />
+                    )}
+                  </td>
+
+                  <td className="py-4 px-6">
+                    <div className="flex gap-3">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openEdit(item);
+                        }}
+                        className="px-4 py-1.5 bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 rounded-lg font-medium transition-colors"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(item.id);
+                        }}
+                        className="px-4 py-1.5 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-lg font-medium transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ),
+
+              expandContent: (
+                <div className="p-4 bg-gray-900/50 rounded-xl border border-gray-800">
+                  <div className="flex justify-between items-start mb-4">
+                    <h4 className="text-lg font-semibold text-white">
+                      Paper Details
+                    </h4>
+                    {deadlineStatus && (
+                      <div
+                        className={`px-3 py-1.5 rounded-full ${
+                          deadlineStatus.status === "overdue"
+                            ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                            : deadlineStatus.status === "today"
+                            ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                            : deadlineStatus.status === "approaching"
+                            ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
+                            : "bg-green-500/20 text-green-400 border border-green-500/30"
+                        }`}
+                      >
+                        <div className="flex items-center">
+                          <AlertTriangle className="w-4 h-4 mr-2" />
+                          <span className="text-sm font-medium">
+                            {deadlineStatus.text}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-gray-300 mb-4">{proposal.details}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div className="bg-gray-900/30 p-3 rounded-lg">
+                      <div className="flex items-center mb-1">
+                        <Calendar className="w-4 h-4 text-cyan-400 mr-2" />
+                        <span className="text-cyan-400 font-medium">
+                          Start Date:
+                        </span>
+                      </div>
+                      <div className="text-gray-300 ml-6">
+                        {formatDate(proposal.startDate)}
+                      </div>
+                    </div>
+                    <div
+                      className={`p-3 rounded-lg ${
+                        deadlineStatus?.status === "overdue" ||
+                        deadlineStatus?.status === "today"
+                          ? "bg-red-500/10"
+                          : "bg-gray-900/30"
+                      }`}
+                    >
+                      <div className="flex items-center mb-1">
+                        <CalendarDays
+                          className={`w-4 h-4 mr-2 ${
+                            deadlineStatus?.status === "overdue" ||
+                            deadlineStatus?.status === "today"
+                              ? "text-red-400"
+                              : "text-cyan-400"
+                          }`}
+                        />
+                        <span
+                          className={
+                            deadlineStatus?.status === "overdue" ||
+                            deadlineStatus?.status === "today"
+                              ? "text-red-400 font-medium"
+                              : "text-cyan-400 font-medium"
+                          }
+                        >
+                          End Date:
+                        </span>
+                      </div>
+                      <div
+                        className={`ml-6 ${
+                          deadlineStatus?.status === "overdue" ||
+                          deadlineStatus?.status === "today"
+                            ? "text-red-400 font-medium"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        {formatDate(proposal.endDate)}
+                      </div>
                     </div>
                   </div>
                 </div>
+              ),
+            };
+          })}
+          expandedRow={expandedRow}
+          onRowExpand={toggleRowExpansion}
+        />
 
-                {/* BUTTONS */}
-                <div className="flex gap-4 mt-8">
+        {/* Empty state when no proposals match filter */}
+        {filteredProposals.length === 0 && (
+          <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
+            <Filter className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">
+              No proposals found
+            </h3>
+            <p className="text-gray-400 mb-6">
+              {statusFilter === "all"
+                ? "No proposals have been added yet. Click 'Add New Paper' to get started."
+                : `No ${statusFilter.toLowerCase()} proposals found. Try changing the filter or add new proposals.`}
+            </p>
+            {statusFilter !== "all" && (
+              <button
+                onClick={() => setStatusFilter("all")}
+                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
+              >
+                Show All Proposals
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* MODAL - UPDATED VISIBLE UI WITH WHITE ICONS */}
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
+            <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-2xl w-full max-w-2xl border border-cyan-500/30 shadow-2xl shadow-cyan-500/10 animate-fadeIn">
+              {/* Modal Header */}
+              <div className="relative p-6 border-b border-gray-700">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="p-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-purple-500/20 mr-4">
+                      {editMode ? (
+                        <FileEdit className="w-8 h-8 text-white" />
+                      ) : (
+                        <Plus className="w-8 h-8 text-white" />
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-white">
+                        {editMode
+                          ? "Edit Research Paper"
+                          : "Add New Research Paper"}
+                      </h3>
+                      <p className="text-gray-400 mt-1">
+                        {editMode
+                          ? "Update the research paper details below"
+                          : "Fill in the details to add a new research paper"}
+                      </p>
+                    </div>
+                  </div>
                   <button
-                    type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="flex-1 px-6 py-3 border border-gray-700 text-gray-300 rounded-xl"
+                    className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
                   >
-                    Cancel
+                    <X className="w-6 h-6 text-white hover:text-gray-300" />
                   </button>
+                </div>
+              </div>
 
-                  <button
-                    type="submit"
-                    className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl"
-                  >
-                    {editMode ? "Update" : "Add Paper"}
-                  </button>
+              <form onSubmit={editMode ? handleUpdate : handleSubmit}>
+                <div className="p-6 max-h-[70vh] overflow-y-auto">
+                  {/* Form Fields Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Paper Name */}
+                    <div className="space-y-2">
+                      <label className="flex items-center text-sm font-medium text-white">
+                        <FileText className="w-4 h-4 mr-2 text-white" />
+                        Paper Name
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="paperName"
+                          value={newPaper.paperName}
+                          onChange={handleInputChange}
+                          className="w-full px-4 pl-10 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                          placeholder="Enter paper title"
+                          required
+                        />
+                        <FileText className="absolute left-3 top-3.5 w-4 h-4 text-white" />
+                      </div>
+                    </div>
+
+                    {/* Researcher */}
+                    <div className="space-y-2">
+                      <label className="flex items-center text-sm font-medium text-white">
+                        <User className="w-4 h-4 mr-2 text-white" />
+                        Researcher
+                      </label>
+                      <div className="relative">
+                        <select
+                          value={newPaper.proposalTakenBy}
+                          onChange={(e) =>
+                            setNewPaper((p) => ({
+                              ...p,
+                              proposalTakenBy: e.target.value,
+                            }))
+                          }
+                          required
+                          className="w-full px-4 pl-10 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white appearance-none focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                        >
+                          <option value="" className="bg-gray-900">
+                            Select researcher
+                          </option>
+                          {teamMembers.map((m) => (
+                            <option
+                              key={m.id}
+                              value={m.name}
+                              className="bg-gray-900"
+                            >
+                              {m.name} - {m.role}
+                            </option>
+                          ))}
+                        </select>
+                        <User className="absolute left-3 top-3.5 w-4 h-4 text-white" />
+                        <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-white" />
+                      </div>
+                    </div>
+
+                    {/* Start Date */}
+                    <div className="space-y-2">
+                      <label className="flex items-center text-sm font-medium text-white">
+                        <Calendar className="w-4 h-4 mr-2 text-white" />
+                        Start Date
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="date"
+                          id="startDate"
+                          ref={startDateRef}
+                          value={newPaper.startDate}
+                          onChange={handleInputChange}
+                          onFocus={() => startDateRef.current?.showPicker?.()}
+                          onClick={() => startDateRef.current?.showPicker?.()}
+                          onTouchStart={() =>
+                            startDateRef.current?.showPicker?.()
+                          }
+                          required
+                          className="w-full px-4 pl-10 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                        />
+                        <Calendar className="absolute left-3 top-3.5 w-4 h-4 text-white" />
+                      </div>
+                    </div>
+
+                    {/* End Date */}
+                    <div className="space-y-2">
+                      <label className="flex items-center text-sm font-medium text-white">
+                        <CalendarDays className="w-4 h-4 mr-2 text-white" />
+                        End Date
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="date"
+                          id="endDate"
+                          ref={endDateRef}
+                          value={newPaper.endDate}
+                          onChange={handleInputChange}
+                          onFocus={() => endDateRef.current?.showPicker?.()}
+                          onClick={() => endDateRef.current?.showPicker?.()}
+                          onTouchStart={() =>
+                            endDateRef.current?.showPicker?.()
+                          }
+                          required
+                          className="w-full px-4 pl-10 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                        />
+                        <CalendarDays className="absolute left-3 top-3.5 w-4 h-4 text-white" />
+                      </div>
+                      {newPaper.endDate &&
+                        checkDeadlineStatus(newPaper.endDate) && (
+                          <div
+                            className={`mt-2 flex items-center text-sm px-3 py-2 rounded-lg ${
+                              checkDeadlineStatus(newPaper.endDate).status ===
+                              "overdue"
+                                ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                                : checkDeadlineStatus(newPaper.endDate)
+                                    .status === "today"
+                                ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                                : checkDeadlineStatus(newPaper.endDate)
+                                    .status === "approaching"
+                                ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
+                                : "bg-green-500/20 text-green-400 border border-green-500/30"
+                            }`}
+                          >
+                            <AlertTriangle className="w-4 h-4 mr-2 flex-shrink-0 text-white" />
+                            <span>
+                              {checkDeadlineStatus(newPaper.endDate).text}
+                            </span>
+                          </div>
+                        )}
+                    </div>
+
+                    {/* Status - Full Width */}
+                    <div className="md:col-span-2 space-y-3">
+                      <label className="flex items-center text-sm font-medium text-white">
+                        <CalendarClock className="w-4 h-4 mr-2 text-white" />
+                        Status
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {statusOptions.slice(1).map((option) => {
+                          const Icon = option.icon;
+                          return (
+                            <button
+                              type="button"
+                              key={option.value}
+                              onClick={() =>
+                                setNewPaper((prev) => ({
+                                  ...prev,
+                                  status: option.value,
+                                }))
+                              }
+                              className={`flex items-center justify-center px-4 py-4 rounded-xl border transition-all ${
+                                newPaper.status === option.value
+                                  ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
+                                  : "bg-gray-900/70 border-gray-700 hover:border-gray-600"
+                              }`}
+                            >
+                              <Icon className={`w-5 h-5 mr-3 text-white`} />
+                              <span className={`font-medium text-white`}>
+                                {option.label}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Details - Full Width */}
+                    <div className="md:col-span-2 space-y-2">
+                      <label className="flex items-center text-sm font-medium text-white">
+                        <FileEdit className="w-4 h-4 mr-2 text-white" />
+                        Paper Details
+                      </label>
+                      <textarea
+                        id="details"
+                        value={newPaper.details}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                        rows={4}
+                        placeholder="Enter paper description, objectives, methodology..."
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  {/* Timeline Preview */}
+                  {newPaper.startDate && newPaper.endDate && (
+                    <div className="mt-6 p-4 rounded-xl bg-gray-900/50 border border-gray-700">
+                      <h4 className="flex items-center text-sm font-medium text-white mb-2">
+                        <Calendar className="w-4 h-4 mr-2 text-white" />
+                        Timeline Preview
+                      </h4>
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="text-center">
+                          <div className="text-white font-medium">Start</div>
+                          <div className="text-gray-300">
+                            {formatDate(newPaper.startDate)}
+                          </div>
+                        </div>
+                        <div className="flex-1 mx-4">
+                          <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div
+                              className="absolute h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
+                              style={{
+                                width: "100%",
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                        <div className="text-center">
+                          <div
+                            className={`font-medium ${
+                              checkDeadlineStatus(newPaper.endDate)?.status ===
+                                "overdue" ||
+                              checkDeadlineStatus(newPaper.endDate)?.status ===
+                                "today"
+                                ? "text-red-400"
+                                : "text-white"
+                            }`}
+                          >
+                            End
+                          </div>
+                          <div
+                            className={
+                              checkDeadlineStatus(newPaper.endDate)?.status ===
+                                "overdue" ||
+                              checkDeadlineStatus(newPaper.endDate)?.status ===
+                                "today"
+                                ? "text-red-400 font-medium"
+                                : "text-gray-300"
+                            }
+                          >
+                            {formatDate(newPaper.endDate)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Modal Footer */}
+                <div className="p-6 border-t border-gray-700 bg-gray-900/50 rounded-b-2xl">
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsModalOpen(false)}
+                      className="flex-1 px-6 py-3.5 border border-gray-700 text-white hover:text-gray-300 hover:border-gray-600 hover:bg-gray-800/50 rounded-xl font-medium transition-all flex items-center justify-center"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="submit"
+                      className="flex-1 px-6 py-3.5 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center justify-center"
+                    >
+                      {editMode ? (
+                        <>
+                          <CheckCircle className="w-5 h-5 mr-2 text-white" />
+                          Update Paper
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-5 h-5 mr-2 text-white" />
+                          Add Paper
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>
           </div>
         )}
+
+        {/* Add animation styles */}
+        <style jsx>{`
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(-20px) scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+
+          .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+          }
+        `}</style>
       </div>
     </ReserchLayout>
   );
