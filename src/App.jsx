@@ -42,7 +42,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/proposal" element={<ProposalPage />} />
-        <Route path="/dashboard/paper-writing" element={<PaperWritingPage />} />
+        {/* <Route path="/dashboard/paper-writing" element={<PaperWritingPage />} /> */}
 
       </Routes>
       <ScrollToTopButton/>
