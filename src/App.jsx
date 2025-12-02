@@ -41,6 +41,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/proposal" element={<ProposalPage />} />
+        <Route path="/dashboard/Paper-Writing" element={<Paper />} />
+
       </Routes>
       <ScrollToTopButton/>
     </SplashContext.Provider>
