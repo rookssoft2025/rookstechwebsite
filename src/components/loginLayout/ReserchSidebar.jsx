@@ -43,7 +43,9 @@ const ReserchSidebar = ({
             id: 'writing', 
             label: 'Paper Writing', 
             icon: Edit,
-            description: 'Write & edit research papers'
+            description: 'Write & edit research papers',
+            route: '/dashboard/paper-writing'
+
         },
         { 
             id: 'main-review', 

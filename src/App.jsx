@@ -14,6 +14,7 @@ import ScrollToTopButton from "./uiComponents/Watsapp";
 import Login from "./pages/login/login";
 import Dashboard from "./pages/login/components/Dashboard";
 import ProposalPage from "./pages/login/components/Proposal/ProposalPage";
+import PaperWritingPage from "./pages/login/components/PaperWriting/PaperWritingPage";
 
 export const SplashContext = createContext();
 
@@ -41,7 +42,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/proposal" element={<ProposalPage />} />
-        <Route path="/dashboard/Paper-Writing" element={<Paper />} />
+        <Route path="/dashboard/paper-writing" element={<PaperWritingPage />} />
 
       </Routes>
       <ScrollToTopButton/>
