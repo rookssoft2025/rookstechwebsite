@@ -95,9 +95,6 @@ const ProposalPage = () => {
     },
   ];
 
-  // Lead researcher reference (first member)
-  const leadResearcher = teamMembers[0];
-
   // Status options for filter and display
   const statusOptions = [
     {

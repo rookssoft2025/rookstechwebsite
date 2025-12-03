@@ -17,6 +17,9 @@ import Dashboard from "./pages/login/components/Dashboard";
 import ProposalPage from "./pages/login/components/Proposal/ProposalPage";
 import PaperWritingPage from "./pages/login/components/PaperWriting/PaperWritingPage";
 import CodingPage from "./pages/login/components/Coding/CodingPage";
+import JournalPage from "./pages/login/components/Journal/JournalPage";
+import MamReviewPage from "./pages/login/components/MamReview/MamReviewPage";
+
 export const SplashContext = createContext();
 
 function App() {
@@ -43,8 +46,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/proposal" element={<ProposalPage />} />
-        <Route path="/dashboard/paper-writing" element={<PaperWritingPage />} />
+        <Route path="/dashboard/paper-writing-page" element={<PaperWritingPage />} />
         <Route path="/dashboard/coding-page" element={<CodingPage />} />
+        <Route path="/dashboard/journal-page" element={< JournalPage/>} />
+        <Route path="/dashboard/mam-review-page" element={< MamReviewPage/>} />
 
       </Routes>
       <ScrollToTopButton/>
