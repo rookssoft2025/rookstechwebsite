@@ -62,14 +62,16 @@ const ProposalPage = () => {
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
 
-  // Research team
+  // Research team - Lead researcher first
+  const leadResearcher = {
+    id: 1,
+    name: "Dr. Sarah Johnson",
+    role: "Team Lead",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+    isLead: true,
+  };
+
   const teamMembers = [
-    {
-      id: 1,
-      name: "Abinesh",
-      role: "Team Lead",
-      image: "data:image/jpeg;base64,/9j...yourBase64...",
-    },
     {
       id: 2,
       name: "Prof. Michael Chen",
@@ -422,6 +424,30 @@ const ProposalPage = () => {
                 </button>
               );
             })}
+          </div>
+        </div>
+
+        {/* Deadline Legend */}
+        <div className="glass-card rounded-2xl p-4 mb-6 border border-gray-800">
+          <div className="flex items-center mb-3">
+            <AlertTriangle className="w-5 h-5 text-red-400 mr-2" />
+            <h3 className="text-lg font-semibold text-white">
+              Deadline Indicators
+            </h3>
+          </div>
+          <div className="flex flex-wrap gap-4">
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse mr-2"></div>
+              <span className="text-gray-300">Due today / Overdue</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+              <span className="text-gray-300">Due in 1-3 days</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+              <span className="text-gray-300">More than 3 days</span>
+            </div>
           </div>
         </div>
 
