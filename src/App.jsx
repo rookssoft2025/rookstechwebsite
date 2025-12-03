@@ -11,11 +11,12 @@ import SplashScreen from "./components/SplashScreen";
 import ScrollToTop from "./components/layout/ScrollTop";
 import Research from "./pages/reserch/Reserch";
 import ScrollToTopButton from "./uiComponents/Watsapp";
+
 import Login from "./pages/login/login";
 import Dashboard from "./pages/login/components/Dashboard";
 import ProposalPage from "./pages/login/components/Proposal/ProposalPage";
 import PaperWritingPage from "./pages/login/components/PaperWriting/PaperWritingPage";
-
+import CodingPage from "./pages/login/components/Coding/CodingPage";
 export const SplashContext = createContext();
 
 function App() {
@@ -42,7 +43,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/proposal" element={<ProposalPage />} />
-        {/* <Route path="/dashboard/paper-writing" element={<PaperWritingPage />} /> */}
+        <Route path="/dashboard/paper-writing" element={<PaperWritingPage />} />
+        <Route path="/dashboard/coding-page" element={<CodingPage />} />
 
       </Routes>
       <ScrollToTopButton/>
