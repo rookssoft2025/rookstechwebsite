@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Plus,
@@ -21,10 +21,17 @@ import {
   BarChart,
   Eye,
   Server,
+  Percent,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import DataTable from "../../../../components/ResearchLayout/DataTable";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
+import {
+  fetchCodingProjects,
+  addCodingProject,
+  updateCodingProject,
+  deleteCodingProject,
+} from "../../../../services/CodingService";
 
 const CodingPage = () => {
   const navigate = useNavigate();
@@ -71,72 +78,8 @@ const CodingPage = () => {
     },
   ];
 
-  // Initial coding projects data
-  const initialProjects = [
-    {
-      id: 1,
-      title: "AI Model Deployment Pipeline",
-      takenBy: "Alex Chen",
-      startDate: "2024-02-15",
-      deadline: "2024-05-30",
-      status: "Development",
-      progress: 75,
-      resultsTaken: 12,
-      details:
-        "Building an automated pipeline for deploying and monitoring machine learning models in production with CI/CD integration.",
-    },
-    {
-      id: 2,
-      title: "Real-time Analytics Dashboard",
-      takenBy: "Sarah Miller",
-      startDate: "2024-01-10",
-      deadline: "2024-04-20",
-      status: "Testing",
-      progress: 90,
-      resultsTaken: 8,
-      details:
-        "Developing a real-time dashboard for monitoring system metrics and user analytics with interactive visualizations.",
-    },
-    {
-      id: 3,
-      title: "Microservices Authentication System",
-      takenBy: "James Wilson",
-      startDate: "2024-03-01",
-      deadline: "2024-07-15",
-      status: "Development",
-      progress: 60,
-      resultsTaken: 15,
-      details:
-        "Creating a secure authentication and authorization system for microservices architecture with OAuth2 and JWT.",
-    },
-    {
-      id: 4,
-      title: "Data Pipeline Optimization",
-      takenBy: "Emma Davis",
-      startDate: "2024-02-20",
-      deadline: "2024-06-10",
-      status: "Planning",
-      progress: 30,
-      resultsTaken: 5,
-      details:
-        "Optimizing existing data pipelines for better performance and scalability, reducing processing time by 40%.",
-    },
-    {
-      id: 5,
-      title: "Cloud Migration Automation",
-      takenBy: "Alex Chen",
-      startDate: "2024-03-10",
-      deadline: "2024-08-30",
-      status: "Development",
-      progress: 55,
-      resultsTaken: 10,
-      details:
-        "Automating migration of legacy applications to cloud infrastructure with zero downtime deployment strategy.",
-    },
-  ];
-
   // State management
-  const [projects, setProjects] = useState(initialProjects);
+  const [projects, setProjects] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
   const [editingProject, setEditingProject] = useState(null);
@@ -146,48 +89,57 @@ const CodingPage = () => {
     takenBy: "",
     startDate: "",
     deadline: "",
-    status: "Planning",
+    status: "Started",
     resultsTaken: "",
+    progress: 0,
     details: "",
   });
 
-  // Status options
+  // Ref for date inputs
+  const startDateRef = useRef(null);
+  const deadlineRef = useRef(null);
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchCodingProjects();
+        if (mounted) setProjects(data);
+      } catch (err) {
+        console.error("Failed to load coding projects:", err);
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
+    };
+
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Status options - Updated with Started, Hold, Completed
   const statusOptions = [
     {
-      value: "Planning",
-      label: "Planning",
-      color: "text-gray-400",
-      bg: "bg-gray-400/10",
-      icon: Clock,
-      count: 0,
-    },
-    {
-      value: "Development",
-      label: "Development",
+      value: "Started",
+      label: "Started",
       color: "text-blue-400",
       bg: "bg-blue-400/10",
       icon: Code,
       count: 0,
     },
     {
-      value: "Testing",
-      label: "Testing",
+      value: "Hold",
+      label: "Hold",
       color: "text-yellow-400",
       bg: "bg-yellow-400/10",
-      icon: Terminal,
+      icon: Clock,
       count: 0,
     },
     {
-      value: "Review",
-      label: "Review",
-      color: "text-purple-400",
-      bg: "bg-purple-400/10",
-      icon: Eye,
-      count: 0,
-    },
-    {
-      value: "Deployed",
-      label: "Deployed",
+      value: "Completed",
+      label: "Completed",
       color: "text-green-400",
       bg: "bg-green-400/10",
       icon: CheckCircle,
@@ -209,41 +161,61 @@ const CodingPage = () => {
     setNewProject((prev) => ({ ...prev, [id]: value }));
   };
 
+  // Handle progress change
+  const handleProgressChange = (value) => {
+    const progressValue = Math.min(100, Math.max(0, parseInt(value) || 0));
+    setNewProject((prev) => ({ ...prev, progress: progressValue }));
+  };
+
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const projectToSubmit = editingProject
-      ? {
+    setIsLoading(true);
+    try {
+      if (editingProject) {
+        const projectToSubmit = {
           ...editingProject,
           ...newProject,
           resultsTaken: parseInt(newProject.resultsTaken) || 0,
-        }
-      : {
-          id: projects.length + 1,
-          progress: 0,
+          progress: parseInt(newProject.progress) || 0,
+        };
+
+        await updateCodingProject(projectToSubmit);
+        setProjects((prev) =>
+          prev.map((p) => (p.id === projectToSubmit.id ? { ...p, ...projectToSubmit } : p))
+        );
+      } else {
+        const projectToSubmit = {
           ...newProject,
+          progress: parseInt(newProject.progress) || 0,
           resultsTaken: parseInt(newProject.resultsTaken) || 0,
         };
 
-    if (editingProject) {
-      setProjects(
-        projects.map((p) => (p.id === editingProject.id ? projectToSubmit : p))
-      );
-    } else {
-      setProjects([...projects, projectToSubmit]);
+        const created = await addCodingProject(projectToSubmit);
+        setProjects((prev) => [...prev, created]);
+      }
+      
+      // Show success message
+      alert(editingProject ? "Project updated successfully!" : "Project added successfully!");
+      
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save project. Check console for details.");
+    } finally {
+      setIsModalOpen(false);
+      setEditingProject(null);
+      setNewProject({
+        title: "",
+        takenBy: "",
+        startDate: "",
+        deadline: "",
+        status: "Started",
+        resultsTaken: "",
+        progress: 0,
+        details: "",
+      });
+      setIsLoading(false);
     }
-
-    setIsModalOpen(false);
-    setEditingProject(null);
-    setNewProject({
-      title: "",
-      takenBy: "",
-      startDate: "",
-      deadline: "",
-      status: "Planning",
-      resultsTaken: "",
-      details: "",
-    });
   };
 
   // Handle edit
@@ -256,15 +228,25 @@ const CodingPage = () => {
       deadline: project.deadline,
       status: project.status,
       resultsTaken: project.resultsTaken.toString(),
+      progress: project.progress,
       details: project.details,
     });
     setIsModalOpen(true);
   };
 
   // Handle delete
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this project?")) {
-      setProjects(projects.filter((project) => project.id !== id));
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this project?")) return;
+    try {
+      setIsLoading(true);
+      await deleteCodingProject(id);
+      setProjects((prev) => prev.filter((project) => project.id !== id));
+      alert("Project deleted successfully!");
+    } catch (err) {
+      console.error("Failed to delete project:", err);
+      alert("Failed to delete project. Check console for details.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -293,30 +275,28 @@ const CodingPage = () => {
 
   // Prepare data for DataTable component
   const tableColumns = [
-    { key: "title", label: "Project Title", width: "25%" },
+    { key: "serial", label: "S.No", width: "8%" },
+    { key: "title", label: "Project Title", width: "22%" },
     { key: "takenBy", label: "Developer", width: "12%" },
     { key: "progress", label: "Progress", width: "15%" },
-    { key: "resultsTaken", label: "Results Taken", width: "13%" },
+    { key: "resultsTaken", label: "Results Taken", width: "12%" },
     { key: "deadline", label: "Deadline", width: "15%" },
     { key: "status", label: "Status", width: "10%" },
-    { key: "actions", label: "Actions", width: "10%" },
+    { key: "actions", label: "Actions", width: "8%" },
   ];
 
   // Transform projects data for DataTable
-  const tableData = projects.map((project) => {
+  const tableData = projects.map((project, index) => {
     const statusOption =
       statusOptions.find((s) => s.value === project.status) || statusOptions[0];
     const StatusIcon = statusOption.icon;
-    const daysRemaining = calculateDaysRemaining(project.deadline);
 
     return {
       id: project.id,
       _projectData: project,
+      serial: index + 1,
       renderRow: (item, onRowExpand) => {
         const projectData = item._projectData;
-        const projectDaysRemaining = calculateDaysRemaining(
-          projectData.deadline
-        );
         const projectStatusOption =
           statusOptions.find((s) => s.value === projectData.status) ||
           statusOptions[0];
@@ -326,6 +306,11 @@ const CodingPage = () => {
 
         return (
           <tr className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
+            <td className="py-4 px-6 text-center">
+              <div className="text-white font-semibold">
+                {item.serial}
+              </div>
+            </td>
             <td className="py-4 px-6">
               <div className="flex items-center">
                 <Code className="w-5 h-5 text-cyan-400 mr-3" />
@@ -366,9 +351,6 @@ const CodingPage = () => {
               <div className="w-full">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-300">{projectData.progress}%</span>
-                  <span className="text-cyan-300">
-                    {projectDaysRemaining} days left
-                  </span>
                 </div>
                 <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
                   <div
@@ -385,7 +367,7 @@ const CodingPage = () => {
                   <div className="text-white font-semibold text-center">
                     {projectData.resultsTaken}
                   </div>
-                  <div className="text-gray-400 text-xs text-center">tests</div>
+                  <div className="text-gray-400 text-xs text-center">results</div>
                 </div>
               </div>
             </td>
@@ -396,17 +378,7 @@ const CodingPage = () => {
                   <div className="text-gray-300">
                     {formatDate(projectData.deadline)}
                   </div>
-                  <div
-                    className={`text-xs ${
-                      projectDaysRemaining <= 7
-                        ? "text-red-400"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {projectDaysRemaining > 0
-                      ? `${projectDaysRemaining} days remaining`
-                      : "Overdue"}
-                  </div>
+                  {/* Removed relative days indicator from table — only show date */}
                 </div>
               </div>
             </td>
@@ -509,6 +481,13 @@ const CodingPage = () => {
     };
   });
 
+  // Handle calendar icon click
+  const openCalendar = (inputRef) => {
+    if (inputRef.current) {
+      inputRef.current.showPicker();
+    }
+  };
+
   return (
     <ReserchLayout
       activeTab={activeTab}
@@ -574,7 +553,6 @@ const CodingPage = () => {
                   }{" "}
                   Projects
                 </div>
-                {/* <div className="text-yellow-400 text-xs">Lead Developer</div> */}
               </div>
             </div>
           </div>
@@ -723,8 +701,9 @@ const CodingPage = () => {
                 takenBy: "",
                 startDate: "",
                 deadline: "",
-                status: "Planning",
+                status: "Started",
                 resultsTaken: "",
+                progress: 0,
                 details: "",
               });
               setIsModalOpen(true);
@@ -737,28 +716,26 @@ const CodingPage = () => {
         </div>
 
         {/* DataTable Component */}
-        <DataTable
-          columns={tableColumns}
-          data={tableData.filter((item) =>
-            statusFilter === null
-              ? true
-              : item._projectData.status === statusFilter
-          )}
-          expandedRow={expandedRow}
-          onRowExpand={toggleRowExpansion}
-          rowKey="id"
-        />
-
-        {/* Empty State */}
-        {filteredProjects.length === 0 && statusFilter !== null && (
+        {projects.length > 0 ? (
+          <DataTable
+            columns={tableColumns}
+            data={tableData.filter((item) =>
+              statusFilter === null
+                ? true
+                : item._projectData.status === statusFilter
+            )}
+            expandedRow={expandedRow}
+            onRowExpand={toggleRowExpansion}
+            rowKey="id"
+          />
+        ) : (
           <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
             <Code className="w-16 h-16 text-gray-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">
               No projects found
             </h3>
             <p className="text-gray-400 mb-6">
-              No {statusFilter.toLowerCase()} projects found. Try changing the
-              filter or add new projects.
+              Start by adding your first coding project.
             </p>
           </div>
         )}
@@ -831,37 +808,45 @@ const CodingPage = () => {
                     </div>
 
                     {/* Start Date */}
-                    <div className="relative">
+                    <div>
                       <label className="block text-sm font-medium text-cyan-300 mb-2">
                         Start Date
                       </label>
                       <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-cyan-400 pointer-events-none" />
+                        <Calendar 
+                          className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-cyan-400 cursor-pointer"
+                          onClick={() => openCalendar(startDateRef)}
+                        />
                         <input
                           type="date"
                           id="startDate"
+                          ref={startDateRef}
                           value={newProject.startDate}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all cursor-pointer"
                         />
                       </div>
                     </div>
 
                     {/* Deadline */}
-                    <div className="relative">
+                    <div>
                       <label className="block text-sm font-medium text-cyan-300 mb-2">
                         Deadline
                       </label>
                       <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none" />
+                        <Calendar 
+                          className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 cursor-pointer"
+                          onClick={() => openCalendar(deadlineRef)}
+                        />
                         <input
                           type="date"
                           id="deadline"
+                          ref={deadlineRef}
                           value={newProject.deadline}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all cursor-pointer"
                         />
                       </div>
                     </div>
@@ -878,10 +863,44 @@ const CodingPage = () => {
                           id="resultsTaken"
                           value={newProject.resultsTaken}
                           onChange={handleInputChange}
-                          placeholder="Number of test cases"
+                          placeholder="How many results"
                           min="0"
                           className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
                         />
+                      </div>
+                    </div>
+
+                    {/* Progress Meter */}
+                    <div>
+                      <label className="block text-sm font-medium text-cyan-300 mb-2">
+                        Completion Meter ({newProject.progress}%)
+                      </label>
+                      <div className="relative">
+                        <Percent className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none" />
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={newProject.progress}
+                          onChange={(e) => handleProgressChange(e.target.value)}
+                          className="w-full h-10 bg-gray-900/50 border border-gray-700 rounded-xl appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-r [&::-webkit-slider-thumb]:from-cyan-500 [&::-webkit-slider-thumb]:to-purple-600"
+                        />
+                        <div className="flex justify-between text-xs text-gray-400 mt-1">
+                          <span>0%</span>
+                          <span>50%</span>
+                          <span>100%</span>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-right">
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={newProject.progress}
+                          onChange={(e) => handleProgressChange(e.target.value)}
+                          className="w-20 px-3 py-1 bg-gray-900/50 border border-gray-700 rounded text-white text-center"
+                        />
+                        <span className="text-gray-400 ml-2">%</span>
                       </div>
                     </div>
 
@@ -890,7 +909,7 @@ const CodingPage = () => {
                       <label className="block text-sm font-medium text-cyan-300 mb-2">
                         Status
                       </label>
-                      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                      <div className="grid grid-cols-3 gap-2">
                         {statusOptions.map((option) => {
                           const Icon = option.icon;
                           return (

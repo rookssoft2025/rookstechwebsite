@@ -62,49 +62,34 @@ const ProposalPage = () => {
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
 
-  // Research team
+  // Research team - Updated as requested
   const teamMembers = [
     {
       id: 1,
-      name: "Abinesh",
-      role: "Team Lead",
-      image: "data:image/jpeg;base64,/9j...yourBase64...",
-    },
-    {
-      id: 2,
-      name: "Prof. Michael Chen",
-      role: "Senior Researcher",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
-      isLead: false,
-    },
-    {
-      id: 3,
-      name: "Dr. Emma Wilson",
-      role: "Research Associate",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
-      isLead: false,
-    },
-    {
-      id: 4,
-      name: "Alex Rodriguez",
+      name: "Shajini",
       role: "Research Assistant",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
-      isLead: false,
+      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Shajini",
     },
   ];
 
-  // Lead researcher reference (first member)
-  const leadResearcher = teamMembers[0];
+  // Lead researcher reference (Abinesh as Team Lead)
+  const leadResearcher = {
+    id: 0,
+    name: "Abinesh",
+    role: "Team Lead",
+    image: "data:image/jpeg;base64,/9j...yourBase64...",
+    isLead: true,
+  };
 
-  // Status options for filter and display
-  const statusOptions = [
+  // Status options for filter and display - Will be updated with dynamic counts
+  const initialStatusOptions = [
     {
       value: "all",
       label: "All Proposals",
       color: "text-gray-400",
       bg: "bg-gray-400/10",
       icon: Filter,
-      count: 0, // Will be calculated
+      count: 0,
     },
     {
       value: "Pending",
@@ -132,6 +117,9 @@ const ProposalPage = () => {
     },
   ];
 
+  // State for status options with dynamic counts
+  const [statusOptions, setStatusOptions] = useState(initialStatusOptions);
+
   // Load proposals
   useEffect(() => {
     const load = async () => {
@@ -142,22 +130,27 @@ const ProposalPage = () => {
     load();
   }, []);
 
-  // Calculate counts for each status filter
+  // Calculate counts for each status filter - FIXED
   useEffect(() => {
     if (proposals.length > 0) {
       // Calculate counts for each status
       const counts = {
         all: proposals.length,
         Pending: proposals.filter((p) => p.status === "Pending").length,
-        "In Progress": proposals.filter((p) => p.status === "In Progress")
-          .length,
+        "In Progress": proposals.filter((p) => p.status === "In Progress").length,
         Completed: proposals.filter((p) => p.status === "Completed").length,
       };
 
-      // Update status options with counts
-      statusOptions.forEach((option) => {
-        option.count = counts[option.value] || 0;
-      });
+      // Update status options with counts - Create new array to trigger re-render
+      const updatedOptions = initialStatusOptions.map((option) => ({
+        ...option,
+        count: counts[option.value] || 0,
+      }));
+
+      setStatusOptions(updatedOptions);
+    } else {
+      // Reset counts if no proposals
+      setStatusOptions(initialStatusOptions.map(option => ({ ...option, count: 0 })));
     }
   }, [proposals]);
 
@@ -287,7 +280,7 @@ const ProposalPage = () => {
         </div>
 
         {/* TEAM */}
-        {/* Team Section - Separated Lead and Team Members */}
+        {/* Team Section - Updated with Abinesh as Lead and Shajini as only member */}
         <div className="glass-card rounded-2xl p-6 mb-8 border border-gray-800">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
@@ -301,17 +294,15 @@ const ProposalPage = () => {
             </span>
           </div>
 
-          {/* Lead Researcher Card */}
+          {/* Lead Researcher Card - Abinesh */}
           <div className="mb-6">
             <h3 className="text-lg font-medium text-white mb-3 flex items-center">
               Team Lead
             </h3>
             <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-gray-900/50 to-yellow-900/20 transition-all duration-300">
-              <img
-                src={leadResearcher.image}
-                alt={leadResearcher.name}
-                className="w-12 h-12 rounded-full border-2 border-yellow-500/50"
-              />
+              <div className="w-12 h-12 rounded-full border-2 border-yellow-500/50 bg-gradient-to-r from-yellow-600 to-amber-600 flex items-center justify-center">
+                <span className="text-white font-bold text-lg">A</span>
+              </div>
               <div className="ml-4 flex-1">
                 <div className="flex items-center">
                   <h3 className="text-lg font-medium text-white">
@@ -339,7 +330,7 @@ const ProposalPage = () => {
             </div>
           </div>
 
-          {/* Team Members Section */}
+          {/* Team Members Section - Only Shajini */}
           <div>
             <h3 className="text-lg font-medium text-white mb-3">
               Team Members
@@ -374,6 +365,7 @@ const ProposalPage = () => {
             </div>
           </div>
         </div>
+        
         {/* STATUS FILTER SECTION */}
         <div className="glass-card rounded-2xl p-4 mb-6 border border-gray-800">
           <div className="flex items-center justify-between mb-4">
@@ -449,13 +441,13 @@ const ProposalPage = () => {
           </button>
         </div>
 
-        {/* TABLE */}
+        {/* TABLE - UPDATED COLUMN ORDER */}
         <DataTable
           columns={[
-            { key: "deadline", label: "Deadline" },
             { key: "paperName", label: "Paper Name" },
             { key: "proposalTakenBy", label: "Researcher" },
             { key: "timeline", label: "Timeline" },
+            { key: "deadline", label: "Deadline" },
             { key: "status", label: "Status" },
             { key: "details", label: "Details" },
             { key: "actions", label: "Actions" },
@@ -476,7 +468,37 @@ const ProposalPage = () => {
                   onClick={() => onRowExpand(item.id)}
                   className="border-b border-gray-800 hover:bg-gray-900/50 cursor-pointer transition-colors"
                 >
-                  {/* Deadline Indicator Column */}
+                  {/* Paper Name Column - 1st */}
+                  <td className="py-4 px-6 text-white font-medium">
+                    {item.paperName}
+                  </td>
+
+                  {/* Researcher Column - 2nd */}
+                  <td className="py-4 px-6 text-gray-300">
+                    {item.proposalTakenBy}
+                  </td>
+
+                  {/* Timeline Column - 3rd */}
+                  <td className="py-4 px-6 text-gray-300">
+                    <div className="flex flex-col">
+                      <span>{formatDate(item.startDate)}</span>
+                      <span className="text-sm text-gray-400">to</span>
+                      <span
+                        className={
+                          deadlineStatus?.status === "overdue" ||
+                          deadlineStatus?.status === "today"
+                            ? "text-red-400 font-medium"
+                            : deadlineStatus?.status === "approaching"
+                            ? "text-yellow-400"
+                            : "text-gray-300"
+                        }
+                      >
+                        {formatDate(item.endDate)}
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* Deadline Indicator Column - 4th */}
                   <td className="py-4 px-4 text-center">
                     {deadlineStatus && (
                       <div className="flex flex-col items-center">
@@ -510,46 +532,21 @@ const ProposalPage = () => {
                     )}
                   </td>
 
-                  <td className="py-4 px-6 text-white font-medium">
-                    {item.paperName}
-                  </td>
-
-                  <td className="py-4 px-6 text-gray-300">
-                    {item.proposalTakenBy}
-                  </td>
-
-                  <td className="py-4 px-6 text-gray-300">
-                    <div className="flex flex-col">
-                      <span>{formatDate(item.startDate)}</span>
-                      <span className="text-sm text-gray-400">to</span>
-                      <span
-                        className={
-                          deadlineStatus?.status === "overdue" ||
-                          deadlineStatus?.status === "today"
-                            ? "text-red-400 font-medium"
-                            : deadlineStatus?.status === "approaching"
-                            ? "text-yellow-400"
-                            : "text-gray-300"
-                        }
-                      >
-                        {formatDate(item.endDate)}
-                      </span>
-                    </div>
-                  </td>
-
+                  {/* Status Column - 5th */}
                   <td className="py-4 px-6">
                     <div
-                      className={`px-3 py-1 rounded-full ${statusInfo.bg} inline-flex items-center border border-gray-700`}
+                      className={`px-3 py-1 rounded-full ${statusInfo?.bg} inline-flex items-center border border-gray-700`}
                     >
                       <StatusIcon
-                        className={`w-4 h-4 mr-2 ${statusInfo.color}`}
+                        className={`w-4 h-4 mr-2 ${statusInfo?.color}`}
                       />
-                      <span className={`${statusInfo.color} font-medium`}>
+                      <span className={`${statusInfo?.color} font-medium`}>
                         {item.status}
                       </span>
                     </div>
                   </td>
 
+                  {/* Details Column - 6th */}
                   <td className="py-4 px-6 text-cyan-400">
                     {expandedRow === item.id ? (
                       <ChevronUp className="w-5 h-5" />
@@ -558,6 +555,7 @@ const ProposalPage = () => {
                     )}
                   </td>
 
+                  {/* Actions Column - 7th */}
                   <td className="py-4 px-6">
                     <div className="flex gap-3">
                       <button

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Plus,
@@ -20,10 +20,17 @@ import {
   Clock as ClockIcon,
   Crown,
   Filter,
+  BarChart3,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import DataTable from "../../../../components/ResearchLayout/DataTable";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
+import {
+  fetchPaperWritings,
+  addPaperWriting,
+  updatePaperWriting,
+  deletePaperWriting,
+} from "../../../../services/PaperWritingService";
 
 const PaperWritingPage = () => {
   const navigate = useNavigate();
@@ -70,140 +77,58 @@ const PaperWritingPage = () => {
     },
   ];
 
-  // Initial papers data
-  const initialPapers = [
-    {
-      id: 1,
-      title: "Quantum Neural Networks",
-      takenBy: "Dr. Sarah Johnson",
-      startDate: "2024-02-15",
-      deadline: "2024-05-30",
-      status: "Drafting",
-      progress: 65,
-      sections: [
-        "Abstract",
-        "Introduction",
-        "Methodology",
-        "Results",
-        "Conclusion",
-      ],
-      details:
-        "Exploring the intersection of quantum computing and neural networks for optimization problems in machine learning.",
-    },
-    {
-      id: 2,
-      title: "Sustainable AI in Agriculture",
-      takenBy: "Prof. Michael Chen",
-      startDate: "2024-01-10",
-      deadline: "2024-04-20",
-      status: "Reviewing",
-      progress: 85,
-      sections: [
-        "Abstract",
-        "Introduction",
-        "Literature Review",
-        "Case Studies",
-        "Discussion",
-      ],
-      details:
-        "Investigating AI applications for sustainable farming practices and resource optimization in precision agriculture.",
-    },
-    {
-      id: 3,
-      title: "Blockchain for Supply Chain Transparency",
-      takenBy: "Dr. Sarah Johnson",
-      startDate: "2024-03-01",
-      deadline: "2024-07-15",
-      status: "Writing",
-      progress: 45,
-      sections: [
-        "Abstract",
-        "Introduction",
-        "System Design",
-        "Implementation",
-        "Evaluation",
-      ],
-      details:
-        "Developing a blockchain-based solution for enhancing transparency and traceability in global supply chains.",
-    },
-    {
-      id: 4,
-      title: "AI Ethics in Healthcare",
-      takenBy: "Dr. Emma Wilson",
-      startDate: "2024-02-20",
-      deadline: "2024-06-10",
-      status: "Planning",
-      progress: 25,
-      sections: [
-        "Abstract",
-        "Introduction",
-        "Ethical Framework",
-        "Case Analysis",
-        "Recommendations",
-      ],
-      details:
-        "Examining ethical considerations and regulatory frameworks for AI applications in healthcare diagnostics.",
-    },
-    {
-      id: 5,
-      title: "Climate Data Analysis with ML",
-      takenBy: "Alex Rodriguez",
-      startDate: "2024-03-10",
-      deadline: "2024-08-30",
-      status: "Writing",
-      progress: 40,
-      sections: [
-        "Abstract",
-        "Introduction",
-        "Data Collection",
-        "Model Development",
-        "Analysis",
-      ],
-      details:
-        "Using machine learning models to analyze climate data and predict environmental trends.",
-    },
-  ];
-
-  // State management
-  const [papers, setPapers] = useState(initialPapers);
+  // State management - load from Firestore
+  const [papers, setPapers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
   const [editingPaper, setEditingPaper] = useState(null);
-  // CHANGE HERE: Changed initial status filter from "Planning" to null (All Papers)
   const [statusFilter, setStatusFilter] = useState(null);
   const [newPaper, setNewPaper] = useState({
     title: "",
     takenBy: "",
     startDate: "",
     deadline: "",
-    status: "Planning",
+    status: "Started",
     details: "",
+    completionMeter: 0,
   });
 
-  // Status options
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchPaperWritings();
+        if (mounted) {
+          // Map Firestore results to expected paper shape if needed
+          const mapped = data.map((d, idx) => ({
+            ...d,
+            serialNo: d.serialNo || idx + 1,
+            progress: d.progress || d.completionMeter || 0,
+          }));
+          setPapers(mapped);
+        }
+      } catch (err) {
+        console.error("Failed to load papers:", err);
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
+    };
+
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Status options: Started, Reviewing, Completed, On Hold
   const statusOptions = [
     {
-      value: "Planning",
-      label: "Planning",
-      color: "text-gray-400",
-      bg: "bg-gray-400/10",
-      icon: Clock,
-      count: 0,
-    },
-    {
-      value: "Drafting",
-      label: "Drafting",
+      value: "Started",
+      label: "Started",
       color: "text-blue-400",
       bg: "bg-blue-400/10",
-      icon: Edit,
-      count: 0,
-    },
-    {
-      value: "Writing",
-      label: "Writing",
-      color: "text-cyan-400",
-      bg: "bg-cyan-400/10",
-      icon: FileText,
+      icon: Clock,
       count: 0,
     },
     {
@@ -222,6 +147,14 @@ const PaperWritingPage = () => {
       icon: CheckCircle,
       count: 0,
     },
+    {
+      value: "On Hold",
+      label: "On Hold",
+      color: "text-red-400",
+      bg: "bg-red-400/10",
+      icon: AlertCircle,
+      count: 0,
+    },
   ];
 
   // Filter papers based on selected filter
@@ -238,36 +171,59 @@ const PaperWritingPage = () => {
     setNewPaper((prev) => ({ ...prev, [id]: value }));
   };
 
+  // Handle completion meter change
+  const handleCompletionMeterChange = (value) => {
+    setNewPaper((prev) => ({
+      ...prev,
+      completionMeter: parseInt(value),
+      progress: parseInt(value), // Update progress as well
+    }));
+  };
+
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const paperToSubmit = editingPaper
-      ? { ...editingPaper, ...newPaper }
-      : {
-          id: papers.length + 1,
-          progress: 0,
+    setIsLoading(true);
+    try {
+      if (editingPaper) {
+        const paperToSubmit = {
+          ...editingPaper,
+          ...newPaper,
+          progress: newPaper.completionMeter,
+        };
+
+        await updatePaperWriting(paperToSubmit);
+        setPapers((prev) => prev.map((p) => (p.id === paperToSubmit.id ? { ...p, ...paperToSubmit } : p)));
+      } else {
+        // compute serialNo locally
+        const nextSerialNo = papers.length > 0 ? Math.max(...papers.map((p) => p.serialNo || 0)) + 1 : 1;
+        const paperToSubmit = {
+          serialNo: nextSerialNo,
+          progress: newPaper.completionMeter,
           sections: ["Abstract", "Introduction"],
           ...newPaper,
         };
 
-    if (editingPaper) {
-      setPapers(
-        papers.map((p) => (p.id === editingPaper.id ? paperToSubmit : p))
-      );
-    } else {
-      setPapers([...papers, paperToSubmit]);
+        const created = await addPaperWriting(paperToSubmit);
+        setPapers((prev) => [...prev, { ...created, serialNo: created.serialNo || paperToSubmit.serialNo, progress: created.progress || paperToSubmit.progress }]);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save paper. Check console for details.");
+    } finally {
+      setIsModalOpen(false);
+      setEditingPaper(null);
+      setNewPaper({
+        title: "",
+        takenBy: "",
+        startDate: "",
+        deadline: "",
+        status: "Started",
+        details: "",
+        completionMeter: 0,
+      });
+      setIsLoading(false);
     }
-
-    setIsModalOpen(false);
-    setEditingPaper(null);
-    setNewPaper({
-      title: "",
-      takenBy: "",
-      startDate: "",
-      deadline: "",
-      status: "Planning",
-      details: "",
-    });
   };
 
   // Handle edit
@@ -280,14 +236,35 @@ const PaperWritingPage = () => {
       deadline: paper.deadline,
       status: paper.status,
       details: paper.details,
+      completionMeter: paper.completionMeter || paper.progress,
     });
     setIsModalOpen(true);
   };
 
   // Handle delete
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this paper?")) {
-      setPapers(papers.filter((paper) => paper.id !== id));
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this paper?")) return;
+    try {
+      setIsLoading(true);
+      await deletePaperWriting(id);
+      const deletedPaper = papers.find((p) => p.id === id);
+      const deletedSerialNo = deletedPaper?.serialNo;
+
+      const updatedPapers = papers
+        .filter((paper) => paper.id !== id)
+        .map((paper) => {
+          if (deletedSerialNo && paper.serialNo > deletedSerialNo) {
+            return { ...paper, serialNo: paper.serialNo - 1 };
+          }
+          return paper;
+        });
+
+      setPapers(updatedPapers);
+    } catch (err) {
+      console.error("Failed to delete paper:", err);
+      alert("Failed to delete paper. Check console for details.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -298,6 +275,7 @@ const PaperWritingPage = () => {
 
   // Format date for display
   const formatDate = (dateString) => {
+    if (!dateString) return "Not set";
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
@@ -307,6 +285,7 @@ const PaperWritingPage = () => {
 
   // Calculate days remaining
   const calculateDaysRemaining = (deadline) => {
+    if (!deadline) return 0;
     const today = new Date();
     const deadlineDate = new Date(deadline);
     const diffTime = deadlineDate - today;
@@ -316,41 +295,36 @@ const PaperWritingPage = () => {
 
   // Prepare data for DataTable component
   const tableColumns = [
-    { key: "title", label: "Paper Title", width: "30%" },
+    { key: "serialNo", label: "S.No", width: "8%" },
+    { key: "title", label: "Paper Title", width: "27%" },
     { key: "takenBy", label: "Taken By", width: "15%" },
     { key: "progress", label: "Progress", width: "20%" },
     { key: "deadline", label: "Deadline", width: "15%" },
-    { key: "status", label: "Status", width: "15%" },
+    { key: "status", label: "Status", width: "10%" },
     { key: "actions", label: "Actions", width: "10%" },
   ];
 
   // Transform papers data for DataTable
   const tableData = papers.map((paper) => {
-    const statusOption =
-      statusOptions.find((s) => s.value === paper.status) || statusOptions[0];
-    const StatusIcon = statusOption.icon;
-    const statusColor = statusOption.color;
-    const statusBg = statusOption.bg;
-    const daysRemaining = calculateDaysRemaining(paper.deadline);
-
+    const paperDaysRemaining = calculateDaysRemaining(paper.deadline);
+    const paperStatusOption = statusOptions.find((s) => s.value === paper.status) || statusOptions[0];
+    const PaperStatusIcon = paperStatusOption.icon;
+    const paperStatusColor = paperStatusOption.color;
+    const paperStatusBg = paperStatusOption.bg;
+    
     return {
       id: paper.id,
-      // Store the original paper data
       _paperData: paper,
       renderRow: (item, onRowExpand) => {
-        // Use the original paper data, not the transformed item
         const paperData = item._paperData;
-        const paperDaysRemaining = calculateDaysRemaining(paperData.deadline);
-        const paperStatusOption =
-          statusOptions.find((s) => s.value === paperData.status) ||
-          statusOptions[0];
-        const PaperStatusIcon = paperStatusOption.icon;
-        const paperStatusColor = paperStatusOption.color;
-        const paperStatusBg = paperStatusOption.bg;
-
         return (
           <tr className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
-            <td className="py-4 px-6">
+            <td className="py-4 px-4 text-center">
+              <div className="text-cyan-400 font-bold text-lg">
+                {paperData.serialNo}
+              </div>
+            </td>
+            <td className="py-4 px-4">
               <div className="flex items-center">
                 <FileText className="w-5 h-5 text-cyan-400 mr-3" />
                 <div>
@@ -363,14 +337,13 @@ const PaperWritingPage = () => {
                 </div>
               </div>
             </td>
-            <td className="py-4 px-6">
+            <td className="py-4 px-4">
               <div className="flex items-center">
                 <img
                   src={
                     paperData.takenBy === leadResearcher.name
                       ? leadResearcher.image
-                      : teamMembers.find((m) => m.name === paperData.takenBy)
-                          ?.image ||
+                      : teamMembers.find((m) => m.name === paperData.takenBy)?.image ||
                         "https://api.dicebear.com/7.x/avataaars/svg?seed=default"
                   }
                   alt={paperData.takenBy}
@@ -380,30 +353,35 @@ const PaperWritingPage = () => {
                   <div className="text-gray-300">{paperData.takenBy}</div>
                   {paperData.takenBy === leadResearcher.name && (
                     <div className="text-xs flex items-center text-yellow-400">
-                      {/* <Crown size={10} className="mr-1" /> */}
                       Team Lead
                     </div>
                   )}
                 </div>
               </div>
             </td>
-            <td className="py-4 px-6">
+            <td className="py-4 px-4">
               <div className="w-full">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-300">{paperData.progress}%</span>
                   <span className="text-cyan-300">
-                    {paperDaysRemaining} days left
+                    {paperDaysRemaining > 0 ? `${paperDaysRemaining} days left` : paperDaysRemaining < 0 ? `${Math.abs(paperDaysRemaining)} days overdue` : "Due today"}
                   </span>
                 </div>
                 <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full transition-all duration-500"
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      paperData.progress < 30
+                        ? "bg-gradient-to-r from-red-500 to-orange-500"
+                        : paperData.progress < 70
+                        ? "bg-gradient-to-r from-orange-500 to-yellow-500"
+                        : "bg-gradient-to-r from-green-500 to-emerald-500"
+                    }`}
                     style={{ width: `${paperData.progress}%` }}
                   ></div>
                 </div>
               </div>
             </td>
-            <td className="py-4 px-6">
+            <td className="py-4 px-4">
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 text-purple-400 mr-2" />
                 <div>
@@ -417,12 +395,14 @@ const PaperWritingPage = () => {
                   >
                     {paperDaysRemaining > 0
                       ? `${paperDaysRemaining} days remaining`
-                      : "Overdue"}
+                      : paperDaysRemaining < 0
+                      ? "Overdue"
+                      : "Due today"}
                   </div>
                 </div>
               </div>
             </td>
-            <td className="py-4 px-6">
+            <td className="py-4 px-4">
               <div
                 className={`inline-flex items-center px-3 py-1 rounded-full ${paperStatusBg}`}
               >
@@ -434,26 +414,26 @@ const PaperWritingPage = () => {
                 </span>
               </div>
             </td>
-            <td className="py-4 px-6">
+            <td className="py-4 px-4">
               <div className="flex items-center space-x-2">
                 <button
-                  onClick={() => toggleRowExpansion(paperData.id)}
+                  onClick={() => toggleRowExpansion(paper.id)}
                   className="p-2 text-cyan-400 hover:text-cyan-300 transition-colors"
                 >
-                  {expandedRow === paperData.id ? (
+                  {expandedRow === paper.id ? (
                     <ChevronUp size={18} />
                   ) : (
                     <ChevronDown size={18} />
                   )}
                 </button>
                 <button
-                  onClick={() => handleEdit(paperData)}
+                  onClick={() => handleEdit(paper)}
                   className="p-2 text-blue-400 hover:text-blue-300 transition-colors"
                 >
                   <Edit size={18} />
                 </button>
                 <button
-                  onClick={() => handleDelete(paperData.id)}
+                  onClick={() => handleDelete(paper.id)}
                   className="p-2 text-red-400 hover:text-red-300 transition-colors"
                 >
                   <Trash2 size={18} />
@@ -465,9 +445,8 @@ const PaperWritingPage = () => {
       },
       expandContent: (
         <div className="glass-inner rounded-xl p-6 border border-gray-800">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Paper Details Section */}
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-2">
               <h4 className="text-lg font-semibold text-white mb-4">
                 Paper Details
               </h4>
@@ -475,13 +454,11 @@ const PaperWritingPage = () => {
                 {paper.details}
               </p>
             </div>
-
-            {/* Dates Section */}
             <div>
               <h4 className="text-lg font-semibold text-white mb-4">
-                Timeline
+                Timeline & Progress
               </h4>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
                 <div className="p-4 bg-gray-800/50 rounded-lg">
                   <div className="text-sm text-gray-400 flex items-center mb-2">
                     <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
@@ -499,18 +476,37 @@ const PaperWritingPage = () => {
                   <div className="text-xl font-bold text-white">
                     {formatDate(paper.deadline)}
                   </div>
-                  <div
-                    className={`text-sm mt-1 ${
-                      calculateDaysRemaining(paper.deadline) <= 7
-                        ? "text-red-400"
-                        : "text-cyan-400"
-                    }`}
-                  >
+                  <div className={`text-sm mt-1 ${
+                    calculateDaysRemaining(paper.deadline) <= 7
+                      ? "text-red-400"
+                      : "text-cyan-400"
+                  }`}>
                     {calculateDaysRemaining(paper.deadline) > 0
-                      ? `${calculateDaysRemaining(
-                          paper.deadline
-                        )} days remaining`
-                      : "Overdue"}
+                      ? `${calculateDaysRemaining(paper.deadline)} days remaining`
+                      : calculateDaysRemaining(paper.deadline) < 0
+                      ? `${Math.abs(calculateDaysRemaining(paper.deadline))} days overdue`
+                      : "Due today"}
+                  </div>
+                </div>
+                <div className="p-4 bg-gray-800/50 rounded-lg">
+                  <div className="text-sm text-gray-400 flex items-center mb-2">
+                    <BarChart3 className="w-4 h-4 mr-2 text-green-400" />
+                    Completion
+                  </div>
+                  <div className="text-3xl font-bold text-white mb-2">
+                    {paper.progress}%
+                  </div>
+                  <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${
+                        paper.progress < 30
+                          ? "bg-gradient-to-r from-red-500 to-orange-500"
+                          : paper.progress < 70
+                          ? "bg-gradient-to-r from-orange-500 to-yellow-500"
+                          : "bg-gradient-to-r from-green-500 to-emerald-500"
+                      }`}
+                      style={{ width: `${paper.progress}%` }}
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -540,7 +536,7 @@ const PaperWritingPage = () => {
           </p>
         </div>
 
-        {/* Team Section - Separated Lead and Team Members */}
+        {/* Team Section */}
         <div className="glass-card rounded-2xl p-6 mb-8 border border-gray-800">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
@@ -555,7 +551,6 @@ const PaperWritingPage = () => {
           {/* Lead Researcher Card */}
           <div className="mb-6">
             <h3 className="text-lg font-medium text-white mb-3 flex items-center">
-              {/* <Crown className="w-5 h-5 text-yellow-400 mr-2" /> */}
               Team Lead
             </h3>
             <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-gray-900/50 to-yellow-900/20 transition-all duration-300">
@@ -585,7 +580,6 @@ const PaperWritingPage = () => {
                   }{" "}
                   Papers
                 </div>
-                {/* <div className="text-yellow-400 t ext-xs">Lead</div> */}
               </div>
             </div>
           </div>
@@ -734,8 +728,9 @@ const PaperWritingPage = () => {
                 takenBy: "",
                 startDate: "",
                 deadline: "",
-                status: "Planning",
+                status: "Started",
                 details: "",
+                completionMeter: 0,
               });
               setIsModalOpen(true);
             }}
@@ -850,7 +845,7 @@ const PaperWritingPage = () => {
                           value={newPaper.startDate}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
                     </div>
@@ -867,7 +862,7 @@ const PaperWritingPage = () => {
                           value={newPaper.deadline}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
                     </div>
@@ -877,7 +872,7 @@ const PaperWritingPage = () => {
                     <label className="block text-sm font-medium text-cyan-300 mb-2">
                       Status
                     </label>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                       {statusOptions.map((option) => {
                         const Icon = option.icon;
                         return (
@@ -892,9 +887,7 @@ const PaperWritingPage = () => {
                             }
                             className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
                               newPaper.status === option.value
-                                ? `${option.bg} border-${
-                                    option.color.split("-")[1]
-                                  }-400/50`
+                                ? `${option.bg} border-cyan-500/50 shadow-lg shadow-cyan-500/10`
                                 : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
                             }`}
                           >
@@ -922,6 +915,36 @@ const PaperWritingPage = () => {
 
                   <div className="mt-6">
                     <label className="block text-sm font-medium text-cyan-300 mb-2">
+                      Completion Meter
+                    </label>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-300">Progress</span>
+                        <span className="text-white font-bold text-lg">
+                          {newPaper.completionMeter}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="5"
+                        value={newPaper.completionMeter}
+                        onChange={(e) => handleCompletionMeterChange(e.target.value)}
+                        className="w-full h-3 bg-gray-800 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-r [&::-webkit-slider-thumb]:from-cyan-500 [&::-webkit-slider-thumb]:to-purple-600"
+                      />
+                      <div className="flex justify-between text-xs text-gray-400">
+                        <span>0%</span>
+                        <span>25%</span>
+                        <span>50%</span>
+                        <span>75%</span>
+                        <span>100%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6">
+                    <label className="block text-sm font-medium text-cyan-300 mb-2">
                       Paper Details
                     </label>
                     <textarea
@@ -929,7 +952,7 @@ const PaperWritingPage = () => {
                       value={newPaper.details}
                       onChange={handleInputChange}
                       placeholder="Enter paper description and details..."
-                      rows="4"
+                      rows="3"
                       className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
                     />
                   </div>
