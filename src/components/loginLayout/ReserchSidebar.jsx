@@ -37,7 +37,9 @@ const ReserchSidebar = ({
             id: 'coding', 
             label: 'Code Repository', 
             icon: Code,
-            description: 'Manage research code & algorithms'
+            description: 'Manage research code & algorithms',
+            route: '/dashboard/coding-page'
+            
         },
         { 
             id: 'writing', 

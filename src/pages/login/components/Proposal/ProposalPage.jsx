@@ -72,9 +72,24 @@ const ProposalPage = () => {
     },
     {
       id: 2,
-      name: "Shajini",
+      name: "Prof. Michael Chen",
+      role: "Senior Researcher",
+      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+      isLead: false,
+    },
+    {
+      id: 3,
+      name: "Dr. Emma Wilson",
       role: "Research Associate",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Taylor",
+      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
+      isLead: false,
+    },
+    {
+      id: 4,
+      name: "Alex Rodriguez",
+      role: "Research Assistant",
+      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+      isLead: false,
     },
   ];
 
@@ -130,13 +145,14 @@ const ProposalPage = () => {
       // Calculate counts for each status
       const counts = {
         all: proposals.length,
-        Pending: proposals.filter(p => p.status === "Pending").length,
-        "In Progress": proposals.filter(p => p.status === "In Progress").length,
-        Completed: proposals.filter(p => p.status === "Completed").length,
+        Pending: proposals.filter((p) => p.status === "Pending").length,
+        "In Progress": proposals.filter((p) => p.status === "In Progress")
+          .length,
+        Completed: proposals.filter((p) => p.status === "Completed").length,
       };
 
       // Update status options with counts
-      statusOptions.forEach(option => {
+      statusOptions.forEach((option) => {
         option.count = counts[option.value] || 0;
       });
     }
@@ -147,7 +163,7 @@ const ProposalPage = () => {
     if (statusFilter === "all") {
       return proposals;
     }
-    return proposals.filter(proposal => proposal.status === statusFilter);
+    return proposals.filter((proposal) => proposal.status === statusFilter);
   }, [proposals, statusFilter]);
 
   // Check if deadline is today or passed
@@ -268,32 +284,93 @@ const ProposalPage = () => {
         </div>
 
         {/* TEAM */}
+        {/* Team Section - Separated Lead and Team Members */}
         <div className="glass-card rounded-2xl p-6 mb-8 border border-gray-800">
-          <div className="flex items-center mb-4">
-            <Users className="w-6 h-6 text-cyan-400 mr-3" />
-            <h2 className="text-xl font-semibold text-white">Proposal Team</h2>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center">
+              <Users className="w-6 h-6 text-cyan-400 mr-3" />
+              <h2 className="text-xl font-semibold text-white">
+                Research Team
+              </h2>
+            </div>
+            <span className="text-cyan-300/70 text-sm">
+              {1 + teamMembers.length} Members
+            </span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {teamMembers.map((member) => (
-              <div
-                key={member.id}
-                className="flex items-center p-4 rounded-xl bg-gray-900/50 border border-gray-800"
-              >
-                <img
-                  src={member.image}
-                  className="w-12 h-12 rounded-full border-2 border-cyan-500/50"
-                />
-                <div className="ml-4">
+
+          {/* Lead Researcher Card */}
+          <div className="mb-6">
+            <h3 className="text-lg font-medium text-white mb-3 flex items-center">
+              Team Lead
+            </h3>
+            <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-gray-900/50 to-yellow-900/20 transition-all duration-300">
+              <img
+                src={leadResearcher.image}
+                alt={leadResearcher.name}
+                className="w-12 h-12 rounded-full border-2 border-yellow-500/50"
+              />
+              <div className="ml-4 flex-1">
+                <div className="flex items-center">
                   <h3 className="text-lg font-medium text-white">
-                    {member.name}
+                    {leadResearcher.name}
                   </h3>
-                  <p className="text-cyan-300/70 text-sm">{member.role}</p>
+                  <span className="ml-2 px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
+                    Lead
+                  </span>
                 </div>
+                <p className="text-yellow-300/70 text-sm">
+                  {leadResearcher.role}
+                </p>
               </div>
-            ))}
+              <div className="text-right">
+                <div className="text-white font-semibold">
+                  {
+                    proposals.filter(
+                      (p) => p.proposalTakenBy === leadResearcher.name
+                    ).length
+                  }{" "}
+                  Papers
+                </div>
+                <div className="text-yellow-400 text-xs">Lead</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Team Members Section */}
+          <div>
+            <h3 className="text-lg font-medium text-white mb-3">
+              Team Members
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {teamMembers.map((member) => (
+                <div
+                  key={member.id}
+                  className="flex items-center p-4 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-cyan-500/30 transition-all duration-300"
+                >
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-10 h-10 rounded-full border-2 border-cyan-500/50"
+                  />
+                  <div className="ml-3 flex-1">
+                    <h3 className="text-white font-medium">{member.name}</h3>
+                    <p className="text-cyan-300/70 text-xs">{member.role}</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-white font-semibold text-sm">
+                      {
+                        proposals.filter(
+                          (p) => p.proposalTakenBy === member.name
+                        ).length
+                      }
+                    </div>
+                    <div className="text-gray-400 text-xs">Papers</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-
         {/* STATUS FILTER SECTION */}
         <div className="glass-card rounded-2xl p-4 mb-6 border border-gray-800">
           <div className="flex items-center justify-between mb-4">
@@ -695,15 +772,25 @@ const ProposalPage = () => {
                           <option value="" className="bg-gray-900">
                             Select researcher
                           </option>
-                          {teamMembers.map((m) => (
+                          <optgroup label="Team lead">
                             <option
-                              key={m.id}
-                              value={m.name}
+                              value={leadResearcher.name}
                               className="bg-gray-900"
                             >
-                              {m.name} - {m.role}
+                              {leadResearcher.name} (Lead)
                             </option>
-                          ))}
+                          </optgroup>
+                          <optgroup label="Team Members">
+                            {teamMembers.map((m) => (
+                              <option
+                                key={m.id}
+                                value={m.name}
+                                className="bg-gray-900"
+                              >
+                                {m.name} ({m.role})
+                              </option>
+                            ))}
+                          </optgroup>
                         </select>
                         <User className="absolute left-3 top-3.5 w-4 h-4 text-white" />
                         <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-white" />
