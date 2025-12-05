@@ -29,6 +29,12 @@ import {
   deleteProposal,
 } from "../../../../services/ProposalService";
 
+import img1 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/abinesh.jpg"
+import img2 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/shajini.jpg"
+import img3 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/mahesh.jpg"
+import img4 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/arun.jpg"
+import img5 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/akash.jpg"
+
 const ProposalPage = () => {
   const navigate = useNavigate();
 
@@ -67,8 +73,8 @@ const ProposalPage = () => {
   const teamLeader = {
     id: 0,
     name: "Abinesh",
-    role: "Team Leader",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Abinesh",
+    role: "Senior Researcher",
+    image: img1,
   };
 
   // Team Members (excluding leader)
@@ -76,26 +82,26 @@ const ProposalPage = () => {
     {
       id: 1,
       name: "Shajini",
-      role: "Team Member",
-      image: "data:image/jpeg;base64,/9j...yourBase64...",
+      role: "Researcher",
+      image: img2,
     },
     {
       id: 2,
       name: "Mahesh",
-      role: "Senior Researcher",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+      role: "Programmer",
+      image: img3,
     },
     {
       id: 3,
       name: "Arun",
-      role: "Research Associate",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
+      role: "Programmer",
+      image: img4,
     },
     {
       id: 4,
       name: "Akash",
-      role: "Research Assistant",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Shajini",
+      role: "Programmer",
+      image: img5,
     },
   ];
 

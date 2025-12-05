@@ -32,6 +32,12 @@ import {
   deletePaperWriting,
 } from "../../../../services/PaperWritingService";
 
+import img1 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/santhiya.jpg"
+import img2 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/ashika.jpg"
+import img3 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/ashmi.jpg"
+import img4 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/ancy.jpg"
+import img5 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/canute.jpg"
+
 const PaperWritingPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("writing");
@@ -47,32 +53,39 @@ const PaperWritingPage = () => {
   // Team members data - Lead researcher first
   const leadResearcher = {
     id: 1,
-    name: "Dr. Sarah Johnson",
-    role: "Team Lead",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+    name: "Santhiya",
+    role: "Senior Writer",
+    image: img1,
     isLead: true,
   };
 
   const teamMembers = [
     {
       id: 2,
-      name: "Prof. Michael Chen",
-      role: "Member",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+      name: "Ashika",
+      role: "Senior Writer",
+      image: img2,
       isLead: false,
     },
     {
       id: 3,
-      name: "Dr. Emma Wilson",
-      role: "Member",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
+      name: "Ashmi",
+      role: "Writer",
+      image: img3,
       isLead: false,
     },
     {
       id: 4,
-      name: "Alex Rodriguez",
-      role: "Member",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+      name: "Ancy",
+      role: "Writer",
+      image: img4,
+      isLead: false,
+    },
+    {
+      id: 5,
+      name: "Canute",
+      role: "Writer",
+      image: img5,
       isLead: false,
     },
   ];

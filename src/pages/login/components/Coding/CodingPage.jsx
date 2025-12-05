@@ -33,6 +33,11 @@ import {
   deleteCodingProject,
 } from "../../../../services/CodingService";
 
+import img1 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/abinesh.jpg"
+import img2 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/mahesh.jpg"
+import img3 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/arun.jpg"
+import img4 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/akash.jpg"
+
 const CodingPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("coding");
@@ -48,32 +53,32 @@ const CodingPage = () => {
   // Team members data - Lead developer first
   const leadDeveloper = {
     id: 1,
-    name: "Alex Chen",
-    role: "Team Lead",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+    name: "Abinesh",
+    role: "Senior Researcher",
+    image: img1,
     isLead: true,
   };
 
   const teamMembers = [
     {
       id: 2,
-      name: "Sarah Miller",
-      role: "Member",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+      name: "Mahesh",
+      role: "Programmer",
+      image: img2,
       isLead: false,
     },
     {
       id: 3,
-      name: "James Wilson",
-      role: "Member",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=James",
+      name: "Arun",
+      role: "Programmer",
+      image: img3,
       isLead: false,
     },
     {
       id: 4,
-      name: "Emma Davis",
-      role: "Member",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
+      name: "Akash",
+      role: "Programmer",
+      image: img4,
       isLead: false,
     },
   ];
