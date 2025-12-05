@@ -29,11 +29,11 @@ import {
   deleteProposal,
 } from "../../../../services/ProposalService";
 
-import img1 from "../../assets/abinesh.jpg"
-import img2 from "../../assets/shajini.jpg"
-import img3 from "../../assets/mahesh.jpg"
-import img4 from "../../assets/arun.jpg"
-import img5 from "../../assets/akash.jpg"
+import img1 from "../../assets/abinesh.jpg";
+import img2 from "../../assets/shajini.jpg";
+import img3 from "../../assets/mahesh.jpg";
+import img4 from "../../assets/arun.jpg";
+import img5 from "../../assets/akash.jpg";
 
 const ProposalPage = () => {
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ const ProposalPage = () => {
     proposalTakenBy: "",
     startDate: "",
     endDate: "",
-    status: "Pending",
+    status: "Started",
     details: "",
   });
 
@@ -119,10 +119,10 @@ const ProposalPage = () => {
       count: 0,
     },
     {
-      value: "Pending",
-      label: "Pending",
-      color: "text-yellow-400",
-      bg: "bg-yellow-400/10",
+      value: "Started",
+      label: "Started",
+      color: "text-blue-400",
+      bg: "bg-blue-400/10",
       icon: Clock,
       count: 0,
     },
@@ -132,6 +132,14 @@ const ProposalPage = () => {
       color: "text-blue-400",
       bg: "bg-blue-400/10",
       icon: AlertCircle,
+      count: 0,
+    },
+    {
+      value: "On Hold",
+      label: "On Hold",
+      color: "text-yellow-400",
+      bg: "bg-yellow-400/10",
+      icon: Clock,
       count: 0,
     },
     {
@@ -163,8 +171,10 @@ const ProposalPage = () => {
       // Calculate counts for each status
       const counts = {
         all: proposals.length,
-        Pending: proposals.filter((p) => p.status === "Pending").length,
-        "In Progress": proposals.filter((p) => p.status === "In Progress").length,
+        Started: proposals.filter((p) => p.status === "Started").length,
+        "In Progress": proposals.filter((p) => p.status === "In Progress")
+          .length,
+        "On Hold": proposals.filter((p) => p.status === "On Hold").length,
         Completed: proposals.filter((p) => p.status === "Completed").length,
       };
 
@@ -177,7 +187,9 @@ const ProposalPage = () => {
       setStatusOptions(updatedOptions);
     } else {
       // Reset counts if no proposals
-      setStatusOptions(initialStatusOptions.map(option => ({ ...option, count: 0 })));
+      setStatusOptions(
+        initialStatusOptions.map((option) => ({ ...option, count: 0 }))
+      );
     }
   }, [proposals]);
 
@@ -188,6 +200,17 @@ const ProposalPage = () => {
     }
     return proposals.filter((proposal) => proposal.status === statusFilter);
   }, [proposals, statusFilter]);
+
+  // Calculate deadline (start date + 2 days)
+  const calculateAutoDeadline = (startDate) => {
+    if (!startDate) return "";
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + 2);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   // Check if deadline is today or passed
   const checkDeadlineStatus = (endDate) => {
@@ -229,7 +252,17 @@ const ProposalPage = () => {
   // Input change
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setNewPaper((prev) => ({ ...prev, [id]: value }));
+    if (id === "startDate" && value) {
+      // Auto-calculate end date when start date changes
+      const autoEndDate = calculateAutoDeadline(value);
+      setNewPaper((prev) => ({
+        ...prev,
+        [id]: value,
+        endDate: autoEndDate,
+      }));
+    } else {
+      setNewPaper((prev) => ({ ...prev, [id]: value }));
+    }
   };
 
   // Add new proposal
@@ -245,7 +278,7 @@ const ProposalPage = () => {
       proposalTakenBy: "",
       startDate: "",
       endDate: "",
-      status: "Pending",
+      status: "Started",
       details: "",
     });
   };
@@ -312,7 +345,7 @@ const ProposalPage = () => {
             <div className="flex items-center">
               <Users className="w-6 h-6 text-cyan-400 mr-3" />
               <h2 className="text-xl font-semibold text-white">
-                Research Team
+                Research Proposal Team
               </h2>
             </div>
             <span className="text-cyan-300/70 text-sm">
@@ -340,9 +373,7 @@ const ProposalPage = () => {
                     Leader
                   </span>
                 </div>
-                <p className="text-yellow-300/70 text-sm">
-                  {teamLeader.role}
-                </p>
+                <p className="text-yellow-300/70 text-sm">{teamLeader.role}</p>
               </div>
               <div className="text-right">
                 <div className="text-white font-semibold">
@@ -393,7 +424,7 @@ const ProposalPage = () => {
             </div>
           </div>
         </div>
-        
+
         {/* STATUS FILTER SECTION */}
         <div className="glass-card rounded-2xl p-4 mb-6 border border-gray-800">
           <div className="flex items-center justify-between mb-4">
@@ -448,30 +479,6 @@ const ProposalPage = () => {
           </div>
         </div>
 
-        {/* Deadline Legend */}
-        <div className="glass-card rounded-2xl p-4 mb-6 border border-gray-800">
-          <div className="flex items-center mb-3">
-            <AlertTriangle className="w-5 h-5 text-red-400 mr-2" />
-            <h3 className="text-lg font-semibold text-white">
-              Deadline Indicators
-            </h3>
-          </div>
-          <div className="flex flex-wrap gap-4">
-            <div className="flex items-center">
-              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse mr-2"></div>
-              <span className="text-gray-300">Due today / Overdue</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
-              <span className="text-gray-300">Due in 1-3 days</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-              <span className="text-gray-300">More than 3 days</span>
-            </div>
-          </div>
-        </div>
-
         {/* ADD BUTTON */}
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -496,6 +503,7 @@ const ProposalPage = () => {
         {/* TABLE - UPDATED COLUMN ORDER */}
         <DataTable
           columns={[
+            { key: "serialNo", label: "S.No" },
             { key: "paperName", label: "Paper Name" },
             { key: "proposalTakenBy", label: "Researcher" },
             { key: "timeline", label: "Timeline" },
@@ -504,7 +512,7 @@ const ProposalPage = () => {
             { key: "details", label: "Details" },
             { key: "actions", label: "Actions" },
           ]}
-          data={filteredProposals.map((proposal) => {
+          data={filteredProposals.map((proposal, index) => {
             const statusInfo = statusOptions.find(
               (s) => s.value === proposal.status
             );
@@ -520,7 +528,12 @@ const ProposalPage = () => {
                   onClick={() => onRowExpand(item.id)}
                   className="border-b border-gray-800 hover:bg-gray-900/50 cursor-pointer transition-colors"
                 >
-                  {/* Paper Name Column - 1st */}
+                  {/* Serial No Column - 1st */}
+                  <td className="py-4 px-6 text-center">
+                    <div className="text-white font-semibold">{index + 1}</div>
+                  </td>
+
+                  {/* Paper Name Column - 2nd */}
                   <td className="py-4 px-6 text-white font-medium">
                     {item.paperName}
                   </td>
@@ -827,10 +840,10 @@ const ProposalPage = () => {
                           </option>
                           <optgroup label="Team lead">
                             <option
-                              value={leadResearcher.name}
+                              value={teamLeader.name}
                               className="bg-gray-900"
                             >
-                              {leadResearcher.name} (Lead)
+                              {teamLeader.name} (Lead)
                             </option>
                           </optgroup>
                           <optgroup label="Team Members">
@@ -856,6 +869,9 @@ const ProposalPage = () => {
                         <Calendar className="w-4 h-4 mr-2 text-white" />
                         Start Date
                       </label>
+                      <p className="text-xs text-gray-400">
+                        Deadline will auto-set to start date + 2 days
+                      </p>
                       <div className="relative">
                         <input
                           type="date"
@@ -881,6 +897,9 @@ const ProposalPage = () => {
                         <CalendarDays className="w-4 h-4 mr-2 text-white" />
                         End Date
                       </label>
+                      <p className="text-xs text-gray-400">
+                        Auto-calculated or customize as needed
+                      </p>
                       <div className="relative">
                         <input
                           type="date"
@@ -973,60 +992,6 @@ const ProposalPage = () => {
                       ></textarea>
                     </div>
                   </div>
-
-                  {/* Timeline Preview */}
-                  {newPaper.startDate && newPaper.endDate && (
-                    <div className="mt-6 p-4 rounded-xl bg-gray-900/50 border border-gray-700">
-                      <h4 className="flex items-center text-sm font-medium text-white mb-2">
-                        <Calendar className="w-4 h-4 mr-2 text-white" />
-                        Timeline Preview
-                      </h4>
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="text-center">
-                          <div className="text-white font-medium">Start</div>
-                          <div className="text-gray-300">
-                            {formatDate(newPaper.startDate)}
-                          </div>
-                        </div>
-                        <div className="flex-1 mx-4">
-                          <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
-                            <div
-                              className="absolute h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
-                              style={{
-                                width: "100%",
-                              }}
-                            ></div>
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <div
-                            className={`font-medium ${
-                              checkDeadlineStatus(newPaper.endDate)?.status ===
-                                "overdue" ||
-                              checkDeadlineStatus(newPaper.endDate)?.status ===
-                                "today"
-                                ? "text-red-400"
-                                : "text-white"
-                            }`}
-                          >
-                            End
-                          </div>
-                          <div
-                            className={
-                              checkDeadlineStatus(newPaper.endDate)?.status ===
-                                "overdue" ||
-                              checkDeadlineStatus(newPaper.endDate)?.status ===
-                                "today"
-                                ? "text-red-400 font-medium"
-                                : "text-gray-300"
-                            }
-                          >
-                            {formatDate(newPaper.endDate)}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 {/* Modal Footer */}

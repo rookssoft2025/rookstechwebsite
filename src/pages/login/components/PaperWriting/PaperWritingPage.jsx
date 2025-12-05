@@ -32,11 +32,11 @@ import {
   deletePaperWriting,
 } from "../../../../services/PaperWritingService";
 
-import img1 from "../../assets/santhiya.jpg"
-import img2 from "../../assets/ashika.jpg"
-import img3 from "../../assets/ashmi.jpg"
-import img4 from "../../assets/ancy.jpg"
-import img5 from "../../assets/canute.jpg"
+import img1 from "../../assets/santhiya.jpg";
+import img2 from "../../assets/ashika.jpg";
+import img3 from "../../assets/ashmi.jpg";
+import img4 from "../../assets/ancy.jpg";
+import img5 from "../../assets/canute.jpg";
 
 const PaperWritingPage = () => {
   const navigate = useNavigate();
@@ -96,6 +96,10 @@ const PaperWritingPage = () => {
   const [expandedRow, setExpandedRow] = useState(null);
   const [editingPaper, setEditingPaper] = useState(null);
   const [statusFilter, setStatusFilter] = useState(null);
+
+  // Refs for date inputs so we can open native picker on touch/click
+  const startDateRef = useRef(null);
+  const deadlineRef = useRef(null);
   const [newPaper, setNewPaper] = useState({
     title: "",
     takenBy: "",
@@ -103,7 +107,6 @@ const PaperWritingPage = () => {
     deadline: "",
     status: "Started",
     details: "",
-    completionMeter: 0,
   });
 
   useEffect(() => {
@@ -117,7 +120,6 @@ const PaperWritingPage = () => {
           const mapped = data.map((d, idx) => ({
             ...d,
             serialNo: d.serialNo || idx + 1,
-            progress: d.progress || d.completionMeter || 0,
           }));
           setPapers(mapped);
         }
@@ -178,19 +180,74 @@ const PaperWritingPage = () => {
     return papers.filter((paper) => paper.status === statusFilter);
   }, [papers, statusFilter]);
 
+  // Calculate deadline (start date + 4 days)
+  const calculateAutoDeadline = (startDate) => {
+    if (!startDate) return "";
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + 4);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Get due status (overdue, due soon, on track, completed)
+  const getDueStatus = (deadline) => {
+    if (!deadline) return null;
+    const today = new Date();
+    const deadlineDate = new Date(deadline);
+    const diffTime = deadlineDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return {
+        status: "overdue",
+        label: "Overdue",
+        color: "text-red-400",
+        bg: "bg-red-400/10",
+        borderColor: "border-red-400/30",
+      };
+    } else if (diffDays === 0) {
+      return {
+        status: "today",
+        label: "Due Today",
+        color: "text-orange-400",
+        bg: "bg-orange-400/10",
+        borderColor: "border-orange-400/30",
+      };
+    } else if (diffDays <= 2) {
+      return {
+        status: "urgent",
+        label: `Due in ${diffDays} day${diffDays === 1 ? "" : "s"}`,
+        color: "text-yellow-400",
+        bg: "bg-yellow-400/10",
+        borderColor: "border-yellow-400/30",
+      };
+    } else {
+      return {
+        status: "ontrack",
+        label: `${diffDays} days remaining`,
+        color: "text-green-400",
+        bg: "bg-green-400/10",
+        borderColor: "border-green-400/30",
+      };
+    }
+  };
+
   // Handle input changes
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setNewPaper((prev) => ({ ...prev, [id]: value }));
-  };
-
-  // Handle completion meter change
-  const handleCompletionMeterChange = (value) => {
-    setNewPaper((prev) => ({
-      ...prev,
-      completionMeter: parseInt(value),
-      progress: parseInt(value), // Update progress as well
-    }));
+    if (id === "startDate" && value) {
+      // Auto-calculate deadline when start date changes
+      const autoDeadline = calculateAutoDeadline(value);
+      setNewPaper((prev) => ({
+        ...prev,
+        [id]: value,
+        deadline: autoDeadline,
+      }));
+    } else {
+      setNewPaper((prev) => ({ ...prev, [id]: value }));
+    }
   };
 
   // Handle form submission
@@ -202,23 +259,35 @@ const PaperWritingPage = () => {
         const paperToSubmit = {
           ...editingPaper,
           ...newPaper,
-          progress: newPaper.completionMeter,
         };
 
         await updatePaperWriting(paperToSubmit);
-        setPapers((prev) => prev.map((p) => (p.id === paperToSubmit.id ? { ...p, ...paperToSubmit } : p)));
+        setPapers((prev) =>
+          prev.map((p) =>
+            p.id === paperToSubmit.id ? { ...p, ...paperToSubmit } : p
+          )
+        );
       } else {
         // compute serialNo locally
-        const nextSerialNo = papers.length > 0 ? Math.max(...papers.map((p) => p.serialNo || 0)) + 1 : 1;
+        const nextSerialNo =
+          papers.length > 0
+            ? Math.max(...papers.map((p) => p.serialNo || 0)) + 1
+            : 1;
         const paperToSubmit = {
           serialNo: nextSerialNo,
-          progress: newPaper.completionMeter,
           sections: ["Abstract", "Introduction"],
           ...newPaper,
         };
 
         const created = await addPaperWriting(paperToSubmit);
-        setPapers((prev) => [...prev, { ...created, serialNo: created.serialNo || paperToSubmit.serialNo, progress: created.progress || paperToSubmit.progress }]);
+        setPapers((prev) => [
+          ...prev,
+          {
+            ...created,
+            serialNo: created.serialNo || paperToSubmit.serialNo,
+            progress: created.progress || paperToSubmit.progress,
+          },
+        ]);
       }
     } catch (err) {
       console.error(err);
@@ -233,7 +302,6 @@ const PaperWritingPage = () => {
         deadline: "",
         status: "Started",
         details: "",
-        completionMeter: 0,
       });
       setIsLoading(false);
     }
@@ -249,7 +317,6 @@ const PaperWritingPage = () => {
       deadline: paper.deadline,
       status: paper.status,
       details: paper.details,
-      completionMeter: paper.completionMeter || paper.progress,
     });
     setIsModalOpen(true);
   };
@@ -309,22 +376,22 @@ const PaperWritingPage = () => {
   // Prepare data for DataTable component
   const tableColumns = [
     { key: "serialNo", label: "S.No", width: "8%" },
-    { key: "title", label: "Paper Title", width: "27%" },
+    { key: "title", label: "Paper Title", width: "32%" },
     { key: "takenBy", label: "Taken By", width: "15%" },
-    { key: "progress", label: "Progress", width: "20%" },
-    { key: "deadline", label: "Deadline", width: "15%" },
+    { key: "deadline", label: "Deadline", width: "20%" },
     { key: "status", label: "Status", width: "10%" },
-    { key: "actions", label: "Actions", width: "10%" },
+    { key: "actions", label: "Actions", width: "15%" },
   ];
 
   // Transform papers data for DataTable
   const tableData = papers.map((paper) => {
     const paperDaysRemaining = calculateDaysRemaining(paper.deadline);
-    const paperStatusOption = statusOptions.find((s) => s.value === paper.status) || statusOptions[0];
+    const paperStatusOption =
+      statusOptions.find((s) => s.value === paper.status) || statusOptions[0];
     const PaperStatusIcon = paperStatusOption.icon;
     const paperStatusColor = paperStatusOption.color;
     const paperStatusBg = paperStatusOption.bg;
-    
+
     return {
       id: paper.id,
       _paperData: paper,
@@ -356,7 +423,8 @@ const PaperWritingPage = () => {
                   src={
                     paperData.takenBy === leadResearcher.name
                       ? leadResearcher.image
-                      : teamMembers.find((m) => m.name === paperData.takenBy)?.image ||
+                      : teamMembers.find((m) => m.name === paperData.takenBy)
+                          ?.image ||
                         "https://api.dicebear.com/7.x/avataaars/svg?seed=default"
                   }
                   alt={paperData.takenBy}
@@ -373,45 +441,20 @@ const PaperWritingPage = () => {
               </div>
             </td>
             <td className="py-4 px-4">
-              <div className="w-full">
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-300">{paperData.progress}%</span>
-                  <span className="text-cyan-300">
-                    {paperDaysRemaining > 0 ? `${paperDaysRemaining} days left` : paperDaysRemaining < 0 ? `${Math.abs(paperDaysRemaining)} days overdue` : "Due today"}
-                  </span>
-                </div>
-                <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      paperData.progress < 30
-                        ? "bg-gradient-to-r from-red-500 to-orange-500"
-                        : paperData.progress < 70
-                        ? "bg-gradient-to-r from-orange-500 to-yellow-500"
-                        : "bg-gradient-to-r from-green-500 to-emerald-500"
-                    }`}
-                    style={{ width: `${paperData.progress}%` }}
-                  ></div>
-                </div>
-              </div>
-            </td>
-            <td className="py-4 px-4">
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 text-purple-400 mr-2" />
                 <div>
                   <div className="text-gray-300">
                     {formatDate(paperData.deadline)}
                   </div>
-                  <div
-                    className={`text-xs ${
-                      paperDaysRemaining <= 7 ? "text-red-400" : "text-gray-500"
-                    }`}
-                  >
-                    {paperDaysRemaining > 0
-                      ? `${paperDaysRemaining} days remaining`
-                      : paperDaysRemaining < 0
-                      ? "Overdue"
-                      : "Due today"}
-                  </div>
+                  {(() => {
+                    const dueStatus = getDueStatus(paperData.deadline);
+                    return dueStatus ? (
+                      <div className={`text-xs font-medium ${dueStatus.color}`}>
+                        {dueStatus.label}
+                      </div>
+                    ) : null;
+                  })()}
                 </div>
               </div>
             </td>
@@ -481,7 +524,14 @@ const PaperWritingPage = () => {
                     {formatDate(paper.startDate)}
                   </div>
                 </div>
-                <div className="p-4 bg-gray-800/50 rounded-lg">
+                <div
+                  className={`p-4 rounded-lg border ${(() => {
+                    const dueStatus = getDueStatus(paper.deadline);
+                    return dueStatus
+                      ? `${dueStatus.bg} ${dueStatus.borderColor}`
+                      : "bg-gray-800/50 border-gray-700";
+                  })()}`}
+                >
                   <div className="text-sm text-gray-400 flex items-center mb-2">
                     <Calendar className="w-4 h-4 mr-2 text-purple-400" />
                     Deadline
@@ -489,38 +539,16 @@ const PaperWritingPage = () => {
                   <div className="text-xl font-bold text-white">
                     {formatDate(paper.deadline)}
                   </div>
-                  <div className={`text-sm mt-1 ${
-                    calculateDaysRemaining(paper.deadline) <= 7
-                      ? "text-red-400"
-                      : "text-cyan-400"
-                  }`}>
-                    {calculateDaysRemaining(paper.deadline) > 0
-                      ? `${calculateDaysRemaining(paper.deadline)} days remaining`
-                      : calculateDaysRemaining(paper.deadline) < 0
-                      ? `${Math.abs(calculateDaysRemaining(paper.deadline))} days overdue`
-                      : "Due today"}
-                  </div>
-                </div>
-                <div className="p-4 bg-gray-800/50 rounded-lg">
-                  <div className="text-sm text-gray-400 flex items-center mb-2">
-                    <BarChart3 className="w-4 h-4 mr-2 text-green-400" />
-                    Completion
-                  </div>
-                  <div className="text-3xl font-bold text-white mb-2">
-                    {paper.progress}%
-                  </div>
-                  <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full ${
-                        paper.progress < 30
-                          ? "bg-gradient-to-r from-red-500 to-orange-500"
-                          : paper.progress < 70
-                          ? "bg-gradient-to-r from-orange-500 to-yellow-500"
-                          : "bg-gradient-to-r from-green-500 to-emerald-500"
-                      }`}
-                      style={{ width: `${paper.progress}%` }}
-                    ></div>
-                  </div>
+                  {(() => {
+                    const dueStatus = getDueStatus(paper.deadline);
+                    return dueStatus ? (
+                      <div
+                        className={`text-sm mt-1 font-medium ${dueStatus.color}`}
+                      >
+                        {dueStatus.label}
+                      </div>
+                    ) : null;
+                  })()}
                 </div>
               </div>
             </div>
@@ -541,7 +569,7 @@ const PaperWritingPage = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-            Paper Writing Dashboard
+            Research Paper Writing 
           </h1>
           <p className="text-gray-400 mt-2">
             Manage your research papers, track progress, and collaborate with
@@ -743,7 +771,6 @@ const PaperWritingPage = () => {
                 deadline: "",
                 status: "Started",
                 details: "",
-                completionMeter: 0,
               });
               setIsModalOpen(true);
             }}
@@ -855,12 +882,21 @@ const PaperWritingPage = () => {
                         <input
                           type="date"
                           id="startDate"
+                          ref={startDateRef}
                           value={newPaper.startDate}
                           onChange={handleInputChange}
+                          onFocus={() => startDateRef.current?.showPicker?.()}
+                          onClick={() => startDateRef.current?.showPicker?.()}
+                          onTouchStart={() =>
+                            startDateRef.current?.showPicker?.()
+                          }
                           required
                           className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Deadline will auto-set to start date + 4 days
+                      </p>
                     </div>
 
                     <div className="relative">
@@ -872,12 +908,20 @@ const PaperWritingPage = () => {
                         <input
                           type="date"
                           id="deadline"
+                          ref={deadlineRef}
                           value={newPaper.deadline}
                           onChange={handleInputChange}
-                          required
+                          onFocus={() => deadlineRef.current?.showPicker?.()}
+                          onClick={() => deadlineRef.current?.showPicker?.()}
+                          onTouchStart={() =>
+                            deadlineRef.current?.showPicker?.()
+                          }
                           className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Auto-calculated or customize as needed
+                      </p>
                     </div>
                   </div>
 
@@ -923,36 +967,6 @@ const PaperWritingPage = () => {
                           </button>
                         );
                       })}
-                    </div>
-                  </div>
-
-                  <div className="mt-6">
-                    <label className="block text-sm font-medium text-cyan-300 mb-2">
-                      Completion Meter
-                    </label>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Progress</span>
-                        <span className="text-white font-bold text-lg">
-                          {newPaper.completionMeter}%
-                        </span>
-                      </div>
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        step="5"
-                        value={newPaper.completionMeter}
-                        onChange={(e) => handleCompletionMeterChange(e.target.value)}
-                        className="w-full h-3 bg-gray-800 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-r [&::-webkit-slider-thumb]:from-cyan-500 [&::-webkit-slider-thumb]:to-purple-600"
-                      />
-                      <div className="flex justify-between text-xs text-gray-400">
-                        <span>0%</span>
-                        <span>25%</span>
-                        <span>50%</span>
-                        <span>75%</span>
-                        <span>100%</span>
-                      </div>
                     </div>
                   </div>
 

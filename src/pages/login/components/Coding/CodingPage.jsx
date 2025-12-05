@@ -33,10 +33,10 @@ import {
   deleteCodingProject,
 } from "../../../../services/CodingService";
 
-import img1 from "../../assets/abinesh.jpg"
-import img2 from "../../assets/mahesh.jpg"
-import img3 from "../../assets/arun.jpg"
-import img4 from "../../assets/akash.jpg"
+import img1 from "../../assets/abinesh.jpg";
+import img2 from "../../assets/mahesh.jpg";
+import img3 from "../../assets/arun.jpg";
+import img4 from "../../assets/akash.jpg";
 
 const CodingPage = () => {
   const navigate = useNavigate();
@@ -89,6 +89,10 @@ const CodingPage = () => {
   const [expandedRow, setExpandedRow] = useState(null);
   const [editingProject, setEditingProject] = useState(null);
   const [statusFilter, setStatusFilter] = useState(null);
+
+  // Ref for date inputs so we can open native picker on touch/click
+  const startDateRef = useRef(null);
+  const deadlineRef = useRef(null);
   const [newProject, setNewProject] = useState({
     title: "",
     takenBy: "",
@@ -96,13 +100,8 @@ const CodingPage = () => {
     deadline: "",
     status: "Started",
     resultsTaken: "",
-    progress: 0,
     details: "",
   });
-
-  // Ref for date inputs
-  const startDateRef = useRef(null);
-  const deadlineRef = useRef(null);
 
   useEffect(() => {
     let mounted = true;
@@ -160,16 +159,74 @@ const CodingPage = () => {
     return projects.filter((project) => project.status === statusFilter);
   }, [projects, statusFilter]);
 
+  // Calculate deadline (start date + 3 days)
+  const calculateAutoDeadline = (startDate) => {
+    if (!startDate) return "";
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + 3);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Get due status (overdue, due soon, on track)
+  const getDueStatus = (deadline) => {
+    if (!deadline) return null;
+    const today = new Date();
+    const deadlineDate = new Date(deadline);
+    const diffTime = deadlineDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return {
+        status: "overdue",
+        label: "Overdue",
+        color: "text-red-400",
+        bg: "bg-red-400/10",
+        borderColor: "border-red-400/30",
+      };
+    } else if (diffDays === 0) {
+      return {
+        status: "today",
+        label: "Due Today",
+        color: "text-orange-400",
+        bg: "bg-orange-400/10",
+        borderColor: "border-orange-400/30",
+      };
+    } else if (diffDays <= 2) {
+      return {
+        status: "urgent",
+        label: `Due in ${diffDays} day${diffDays === 1 ? "" : "s"}`,
+        color: "text-yellow-400",
+        bg: "bg-yellow-400/10",
+        borderColor: "border-yellow-400/30",
+      };
+    } else {
+      return {
+        status: "ontrack",
+        label: `${diffDays} days remaining`,
+        color: "text-green-400",
+        bg: "bg-green-400/10",
+        borderColor: "border-green-400/30",
+      };
+    }
+  };
+
   // Handle input changes
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setNewProject((prev) => ({ ...prev, [id]: value }));
-  };
-
-  // Handle progress change
-  const handleProgressChange = (value) => {
-    const progressValue = Math.min(100, Math.max(0, parseInt(value) || 0));
-    setNewProject((prev) => ({ ...prev, progress: progressValue }));
+    if (id === "startDate" && value) {
+      // Auto-calculate deadline when start date changes
+      const autoDeadline = calculateAutoDeadline(value);
+      setNewProject((prev) => ({
+        ...prev,
+        [id]: value,
+        deadline: autoDeadline,
+      }));
+    } else {
+      setNewProject((prev) => ({ ...prev, [id]: value }));
+    }
   };
 
   // Handle form submission
@@ -182,27 +239,30 @@ const CodingPage = () => {
           ...editingProject,
           ...newProject,
           resultsTaken: parseInt(newProject.resultsTaken) || 0,
-          progress: parseInt(newProject.progress) || 0,
         };
 
         await updateCodingProject(projectToSubmit);
         setProjects((prev) =>
-          prev.map((p) => (p.id === projectToSubmit.id ? { ...p, ...projectToSubmit } : p))
+          prev.map((p) =>
+            p.id === projectToSubmit.id ? { ...p, ...projectToSubmit } : p
+          )
         );
       } else {
         const projectToSubmit = {
           ...newProject,
-          progress: parseInt(newProject.progress) || 0,
           resultsTaken: parseInt(newProject.resultsTaken) || 0,
         };
 
         const created = await addCodingProject(projectToSubmit);
         setProjects((prev) => [...prev, created]);
       }
-      
+
       // Show success message
-      alert(editingProject ? "Project updated successfully!" : "Project added successfully!");
-      
+      alert(
+        editingProject
+          ? "Project updated successfully!"
+          : "Project added successfully!"
+      );
     } catch (err) {
       console.error(err);
       alert("Failed to save project. Check console for details.");
@@ -216,7 +276,6 @@ const CodingPage = () => {
         deadline: "",
         status: "Started",
         resultsTaken: "",
-        progress: 0,
         details: "",
       });
       setIsLoading(false);
@@ -233,7 +292,6 @@ const CodingPage = () => {
       deadline: project.deadline,
       status: project.status,
       resultsTaken: project.resultsTaken.toString(),
-      progress: project.progress,
       details: project.details,
     });
     setIsModalOpen(true);
@@ -241,7 +299,8 @@ const CodingPage = () => {
 
   // Handle delete
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this project?")) return;
+    if (!window.confirm("Are you sure you want to delete this project?"))
+      return;
     try {
       setIsLoading(true);
       await deleteCodingProject(id);
@@ -281,12 +340,11 @@ const CodingPage = () => {
   // Prepare data for DataTable component
   const tableColumns = [
     { key: "serial", label: "S.No", width: "8%" },
-    { key: "title", label: "Project Title", width: "22%" },
-    { key: "takenBy", label: "Developer", width: "12%" },
-    { key: "progress", label: "Progress", width: "15%" },
-    { key: "resultsTaken", label: "Results Taken", width: "12%" },
-    { key: "deadline", label: "Deadline", width: "15%" },
-    { key: "status", label: "Status", width: "10%" },
+    { key: "title", label: "Project Title", width: "25%" },
+    { key: "takenBy", label: "Developer", width: "15%" },
+    { key: "resultsTaken", label: "Results Taken", width: "15%" },
+    { key: "deadline", label: "Deadline", width: "17%" },
+    { key: "status", label: "Status", width: "12%" },
     { key: "actions", label: "Actions", width: "8%" },
   ];
 
@@ -312,20 +370,15 @@ const CodingPage = () => {
         return (
           <tr className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
             <td className="py-4 px-6 text-center">
-              <div className="text-white font-semibold">
-                {item.serial}
-              </div>
+              <div className="text-white font-semibold">{item.serial}</div>
             </td>
             <td className="py-4 px-6">
-              <div className="flex items-center">
-                <Code className="w-5 h-5 text-cyan-400 mr-3" />
-                <div>
-                  <div className="text-white font-medium">
-                    {projectData.title}
-                  </div>
-                  <div className="text-gray-400 text-sm">
-                    Started: {formatDate(projectData.startDate)}
-                  </div>
+              <div>
+                <div className="text-white font-medium">
+                  {projectData.title}
+                </div>
+                <div className="text-gray-400 text-sm">
+                  Started: {formatDate(projectData.startDate)}
                 </div>
               </div>
             </td>
@@ -353,26 +406,14 @@ const CodingPage = () => {
               </div>
             </td>
             <td className="py-4 px-6">
-              <div className="w-full">
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-300">{projectData.progress}%</span>
-                </div>
-                <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full transition-all duration-500"
-                    style={{ width: `${projectData.progress}%` }}
-                  ></div>
-                </div>
-              </div>
-            </td>
-            <td className="py-4 px-6">
               <div className="flex items-center justify-center">
-                <BarChart className="w-4 h-4 text-green-400 mr-2" />
                 <div>
                   <div className="text-white font-semibold text-center">
                     {projectData.resultsTaken}
                   </div>
-                  <div className="text-gray-400 text-xs text-center">results</div>
+                  <div className="text-gray-400 text-xs text-center">
+                    results
+                  </div>
                 </div>
               </div>
             </td>
@@ -383,7 +424,14 @@ const CodingPage = () => {
                   <div className="text-gray-300">
                     {formatDate(projectData.deadline)}
                   </div>
-                  {/* Removed relative days indicator from table — only show date */}
+                  {(() => {
+                    const dueStatus = getDueStatus(projectData.deadline);
+                    return dueStatus ? (
+                      <div className={`text-xs font-medium ${dueStatus.color}`}>
+                        {dueStatus.label}
+                      </div>
+                    ) : null;
+                  })()}
                 </div>
               </div>
             </td>
@@ -456,7 +504,14 @@ const CodingPage = () => {
                     {formatDate(project.startDate)}
                   </div>
                 </div>
-                <div className="p-4 bg-gray-800/50 rounded-lg">
+                <div
+                  className={`p-4 rounded-lg border ${(() => {
+                    const dueStatus = getDueStatus(project.deadline);
+                    return dueStatus
+                      ? `${dueStatus.bg} ${dueStatus.borderColor}`
+                      : "bg-gray-800/50 border-gray-700";
+                  })()}`}
+                >
                   <div className="text-sm text-gray-400 flex items-center mb-2">
                     <Calendar className="w-4 h-4 mr-2 text-purple-400" />
                     Deadline
@@ -464,19 +519,16 @@ const CodingPage = () => {
                   <div className="text-xl font-bold text-white">
                     {formatDate(project.deadline)}
                   </div>
-                  <div
-                    className={`text-sm mt-1 ${
-                      calculateDaysRemaining(project.deadline) <= 7
-                        ? "text-red-400"
-                        : "text-cyan-400"
-                    }`}
-                  >
-                    {calculateDaysRemaining(project.deadline) > 0
-                      ? `${calculateDaysRemaining(
-                          project.deadline
-                        )} days remaining`
-                      : "Overdue"}
-                  </div>
+                  {(() => {
+                    const dueStatus = getDueStatus(project.deadline);
+                    return dueStatus ? (
+                      <div
+                        className={`text-sm mt-1 font-medium ${dueStatus.color}`}
+                      >
+                        {dueStatus.label}
+                      </div>
+                    ) : null;
+                  })()}
                 </div>
               </div>
             </div>
@@ -485,13 +537,6 @@ const CodingPage = () => {
       ),
     };
   });
-
-  // Handle calendar icon click
-  const openCalendar = (inputRef) => {
-    if (inputRef.current) {
-      inputRef.current.showPicker();
-    }
-  };
 
   return (
     <ReserchLayout
@@ -504,10 +549,10 @@ const CodingPage = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-            Coding Projects Dashboard
+            Research Coding Section
           </h1>
           <p className="text-gray-400 mt-2">
-            Manage development projects, track progress, and monitor team
+            Manage Research projects, track progress, and monitor team
             performance
           </p>
         </div>
@@ -518,7 +563,7 @@ const CodingPage = () => {
             <div className="flex items-center">
               <Users className="w-6 h-6 text-cyan-400 mr-3" />
               <h2 className="text-xl font-semibold text-white">
-                Development Team
+                Research Coding Team
               </h2>
             </div>
             <span className="text-cyan-300/70 text-sm">
@@ -818,20 +863,25 @@ const CodingPage = () => {
                         Start Date
                       </label>
                       <div className="relative">
-                        <Calendar 
-                          className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-cyan-400 cursor-pointer"
-                          onClick={() => openCalendar(startDateRef)}
-                        />
+                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-cyan-400 pointer-events-none" />
                         <input
                           type="date"
                           id="startDate"
                           ref={startDateRef}
                           value={newProject.startDate}
                           onChange={handleInputChange}
+                          onFocus={() => startDateRef.current?.showPicker?.()}
+                          onClick={() => startDateRef.current?.showPicker?.()}
+                          onTouchStart={() =>
+                            startDateRef.current?.showPicker?.()
+                          }
                           required
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all cursor-pointer"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Deadline will auto-set to start date + 3 days
+                      </p>
                     </div>
 
                     {/* Deadline */}
@@ -840,20 +890,24 @@ const CodingPage = () => {
                         Deadline
                       </label>
                       <div className="relative">
-                        <Calendar 
-                          className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 cursor-pointer"
-                          onClick={() => openCalendar(deadlineRef)}
-                        />
+                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none" />
                         <input
                           type="date"
                           id="deadline"
                           ref={deadlineRef}
                           value={newProject.deadline}
                           onChange={handleInputChange}
-                          required
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all cursor-pointer"
+                          onFocus={() => deadlineRef.current?.showPicker?.()}
+                          onClick={() => deadlineRef.current?.showPicker?.()}
+                          onTouchStart={() =>
+                            deadlineRef.current?.showPicker?.()
+                          }
+                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Auto-calculated or customize as needed
+                      </p>
                     </div>
 
                     {/* Results Taken */}
@@ -872,40 +926,6 @@ const CodingPage = () => {
                           min="0"
                           className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
                         />
-                      </div>
-                    </div>
-
-                    {/* Progress Meter */}
-                    <div>
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
-                        Completion Meter ({newProject.progress}%)
-                      </label>
-                      <div className="relative">
-                        <Percent className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none" />
-                        <input
-                          type="range"
-                          min="0"
-                          max="100"
-                          value={newProject.progress}
-                          onChange={(e) => handleProgressChange(e.target.value)}
-                          className="w-full h-10 bg-gray-900/50 border border-gray-700 rounded-xl appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-r [&::-webkit-slider-thumb]:from-cyan-500 [&::-webkit-slider-thumb]:to-purple-600"
-                        />
-                        <div className="flex justify-between text-xs text-gray-400 mt-1">
-                          <span>0%</span>
-                          <span>50%</span>
-                          <span>100%</span>
-                        </div>
-                      </div>
-                      <div className="mt-2 text-right">
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
-                          value={newProject.progress}
-                          onChange={(e) => handleProgressChange(e.target.value)}
-                          className="w-20 px-3 py-1 bg-gray-900/50 border border-gray-700 rounded text-white text-center"
-                        />
-                        <span className="text-gray-400 ml-2">%</span>
                       </div>
                     </div>
 

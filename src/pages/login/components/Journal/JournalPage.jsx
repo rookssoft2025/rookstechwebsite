@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Plus,
@@ -78,6 +78,10 @@ const JournalPage = () => {
     details: "",
   });
 
+  // Refs for date inputs so we can open native picker on touch/click
+  const uploadedDateRef = useRef(null);
+  const dateOfReviewRef = useRef(null);
+
   // Status options
   const statusOptions = [
     {
@@ -154,7 +158,9 @@ const JournalPage = () => {
     }
 
     if (reviewStatusFilter && reviewStatusFilter !== "all") {
-      filtered = filtered.filter((paper) => paper.reviewStatus === reviewStatusFilter);
+      filtered = filtered.filter(
+        (paper) => paper.reviewStatus === reviewStatusFilter
+      );
     }
 
     return filtered;
@@ -177,9 +183,7 @@ const JournalPage = () => {
       if (editingPaper) {
         await updateJournal(paperToSubmit);
         setPapers(
-          papers.map((p) =>
-            p.id === editingPaper.id ? paperToSubmit : p
-          )
+          papers.map((p) => (p.id === editingPaper.id ? paperToSubmit : p))
         );
       } else {
         const addedPaper = await addJournal(paperToSubmit);
@@ -261,7 +265,8 @@ const JournalPage = () => {
     const statusBg = statusOption.bg;
 
     const reviewOption =
-      reviewStatusOptions.find((s) => s.value === paper.reviewStatus) || reviewStatusOptions[1];
+      reviewStatusOptions.find((s) => s.value === paper.reviewStatus) ||
+      reviewStatusOptions[1];
     const ReviewIcon = reviewOption.icon;
     const reviewColor = reviewOption.color;
     const reviewBg = reviewOption.bg;
@@ -396,7 +401,7 @@ const JournalPage = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-            Paper Review Dashboard
+            Journal Section
           </h1>
           <p className="text-gray-400 mt-2">
             Manage paper reviews, track status, and monitor review progress
@@ -417,7 +422,8 @@ const JournalPage = () => {
               <div className="text-sm text-gray-400">
                 {statusFilter === "all" || !statusFilter
                   ? "All papers"
-                  : papers.filter((p) => p.status === statusFilter).length + " papers"}
+                  : papers.filter((p) => p.status === statusFilter).length +
+                    " papers"}
               </div>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -431,23 +437,30 @@ const JournalPage = () => {
                 return (
                   <button
                     key={option.value}
-                    onClick={() => setStatusFilter(option.value === "all" ? null : option.value)}
+                    onClick={() =>
+                      setStatusFilter(
+                        option.value === "all" ? null : option.value
+                      )
+                    }
                     className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
-                      isActive || (option.value === "all" && statusFilter === null)
+                      isActive ||
+                      (option.value === "all" && statusFilter === null)
                         ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
                         : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
                     }`}
                   >
                     <Icon
                       className={`w-5 h-5 mr-3 ${
-                        isActive || (option.value === "all" && statusFilter === null)
+                        isActive ||
+                        (option.value === "all" && statusFilter === null)
                           ? option.color
                           : "text-gray-400"
                       }`}
                     />
                     <span
                       className={`font-medium ${
-                        isActive || (option.value === "all" && statusFilter === null)
+                        isActive ||
+                        (option.value === "all" && statusFilter === null)
                           ? option.color
                           : "text-gray-300"
                       }`}
@@ -456,7 +469,8 @@ const JournalPage = () => {
                     </span>
                     <span
                       className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                        isActive || (option.value === "all" && statusFilter === null)
+                        isActive ||
+                        (option.value === "all" && statusFilter === null)
                           ? "bg-gray-800 text-white"
                           : "bg-gray-800/70 text-gray-400"
                       }`}
@@ -481,7 +495,8 @@ const JournalPage = () => {
               <div className="text-sm text-gray-400">
                 {reviewStatusFilter === "all" || !reviewStatusFilter
                   ? "All reviews"
-                  : papers.filter((p) => p.reviewStatus === reviewStatusFilter).length + " papers"}
+                  : papers.filter((p) => p.reviewStatus === reviewStatusFilter)
+                      .length + " papers"}
               </div>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -495,23 +510,30 @@ const JournalPage = () => {
                 return (
                   <button
                     key={option.value}
-                    onClick={() => setReviewStatusFilter(option.value === "all" ? null : option.value)}
+                    onClick={() =>
+                      setReviewStatusFilter(
+                        option.value === "all" ? null : option.value
+                      )
+                    }
                     className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
-                      isActive || (option.value === "all" && reviewStatusFilter === null)
+                      isActive ||
+                      (option.value === "all" && reviewStatusFilter === null)
                         ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
                         : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
                     }`}
                   >
                     <Icon
                       className={`w-5 h-5 mr-3 ${
-                        isActive || (option.value === "all" && reviewStatusFilter === null)
+                        isActive ||
+                        (option.value === "all" && reviewStatusFilter === null)
                           ? option.color
                           : "text-gray-400"
                       }`}
                     />
                     <span
                       className={`font-medium ${
-                        isActive || (option.value === "all" && reviewStatusFilter === null)
+                        isActive ||
+                        (option.value === "all" && reviewStatusFilter === null)
                           ? option.color
                           : "text-gray-300"
                       }`}
@@ -520,7 +542,8 @@ const JournalPage = () => {
                     </span>
                     <span
                       className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                        isActive || (option.value === "all" && reviewStatusFilter === null)
+                        isActive ||
+                        (option.value === "all" && reviewStatusFilter === null)
                           ? "bg-gray-800 text-white"
                           : "bg-gray-800/70 text-gray-400"
                       }`}
@@ -540,12 +563,7 @@ const JournalPage = () => {
             <h2 className="text-2xl font-bold text-white">Review Papers</h2>
             <p className="text-gray-400 text-sm mt-1">
               Showing {filteredPapers.length} of {papers.length} papers
-              {(statusFilter || reviewStatusFilter) && (
-                <>
-                  {" "}
-                  (filtered)
-                </>
-              )}
+              {(statusFilter || reviewStatusFilter) && <> (filtered)</>}
             </p>
           </div>
           <button
@@ -573,8 +591,14 @@ const JournalPage = () => {
           columns={tableColumns}
           data={tableData.filter((item) => {
             const paper = item._paperData;
-            const statusMatch = !statusFilter || statusFilter === "all" || paper.status === statusFilter;
-            const reviewMatch = !reviewStatusFilter || reviewStatusFilter === "all" || paper.reviewStatus === reviewStatusFilter;
+            const statusMatch =
+              !statusFilter ||
+              statusFilter === "all" ||
+              paper.status === statusFilter;
+            const reviewMatch =
+              !reviewStatusFilter ||
+              reviewStatusFilter === "all" ||
+              paper.reviewStatus === reviewStatusFilter;
             return statusMatch && reviewMatch;
           })}
           expandedRow={expandedRow}
@@ -590,7 +614,8 @@ const JournalPage = () => {
               No papers found
             </h3>
             <p className="text-gray-400 mb-6">
-              No papers match the current filters. Try changing the filters or add new papers.
+              No papers match the current filters. Try changing the filters or
+              add new papers.
             </p>
             {(statusFilter || reviewStatusFilter) && (
               <button
@@ -747,10 +772,20 @@ const JournalPage = () => {
                         <input
                           type="date"
                           id="uploadedDate"
+                          ref={uploadedDateRef}
                           value={newPaper.uploadedDate}
                           onChange={handleInputChange}
+                          onFocus={() =>
+                            uploadedDateRef.current?.showPicker?.()
+                          }
+                          onClick={() =>
+                            uploadedDateRef.current?.showPicker?.()
+                          }
+                          onTouchStart={() =>
+                            uploadedDateRef.current?.showPicker?.()
+                          }
                           required
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
                     </div>
@@ -764,10 +799,20 @@ const JournalPage = () => {
                         <input
                           type="date"
                           id="dateOfReview"
+                          ref={dateOfReviewRef}
                           value={newPaper.dateOfReview}
                           onChange={handleInputChange}
+                          onFocus={() =>
+                            dateOfReviewRef.current?.showPicker?.()
+                          }
+                          onClick={() =>
+                            dateOfReviewRef.current?.showPicker?.()
+                          }
+                          onTouchStart={() =>
+                            dateOfReviewRef.current?.showPicker?.()
+                          }
                           required
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
                     </div>
