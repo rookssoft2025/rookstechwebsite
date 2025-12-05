@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Plus,
@@ -26,6 +26,12 @@ import {
 import { motion } from "framer-motion";
 import DataTable from "../../../../components/ResearchLayout/DataTable";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
+import {
+  fetchJournals,
+  addJournal,
+  updateJournal,
+  deleteJournal,
+} from "../../../../services/JournalService";
 
 const JournalPage = () => {
   const navigate = useNavigate();
@@ -39,95 +45,26 @@ const JournalPage = () => {
     setIsLoading(false);
   };
 
-  // Team members data - Lead researcher first
-  const leadResearcher = {
-    id: 1,
-    name: "Dr. Sarah Johnson",
-    role: "Review Lead",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-    isLead: true,
-  };
-
-  const teamMembers = [
-    {
-      id: 2,
-      name: "Prof. Michael Chen",
-      role: "Reviewer",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
-      isLead: false,
-    },
-    {
-      id: 3,
-      name: "Dr. Emma Wilson",
-      role: "Reviewer",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
-      isLead: false,
-    },
-    {
-      id: 4,
-      name: "Alex Rodriguez",
-      role: "Review Assistant",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
-      isLead: false,
-    },
-  ];
-
-  // Initial papers data - UPDATED STRUCTURE
-  const initialPapers = [
-    {
-      id: 1,
-      title: "Quantum Neural Networks",
-      status: "In Progress",
-      reviewStatus: "On Review",
-      uploadedDate: "2024-02-15",
-      dateOfReview: "2024-05-15",
-      details:
-        "Exploring the intersection of quantum computing and neural networks for optimization problems in machine learning.",
-    },
-    {
-      id: 2,
-      title: "Sustainable AI in Agriculture",
-      status: "Completed",
-      reviewStatus: "Reviewed",
-      uploadedDate: "2024-01-10",
-      dateOfReview: "2024-04-20",
-      details:
-        "Investigating AI applications for sustainable farming practices and resource optimization in precision agriculture.",
-    },
-    {
-      id: 3,
-      title: "Blockchain for Supply Chain Transparency",
-      status: "In Progress",
-      reviewStatus: "Rejected",
-      uploadedDate: "2024-03-01",
-      dateOfReview: "2024-07-15",
-      details:
-        "Developing a blockchain-based solution for enhancing transparency and traceability in global supply chains.",
-    },
-    {
-      id: 4,
-      title: "AI Ethics in Healthcare",
-      status: "In Progress",
-      reviewStatus: "On Review",
-      uploadedDate: "2024-02-20",
-      dateOfReview: "2024-06-10",
-      details:
-        "Examining ethical considerations and regulatory frameworks for AI applications in healthcare diagnostics.",
-    },
-    {
-      id: 5,
-      title: "Climate Data Analysis with ML",
-      status: "Completed",
-      reviewStatus: "Reviewed",
-      uploadedDate: "2024-03-10",
-      dateOfReview: "2024-08-30",
-      details:
-        "Using machine learning models to analyze climate data and predict environmental trends.",
-    },
-  ];
-
   // State management
-  const [papers, setPapers] = useState(initialPapers);
+  const [papers, setPapers] = useState([]);
+  const [loadingPapers, setLoadingPapers] = useState(true);
+
+  // Load papers from Firebase
+  useEffect(() => {
+    const loadPapers = async () => {
+      try {
+        setLoadingPapers(true);
+        const data = await fetchJournals();
+        setPapers(data);
+      } catch (err) {
+        console.error("Error loading journals:", err);
+      } finally {
+        setLoadingPapers(false);
+      }
+    };
+
+    loadPapers();
+  }, []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
   const [editingPaper, setEditingPaper] = useState(null);
@@ -230,33 +167,38 @@ const JournalPage = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const paperToSubmit = editingPaper
-      ? { ...editingPaper, ...newPaper }
-      : {
-          id: papers.length + 1,
-          ...newPaper,
-        };
+    try {
+      const paperToSubmit = editingPaper
+        ? { ...editingPaper, ...newPaper }
+        : newPaper;
 
-    if (editingPaper) {
-      setPapers(
-        papers.map((p) => (p.id === editingPaper.id ? paperToSubmit : p))
-      );
-    } else {
-      setPapers([...papers, paperToSubmit]);
+      if (editingPaper) {
+        await updateJournal(paperToSubmit);
+        setPapers(
+          papers.map((p) =>
+            p.id === editingPaper.id ? paperToSubmit : p
+          )
+        );
+      } else {
+        const addedPaper = await addJournal(paperToSubmit);
+        setPapers([...papers, addedPaper]);
+      }
+
+      setIsModalOpen(false);
+      setEditingPaper(null);
+      setNewPaper({
+        title: "",
+        status: "In Progress",
+        reviewStatus: "On Review",
+        uploadedDate: "",
+        dateOfReview: "",
+        details: "",
+      });
+    } catch (err) {
+      console.error("Error submitting journal:", err);
     }
-
-    setIsModalOpen(false);
-    setEditingPaper(null);
-    setNewPaper({
-      title: "",
-      status: "In Progress",
-      reviewStatus: "On Review",
-      uploadedDate: "",
-      dateOfReview: "",
-      details: "",
-    });
   };
 
   // Handle edit
@@ -274,9 +216,14 @@ const JournalPage = () => {
   };
 
   // Handle delete
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this paper?")) {
-      setPapers(papers.filter((paper) => paper.id !== id));
+      try {
+        await deleteJournal(id);
+        setPapers(papers.filter((paper) => paper.id !== id));
+      } catch (err) {
+        console.error("Error deleting journal:", err);
+      }
     }
   };
 
@@ -454,83 +401,6 @@ const JournalPage = () => {
           <p className="text-gray-400 mt-2">
             Manage paper reviews, track status, and monitor review progress
           </p>
-        </div>
-
-        {/* Team Section */}
-        <div className="glass-card rounded-2xl p-6 mb-8 border border-gray-800">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center">
-              <Users className="w-6 h-6 text-cyan-400 mr-3" />
-              <h2 className="text-xl font-semibold text-white">Review Team</h2>
-            </div>
-            <span className="text-cyan-300/70 text-sm">
-              {1 + teamMembers.length} Members
-            </span>
-          </div>
-
-          {/* Lead Researcher Card */}
-          <div className="mb-6">
-            <h3 className="text-lg font-medium text-white mb-3 flex items-center">
-              Team Lead
-            </h3>
-            <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-gray-900/50 to-yellow-900/20 transition-all duration-300">
-              <img
-                src={leadResearcher.image}
-                alt={leadResearcher.name}
-                className="w-12 h-12 rounded-full border-2 border-yellow-500/50"
-              />
-              <div className="ml-4 flex-1">
-                <div className="flex items-center">
-                  <h3 className="text-lg font-medium text-white">
-                    {leadResearcher.name}
-                  </h3>
-                  <span className="ml-2 px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
-                    Lead
-                  </span>
-                </div>
-                <p className="text-yellow-300/70 text-sm">
-                  {leadResearcher.role}
-                </p>
-              </div>
-              <div className="text-right">
-                <div className="text-white font-semibold">
-                  {papers.length} Papers
-                </div>
-                <div className="text-yellow-400 text-xs">Total in System</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Team Members Section */}
-          <div>
-            <h3 className="text-lg font-medium text-white mb-3">
-              Team Members
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {teamMembers.map((member) => (
-                <div
-                  key={member.id}
-                  className="flex items-center p-4 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-cyan-500/30 transition-all duration-300"
-                >
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-10 h-10 rounded-full border-2 border-cyan-500/50"
-                  />
-                  <div className="ml-3 flex-1">
-                    <h3 className="text-white font-medium">{member.name}</h3>
-                    <p className="text-cyan-300/70 text-xs">{member.role}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-white font-semibold text-sm">
-                      Active
-                    </div>
-                    <div className="text-green-400 text-xs">Available</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* FILTER SECTIONS */}

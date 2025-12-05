@@ -63,30 +63,37 @@ const ProposalPage = () => {
   const endDateRef = useRef(null);
 
   // Research team
+  // Team Leader (Abinesh)
+  const teamLeader = {
+    id: 0,
+    name: "Abinesh",
+    role: "Team Leader",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Abinesh",
+  };
+
+  // Team Members (excluding leader)
   const teamMembers = [
     {
       id: 1,
-      name: "Abinesh",
-      role: "Team Lead",
+      name: "Shajini",
+      role: "Team Member",
       image: "data:image/jpeg;base64,/9j...yourBase64...",
     },
     {
       id: 2,
-      name: "Prof. Michael Chen",
+      name: "Mahesh",
       role: "Senior Researcher",
       image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
-      isLead: false,
     },
     {
       id: 3,
-      name: "Dr. Emma Wilson",
+      name: "Arun",
       role: "Research Associate",
       image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
-      isLead: false,
     },
     {
       id: 4,
-      name: "Alex Rodriguez",
+      name: "Akash",
       role: "Research Assistant",
       image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Shajini",
     },
@@ -294,7 +301,6 @@ const ProposalPage = () => {
         </div>
 
         {/* TEAM */}
-        {/* Team Section - Updated with Abinesh as Lead and Shajini as only member */}
         <div className="glass-card rounded-2xl p-6 mb-8 border border-gray-800">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
@@ -308,43 +314,45 @@ const ProposalPage = () => {
             </span>
           </div>
 
-          {/* Lead Researcher Card - Abinesh */}
+          {/* Team Leader Card - Abinesh at top */}
           <div className="mb-6">
             <h3 className="text-lg font-medium text-white mb-3 flex items-center">
-              Team Lead
+              Team Leader
             </h3>
             <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-gray-900/50 to-yellow-900/20 transition-all duration-300">
-              <div className="w-12 h-12 rounded-full border-2 border-yellow-500/50 bg-gradient-to-r from-yellow-600 to-amber-600 flex items-center justify-center">
-                <span className="text-white font-bold text-lg">A</span>
-              </div>
+              <img
+                src={teamLeader.image}
+                alt={teamLeader.name}
+                className="w-12 h-12 rounded-full border-2 border-yellow-500/50 bg-gradient-to-r from-yellow-600 to-amber-600"
+              />
               <div className="ml-4 flex-1">
                 <div className="flex items-center">
                   <h3 className="text-lg font-medium text-white">
-                    {leadResearcher.name}
+                    {teamLeader.name}
                   </h3>
                   <span className="ml-2 px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
-                    Lead
+                    Leader
                   </span>
                 </div>
                 <p className="text-yellow-300/70 text-sm">
-                  {leadResearcher.role}
+                  {teamLeader.role}
                 </p>
               </div>
               <div className="text-right">
                 <div className="text-white font-semibold">
                   {
                     proposals.filter(
-                      (p) => p.proposalTakenBy === leadResearcher.name
+                      (p) => p.proposalTakenBy === teamLeader.name
                     ).length
                   }{" "}
                   Papers
                 </div>
-                <div className="text-yellow-400 text-xs">Lead</div>
+                <div className="text-yellow-400 text-xs">Leader</div>
               </div>
             </div>
           </div>
 
-          {/* Team Members Section - Only Shajini */}
+          {/* Team Members Section - all except leader */}
           <div>
             <h3 className="text-lg font-medium text-white mb-3">
               Team Members
