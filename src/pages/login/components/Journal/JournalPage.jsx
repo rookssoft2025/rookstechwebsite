@@ -72,7 +72,7 @@ const JournalPage = () => {
   const [newPaper, setNewPaper] = useState({
     title: "",
     status: "In Progress",
-    reviewStatus: "On Review",
+    reviewStatus: "",
     uploadedDate: "",
     dateOfReview: "",
     details: "",
@@ -175,6 +175,11 @@ const JournalPage = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Date of Review must be filled if reviewStatus is 'On Review'
+    if (newPaper.reviewStatus === "On Review" && !newPaper.dateOfReview) {
+      alert("Date of Review is required when review status is 'On Review'.");
+      return;
+    }
     try {
       const paperToSubmit = editingPaper
         ? { ...editingPaper, ...newPaper }
@@ -195,7 +200,7 @@ const JournalPage = () => {
       setNewPaper({
         title: "",
         status: "In Progress",
-        reviewStatus: "On Review",
+        reviewStatus: "",
         uploadedDate: "",
         dateOfReview: "",
         details: "",
@@ -572,7 +577,7 @@ const JournalPage = () => {
               setNewPaper({
                 title: "",
                 status: "In Progress",
-                reviewStatus: "On Review",
+                reviewStatus: "",
                 uploadedDate: "",
                 dateOfReview: "",
                 details: "",
@@ -790,32 +795,34 @@ const JournalPage = () => {
                       </div>
                     </div>
 
-                    <div className="relative">
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
-                        Date of Review
-                      </label>
+                    {newPaper.reviewStatus === "On Review" && (
                       <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none" />
-                        <input
-                          type="date"
-                          id="dateOfReview"
-                          ref={dateOfReviewRef}
-                          value={newPaper.dateOfReview}
-                          onChange={handleInputChange}
-                          onFocus={() =>
-                            dateOfReviewRef.current?.showPicker?.()
-                          }
-                          onClick={() =>
-                            dateOfReviewRef.current?.showPicker?.()
-                          }
-                          onTouchStart={() =>
-                            dateOfReviewRef.current?.showPicker?.()
-                          }
-                          required
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
-                        />
+                        <label className="block text-sm font-medium text-cyan-300 mb-2">
+                          Date of Review
+                        </label>
+                        <div className="relative">
+                          <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none" />
+                          <input
+                            type="date"
+                            id="dateOfReview"
+                            ref={dateOfReviewRef}
+                            value={newPaper.dateOfReview}
+                            onChange={handleInputChange}
+                            onFocus={() =>
+                              dateOfReviewRef.current?.showPicker?.()
+                            }
+                            onClick={() =>
+                              dateOfReviewRef.current?.showPicker?.()
+                            }
+                            onTouchStart={() =>
+                              dateOfReviewRef.current?.showPicker?.()
+                            }
+                            required
+                            className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
+                          />
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
 
                   <div className="mt-6">
