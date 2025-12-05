@@ -284,7 +284,7 @@ const Login = () => {
             setSuccess('Login successful! Redirecting...');
             
             setTimeout(() => {
-                navigate('/dashboard');
+                navigate('/dashboard/proposal');
             }, 1500);
             
         } catch (error) {
