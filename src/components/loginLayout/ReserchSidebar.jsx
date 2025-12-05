@@ -66,10 +66,10 @@ const ReserchSidebar = ({
 
     {
       id: "overview",
-      label: "Research Overview",
+      label: "Reports",
       icon: BarChart,
       description: "Dashboard & analytics",
-      route: "/dashboard",
+      route: "/dashboard/reports-page",
     },
   ];
 

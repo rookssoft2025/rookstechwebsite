@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { Search, Bell, Plus, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
 
-const ReserchHeader = ({ sidebarOpen, setSidebarOpen, onLogout, isLoading }) => {
+const ReserchHeader = ({
+  sidebarOpen,
+  setSidebarOpen,
+  onLogout,
+  isLoading,
+}) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const openConfirm = () => setShowConfirm(true);
@@ -19,7 +24,6 @@ const ReserchHeader = ({ sidebarOpen, setSidebarOpen, onLogout, isLoading }) => 
     <>
       <header className="bg-black/40 backdrop-blur-xl border-b border-white/10 p-6">
         <div className="flex items-center justify-between">
-
           <div className="flex items-center space-x-4">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -29,7 +33,10 @@ const ReserchHeader = ({ sidebarOpen, setSidebarOpen, onLogout, isLoading }) => 
             </button>
 
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="Search papers, authors, topics..."
@@ -39,10 +46,10 @@ const ReserchHeader = ({ sidebarOpen, setSidebarOpen, onLogout, isLoading }) => 
           </div>
 
           <div className="flex items-center space-x-4">
-            <button className="relative p-2 text-white/70 hover:text-white transition-colors duration-300">
+            {/* <button className="relative p-2 text-white/70 hover:text-white transition-colors duration-300">
               <Bell size={20} />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
+            </button> */}
 
             <motion.button
               onClick={openConfirm}
@@ -82,12 +89,18 @@ const ReserchHeader = ({ sidebarOpen, setSidebarOpen, onLogout, isLoading }) => 
                 <LogOut className="w-5 h-5 text-red-400" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-white">Confirm Logout</h3>
-                <p className="text-white/60 text-sm mt-1">You're about to sign out of your account</p>
+                <h3 className="text-xl font-semibold text-white">
+                  Confirm Logout
+                </h3>
+                <p className="text-white/60 text-sm mt-1">
+                  You're about to sign out of your account
+                </p>
               </div>
             </div>
 
-            <p className="text-white/70 mb-6 pl-13">Are you sure you want to logout? Any unsaved changes will be lost.</p>
+            <p className="text-white/70 mb-6 pl-13">
+              Are you sure you want to logout? Any unsaved changes will be lost.
+            </p>
 
             <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
               <motion.button

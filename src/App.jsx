@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import { useState, useEffect, createContext } from "react";
-import Navbar from "./components/layout/Navbar";
 import Home from "./pages/home/Home";
 import Services from "./pages/services/Service";
 import Solutions from "./pages/solutions/Solutions";
@@ -19,6 +18,7 @@ import PaperWritingPage from "./pages/login/components/PaperWriting/PaperWriting
 import CodingPage from "./pages/login/components/Coding/CodingPage";
 import JournalPage from "./pages/login/components/Journal/JournalPage";
 import MamReviewPage from "./pages/login/components/MamReview/MamReviewPage";
+import ReportsPage from "./pages/login/components/Reports/ReportsPage";
 
 export const SplashContext = createContext();
 
@@ -50,7 +50,7 @@ function App() {
         <Route path="/dashboard/coding-page" element={<CodingPage />} />
         <Route path="/dashboard/journal-page" element={< JournalPage/>} />
         <Route path="/dashboard/mam-review-page" element={< MamReviewPage/>} />
-
+        <Route path="/dashboard/reports-page" element={< ReportsPage/>} />
       </Routes>
       <ScrollToTopButton/>
     </SplashContext.Provider>
