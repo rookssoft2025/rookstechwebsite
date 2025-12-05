@@ -33,10 +33,10 @@ import {
   deleteCodingProject,
 } from "../../../../services/CodingService";
 
-import img1 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/abinesh.jpg"
-import img2 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/mahesh.jpg"
-import img3 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/arun.jpg"
-import img4 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/akash.jpg"
+import img1 from "../../assets/abinesh.jpg"
+import img2 from "../../assets/mahesh.jpg"
+import img3 from "../../assets/arun.jpg"
+import img4 from "../../assets/akash.jpg"
 
 const CodingPage = () => {
   const navigate = useNavigate();

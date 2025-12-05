@@ -32,11 +32,11 @@ import {
   deletePaperWriting,
 } from "../../../../services/PaperWritingService";
 
-import img1 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/santhiya.jpg"
-import img2 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/ashika.jpg"
-import img3 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/ashmi.jpg"
-import img4 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/ancy.jpg"
-import img5 from "/Users/rooks/Documents/rookstechwebsite/src/pages/login/assets/canute.jpg"
+import img1 from "../../assets/santhiya.jpg"
+import img2 from "../../assets/ashika.jpg"
+import img3 from "../../assets/ashmi.jpg"
+import img4 from "../../assets/ancy.jpg"
+import img5 from "../../assets/canute.jpg"
 
 const PaperWritingPage = () => {
   const navigate = useNavigate();
