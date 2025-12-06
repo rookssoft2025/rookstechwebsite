@@ -29,6 +29,17 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
+import { fetchMemberTasks, fetchAllByTeam } from "../../../../services/MamReviewService";
+import imgAbinesh from "../../assets/abinesh.jpg";
+import imgMahesh from "../../assets/mahesh.jpg";
+import imgArun from "../../assets/arun.jpg";
+import imgAkash from "../../assets/akash.jpg";
+import imgSanthiya from "../../assets/santhiya.jpg";
+import imgAshika from "../../assets/ashika.jpg";
+import imgAshmi from "../../assets/ashmi.jpg";
+import imgAncy from "../../assets/ancy.jpg";
+import imgCanute from "../../assets/canute.jpg";
+import imgShajini from "../../assets/shajini.jpg";
 
 const MamReviewPage = () => {
   const navigate = useNavigate();
@@ -42,6 +53,11 @@ const MamReviewPage = () => {
   // Employee selection state
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [employeeSearch, setEmployeeSearch] = useState("");
+  const [memberTasks, setMemberTasks] = useState({ coding: [], papers: [], proposals: [], all: [] });
+  const [memberLoading, setMemberLoading] = useState(false);
+  const [memberCounts, setMemberCounts] = useState({});
+  const [teamData, setTeamData] = useState({ coding: [], journals: [], papers: [], proposals: [] });
+  const [teamLoading, setTeamLoading] = useState(true);
 
   // Work details modal state
   const [isWorkDetailsModalOpen, setIsWorkDetailsModalOpen] = useState(false);
@@ -62,14 +78,52 @@ const MamReviewPage = () => {
     }));
   };
 
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return "Not set";
-    return new Date(dateString).toLocaleDateString("en-US", {
+  // Date helpers and format
+  const toJsDate = (value) => {
+    if (!value) return null;
+    if (typeof value?.toDate === "function") return value.toDate();
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? null : d;
+  };
+
+  const formatDate = (value) => {
+    const d = toJsDate(value);
+    if (!d) return "Not set";
+    return d.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
+  };
+
+  // Status mapping helpers for unified badge/progress in employee works
+  const mapStatusToDashboard = (type, status) => {
+    if (!status) return "pending";
+    const s = String(status).toLowerCase();
+    if (type === "paper") {
+      if (s === "completed") return "completed";
+      if (s === "reviewing" || s === "in review" || s === "in-review") return "in-review";
+      if (s === "on hold" || s === "hold") return "pending";
+      return "in-progress";
+    }
+    if (type === "proposal") {
+      if (s === "completed") return "completed";
+      if (s === "on hold" || s === "hold") return "pending";
+      if (s === "in progress" || s === "started") return "in-progress";
+      return "in-progress";
+    }
+    // coding default
+    if (s === "completed") return "completed";
+    if (s === "hold" || s === "on hold") return "pending";
+    return "in-progress";
+  };
+
+  const progressFromStatus = (status) => {
+    const s = String(status || "").toLowerCase();
+    if (s === "completed") return 100;
+    if (s === "reviewing" || s === "in review" || s === "in-progress" || s === "in progress" || s === "started") return 60;
+    if (s === "on hold" || s === "hold" || s === "pending") return 20;
+    return 40;
   };
 
   // Status options for filtering
@@ -82,105 +136,100 @@ const MamReviewPage = () => {
     { value: "rejected", label: "Rejected", color: "text-red-400", bg: "bg-red-400/10", icon: AlertCircle },
   ];
 
-  // Employees Data
+  // Employees Data (aligned with Coding, PaperWriting, Proposal pages)
   const employees = [
-    {
-      id: 1,
-      name: "Dr. Alex Chen",
-      role: "Senior Developer",
-      email: "alex.chen@research.com",
-      phone: "+1 (555) 123-4567",
-      department: "AI Research",
-      avatarColor: "bg-blue-500",
-      totalProjects: 4,
-      activeProjects: 2,
-      completedProjects: 2
-    },
-    {
-      id: 2,
-      name: "Raj Patel",
-      role: "Blockchain Engineer",
-      email: "raj.patel@research.com",
-      phone: "+1 (555) 987-6543",
-      department: "Blockchain",
-      avatarColor: "bg-green-500",
-      totalProjects: 3,
-      activeProjects: 1,
-      completedProjects: 2
-    },
-    {
-      id: 3,
-      name: "Dr. James Wilson",
-      role: "Lead Researcher",
-      email: "james.wilson@research.com",
-      phone: "+1 (555) 456-7890",
-      department: "Quantum Computing",
-      avatarColor: "bg-purple-500",
-      totalProjects: 3,
-      activeProjects: 2,
-      completedProjects: 1
-    },
-    {
-      id: 4,
-      name: "Dr. Emily Brown",
-      role: "AI Researcher",
-      email: "emily.brown@research.com",
-      phone: "+1 (555) 789-0123",
-      department: "AI & Agriculture",
-      avatarColor: "bg-pink-500",
-      totalProjects: 2,
-      activeProjects: 1,
-      completedProjects: 1
-    },
-    {
-      id: 5,
-      name: "Dr. Sarah Johnson",
-      role: "Research Scientist",
-      email: "sarah.johnson@research.com",
-      phone: "+1 (555) 234-5678",
-      department: "Quantum AI",
-      avatarColor: "bg-indigo-500",
-      totalProjects: 2,
-      activeProjects: 1,
-      completedProjects: 1
-    },
-    {
-      id: 6,
-      name: "Jane Smith",
-      role: "Technical Writer",
-      email: "jane.smith@research.com",
-      phone: "+1 (555) 345-6789",
-      department: "Documentation",
-      avatarColor: "bg-yellow-500",
-      totalProjects: 2,
-      activeProjects: 1,
-      completedProjects: 1
-    },
-    {
-      id: 7,
-      name: "Dr. Thomas Lee",
-      role: "Research Director",
-      email: "thomas.lee@research.com",
-      phone: "+1 (555) 456-7890",
-      department: "Management",
-      avatarColor: "bg-red-500",
-      totalProjects: 1,
-      activeProjects: 0,
-      completedProjects: 1
-    },
-    {
-      id: 8,
-      name: "Sarah Williams",
-      role: "Software Engineer",
-      email: "sarah.williams@research.com",
-      phone: "+1 (555) 567-8901",
-      department: "AI Development",
-      avatarColor: "bg-teal-500",
-      totalProjects: 1,
-      activeProjects: 1,
-      completedProjects: 0
-    }
+    { id: 1, name: "Abinesh", role: "Senior Researcher", email: "abinesh@research.com", phone: "N/A", department: "Research", avatarColor: "bg-blue-500", image: imgAbinesh, totalProjects: 0, activeProjects: 0, completedProjects: 0 },
+    { id: 2, name: "Mahesh", role: "Programmer", email: "mahesh@research.com", phone: "N/A", department: "Coding", avatarColor: "bg-green-500", image: imgMahesh, totalProjects: 0, activeProjects: 0, completedProjects: 0 },
+    { id: 3, name: "Arun", role: "Programmer", email: "arun@research.com", phone: "N/A", department: "Coding", avatarColor: "bg-purple-500", image: imgArun, totalProjects: 0, activeProjects: 0, completedProjects: 0 },
+    { id: 4, name: "Akash", role: "Programmer", email: "akash@research.com", phone: "N/A", department: "Coding", avatarColor: "bg-pink-500", image: imgAkash, totalProjects: 0, activeProjects: 0, completedProjects: 0 },
+    { id: 5, name: "Santhiya", role: "Senior Writer", email: "santhiya@research.com", phone: "N/A", department: "Writing", avatarColor: "bg-indigo-500", image: imgSanthiya, totalProjects: 0, activeProjects: 0, completedProjects: 0 },
+    { id: 6, name: "Ashika", role: "Senior Writer", email: "ashika@research.com", phone: "N/A", department: "Writing", avatarColor: "bg-yellow-500", image: imgAshika, totalProjects: 0, activeProjects: 0, completedProjects: 0 },
+    { id: 7, name: "Ashmi", role: "Writer", email: "ashmi@research.com", phone: "N/A", department: "Writing", avatarColor: "bg-red-500", image: imgAshmi, totalProjects: 0, activeProjects: 0, completedProjects: 0 },
+    { id: 8, name: "Ancy", role: "Writer", email: "ancy@research.com", phone: "N/A", department: "Writing", avatarColor: "bg-teal-500", image: imgAncy, totalProjects: 0, activeProjects: 0, completedProjects: 0 },
+    { id: 9, name: "Canute", role: "Writer", email: "canute@research.com", phone: "N/A", department: "Writing", avatarColor: "bg-cyan-500", image: imgCanute, totalProjects: 0, activeProjects: 0, completedProjects: 0 },
+    { id: 10, name: "Shajini", role: "Researcher", email: "shajini@research.com", phone: "N/A", department: "Proposals", avatarColor: "bg-emerald-500", image: imgShajini, totalProjects: 0, activeProjects: 0, completedProjects: 0 },
   ];
+
+  // Load tasks for the selected employee from Firestore
+  React.useEffect(() => {
+    let active = true;
+    const load = async () => {
+      if (!selectedEmployee) return;
+      try {
+        setMemberLoading(true);
+        const res = await fetchMemberTasks(selectedEmployee.name);
+        if (active) setMemberTasks(res);
+      } catch (e) {
+        console.error("Failed to load member tasks:", e);
+        if (active) setMemberTasks({ coding: [], papers: [], proposals: [], all: [] });
+      } finally {
+        if (active) setMemberLoading(false);
+      }
+    };
+    load();
+    return () => {
+      active = false;
+    };
+  }, [selectedEmployee]);
+
+  // Load counts for all employees to display on cards (total, active, completed)
+  React.useEffect(() => {
+    let active = true;
+    const loadCounts = async () => {
+      try {
+        const results = await Promise.all(
+          employees.map(async (e) => {
+            const res = await fetchMemberTasks(e.name);
+            const normalized = (res.all || []).map((t) =>
+              mapStatusToDashboard(t.type, t.status)
+            );
+            const completed = normalized.filter((s) => s === "completed").length;
+            const total = (res.all || []).length;
+            const activeCount = total - completed;
+            return [e.name, { total, active: activeCount, completed }];
+          })
+        );
+        if (!active) return;
+        const obj = {};
+        for (const [name, counts] of results) obj[name] = counts;
+        setMemberCounts(obj);
+      } catch (err) {
+        console.error("Failed to load member counts:", err);
+      }
+    };
+    loadCounts();
+    return () => {
+      active = false;
+    };
+  }, [employees]);
+
+  // Load team-wide data for Current Works by Team
+  React.useEffect(() => {
+    let active = true;
+    const loadTeam = async () => {
+      try {
+        setTeamLoading(true);
+        const res = await fetchAllByTeam();
+        const withUi = (arr) => (arr || []).map((t) => ({ ...t, uiStatus: mapStatusToDashboard(t.type, t.status) }));
+        if (!active) return;
+        setTeamData({
+          coding: withUi(res.coding),
+          journals: withUi(res.journals),
+          papers: withUi(res.papers),
+          proposals: withUi(res.proposals),
+        });
+      } catch (e) {
+        console.error("Failed to load team data:", e);
+        if (active) setTeamData({ coding: [], journals: [], papers: [], proposals: [] });
+      } finally {
+        if (active) setTeamLoading(false);
+      }
+    };
+    loadTeam();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Coding Teams Data - Updated with results taken
   const [codingTeams, setCodingTeams] = useState([
@@ -368,7 +417,7 @@ const MamReviewPage = () => {
     coding: "all",
     proposal: "all",
     journal: "all",
-    writing: "all"
+    paper: "all"
   });
 
   // Handle view work details
@@ -439,32 +488,32 @@ const MamReviewPage = () => {
 
   // Filter teams based on active filter for each tab
   const filteredCodingTeams = useMemo(() => {
-    if (filters.coding === "all") return codingTeams;
-    return codingTeams.filter(team => team.status === filters.coding);
-  }, [codingTeams, filters.coding]);
+    if (filters.coding === "all") return teamData.coding;
+    return teamData.coding.filter((team) => team.uiStatus === filters.coding);
+  }, [teamData, filters.coding]);
 
   const filteredProposalTeams = useMemo(() => {
-    if (filters.proposal === "all") return proposalTeams;
-    return proposalTeams.filter(team => team.status === filters.proposal);
-  }, [proposalTeams, filters.proposal]);
+    if (filters.proposal === "all") return teamData.proposals;
+    return teamData.proposals.filter((team) => team.uiStatus === filters.proposal);
+  }, [teamData, filters.proposal]);
 
   const filteredJournalTeams = useMemo(() => {
-    if (filters.journal === "all") return journalTeams;
-    return journalTeams.filter(team => team.status === filters.journal);
-  }, [journalTeams, filters.journal]);
+    if (filters.journal === "all") return teamData.journals;
+    return teamData.journals.filter((team) => team.uiStatus === filters.journal);
+  }, [teamData, filters.journal]);
 
-  const filteredWritingTeams = useMemo(() => {
-    if (filters.writing === "all") return writingTeams;
-    return writingTeams.filter(team => team.status === filters.writing);
-  }, [writingTeams, filters.writing]);
+  const filteredPaperTeams = useMemo(() => {
+    if (filters.paper === "all") return teamData.papers;
+    return teamData.papers.filter((team) => team.uiStatus === filters.paper);
+  }, [teamData, filters.paper]);
 
   // Get current teams based on active content tab
   const getCurrentTeams = () => {
     switch (contentTab) {
       case "coding": return filteredCodingTeams;
-      case "proposal": return filteredProposalTeams;
       case "journal": return filteredJournalTeams;
-      case "writing": return filteredWritingTeams;
+      case "paper": return filteredPaperTeams;
+      case "proposal": return filteredProposalTeams;
       default: return [];
     }
   };
@@ -476,70 +525,88 @@ const MamReviewPage = () => {
 
   // Get filtered employees based on search
   const filteredEmployees = useMemo(() => {
-    if (!employeeSearch) return employees;
-    return employees.filter(employee =>
-      employee.name.toLowerCase().includes(employeeSearch.toLowerCase()) ||
-      employee.role.toLowerCase().includes(employeeSearch.toLowerCase()) ||
-      employee.department.toLowerCase().includes(employeeSearch.toLowerCase())
-    );
+    // Define required order groups
+    const groups = [
+      ["Abinesh", "Shajini"],
+      ["Santhiya", "Ashika", "Ashmi", "Ancy", "Canute"],
+      ["Mahesh", "Arun", "Akash"],
+    ];
+
+    // Build priority map: name -> { group, index }
+    const priority = new Map();
+    groups.forEach((names, g) => {
+      names.forEach((n, i) => priority.set(n.toLowerCase(), { g, i }));
+    });
+
+    const search = (employeeSearch || "").toLowerCase();
+    const base = employees.filter((e) => {
+      if (!search) return true;
+      return (
+        e.name.toLowerCase().includes(search) ||
+        e.role.toLowerCase().includes(search) ||
+        e.department.toLowerCase().includes(search)
+      );
+    });
+
+    // Sort by group priority then within-group index, fallback to end
+    const sorted = base.slice().sort((a, b) => {
+      const pa = priority.get(a.name.toLowerCase()) || { g: 99, i: 999 };
+      const pb = priority.get(b.name.toLowerCase()) || { g: 99, i: 999 };
+      if (pa.g !== pb.g) return pa.g - pb.g;
+      if (pa.i !== pb.i) return pa.i - pb.i;
+      return a.name.localeCompare(b.name);
+    });
+
+    return sorted;
   }, [employees, employeeSearch]);
 
-  // Get current works for selected employee
+  // Get current works for selected employee from Firestore-backed service
   const getEmployeeCurrentWorks = useMemo(() => {
     if (!selectedEmployee) return [];
-    
-    const employeeWorks = [];
-    
-    // Get coding projects
-    const codingWorks = codingTeams.filter(team => 
-      team.assignedToId === selectedEmployee.id
-    ).map(team => ({
-      ...team,
-      type: 'coding',
-      typeLabel: 'Coding Project',
-      icon: FileCode,
-      color: 'text-blue-400',
-      bgColor: 'bg-blue-900/20'
-    }));
-    
-    // Get proposals
-    const proposalWorks = proposalTeams.filter(team => 
-      team.researcherId === selectedEmployee.id
-    ).map(team => ({
-      ...team,
-      type: 'proposal',
-      typeLabel: 'Research Proposal',
-      icon: FileText,
-      color: 'text-green-400',
-      bgColor: 'bg-green-900/20'
-    }));
-    
-    // Get journal papers
-    const journalWorks = journalTeams.filter(team => 
-      team.researcherId === selectedEmployee.id
-    ).map(team => ({
-      ...team,
-      type: 'journal',
-      typeLabel: 'Journal Paper',
-      icon: BookOpen,
-      color: 'text-purple-400',
-      bgColor: 'bg-purple-900/20'
-    }));
-    
-    // Get writing documents
-    const writingWorks = writingTeams.filter(team => 
-      team.writerId === selectedEmployee.id
-    ).map(team => ({
-      ...team,
-      type: 'writing',
-      typeLabel: 'Writing Document',
-      icon: Edit2,
-      color: 'text-yellow-400',
-      bgColor: 'bg-yellow-900/20'
-    }));
-    
-    return [...codingWorks, ...proposalWorks, ...journalWorks, ...writingWorks];
-  }, [selectedEmployee, codingTeams, proposalTeams, journalTeams, writingTeams]);
+
+    const items = (memberTasks.all || []).map((task) => {
+      const type = task.type;
+      const normalizedStatus = mapStatusToDashboard(type, task.status);
+      const progress = task.progress || progressFromStatus(task.status);
+
+      let icon, color, bgColor, typeLabel;
+      if (type === "coding") {
+        icon = FileCode;
+        color = "text-blue-400";
+        bgColor = "bg-blue-900/20";
+        typeLabel = "Coding Project";
+      } else if (type === "paper") {
+        icon = Edit2;
+        color = "text-yellow-400";
+        bgColor = "bg-yellow-900/20";
+        typeLabel = "Paper Writing";
+      } else {
+        icon = FileText;
+        color = "text-green-400";
+        bgColor = "bg-green-900/20";
+        typeLabel = "Research Proposal";
+      }
+
+      return {
+        id: task.id,
+        type,
+        typeLabel,
+        icon,
+        color,
+        bgColor,
+        status: normalizedStatus,
+        reviewStatus: task.status,
+        progress,
+        details: task.details,
+        projectTitle: task.title,
+        startDate: task.startDate,
+        deadline: task.deadline,
+        endDate: task.endDate,
+      };
+    });
+
+    return items;
+  }, [selectedEmployee, memberTasks]);
 
   // Render Employee Card
   const EmployeeCard = ({ employee }) => {
@@ -555,11 +622,19 @@ const MamReviewPage = () => {
         }`}
       >
         <div className="flex items-center">
-          <div className={`w-12 h-12 rounded-full ${employee.avatarColor} flex items-center justify-center mr-4`}>
-            <span className="text-white font-bold text-lg">
-              {employee.name.split(' ').map(n => n[0]).join('')}
-            </span>
-          </div>
+          {employee.image ? (
+            <img
+              src={employee.image}
+              alt={employee.name}
+              className="w-12 h-12 rounded-full border-2 border-cyan-500/50 mr-4 object-cover"
+            />
+          ) : (
+            <div className={`w-12 h-12 rounded-full ${employee.avatarColor} flex items-center justify-center mr-4`}>
+              <span className="text-white font-bold text-lg">
+                {employee.name.split(' ').map(n => n[0]).join('')}
+              </span>
+            </div>
+          )}
           <div className="flex-1">
             <h4 className="font-semibold text-white">{employee.name}</h4>
             <p className="text-sm text-gray-400">{employee.role}</p>
@@ -572,7 +647,7 @@ const MamReviewPage = () => {
             <div className="flex items-center justify-end">
               <Target className="w-4 h-4 text-cyan-400 mr-2" />
               <span className="text-sm font-semibold text-white">
-                {employee.activeProjects}
+                {memberCounts[employee.name]?.active ?? 0}
               </span>
             </div>
             <span className="text-xs text-gray-500">Active</span>
@@ -856,14 +931,16 @@ const MamReviewPage = () => {
     const getTeamTypeConfig = () => {
       switch (type) {
         case 'coding': return { icon: FileCode, color: 'bg-blue-900/20', textColor: 'text-blue-400' };
-        case 'proposal': return { icon: FileText, color: 'bg-green-900/20', textColor: 'text-green-400' };
         case 'journal': return { icon: BookOpen, color: 'bg-purple-900/20', textColor: 'text-purple-400' };
-        case 'writing': return { icon: Edit2, color: 'bg-yellow-900/20', textColor: 'text-yellow-400' };
+        case 'paper': return { icon: Edit2, color: 'bg-yellow-900/20', textColor: 'text-yellow-400' };
+        case 'proposal': return { icon: FileText, color: 'bg-green-900/20', textColor: 'text-green-400' };
         default: return { icon: Users, color: 'bg-gray-900/20', textColor: 'text-gray-400' };
       }
     };
 
     const { icon: Icon, color: iconColor } = getTeamTypeConfig();
+
+    const lastUpdatedValue = team.updatedAt || (team.raw && team.raw.updatedAt) || team.deadline || team.endDate || team.startDate || team.uploadedDate;
 
     // Get status-specific review status
     const reviewStatus = team.reviewStatus || 'Pending';
@@ -878,18 +955,16 @@ const MamReviewPage = () => {
             </div>
             <div className="flex-1">
               <h3 className="text-xl font-bold text-white">
-                {type === 'coding' && team.projectTitle}
-                {type === 'proposal' && team.title}
-                {type === 'journal' && team.paperTitle}
-                {type === 'writing' && team.document}
+                {team.projectTitle || team.title || team.paperTitle || team.document}
               </h3>
               <div className="flex flex-wrap gap-4 mt-2">
                 <div className="flex items-center text-sm text-gray-400">
                   <User className="w-4 h-4 mr-2" />
-                  {type === 'coding' && `Assigned To: ${team.assignedTo}`}
-                  {type === 'proposal' && `Researcher: ${team.researcher}`}
-                  {type === 'journal' && `Researcher: ${team.researcher}`}
-                  {type === 'writing' && `Writer: ${team.writer}`}
+                  {`Taken By: ${team.assignedTo || team.researcher || team.writer || "N/A"}`}
+                </div>
+                <div className="flex items-center text-sm text-gray-400">
+                  <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
+                  Last Updated: {formatDate(lastUpdatedValue)}
                 </div>
                 {type === 'coding' && team.resultsTaken !== undefined && (
                   <div className="flex items-center text-sm text-gray-400">
@@ -1175,10 +1250,10 @@ const MamReviewPage = () => {
 
   // Tab configurations for content tabs
   const tabs = [
-    { id: "coding", label: "Coding Teams", icon: FileCode, count: codingTeams.length },
-    { id: "proposal", label: "Proposal Teams", icon: FileText, count: proposalTeams.length },
-    { id: "journal", label: "Journal Teams", icon: BookOpen, count: journalTeams.length },
-    { id: "writing", label: "Writing Teams", icon: Edit2, count: writingTeams.length },
+    { id: "coding", label: "Coding Projects", icon: FileCode, count: teamData.coding.length },
+    { id: "journal", label: "Journals", icon: BookOpen, count: teamData.journals.length },
+    { id: "paper", label: "Paper Writings", icon: Edit2, count: teamData.papers.length },
+    { id: "proposal", label: "Research Proposals", icon: FileText, count: teamData.proposals.length },
   ];
 
   return (
@@ -1238,11 +1313,19 @@ const MamReviewPage = () => {
                 <div className="bg-gradient-to-r from-cyan-900/20 to-purple-900/20 rounded-xl p-6 border border-cyan-500/30">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start">
-                      <div className={`w-16 h-16 rounded-full ${selectedEmployee.avatarColor} flex items-center justify-center mr-4`}>
-                        <span className="text-white font-bold text-2xl">
-                          {selectedEmployee.name.split(' ').map(n => n[0]).join('')}
-                        </span>
-                      </div>
+                      {selectedEmployee.image ? (
+                        <img
+                          src={selectedEmployee.image}
+                          alt={selectedEmployee.name}
+                          className="w-16 h-16 rounded-full border-2 border-cyan-500/50 mr-4 object-cover"
+                        />
+                      ) : (
+                        <div className={`w-16 h-16 rounded-full ${selectedEmployee.avatarColor} flex items-center justify-center mr-4`}>
+                          <span className="text-white font-bold text-2xl">
+                            {selectedEmployee.name.split(' ').map(n => n[0]).join('')}
+                          </span>
+                        </div>
+                      )}
                       <div>
                         <h3 className="text-2xl font-bold text-white">{selectedEmployee.name}</h3>
                         <div className="flex items-center mt-2 space-x-4">
@@ -1267,15 +1350,15 @@ const MamReviewPage = () => {
                     </div>
                     <div className="flex space-x-6">
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-white">{selectedEmployee.totalProjects}</div>
+                        <div className="text-3xl font-bold text-white">{memberCounts[selectedEmployee.name]?.total ?? 0}</div>
                         <div className="text-sm text-gray-400">Total</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-cyan-400">{selectedEmployee.activeProjects}</div>
+                        <div className="text-3xl font-bold text-cyan-400">{memberCounts[selectedEmployee.name]?.active ?? 0}</div>
                         <div className="text-sm text-gray-400">Active</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-green-400">{selectedEmployee.completedProjects}</div>
+                        <div className="text-3xl font-bold text-green-400">{memberCounts[selectedEmployee.name]?.completed ?? 0}</div>
                         <div className="text-sm text-gray-400">Completed</div>
                       </div>
                     </div>
@@ -1284,8 +1367,13 @@ const MamReviewPage = () => {
 
                 {/* Employee's Current Works */}
                 <div className="mt-6">
-                  <h4 className="text-lg font-semibold text-white mb-4">Current Works ({getEmployeeCurrentWorks.length})</h4>
-                  {getEmployeeCurrentWorks.length > 0 ? (
+                  <h4 className="text-lg font-semibold text-white mb-4">Current Works ({memberLoading ? "Loading..." : getEmployeeCurrentWorks.length})</h4>
+                  {memberLoading ? (
+                    <div className="text-center py-12 bg-gray-900/30 rounded-xl border border-gray-800">
+                      <Briefcase className="w-16 h-16 text-gray-600 mx-auto mb-4 animate-pulse" />
+                      <p className="text-gray-400">Fetching tasks from server...</p>
+                    </div>
+                  ) : getEmployeeCurrentWorks.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {getEmployeeCurrentWorks.map((work, index) => (
                         <EmployeeWorkItem key={index} work={work} />
@@ -1361,9 +1449,9 @@ const MamReviewPage = () => {
               <Filter className="w-6 h-6 text-cyan-400 mr-3" />
               <h2 className="text-xl font-semibold text-white">
                 {contentTab === 'coding' && 'Filter Coding Projects'}
-                {contentTab === 'proposal' && 'Filter Research Proposals'}
                 {contentTab === 'journal' && 'Filter Journal Papers'}
-                {contentTab === 'writing' && 'Filter Writing Documents'}
+                {contentTab === 'paper' && 'Filter Paper Writings'}
+                {contentTab === 'proposal' && 'Filter Research Proposals'}
               </h2>
             </div>
           </div>
@@ -1402,7 +1490,12 @@ const MamReviewPage = () => {
 
         {/* Team Cards Section */}
         <div>
-          {getCurrentTeams().length > 0 ? (
+          {teamLoading ? (
+            <div className="glass-card rounded-2xl p-12 text-center border border-gray-800">
+              <Briefcase className="w-20 h-20 text-gray-600 mx-auto mb-6 animate-pulse" />
+              <h3 className="text-xl font-semibold text-white">Loading team works...</h3>
+            </div>
+          ) : getCurrentTeams().length > 0 ? (
             getCurrentTeams().map(team => (
               <TeamCard
                 key={`${contentTab}-${team.id}`}
@@ -1413,9 +1506,9 @@ const MamReviewPage = () => {
           ) : (
             <div className="glass-card rounded-2xl p-12 text-center border border-gray-800">
               {contentTab === 'coding' && <FileCode className="w-20 h-20 text-gray-600 mx-auto mb-6" />}
-              {contentTab === 'proposal' && <FileText className="w-20 h-20 text-gray-600 mx-auto mb-6" />}
               {contentTab === 'journal' && <BookOpen className="w-20 h-20 text-gray-600 mx-auto mb-6" />}
-              {contentTab === 'writing' && <Edit2 className="w-20 h-20 text-gray-600 mx-auto mb-6" />}
+              {contentTab === 'paper' && <Edit2 className="w-20 h-20 text-gray-600 mx-auto mb-6" />}
+              {contentTab === 'proposal' && <FileText className="w-20 h-20 text-gray-600 mx-auto mb-6" />}
               
               <h3 className="text-2xl font-semibold text-white mb-3">
                 No {contentTab} teams found
