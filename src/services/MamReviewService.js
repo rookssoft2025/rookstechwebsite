@@ -123,7 +123,6 @@ export const fetchAllByTeam = async () => {
           startDate: d.data().uploadedDate || d.data().startDate || null,
           endDate: d.data().dateOfReview || d.data().endDate || null,
           status: d.data().status || "Started",
-          progress: d.data().progress || 0,
           details: d.data().details || "",
           raw: d.data(),
         }));

@@ -14,7 +14,6 @@ import {
   ChevronUp,
   Eye,
   Filter,
-  Save,
   X,
   Target,
   User,
@@ -132,21 +131,6 @@ const MamReviewPage = () => {
     if (s === "hold" || s === "on hold") return "on-hold";
     if (s.includes("review")) return "review";
     return "started";
-  };
-
-  const progressFromStatus = (status) => {
-    const s = String(status || "").toLowerCase();
-    if (s === "completed") return 100;
-    if (
-      s === "reviewing" ||
-      s === "in review" ||
-      s === "in-progress" ||
-      s === "in progress" ||
-      s === "started"
-    )
-      return 60;
-    if (s === "on hold" || s === "hold" || s === "pending") return 20;
-    return 40;
   };
 
   // Status options for filtering (base set)
@@ -633,7 +617,6 @@ const MamReviewPage = () => {
     const items = (memberTasks.all || []).map((task) => {
       const type = task.type;
       const normalizedStatus = mapStatusToDashboard(type, task.status);
-      const progress = task.progress || progressFromStatus(task.status);
 
       let icon, color, bgColor, typeLabel;
       if (type === "coding") {
@@ -662,7 +645,6 @@ const MamReviewPage = () => {
         bgColor,
         status: normalizedStatus,
         reviewStatus: task.status,
-        progress,
         details: task.details,
         projectTitle: task.title,
         startDate: task.startDate,
@@ -776,21 +758,6 @@ const MamReviewPage = () => {
           </div>
         </div>
 
-        <div className="mb-3">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-gray-400">Progress</span>
-            <span className="text-xs font-medium text-white">
-              {work.progress}%
-            </span>
-          </div>
-          <div className="w-full bg-gray-800 rounded-full h-1.5">
-            <div
-              className="bg-gradient-to-r from-cyan-500 to-purple-600 h-1.5 rounded-full"
-              style={{ width: `${work.progress}%` }}
-            ></div>
-          </div>
-        </div>
-
         <div className="flex justify-between text-xs text-gray-400">
           <div className="flex items-center">
             <Calendar className="w-3 h-3 mr-1" />
@@ -865,22 +832,6 @@ const MamReviewPage = () => {
               >
                 <X className="w-6 h-6" />
               </button>
-            </div>
-
-            {/* Progress Section */}
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-gray-400">Overall Progress</span>
-                <span className="text-lg font-semibold text-white">
-                  {selectedWorkDetails.progress}%
-                </span>
-              </div>
-              <div className="w-full bg-gray-800 rounded-full h-3">
-                <div
-                  className="bg-gradient-to-r from-cyan-500 to-purple-600 h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${selectedWorkDetails.progress}%` }}
-                ></div>
-              </div>
             </div>
 
             {/* Basic Information Grid */}
@@ -1190,20 +1141,6 @@ const MamReviewPage = () => {
                         </div>
 
                         <div className="ml-10">
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs text-gray-400">
-                              Progress
-                            </span>
-                            <span className="text-xs font-medium text-white">
-                              {work.progress}%
-                            </span>
-                          </div>
-                          <div className="w-full bg-gray-800 rounded-full h-1.5 mb-3">
-                            <div
-                              className="bg-gradient-to-r from-cyan-500 to-purple-600 h-1.5 rounded-full"
-                              style={{ width: `${work.progress}%` }}
-                            ></div>
-                          </div>
                           <div className="flex justify-between text-xs text-gray-400">
                             <div>
                               Start:{" "}
