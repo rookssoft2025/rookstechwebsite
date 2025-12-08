@@ -240,7 +240,7 @@ const TeamCard = ({ meta }) => {
             <div>
               <h3 className="text-xl font-bold text-white">{meta.name}</h3>
               <p className="text-gray-400">{meta.department}</p>
-              <p className="text-xs text-gray-500">Collection: {meta.key === 'coding' ? 'codingProjects' : 'paperWritings'}</p>
+              {/* <p className="text-xs text-gray-500">Collection: {meta.key === 'coding' ? 'codingProjects' : 'paperWritings'}</p> */}
             </div>
           </div>
           <div className="flex items-center space-x-6">
@@ -303,9 +303,9 @@ const TeamCard = ({ meta }) => {
                 <h4 className="text-lg font-semibold text-white">
                   All Items in Collection ({teamData.itemsInPeriod?.length || 0})
                 </h4>
-                <div className="text-sm text-gray-400">
+                {/* <div className="text-sm text-gray-400">
                   Collection: <span className="text-cyan-400">{meta.key === 'coding' ? 'codingProjects' : 'paperWritings'}</span>
-                </div>
+                </div> */}
               </div>
               
               {teamData.itemsInPeriod && teamData.itemsInPeriod.length > 0 ? (
