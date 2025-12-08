@@ -407,12 +407,20 @@ const MamReviewPage = () => {
             uiStatus: mapStatusToDashboard(t.type, t.status),
           }));
         if (!active) return;
-        setTeamData({
-          coding: withUi(res.coding),
-          journals: withUi(res.journals),
-          papers: withUi(res.papers),
-          proposals: withUi(res.proposals),
-        });
+        const coding = withUi(res.coding);
+        const journals = withUi(res.journals);
+        const papers = withUi(res.papers);
+        const proposalsRaw = withUi(res.proposals);
+        // Normalize proposals to ensure new field names are present
+        const proposals = proposalsRaw.map((p) => ({
+          ...p,
+          title: p.title || p.paperTitle || p.projectTitle || p.document || p.name || p.id,
+          takenBy: p.takenBy || p.researcher || p.assignedTo || p.writer || p.owner || p.createdBy,
+          startDate: p.startDate || p.createdAt || p.uploadedDate,
+          endDate: p.endDate || p.deadline || p.updatedAt,
+          status: p.status || p.reviewStatus || "Started",
+        }));
+        setTeamData({ coding, journals, papers, proposals });
       } catch (e) {
         console.error("Failed to load team data:", e);
         if (active)
@@ -1076,7 +1084,8 @@ const MamReviewPage = () => {
                     Assigned To
                   </h4>
                   <p className="text-white font-medium">
-                    {selectedWorkDetails.assignedTo ||
+                    {selectedWorkDetails.takenBy ||
+                      selectedWorkDetails.assignedTo ||
                       selectedWorkDetails.researcher ||
                       selectedWorkDetails.writer}
                   </p>
@@ -1518,7 +1527,7 @@ const TeamCard = ({ team, type }) => {
               <div className="flex items-center text-sm text-gray-400">
                 <User className="w-4 h-4 mr-2" />
                 {`Taken By: ${
-                  team.assignedTo || team.researcher || team.writer || team.assignedTo || "N/A"
+                  team.takenBy || team.assignedTo || team.researcher || team.writer || "N/A"
                 }`}
               </div>
               {type === "coding" && team.resultsTaken !== undefined && (
@@ -1536,7 +1545,7 @@ const TeamCard = ({ team, type }) => {
             <div className="flex items-center">
               <StatusIcon className={`w-4 h-4 mr-2 ${statusOption.color}`} />
               <span className={`text-sm font-medium ${statusOption.color}`}>
-                {team.reviewStatus || team.status || "Pending"}
+                {team.reviewStatus || team.status || "N/A"}
               </span>
             </div>
           </div>

@@ -56,8 +56,8 @@ const ProposalPage = () => {
   const [editingId, setEditingId] = useState(null);
 
   const [newPaper, setNewPaper] = useState({
-    paperName: "",
-    proposalTakenBy: "",
+    title: "",
+    takenBy: "",
     startDate: "",
     endDate: "",
     status: "Started",
@@ -274,8 +274,8 @@ const ProposalPage = () => {
 
     setIsModalOpen(false);
     setNewPaper({
-      paperName: "",
-      proposalTakenBy: "",
+      title: "",
+      takenBy: "",
       startDate: "",
       endDate: "",
       status: "Started",
@@ -379,7 +379,7 @@ const ProposalPage = () => {
                 <div className="text-white font-semibold">
                   {
                     proposals.filter(
-                      (p) => p.proposalTakenBy === teamLeader.name
+                      (p) => p.takenBy === teamLeader.name
                     ).length
                   }{" "}
                   Papers
@@ -413,7 +413,7 @@ const ProposalPage = () => {
                     <div className="text-white font-semibold text-sm">
                       {
                         proposals.filter(
-                          (p) => p.proposalTakenBy === member.name
+                          (p) => p.takenBy === member.name
                         ).length
                       }
                     </div>
@@ -504,8 +504,8 @@ const ProposalPage = () => {
         <DataTable
           columns={[
             { key: "serialNo", label: "S.No" },
-            { key: "paperName", label: "Paper Name" },
-            { key: "proposalTakenBy", label: "Researcher" },
+            { key: "title", label: "Paper Name" },
+            { key: "takenBy", label: "Researcher" },
             { key: "timeline", label: "Timeline" },
             { key: "deadline", label: "Deadline" },
             { key: "status", label: "Status" },
@@ -535,12 +535,12 @@ const ProposalPage = () => {
 
                   {/* Paper Name Column - 2nd */}
                   <td className="py-4 px-6 text-white font-medium">
-                    {item.paperName}
+                    {item.title}
                   </td>
 
                   {/* Researcher Column - 2nd */}
                   <td className="py-4 px-6 text-gray-300">
-                    {item.proposalTakenBy}
+                    {item.takenBy}
                   </td>
 
                   {/* Timeline Column - 3rd */}
@@ -806,8 +806,8 @@ const ProposalPage = () => {
                       </label>
                       <div className="relative">
                         <input
-                          id="paperName"
-                          value={newPaper.paperName}
+                          id="title"
+                          value={newPaper.title}
                           onChange={handleInputChange}
                           className="w-full px-4 pl-10 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
                           placeholder="Enter paper title"
@@ -825,11 +825,11 @@ const ProposalPage = () => {
                       </label>
                       <div className="relative">
                         <select
-                          value={newPaper.proposalTakenBy}
+                          value={newPaper.takenBy}
                           onChange={(e) =>
                             setNewPaper((p) => ({
                               ...p,
-                              proposalTakenBy: e.target.value,
+                              takenBy: e.target.value,
                             }))
                           }
                           required

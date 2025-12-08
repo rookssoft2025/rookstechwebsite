@@ -42,13 +42,13 @@ const normalizeTask = (collectionName, id, data) => {
       raw: data,
     };
   }
-  // proposal
+  // proposal (updated schema: title, takenBy)
   return {
     id,
     type: "proposal",
     typeLabel: "Research Proposal",
-    title: data.paperName,
-    assignedTo: data.proposalTakenBy,
+    title: data.title || data.paperName,
+    assignedTo: data.takenBy || data.proposalTakenBy,
     startDate: data.startDate || null,
     endDate: data.endDate || null,
     status: data.status || "Started",
@@ -78,7 +78,7 @@ const fetchTasksByMemberFromCollection = async (collectionName, memberName) => {
       qRef = query(
         collection(db, collectionName),
         where("isDeleted", "==", false),
-        where("proposalTakenBy", "==", memberName)
+        where("takenBy", "==", memberName)
       );
     } else {
       return [];
