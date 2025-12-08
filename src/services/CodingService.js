@@ -17,6 +17,7 @@ const cleanCodingData = (data) => {
   const cleaned = { ...data };
   delete cleaned.renderRow;
   delete cleaned.expandContent;
+  delete cleaned.progress; 
   return cleaned;
 };
 

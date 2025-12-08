@@ -21,7 +21,6 @@ const normalizeTask = (collectionName, id, data) => {
       startDate: data.startDate || null,
       deadline: data.deadline || null,
       status: data.status || "Started",
-      progress: data.progress || 0,
       details: data.details || "",
       resultsTaken: data.resultsTaken || 0,
       raw: data,
@@ -37,7 +36,6 @@ const normalizeTask = (collectionName, id, data) => {
       startDate: data.startDate || null,
       deadline: data.deadline || null,
       status: data.status || "Started",
-      progress: data.progress || 0,
       details: data.details || "",
       raw: data,
     };
@@ -52,7 +50,6 @@ const normalizeTask = (collectionName, id, data) => {
     startDate: data.startDate || null,
     endDate: data.endDate || null,
     status: data.status || "Started",
-    progress: data.progress || 0,
     details: data.details || "",
     raw: data,
   };

@@ -275,7 +275,6 @@ const PaperWritingPage = () => {
             : 1;
         const paperToSubmit = {
           serialNo: nextSerialNo,
-          sections: ["Abstract", "Introduction"],
           ...newPaper,
         };
 

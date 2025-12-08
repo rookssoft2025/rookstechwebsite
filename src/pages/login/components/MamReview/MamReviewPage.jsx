@@ -196,7 +196,7 @@ const MamReviewPage = () => {
     bg: "bg-red-400/10",
     icon: AlertCircle,
   };
-  
+
   const statusOptions = useMemo(() => {
     if (contentTab === "journal") {
       return [...baseStatusOptions, journalRejectedOption];
@@ -414,8 +414,20 @@ const MamReviewPage = () => {
         // Normalize proposals to ensure new field names are present
         const proposals = proposalsRaw.map((p) => ({
           ...p,
-          title: p.title || p.paperTitle || p.projectTitle || p.document || p.name || p.id,
-          takenBy: p.takenBy || p.researcher || p.assignedTo || p.writer || p.owner || p.createdBy,
+          title:
+            p.title ||
+            p.paperTitle ||
+            p.projectTitle ||
+            p.document ||
+            p.name ||
+            p.id,
+          takenBy:
+            p.takenBy ||
+            p.researcher ||
+            p.assignedTo ||
+            p.writer ||
+            p.owner ||
+            p.createdBy,
           startDate: p.startDate || p.createdAt || p.uploadedDate,
           endDate: p.endDate || p.deadline || p.updatedAt,
           status: p.status || p.reviewStatus || "Started",
@@ -436,220 +448,16 @@ const MamReviewPage = () => {
   }, []);
 
   // Coding Teams Data - Updated with results taken
-  const [codingTeams, setCodingTeams] = useState([
-    {
-      id: 1,
-      projectTitle: "Neural Network Optimization",
-      assignedTo: "Dr. Alex Chen",
-      assignedToId: 1,
-      startDate: "2024-02-15",
-      deadline: "2024-04-15",
-      resultsTaken: 85,
-      status: "development",
-      reviewStatus: "In Review",
-      progress: 85,
-      details:
-        "Developing optimized neural network architectures for real-time image processing. Implementing novel optimization algorithms.",
-      members: [
-        "Dr. Alex Chen",
-        "Sarah Williams",
-        "Mike Johnson",
-        "Emma Davis",
-      ],
-      testCases: 150,
-      bugsFixed: 24,
-      featuresImplemented: 12,
-    },
-    {
-      id: 2,
-      projectTitle: "Supply Chain DApp",
-      assignedTo: "Raj Patel",
-      assignedToId: 2,
-      startDate: "2024-01-10",
-      deadline: "2024-03-30",
-      resultsTaken: 120,
-      status: "deployed",
-      reviewStatus: "Completed",
-      progress: 100,
-      details:
-        "Building a decentralized application for supply chain transparency using Ethereum smart contracts.",
-      members: ["Raj Patel", "Lisa Wong", "David Kim"],
-      testCases: 85,
-      bugsFixed: 15,
-      featuresImplemented: 8,
-    },
-    {
-      id: 3,
-      projectTitle: "Computer Vision Pipeline",
-      assignedTo: "Dr. Alex Chen",
-      assignedToId: 1,
-      startDate: "2024-03-01",
-      deadline: "2024-06-30",
-      resultsTaken: 45,
-      status: "development",
-      reviewStatus: "In Progress",
-      progress: 60,
-      details:
-        "Building an end-to-end computer vision pipeline for object detection and classification.",
-      members: ["Dr. Alex Chen", "Mike Johnson"],
-      testCases: 75,
-      bugsFixed: 12,
-      featuresImplemented: 6,
-    },
-  ]);
+  const [codingTeams, setCodingTeams] = useState([]);
 
   // Proposal Teams Data
-  const [proposalTeams, setProposalTeams] = useState([
-    {
-      id: 1,
-      title: "Quantum Computing Research Grant",
-      researcher: "Dr. James Wilson",
-      researcherId: 3,
-      startDate: "2024-02-01",
-      endDate: "2024-12-31",
-      budget: "$250,000",
-      status: "in-progress",
-      reviewStatus: "Under Review",
-      progress: 70,
-      details:
-        "Proposal for quantum computing research focusing on optimization algorithms and quantum machine learning applications.",
-      objectives: [
-        "Develop quantum algorithms",
-        "Build quantum simulation platform",
-        "Publish 5 research papers",
-      ],
-      methodology: "Experimental research with quantum simulators",
-      members: ["Dr. James Wilson", "Prof. Sarah Miller", "Dr. Robert Chen"],
-    },
-    {
-      id: 2,
-      title: "Sustainable AI in Agriculture",
-      researcher: "Dr. Emily Brown",
-      researcherId: 4,
-      startDate: "2024-01-15",
-      endDate: "2025-06-30",
-      budget: "$180,000",
-      status: "pending",
-      reviewStatus: "Awaiting Review",
-      progress: 40,
-      details:
-        "Proposal for implementing AI solutions in precision agriculture to optimize resource usage and increase yields.",
-      objectives: [
-        "Reduce water usage by 30%",
-        "Increase crop yield by 20%",
-        "Develop AI monitoring system",
-      ],
-      methodology: "Field experiments with IoT sensors and AI models",
-      members: ["Dr. Emily Brown", "Mark Thompson", "Dr. Lisa Zhang"],
-    },
-    {
-      id: 3,
-      title: "AI Ethics Framework",
-      researcher: "Dr. James Wilson",
-      researcherId: 3,
-      startDate: "2024-03-10",
-      endDate: "2024-09-30",
-      budget: "$120,000",
-      status: "completed",
-      reviewStatus: "Completed",
-      progress: 100,
-      details:
-        "Developing an ethical framework for AI development and deployment in sensitive applications.",
-      objectives: [
-        "Create ethical guidelines",
-        "Develop auditing tools",
-        "Train 100+ AI ethics professionals",
-      ],
-      methodology: "Literature review, workshops, and framework development",
-      members: ["Dr. James Wilson", "Ethics Committee"],
-    },
-  ]);
+  const [proposalTeams, setProposalTeams] = useState([]);
 
   // Journal Teams Data - Fixed: Added researcherId for Dr. Sarah Johnson
-  const [journalTeams, setJournalTeams] = useState([
-    {
-      id: 1,
-      paperTitle: "Quantum Neural Networks",
-      researcher: "Dr. Sarah Johnson",
-      researcherId: 5,
-      uploadedDate: "2024-02-15",
-      dateOfReview: "2024-05-15",
-      status: "in-review",
-      reviewStatus: "On Review",
-      progress: 60,
-      details:
-        "Exploring the intersection of quantum computing and neural networks for optimization problems in machine learning.",
-      journal: "Nature AI",
-      impactFactor: "18.5",
-      keywords: ["Quantum Computing", "Neural Networks", "Optimization"],
-      members: ["Dr. Sarah Johnson", "Prof. Michael Chen"],
-    },
-    {
-      id: 2,
-      paperTitle: "Sustainable AI in Agriculture",
-      researcher: "Dr. Emma Wilson",
-      researcherId: 9, // Add a new employee ID for Dr. Emma Wilson
-      uploadedDate: "2024-01-10",
-      dateOfReview: "2024-04-20",
-      status: "reviewed",
-      reviewStatus: "Reviewed",
-      progress: 100,
-      details:
-        "Investigating AI applications for sustainable farming practices and resource optimization in precision agriculture.",
-      journal: "Science Advances",
-      impactFactor: "14.5",
-      keywords: ["AI", "Agriculture", "Sustainability"],
-      members: ["Dr. Emma Wilson", "Alex Rodriguez"],
-    },
-  ]);
+  const [journalTeams, setJournalTeams] = useState([]);
 
   // Writing Teams Data
-  const [writingTeams, setWritingTeams] = useState([
-    {
-      id: 1,
-      document: "Research Methodology Handbook",
-      writer: "Jane Smith",
-      writerId: 6,
-      startDate: "2024-02-20",
-      deadline: "2024-04-05",
-      status: "drafting",
-      reviewStatus: "Content Review",
-      progress: 75,
-      details:
-        "Comprehensive handbook detailing research methodologies for AI and machine learning projects.",
-      wordCount: "15,000",
-      sections: [
-        "Introduction",
-        "Methodologies",
-        "Case Studies",
-        "Best Practices",
-      ],
-      format: "PDF/EPUB",
-      members: ["Jane Smith", "Robert Brown", "Anna Wilson"],
-    },
-    {
-      id: 2,
-      document: "Annual Research Report",
-      writer: "Dr. Thomas Lee",
-      writerId: 7,
-      startDate: "2024-01-05",
-      deadline: "2024-03-25",
-      status: "completed",
-      reviewStatus: "Approved",
-      progress: 100,
-      details:
-        "Annual report summarizing research achievements, publications, and future directions.",
-      wordCount: "25,000",
-      sections: [
-        "Executive Summary",
-        "Research Highlights",
-        "Publications",
-        "Future Plans",
-      ],
-      format: "PDF",
-      members: ["Dr. Thomas Lee", "Sarah Miller", "Mike Davis"],
-    },
-  ]);
+  const [writingTeams, setWritingTeams] = useState([]);
 
   // State for editing and filters per tab
   const [editingItem, setEditingItem] = useState(null);
@@ -1443,299 +1251,321 @@ const MamReviewPage = () => {
     );
   };
 
-// Render team card component - PROGRESS BAR REMOVED
-const TeamCard = ({ team, type }) => {
-  const isExpanded = expandedItems[`${type}-${team.id}`];
+  // Render team card component - PROGRESS BAR REMOVED
+  const TeamCard = ({ team, type }) => {
+    const isExpanded = expandedItems[`${type}-${team.id}`];
 
-  const statusOption =
-    statusOptions.find((s) => s.value === team.uiStatus) || statusOptions[0];
-  const StatusIcon = statusOption.icon;
+    const statusOption =
+      statusOptions.find((s) => s.value === team.uiStatus) || statusOptions[0];
+    const StatusIcon = statusOption.icon;
 
-  // Get icon and color based on team type
-  const getTeamTypeConfig = () => {
-    switch (type) {
-      case "coding":
-        return {
-          icon: FileCode,
-          color: "bg-blue-900/20",
-          textColor: "text-blue-400",
-        };
-      case "journal":
-        return {
-          icon: BookOpen,
-          color: "bg-purple-900/20",
-          textColor: "text-purple-400",
-        };
-      case "paper":
-        return {
-          icon: Edit2,
-          color: "bg-yellow-900/20",
-          textColor: "text-yellow-400",
-        };
-      case "proposal":
-        return {
-          icon: FileText,
-          color: "bg-green-900/20",
-          textColor: "text-green-400",
-        };
-      default:
-        return {
-          icon: Users,
-          color: "bg-gray-900/20",
-          textColor: "text-gray-400",
-        };
-    }
-  };
+    // Get icon and color based on team type
+    const getTeamTypeConfig = () => {
+      switch (type) {
+        case "coding":
+          return {
+            icon: FileCode,
+            color: "bg-blue-900/20",
+            textColor: "text-blue-400",
+          };
+        case "journal":
+          return {
+            icon: BookOpen,
+            color: "bg-purple-900/20",
+            textColor: "text-purple-400",
+          };
+        case "paper":
+          return {
+            icon: Edit2,
+            color: "bg-yellow-900/20",
+            textColor: "text-yellow-400",
+          };
+        case "proposal":
+          return {
+            icon: FileText,
+            color: "bg-green-900/20",
+            textColor: "text-green-400",
+          };
+        default:
+          return {
+            icon: Users,
+            color: "bg-gray-900/20",
+            textColor: "text-gray-400",
+          };
+      }
+    };
 
-  const { icon: Icon, color: iconColor, textColor } = getTeamTypeConfig();
+    const { icon: Icon, color: iconColor, textColor } = getTeamTypeConfig();
 
-  // Calculate days remaining
-  const calculateDaysRemaining = () => {
-    const deadline = team.deadline || team.endDate || team.dateOfReview;
-    if (!deadline) return "N/A";
-    
-    const deadlineDate = toJsDate(deadline);
-    if (!deadlineDate) return "N/A";
-    
-    const today = new Date();
-    const timeDiff = deadlineDate.getTime() - today.getTime();
-    const daysRemaining = Math.ceil(timeDiff / (1000 * 3600 * 24));
-    
-    if (daysRemaining < 0) return "Overdue";
-    if (daysRemaining === 0) return "Today";
-    return `${daysRemaining} days remaining`;
-  };
+    // Calculate days remaining
+    const calculateDaysRemaining = () => {
+      const deadline = team.deadline || team.endDate || team.dateOfReview;
+      if (!deadline) return "N/A";
 
-  const daysRemainingText = calculateDaysRemaining();
+      const deadlineDate = toJsDate(deadline);
+      if (!deadlineDate) return "N/A";
 
-  return (
-    <div className="glass-card rounded-2xl p-6 mb-6 border border-gray-800 hover:border-cyan-500/30 transition-all duration-300">
-      {/* Header */}
-      <div className="flex justify-between items-start mb-6">
-        <div className="flex items-start">
-          <div className={`p-3 rounded-xl ${iconColor} mr-4`}>
-            <Icon className={`w-6 h-6 ${textColor}`} />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-xl font-bold text-white">
-              {team.projectTitle ||
-                team.title ||
-                team.paperTitle ||
-                team.document}
-            </h3>
-            <div className="flex flex-wrap gap-4 mt-2">
-              <div className="flex items-center text-sm text-gray-400">
-                <User className="w-4 h-4 mr-2" />
-                {`Taken By: ${
-                  team.takenBy || team.assignedTo || team.researcher || team.writer || "N/A"
-                }`}
-              </div>
-              {type === "coding" && team.resultsTaken !== undefined && (
+      const today = new Date();
+      const timeDiff = deadlineDate.getTime() - today.getTime();
+      const daysRemaining = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+      if (daysRemaining < 0) return "Overdue";
+      if (daysRemaining === 0) return "Today";
+      return `${daysRemaining} days remaining`;
+    };
+
+    const daysRemainingText = calculateDaysRemaining();
+
+    return (
+      <div className="glass-card rounded-2xl p-6 mb-6 border border-gray-800 hover:border-cyan-500/30 transition-all duration-300">
+        {/* Header */}
+        <div className="flex justify-between items-start mb-6">
+          <div className="flex items-start">
+            <div className={`p-3 rounded-xl ${iconColor} mr-4`}>
+              <Icon className={`w-6 h-6 ${textColor}`} />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-white">
+                {team.projectTitle ||
+                  team.title ||
+                  team.paperTitle ||
+                  team.document}
+              </h3>
+              <div className="flex flex-wrap gap-4 mt-2">
                 <div className="flex items-center text-sm text-gray-400">
-                  <BarChart className="w-4 h-4 mr-2" />
-                  Results Taken: {team.resultsTaken || 0}
+                  <User className="w-4 h-4 mr-2" />
+                  {`Taken By: ${
+                    team.takenBy ||
+                    team.assignedTo ||
+                    team.researcher ||
+                    team.writer ||
+                    "N/A"
+                  }`}
                 </div>
-              )}
+                {type === "coding" && team.resultsTaken !== undefined && (
+                  <div className="flex items-center text-sm text-gray-400">
+                    <BarChart className="w-4 h-4 mr-2" />
+                    Results Taken: {team.resultsTaken || 0}
+                  </div>
+                )}
+              </div>
             </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <div className={`px-4 py-2 rounded-full ${statusOption.bg}`}>
+              <div className="flex items-center">
+                <StatusIcon className={`w-4 h-4 mr-2 ${statusOption.color}`} />
+                <span className={`text-sm font-medium ${statusOption.color}`}>
+                  {team.reviewStatus || team.status || "N/A"}
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => toggleExpansion(type, team.id)}
+              className="p-2 text-cyan-400 hover:text-cyan-300 transition-colors rounded-lg hover:bg-cyan-900/20"
+            >
+              {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <div className={`px-4 py-2 rounded-full ${statusOption.bg}`}>
-            <div className="flex items-center">
-              <StatusIcon className={`w-4 h-4 mr-2 ${statusOption.color}`} />
-              <span className={`text-sm font-medium ${statusOption.color}`}>
-                {team.reviewStatus || team.status || "N/A"}
-              </span>
-            </div>
-          </div>
-          <button
-            onClick={() => toggleExpansion(type, team.id)}
-            className="p-2 text-cyan-400 hover:text-cyan-300 transition-colors rounded-lg hover:bg-cyan-900/20"
-          >
-            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Timeline Section - Like in the image */}
-      <div className="mb-6">
-        <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-          <Calendar className="w-5 h-5 mr-2 text-cyan-400" />
-          Project Timeline
-        </h4>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-3 bg-gray-900/50 rounded-lg">
-            <div className="text-sm text-gray-400 flex items-center">
-              <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
-              Start Date
-            </div>
-            <div className="text-xl font-bold text-white mt-2">
-              {formatDate(team.startDate || team.uploadedDate)}
-            </div>
-          </div>
-
-          <div className="p-3 bg-gray-900/50 rounded-lg">
-            <div className="text-sm text-gray-400 flex items-center">
-              <Calendar className="w-4 h-4 mr-2 text-purple-400" />
-              {type === "proposal"
-                ? "End Date"
-                : type === "journal"
-                ? "Review Date"
-                : "Deadline"}
-            </div>
-            <div className="text-xl font-bold text-white mt-2">
-              {formatDate(team.deadline || team.dateOfReview || team.endDate)}
-            </div>
-          </div>
-
-          <div className="p-3 bg-cyan-900/20 rounded-lg">
-            <div className="text-sm text-cyan-400 flex items-center">
-              <Clock className="w-4 h-4 mr-2" />
-              Time Remaining
-            </div>
-            <div className="text-xl font-bold text-cyan-400 mt-2">
-              {daysRemainingText}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Expanded Content - Show paper details, start date, deadline like in image */}
-      {isExpanded && (
-        <div className="mt-6 pt-6 border-t border-gray-800">
-          <div className="space-y-6">
-            {/* Project Details Section - Main content like in image */}
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                <FileText className="w-5 h-5 mr-2 text-cyan-400" />
-                Project Details
-              </h4>
-              <div className="p-4 bg-gray-800/50 rounded-lg">
-                <p className="text-gray-300">{team.details || "No details provided."}</p>
+        {/* Timeline Section - Like in the image */}
+        <div className="mb-6">
+          <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
+            <Calendar className="w-5 h-5 mr-2 text-cyan-400" />
+            Project Timeline
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-3 bg-gray-900/50 rounded-lg">
+              <div className="text-sm text-gray-400 flex items-center">
+                <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
+                Start Date
+              </div>
+              <div className="text-xl font-bold text-white mt-2">
+                {formatDate(team.startDate || team.uploadedDate)}
               </div>
             </div>
 
-            {/* Additional Info Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Type-specific Information */}
-              {type === "coding" && (
-                <div>
-                  <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                    <BarChart className="w-5 h-5 mr-2 text-blue-400" />
-                    Project Statistics
-                  </h4>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
-                      <span className="text-gray-400">Results Taken</span>
-                      <span className="text-white font-bold">{team.resultsTaken || 0}</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
-                      <span className="text-gray-400">Test Cases</span>
-                      <span className="text-white font-bold">{team.testCases || 0}</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
-                      <span className="text-gray-400">Features</span>
-                      <span className="text-white font-bold">{team.featuresImplemented || 0}</span>
-                    </div>
-                  </div>
-                </div>
-              )}
+            <div className="p-3 bg-gray-900/50 rounded-lg">
+              <div className="text-sm text-gray-400 flex items-center">
+                <Calendar className="w-4 h-4 mr-2 text-purple-400" />
+                {type === "proposal"
+                  ? "End Date"
+                  : type === "journal"
+                  ? "Review Date"
+                  : "Deadline"}
+              </div>
+              <div className="text-xl font-bold text-white mt-2">
+                {formatDate(team.deadline || team.dateOfReview || team.endDate)}
+              </div>
+            </div>
 
-              {type === "journal" && (
-                <div>
-                  <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                    <BookOpen className="w-5 h-5 mr-2 text-purple-400" />
-                    Journal Information
-                  </h4>
-                  <div className="space-y-3">
-                    {team.journal && (
-                      <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
-                        <span className="text-gray-400">Journal</span>
-                        <span className="text-white font-bold">{team.journal}</span>
-                      </div>
-                    )}
-                    {team.impactFactor && (
-                      <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
-                        <span className="text-gray-400">Impact Factor</span>
-                        <span className="text-white font-bold">{team.impactFactor}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+            <div className="p-3 bg-cyan-900/20 rounded-lg">
+              <div className="text-sm text-cyan-400 flex items-center">
+                <Clock className="w-4 h-4 mr-2" />
+                Time Remaining
+              </div>
+              <div className="text-xl font-bold text-cyan-400 mt-2">
+                {daysRemainingText}
+              </div>
+            </div>
+          </div>
+        </div>
 
-              {/* Timeline Details (Expanded version) */}
+        {/* Expanded Content - Show paper details, start date, deadline like in image */}
+        {isExpanded && (
+          <div className="mt-6 pt-6 border-t border-gray-800">
+            <div className="space-y-6">
+              {/* Project Details Section - Main content like in image */}
               <div>
                 <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                  <Calendar className="w-5 h-5 mr-2 text-green-400" />
-                  Timeline Details
+                  <FileText className="w-5 h-5 mr-2 text-cyan-400" />
+                  Project Details
                 </h4>
-                <div className="space-y-3">
-                  <div className="p-3 bg-gray-900/50 rounded-lg">
-                    <div className="text-sm text-gray-400 mb-2">Start Date</div>
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
-                      <span className="text-white font-bold">
-                        {formatDate(team.startDate || team.uploadedDate)}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="p-3 bg-gray-900/50 rounded-lg">
-                    <div className="text-sm text-gray-400 mb-2">
-                      {type === "proposal"
-                        ? "End Date"
-                        : type === "journal"
-                        ? "Review Date"
-                        : "Deadline"}
-                    </div>
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-2 text-purple-400" />
-                      <span className="text-white font-bold">
-                        {formatDate(team.deadline || team.dateOfReview || team.endDate)}
-                      </span>
-                    </div>
-                  </div>
+                <div className="p-4 bg-gray-800/50 rounded-lg">
+                  <p className="text-gray-300">
+                    {team.details || "No details provided."}
+                  </p>
+                </div>
+              </div>
 
-                  <div className="p-3 bg-cyan-900/20 rounded-lg">
-                    <div className="text-sm text-cyan-400 mb-2">Time Remaining</div>
-                    <div className="flex items-center">
-                      <Clock className="w-4 h-4 mr-2" />
-                      <span className="text-cyan-400 font-bold">
-                        {daysRemainingText}
-                      </span>
+              {/* Additional Info Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Type-specific Information */}
+                {type === "coding" && (
+                  <div>
+                    <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
+                      <BarChart className="w-5 h-5 mr-2 text-blue-400" />
+                      Project Statistics
+                    </h4>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
+                        <span className="text-gray-400">Results Taken</span>
+                        <span className="text-white font-bold">
+                          {team.resultsTaken || 0}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
+                        <span className="text-gray-400">Test Cases</span>
+                        <span className="text-white font-bold">
+                          {team.testCases || 0}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
+                        <span className="text-gray-400">Features</span>
+                        <span className="text-white font-bold">
+                          {team.featuresImplemented || 0}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {type === "journal" && (
+                  <div>
+                    <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
+                      <BookOpen className="w-5 h-5 mr-2 text-purple-400" />
+                      Journal Information
+                    </h4>
+                    <div className="space-y-3">
+                      {team.journal && (
+                        <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
+                          <span className="text-gray-400">Journal</span>
+                          <span className="text-white font-bold">
+                            {team.journal}
+                          </span>
+                        </div>
+                      )}
+                      {team.impactFactor && (
+                        <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
+                          <span className="text-gray-400">Impact Factor</span>
+                          <span className="text-white font-bold">
+                            {team.impactFactor}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Timeline Details (Expanded version) */}
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
+                    <Calendar className="w-5 h-5 mr-2 text-green-400" />
+                    Timeline Details
+                  </h4>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-gray-900/50 rounded-lg">
+                      <div className="text-sm text-gray-400 mb-2">
+                        Start Date
+                      </div>
+                      <div className="flex items-center">
+                        <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
+                        <span className="text-white font-bold">
+                          {formatDate(team.startDate || team.uploadedDate)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-gray-900/50 rounded-lg">
+                      <div className="text-sm text-gray-400 mb-2">
+                        {type === "proposal"
+                          ? "End Date"
+                          : type === "journal"
+                          ? "Review Date"
+                          : "Deadline"}
+                      </div>
+                      <div className="flex items-center">
+                        <Calendar className="w-4 h-4 mr-2 text-purple-400" />
+                        <span className="text-white font-bold">
+                          {formatDate(
+                            team.deadline || team.dateOfReview || team.endDate
+                          )}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-cyan-900/20 rounded-lg">
+                      <div className="text-sm text-cyan-400 mb-2">
+                        Time Remaining
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="w-4 h-4 mr-2" />
+                        <span className="text-cyan-400 font-bold">
+                          {daysRemainingText}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+
+              {/* Team Members Section */}
+              {team.members && team.members.length > 0 && (
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
+                    <Users className="w-5 h-5 mr-2 text-cyan-400" />
+                    Team Members
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {team.members.map((member, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-cyan-900/20 text-cyan-400 rounded-full text-sm"
+                      >
+                        {member}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-
-            {/* Team Members Section */}
-            {(team.members && team.members.length > 0) && (
-              <div>
-                <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                  <Users className="w-5 h-5 mr-2 text-cyan-400" />
-                  Team Members
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {team.members.map((member, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-cyan-900/20 text-cyan-400 rounded-full text-sm"
-                    >
-                      {member}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
-        </div>
-      )}
-    </div>
-  );
-};
+        )}
+      </div>
+    );
+  };
 
   // Tab configurations for content tabs (computed from teamData so counts stay in sync)
   const tabs = useMemo(

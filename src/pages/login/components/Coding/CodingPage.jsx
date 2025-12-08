@@ -241,6 +241,9 @@ const CodingPage = () => {
           resultsTaken: parseInt(newProject.resultsTaken) || 0,
         };
 
+        // Remove progress if it exists
+        delete projectToSubmit.progress;
+
         await updateCodingProject(projectToSubmit);
         setProjects((prev) =>
           prev.map((p) =>
@@ -291,7 +294,7 @@ const CodingPage = () => {
       startDate: project.startDate,
       deadline: project.deadline,
       status: project.status,
-      resultsTaken: project.resultsTaken.toString(),
+      resultsTaken: project.resultsTaken?.toString() || "",
       details: project.details,
     });
     setIsModalOpen(true);
@@ -753,7 +756,6 @@ const CodingPage = () => {
                 deadline: "",
                 status: "Started",
                 resultsTaken: "",
-                progress: 0,
                 details: "",
               });
               setIsModalOpen(true);
