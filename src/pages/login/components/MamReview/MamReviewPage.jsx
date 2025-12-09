@@ -19,6 +19,7 @@ import {
   User,
   BarChart,
   Briefcase,
+  LogOut,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
@@ -26,6 +27,8 @@ import {
   fetchMemberTasks,
   fetchAllByTeam,
 } from "../../../../services/MamReviewService";
+import { signOut } from "firebase/auth";
+import { auth } from "../../../../firebase"; // Make sure this path is correct
 import imgAbinesh from "../../assets/abinesh.jpg";
 import imgMahesh from "../../assets/mahesh.jpg";
 import imgArun from "../../assets/arun.jpg";
@@ -44,10 +47,42 @@ const MamReviewPage = () => {
   const [sidebarTab, setSidebarTab] = useState("main-review");
   const [contentTab, setContentTab] = useState("coding");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // Separate state for logout loading
   const [expandedItems, setExpandedItems] = useState({});
   const [selectedWorkDetails, setSelectedWorkDetails] = useState(null);
   const [isWorkDetailsModalOpen, setIsWorkDetailsModalOpen] = useState(false);
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
+
+  // Enhanced logout function with Firebase
+  const handleLogout = async () => {
+    // Show confirmation dialog
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+
+    setIsLoggingOut(true);
+    
+    try {
+      // Sign out from Firebase
+      await signOut(auth);
+      
+      // Clear any local storage/session storage if needed
+      localStorage.removeItem('rememberedEmail');
+      localStorage.removeItem('rememberMe');
+      sessionStorage.removeItem('isLoggedIn');
+      
+      // Show success message
+      console.log("Logout successful");
+      
+      // Navigate to login page
+      navigate("/login");
+      
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Show error message to user
+      alert(`Logout failed: ${error.message}`);
+      setIsLoggingOut(false);
+    }
+  };
 
   // Employee selection state
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -72,18 +107,6 @@ const MamReviewPage = () => {
       ...prev,
       [`${type}-${id}`]: !prev[`${type}-${id}`],
     }));
-  };
-
-  // Logout handler (used by the layout header/sidebar)
-  const handleLogout = async () => {
-    try {
-      setIsLoading(true);
-      // small delay to show loader briefly like other pages
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      navigate("/login");
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   // Date helpers and format
@@ -1540,7 +1563,7 @@ const MamReviewPage = () => {
       activeTab={sidebarTab}
       setActiveTab={setSidebarTab}
       onLogout={handleLogout}
-      isLoading={isLoading}
+      isLoading={isLoggingOut} // Pass logout loading state to layout
     >
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
         {/* Header */}

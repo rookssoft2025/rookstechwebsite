@@ -23,6 +23,7 @@ import {
   Server,
   Percent,
   Search,
+  LogOut,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import DataTable from "../../../../components/ResearchLayout/DataTable";
@@ -34,15 +35,15 @@ import {
   deleteCodingProject,
   fetchResearchPaperTitles,
 } from "../../../../services/CodingService";
-import { collection, query, getDocs } from "firebase/firestore";
-import { db } from "../../../../firebase"
+import { signOut } from "firebase/auth";
+import { auth } from "../../../../firebase"; // Make sure this path is correct
 
 import img1 from "../../assets/abinesh.jpg";
 import img2 from "../../assets/mahesh.jpg";
 import img3 from "../../assets/arun.jpg";
 import img4 from "../../assets/akash.jpg";
 
-// SearchableDropdown Component
+// SearchableDropdown Component (remains the same)
 const SearchableDropdown = ({ value, onChange, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -214,12 +215,37 @@ const CodingPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("coding");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  // Enhanced logout function with Firebase
   const handleLogout = async () => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    navigate("/login");
-    setIsLoading(false);
+    // Show confirmation dialog
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+
+    setIsLoggingOut(true);
+    
+    try {
+      // Sign out from Firebase
+      await signOut(auth);
+      
+      // Clear any local storage/session storage if needed
+      localStorage.removeItem('rememberedEmail');
+      localStorage.removeItem('rememberMe');
+      sessionStorage.removeItem('isLoggedIn');
+      
+      // Show success message
+      console.log("Logout successful");
+      
+      // Navigate to login page
+      navigate("/login");
+      
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Show error message to user
+      alert(`Logout failed: ${error.message}`);
+      setIsLoggingOut(false);
+    }
   };
 
   // Team members data - Lead developer first
@@ -275,9 +301,10 @@ const CodingPage = () => {
     details: "",
   });
 
+  // Load projects on component mount
   useEffect(() => {
     let mounted = true;
-    const load = async () => {
+    const loadProjects = async () => {
       try {
         setIsLoading(true);
         const data = await fetchCodingProjects();
@@ -294,7 +321,7 @@ const CodingPage = () => {
       }
     };
 
-    load();
+    loadProjects();
     return () => {
       mounted = false;
     };
@@ -728,7 +755,7 @@ const CodingPage = () => {
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       onLogout={handleLogout}
-      isLoading={isLoading}
+      isLoading={isLoggingOut} // Pass logout loading state to layout
     >
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
         {/* Header */}

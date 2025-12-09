@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '../../firebase'; // Adjust path based on your file structure
+import { signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../firebase';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -18,6 +18,44 @@ const Login = () => {
     const [success, setSuccess] = useState('');
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const [resetEmail, setResetEmail] = useState('');
+
+    // Load saved email on component mount
+    useEffect(() => {
+        const savedEmail = localStorage.getItem('rememberedEmail');
+        const rememberMe = localStorage.getItem('rememberMe') === 'true';
+        
+        if (savedEmail && rememberMe) {
+            setFormData(prev => ({
+                ...prev,
+                email: savedEmail,
+                rememberMe: true
+            }));
+        }
+
+        // Check if user is already logged in
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, redirect to dashboard
+                navigate('/dashboard/proposal');
+            }
+        });
+
+        return () => unsubscribe();
+    }, [navigate]);
+
+    // Handle remember me change
+    const handleRememberMeChange = (checked) => {
+        setFormData(prev => ({
+            ...prev,
+            rememberMe: checked
+        }));
+
+        if (!checked) {
+            // Clear saved email if user unchecks remember me
+            localStorage.removeItem('rememberedEmail');
+            localStorage.setItem('rememberMe', 'false');
+        }
+    };
 
     // Star background animation with continuous movement
     const StarBackground = () => {
@@ -251,6 +289,85 @@ const Login = () => {
         return Object.keys(newErrors).length === 0;
     };
 
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+
+        if (errors[field]) {
+            setErrors(prev => ({
+                ...prev,
+                [field]: ''
+            }));
+        }
+    };
+
+    // Updated login handler with Firebase and Remember Me
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (!validateForm()) return;
+
+        setIsLoading(true);
+        setErrors({});
+        setSuccess('');
+
+        try {
+            // Firebase authentication
+            await signInWithEmailAndPassword(auth, formData.email, formData.password);
+            
+            setSuccess('Login successful! Redirecting...');
+            
+            // Handle remember me
+            if (formData.rememberMe) {
+                // Save email to localStorage
+                localStorage.setItem('rememberedEmail', formData.email);
+                localStorage.setItem('rememberMe', 'true');
+            } else {
+                // Clear saved data if not remembering
+                localStorage.removeItem('rememberedEmail');
+                localStorage.setItem('rememberMe', 'false');
+            }
+            
+            // Optionally save session data (not recommended for sensitive data)
+            sessionStorage.setItem('isLoggedIn', 'true');
+            
+            // Redirect to dashboard
+            setTimeout(() => {
+                navigate('/dashboard/proposal');
+            }, 1500);
+            
+        } catch (error) {
+            console.error('Login error:', error);
+            let errorMessage = 'Login failed. Please check your credentials.';
+            
+            // Firebase error handling
+            switch (error.code) {
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                    errorMessage = 'Invalid email or password.';
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = 'Invalid email address.';
+                    break;
+                case 'auth/user-disabled':
+                    errorMessage = 'This account has been disabled.';
+                    break;
+                case 'auth/too-many-requests':
+                    errorMessage = 'Too many failed attempts. Please try again later.';
+                    break;
+                case 'auth/network-request-failed':
+                    errorMessage = 'Network error. Please check your connection.';
+                    break;
+            }
+            
+            setErrors({ submit: errorMessage });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     // Handle forgot password
     const handleForgotPassword = async () => {
         if (!resetEmail || !/\S+@\S+\.\S+/.test(resetEmail)) {
@@ -286,76 +403,6 @@ const Login = () => {
             }
             
             setErrors({ reset: errorMessage });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleInputChange = (field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
-
-        if (errors[field]) {
-            setErrors(prev => ({
-                ...prev,
-                [field]: ''
-            }));
-        }
-    };
-
-    // Updated login handler with Firebase
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        if (!validateForm()) return;
-
-        setIsLoading(true);
-        setErrors({});
-        setSuccess('');
-
-        try {
-            // Firebase authentication
-            await signInWithEmailAndPassword(auth, formData.email, formData.password);
-            
-            setSuccess('Login successful! Redirecting...');
-            
-            // Optional: Save remember me preference
-            if (formData.rememberMe) {
-                localStorage.setItem('rememberMe', 'true');
-            }
-            
-            // Redirect to dashboard
-            setTimeout(() => {
-                navigate('/dashboard/proposal');
-            }, 1500);
-            
-        } catch (error) {
-            console.error('Login error:', error);
-            let errorMessage = 'Login failed. Please check your credentials.';
-            
-            // Firebase error handling
-            switch (error.code) {
-                case 'auth/user-not-found':
-                case 'auth/wrong-password':
-                    errorMessage = 'Invalid email or password.';
-                    break;
-                case 'auth/invalid-email':
-                    errorMessage = 'Invalid email address.';
-                    break;
-                case 'auth/user-disabled':
-                    errorMessage = 'This account has been disabled.';
-                    break;
-                case 'auth/too-many-requests':
-                    errorMessage = 'Too many failed attempts. Please try again later.';
-                    break;
-                case 'auth/network-request-failed':
-                    errorMessage = 'Network error. Please check your connection.';
-                    break;
-            }
-            
-            setErrors({ submit: errorMessage });
         } finally {
             setIsLoading(false);
         }
@@ -617,7 +664,7 @@ const Login = () => {
                                         <input
                                             type="checkbox"
                                             checked={formData.rememberMe}
-                                            onChange={(e) => handleInputChange('rememberMe', e.target.checked)}
+                                            onChange={(e) => handleRememberMeChange(e.target.checked)}
                                             className="w-4 h-4 rounded border-white/20 bg-white/5 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 focus:ring-2 backdrop-blur-sm"
                                             disabled={isLoading}
                                         />
@@ -646,19 +693,6 @@ const Login = () => {
                                         'Sign In'
                                     )}
                                 </motion.button>
-
-                                {/* <div className="text-center mt-4">
-                                    <p className="text-white/50 text-sm">
-                                        Don't have an account?{' '}
-                                        <button
-                                            type="button"
-                                            onClick={() => navigate('/register')}
-                                            className="text-blue-400 hover:text-blue-300 transition-colors duration-300"
-                                        >
-                                            Sign up here
-                                        </button>
-                                    </p>
-                                </div> */}
                             </form>
                         )}
                     </div>

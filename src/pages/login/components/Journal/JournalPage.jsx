@@ -22,6 +22,7 @@ import {
   Upload,
   CheckSquare,
   XCircle,
+  LogOut,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import DataTable from "../../../../components/ResearchLayout/DataTable";
@@ -32,17 +33,44 @@ import {
   updateJournal,
   deleteJournal,
 } from "../../../../services/JournalService";
+import { signOut } from "firebase/auth";
+import { auth } from "../../../../firebase"; // Make sure this path is correct
 
 const JournalPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("review");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  // Enhanced logout function with Firebase
   const handleLogout = async () => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    navigate("/login");
-    setIsLoading(false);
+    // Show confirmation dialog
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+
+    setIsLoggingOut(true);
+    
+    try {
+      // Sign out from Firebase
+      await signOut(auth);
+      
+      // Clear any local storage/session storage if needed
+      localStorage.removeItem('rememberedEmail');
+      localStorage.removeItem('rememberMe');
+      sessionStorage.removeItem('isLoggedIn');
+      
+      // Show success message
+      console.log("Logout successful");
+      
+      // Navigate to login page
+      navigate("/login");
+      
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Show error message to user
+      alert(`Logout failed: ${error.message}`);
+      setIsLoggingOut(false);
+    }
   };
 
   // State management
@@ -65,6 +93,7 @@ const JournalPage = () => {
 
     loadPapers();
   }, []);
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
   const [editingPaper, setEditingPaper] = useState(null);
@@ -180,6 +209,8 @@ const JournalPage = () => {
       alert("Date of Review is required when review status is 'On Review'.");
       return;
     }
+    
+    setIsLoading(true);
     try {
       const paperToSubmit = editingPaper
         ? { ...editingPaper, ...newPaper }
@@ -207,6 +238,9 @@ const JournalPage = () => {
       });
     } catch (err) {
       console.error("Error submitting journal:", err);
+      alert("Failed to save paper. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -227,11 +261,15 @@ const JournalPage = () => {
   // Handle delete
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this paper?")) {
+      setIsLoading(true);
       try {
         await deleteJournal(id);
         setPapers(papers.filter((paper) => paper.id !== id));
       } catch (err) {
         console.error("Error deleting journal:", err);
+        alert("Failed to delete paper. Please try again.");
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -400,7 +438,7 @@ const JournalPage = () => {
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       onLogout={handleLogout}
-      isLoading={isLoading}
+      isLoading={isLoggingOut} // Pass logout loading state to layout
     >
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
         {/* Header */}
@@ -612,7 +650,7 @@ const JournalPage = () => {
         />
 
         {/* Empty State */}
-        {filteredPapers.length === 0 && (
+        {filteredPapers.length === 0 && !loadingPapers && (
           <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
             <Eye className="w-16 h-16 text-gray-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">
@@ -633,6 +671,21 @@ const JournalPage = () => {
                 Clear Filters
               </button>
             )}
+          </div>
+        )}
+
+        {/* Loading State */}
+        {loadingPapers && (
+          <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
+            <div className="flex flex-col items-center">
+              <div className="w-16 h-16 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mb-4"></div>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Loading papers...
+              </h3>
+              <p className="text-gray-400">
+                Fetching data from Firebase...
+              </p>
+            </div>
           </div>
         )}
 
@@ -850,9 +903,18 @@ const JournalPage = () => {
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all shadow-lg flex items-center justify-center"
+                      disabled={isLoading}
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {editingPaper ? (
+                      {isLoading ? (
+                        <span className="flex items-center">
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          {editingPaper ? "Updating..." : "Adding..."}
+                        </span>
+                      ) : editingPaper ? (
                         <>
                           <Save size={20} className="mr-2" />
                           Update Paper

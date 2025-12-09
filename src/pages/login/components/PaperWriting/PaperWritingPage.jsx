@@ -40,13 +40,15 @@ import img2 from "../../assets/ashika.jpg";
 import img3 from "../../assets/ashmi.jpg";
 import img4 from "../../assets/ancy.jpg";
 import img5 from "../../assets/canute.jpg";
-
+import { signOut } from "firebase/auth";
+import { auth } from "../../../../firebase";
 // SearchableDropdown Component
 const SearchableDropdown = ({ value, onChange, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [options, setOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  
   const dropdownRef = useRef(null);
 
   // Fetch research paper titles from Firestore
@@ -233,13 +235,37 @@ const PaperWritingPage = () => {
   const [activeTab, setActiveTab] = useState("writing");
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleLogout = async () => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
+const handleLogout = async () => {
+  // Show confirmation dialog
+  const confirmLogout = window.confirm("Are you sure you want to logout?");
+  if (!confirmLogout) return;
+
+  setIsLoggingOut(true);
+  
+  try {
+    // Sign out from Firebase
+    await signOut(auth);
+    
+    // Clear any local storage/session storage if needed
+    localStorage.removeItem('rememberedEmail');
+    localStorage.removeItem('rememberMe');
+    sessionStorage.removeItem('isLoggedIn');
+    
+    // Show success message
+    console.log("Logout successful");
+    
+    // Navigate to login page
     navigate("/login");
-    setIsLoading(false);
-  };
+    
+  } catch (error) {
+    console.error("Logout error:", error);
+    // Show error message to user
+    alert(`Logout failed: ${error.message}`);
+    setIsLoggingOut(false);
+  }
+};
 
   // Team members data - Lead researcher first
   const leadResearcher = {
@@ -751,11 +777,11 @@ const PaperWritingPage = () => {
 
   return (
     <ReserchLayout
-      activeTab={activeTab}
-      setActiveTab={setActiveTab}
-      onLogout={handleLogout}
-      isLoading={isLoading}
-    >
+  activeTab={activeTab}
+  setActiveTab={setActiveTab}
+  onLogout={handleLogout}
+  isLoading={isLoggingOut} // Pass logout loading state to layout
+>
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
         {/* Header */}
         <div className="mb-8">

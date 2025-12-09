@@ -26,7 +26,8 @@ import {
   getYearlyReports,
   getCustomReports,
 } from "../../../../services/ReportService";
-
+import { signOut } from "firebase/auth";
+import { auth } from "../../../../firebase";
 // Load local avatar images from src/pages/login/assets and map by base filename
 const localAvatars = import.meta.glob("../../assets/*.{png,jpg,jpeg,svg}", {
   eager: true,
@@ -213,12 +214,34 @@ const ReportsPage = () => {
     },
     overall: { totals: { total: 0, active: 0, completed: 0 } },
   });
-
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const handleLogout = async () => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    navigate("/login");
-    setIsLoading(false);
+    // Show confirmation dialog
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+
+    setIsLoggingOut(true);
+
+    try {
+      // Sign out from Firebase
+      await signOut(auth);
+
+      // Clear any local storage/session storage if needed
+      localStorage.removeItem("rememberedEmail");
+      localStorage.removeItem("rememberMe");
+      sessionStorage.removeItem("isLoggedIn");
+
+      // Show success message
+      console.log("Logout successful");
+
+      // Navigate to login page
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Show error message to user
+      alert(`Logout failed: ${error.message}`);
+      setIsLoggingOut(false);
+    }
   };
 
   const handleCustomDateRange = () => {
@@ -624,7 +647,7 @@ const ReportsPage = () => {
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       onLogout={handleLogout}
-      isLoading={isLoading}
+      isLoading={isLoggingOut} // Pass logout loading state to layout
     >
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
         <div className="mb-8">

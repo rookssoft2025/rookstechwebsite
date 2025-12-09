@@ -35,6 +35,8 @@ import img3 from "../../assets/mahesh.jpg";
 import img4 from "../../assets/arun.jpg";
 import img5 from "../../assets/akash.jpg";
 
+import { signOut } from "firebase/auth";
+import { auth } from "../../../../firebase";
 const ProposalPage = () => {
   const navigate = useNavigate();
 
@@ -231,15 +233,37 @@ const ProposalPage = () => {
 
     return null;
   };
-
+const [isLoggingOut, setIsLoggingOut] = useState(false);
   // Logout
-  const handleLogout = async () => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    navigate("/login");
-    setIsLoading(false);
-  };
+ const handleLogout = async () => {
+  // Show confirmation dialog
+  const confirmLogout = window.confirm("Are you sure you want to logout?");
+  if (!confirmLogout) return;
 
+  setIsLoggingOut(true);
+  
+  try {
+    // Sign out from Firebase
+    await signOut(auth);
+    
+    // Clear any local storage/session storage if needed
+    localStorage.removeItem('rememberedEmail');
+    localStorage.removeItem('rememberMe');
+    sessionStorage.removeItem('isLoggedIn');
+    
+    // Show success message
+    console.log("Logout successful");
+    
+    // Navigate to login page
+    navigate("/login");
+    
+  } catch (error) {
+    console.error("Logout error:", error);
+    // Show error message to user
+    alert(`Logout failed: ${error.message}`);
+    setIsLoggingOut(false);
+  }
+};
   // Input change
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -260,7 +284,7 @@ const ProposalPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
-    
+
     const newProposal = await addProposal(newPaper);
     setProposals((prev) => [...prev, newProposal]);
 
@@ -322,7 +346,7 @@ const ProposalPage = () => {
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       onLogout={handleLogout}
-      isLoading={isLoading}
+      isLoading={isLoggingOut} // Pass logout loading state to layout
     >
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
         <div className="mb-8">
@@ -373,9 +397,8 @@ const ProposalPage = () => {
               <div className="text-right">
                 <div className="text-white font-semibold">
                   {
-                    proposals.filter(
-                      (p) => p.takenBy === teamLeader.name
-                    ).length
+                    proposals.filter((p) => p.takenBy === teamLeader.name)
+                      .length
                   }{" "}
                   Papers
                 </div>
@@ -407,9 +430,8 @@ const ProposalPage = () => {
                   <div className="text-right">
                     <div className="text-white font-semibold text-sm">
                       {
-                        proposals.filter(
-                          (p) => p.takenBy === member.name
-                        ).length
+                        proposals.filter((p) => p.takenBy === member.name)
+                          .length
                       }
                     </div>
                     <div className="text-gray-400 text-xs">Papers</div>
@@ -534,9 +556,7 @@ const ProposalPage = () => {
                   </td>
 
                   {/* Researcher Column - 2nd */}
-                  <td className="py-4 px-6 text-gray-300">
-                    {item.takenBy}
-                  </td>
+                  <td className="py-4 px-6 text-gray-300">{item.takenBy}</td>
 
                   {/* Timeline Column - 3rd */}
                   <td className="py-4 px-6 text-gray-300">
@@ -864,7 +884,7 @@ const ProposalPage = () => {
                         <Calendar className="w-4 h-4 mr-2 text-white" />
                         Start Date
                       </label>
-                     
+
                       <div className="relative">
                         <input
                           type="date"
@@ -890,7 +910,7 @@ const ProposalPage = () => {
                         <CalendarDays className="w-4 h-4 mr-2 text-white" />
                         End Date
                       </label>
-                     
+
                       <div className="relative">
                         <input
                           type="date"
@@ -941,7 +961,7 @@ const ProposalPage = () => {
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {/* Filter out "all" option and show only status options */}
                         {statusOptions
-                          .filter(option => option.value !== "all")
+                          .filter((option) => option.value !== "all")
                           .map((option) => {
                             const Icon = option.icon;
                             return (
@@ -1006,9 +1026,25 @@ const ProposalPage = () => {
                     >
                       {isSaving ? (
                         <span className="flex items-center">
-                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          <svg
+                            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
                           </svg>
                           Saving...
                         </span>
