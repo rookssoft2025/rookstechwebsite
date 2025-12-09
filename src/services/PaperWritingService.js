@@ -8,9 +8,11 @@ import {
   getDocs,
   query,
   where,
+  orderBy,
 } from "firebase/firestore";
 
 const COLLECTION = "paperWritings";
+const RESEARCH_PROPOSALS_COLLECTION = "researchProposals";
 const COUNTER_DOC = "counter";
 
 // Clean data - remove non-serializable properties
@@ -111,5 +113,54 @@ export const deletePaperWriting = async (id) => {
   } catch (err) {
     console.error("Error deleting paper:", err);
     throw err;
+  }
+};
+
+// Fetch available paper titles from researchProposals collection
+export const fetchAvailablePaperTitles = async (searchQuery) => {
+  try {
+    if (!searchQuery || searchQuery.trim().length < 2) {
+      return [];
+    }
+
+    const trimmedQuery = searchQuery.trim();
+    
+    // Query to get paper titles from researchProposals collection
+    // Exclude papers with status "completed" and filter by title prefix
+    const q = query(
+      collection(db, RESEARCH_PROPOSALS_COLLECTION),
+      where("status", "!=", "completed"),
+      where("title", ">=", trimmedQuery),
+      where("title", "<=", trimmedQuery + "\uf8ff"),
+      orderBy("title")
+    );
+
+    const querySnapshot = await getDocs(q);
+    const titles = [];
+
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      if (data.title && data.title.toLowerCase().startsWith(trimmedQuery.toLowerCase())) {
+        titles.push({
+          id: docSnap.id,
+          title: data.title,
+          status: data.status || "unknown",
+        });
+      }
+    });
+
+    return titles;
+  } catch (err) {
+    console.error("Error fetching paper titles:", err);
+    
+    // Check if it's an index error
+    if (err.code === "failed-precondition") {
+      console.error("Firestore index required for title search. Please create an index on:");
+      console.error("- Collection: researchProposals");
+      console.error("- Fields: status (ascending), title (ascending)");
+      console.error("You can create this in Firebase Console → Firestore → Indexes");
+    }
+    
+    return [];
   }
 };

@@ -40,6 +40,7 @@ const ProposalPage = () => {
 
   const [activeTab, setActiveTab] = useState("proposal");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Firestore state
   const [proposals, setProposals] = useState([]);
@@ -108,7 +109,7 @@ const ProposalPage = () => {
   // Lead researcher reference (first member)
   const leadResearcher = teamMembers[0];
 
-  // Status options for filter and display - Will be updated with dynamic counts
+  // Status options for filter and display - UPDATED: Removed "In Progress"
   const initialStatusOptions = [
     {
       value: "all",
@@ -127,19 +128,11 @@ const ProposalPage = () => {
       count: 0,
     },
     {
-      value: "In Progress",
-      label: "In Progress",
-      color: "text-blue-400",
-      bg: "bg-blue-400/10",
-      icon: AlertCircle,
-      count: 0,
-    },
-    {
       value: "On Hold",
       label: "On Hold",
       color: "text-yellow-400",
       bg: "bg-yellow-400/10",
-      icon: Clock,
+      icon: AlertCircle,
       count: 0,
     },
     {
@@ -165,15 +158,13 @@ const ProposalPage = () => {
     load();
   }, []);
 
-  // Calculate counts for each status filter - FIXED
+  // Calculate counts for each status filter - UPDATED: Removed "In Progress"
   useEffect(() => {
     if (proposals.length > 0) {
       // Calculate counts for each status
       const counts = {
         all: proposals.length,
         Started: proposals.filter((p) => p.status === "Started").length,
-        "In Progress": proposals.filter((p) => p.status === "In Progress")
-          .length,
         "On Hold": proposals.filter((p) => p.status === "On Hold").length,
         Completed: proposals.filter((p) => p.status === "Completed").length,
       };
@@ -268,7 +259,8 @@ const ProposalPage = () => {
   // Add new proposal
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsSaving(true);
+    
     const newProposal = await addProposal(newPaper);
     setProposals((prev) => [...prev, newProposal]);
 
@@ -281,6 +273,7 @@ const ProposalPage = () => {
       status: "Started",
       details: "",
     });
+    setIsSaving(false);
   };
 
   // Edit proposal (open modal)
@@ -294,6 +287,7 @@ const ProposalPage = () => {
   // Update
   const handleUpdate = async (e) => {
     e.preventDefault();
+    setIsSaving(true);
 
     const updated = { ...newPaper, id: editingId };
     await updateProposal(updated);
@@ -303,6 +297,7 @@ const ProposalPage = () => {
     setEditMode(false);
     setEditingId(null);
     setIsModalOpen(false);
+    setIsSaving(false);
   };
 
   // Delete
@@ -869,9 +864,7 @@ const ProposalPage = () => {
                         <Calendar className="w-4 h-4 mr-2 text-white" />
                         Start Date
                       </label>
-                      <p className="text-xs text-gray-400">
-                        Deadline will auto-set to start date + 2 days
-                      </p>
+                     
                       <div className="relative">
                         <input
                           type="date"
@@ -897,9 +890,7 @@ const ProposalPage = () => {
                         <CalendarDays className="w-4 h-4 mr-2 text-white" />
                         End Date
                       </label>
-                      <p className="text-xs text-gray-400">
-                        Auto-calculated or customize as needed
-                      </p>
+                     
                       <div className="relative">
                         <input
                           type="date"
@@ -941,38 +932,41 @@ const ProposalPage = () => {
                         )}
                     </div>
 
-                    {/* Status - Full Width */}
+                    {/* Status - Full Width - UPDATED: Only 3 options now */}
                     <div className="md:col-span-2 space-y-3">
                       <label className="flex items-center text-sm font-medium text-white">
                         <CalendarClock className="w-4 h-4 mr-2 text-white" />
                         Status
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        {statusOptions.slice(1).map((option) => {
-                          const Icon = option.icon;
-                          return (
-                            <button
-                              type="button"
-                              key={option.value}
-                              onClick={() =>
-                                setNewPaper((prev) => ({
-                                  ...prev,
-                                  status: option.value,
-                                }))
-                              }
-                              className={`flex items-center justify-center px-4 py-4 rounded-xl border transition-all ${
-                                newPaper.status === option.value
-                                  ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
-                                  : "bg-gray-900/70 border-gray-700 hover:border-gray-600"
-                              }`}
-                            >
-                              <Icon className={`w-5 h-5 mr-3 text-white`} />
-                              <span className={`font-medium text-white`}>
-                                {option.label}
-                              </span>
-                            </button>
-                          );
-                        })}
+                        {/* Filter out "all" option and show only status options */}
+                        {statusOptions
+                          .filter(option => option.value !== "all")
+                          .map((option) => {
+                            const Icon = option.icon;
+                            return (
+                              <button
+                                type="button"
+                                key={option.value}
+                                onClick={() =>
+                                  setNewPaper((prev) => ({
+                                    ...prev,
+                                    status: option.value,
+                                  }))
+                                }
+                                className={`flex items-center justify-center px-4 py-4 rounded-xl border transition-all ${
+                                  newPaper.status === option.value
+                                    ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
+                                    : "bg-gray-900/70 border-gray-700 hover:border-gray-600"
+                                }`}
+                              >
+                                <Icon className={`w-5 h-5 mr-3 text-white`} />
+                                <span className={`font-medium text-white`}>
+                                  {option.label}
+                                </span>
+                              </button>
+                            );
+                          })}
                       </div>
                     </div>
 
@@ -1007,9 +1001,18 @@ const ProposalPage = () => {
 
                     <button
                       type="submit"
-                      className="flex-1 px-6 py-3.5 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center justify-center"
+                      disabled={isSaving}
+                      className="flex-1 px-6 py-3.5 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {editMode ? (
+                      {isSaving ? (
+                        <span className="flex items-center">
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Saving...
+                        </span>
+                      ) : editMode ? (
                         <>
                           <CheckCircle className="w-5 h-5 mr-2 text-white" />
                           Update Paper

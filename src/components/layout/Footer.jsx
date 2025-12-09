@@ -41,7 +41,7 @@ export default function Footer() {
   };
 
   const handleEmailClick = () => {
-    const email = "support@rooksitservices.com";
+    const email = "support@rookstechnologies.com";
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     if (isMobile) {
       window.location.href = `mailto:${email}`;
@@ -141,7 +141,7 @@ export default function Footer() {
               </div>
               <div className="flex-grow">
                 <p className="text-sm text-slate-300">Email Us</p>
-                <p className="text-white font-medium">support@rooksitservices.com</p>
+                <p className="text-white font-medium">support@rookstechnologies.com</p>
               </div>
               <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-blue-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
             </div>

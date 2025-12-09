@@ -10,7 +10,6 @@ import SplashScreen from "./components/SplashScreen";
 import ScrollToTop from "./components/layout/ScrollTop";
 import Research from "./pages/reserch/Reserch";
 import ScrollToTopButton from "./uiComponents/Watsapp";
-
 import Login from "./pages/login/login";
 import Dashboard from "./pages/login/components/Dashboard";
 import ProposalPage from "./pages/login/components/Proposal/ProposalPage";

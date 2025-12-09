@@ -22,6 +22,7 @@ import {
   Eye,
   Server,
   Percent,
+  Search,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import DataTable from "../../../../components/ResearchLayout/DataTable";
@@ -31,12 +32,183 @@ import {
   addCodingProject,
   updateCodingProject,
   deleteCodingProject,
+  fetchResearchPaperTitles,
 } from "../../../../services/CodingService";
+import { collection, query, getDocs } from "firebase/firestore";
+import { db } from "../../../../firebase"
 
 import img1 from "../../assets/abinesh.jpg";
 import img2 from "../../assets/mahesh.jpg";
 import img3 from "../../assets/arun.jpg";
 import img4 from "../../assets/akash.jpg";
+
+// SearchableDropdown Component
+const SearchableDropdown = ({ value, onChange, placeholder }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [options, setOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Fetch research paper titles from Firestore
+  useEffect(() => {
+    const fetchTitles = async () => {
+      if (!isOpen) {
+        setOptions([]);
+        return;
+      }
+      
+      setIsLoading(true);
+      try {
+        // Use the service function instead of direct Firestore query
+        const titles = await fetchResearchPaperTitles();
+        
+        // Filter based on search term
+        const filtered = titles.filter(title => 
+          title.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        
+        setOptions(filtered);
+      } catch (error) {
+        console.error('Error fetching research proposals:', error);
+        setOptions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(() => {
+      fetchTitles();
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm, isOpen]);
+
+  // Filter options based on search term
+  const filteredOptions = useMemo(() => {
+    return options.filter(option =>
+      option.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [options, searchTerm]);
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+        setSearchTerm('');
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSelect = (title) => {
+    onChange(title);
+    setIsOpen(false);
+    setSearchTerm('');
+  };
+
+  const handleClear = () => {
+    onChange('');
+    setSearchTerm('');
+  };
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <div className="relative">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value);
+            setSearchTerm(e.target.value);
+            if (!isOpen) setIsOpen(true);
+          }}
+          onFocus={() => setIsOpen(true)}
+          placeholder={placeholder}
+          className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+        />
+        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
+          {value && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <X size={16} />
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-gray-400 hover:text-white transition-colors"
+          >
+            <ChevronDown size={18} />
+          </button>
+        </div>
+      </div>
+
+      {isOpen && filteredOptions.length > 0 && (
+        <div className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+          <div className="p-2 border-b border-gray-800">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Type to filter titles..."
+                className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/20 outline-none"
+                autoFocus
+              />
+            </div>
+          </div>
+          
+          <div className="py-1">
+            {isLoading ? (
+              <div className="px-4 py-3 text-center text-gray-400">Loading titles...</div>
+            ) : (
+              filteredOptions.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => handleSelect(option.title)}
+                  className="w-full text-left px-4 py-3 hover:bg-gray-800/50 transition-colors flex items-center justify-between"
+                >
+                  <span className="text-white truncate">{option.title}</span>
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    option.status === 'active' ? 'bg-green-400/10 text-green-400' : 
+                    option.status === 'in-progress' ? 'bg-blue-400/10 text-blue-400' :
+                    'bg-yellow-400/10 text-yellow-400'
+                  }`}>
+                    {option.status}
+                  </span>
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {isOpen && !isLoading && searchTerm.length > 0 && filteredOptions.length === 0 && (
+        <div className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl shadow-lg p-4">
+          <div className="text-center text-gray-400">
+            No research papers found
+          </div>
+        </div>
+      )}
+
+      {isOpen && !isLoading && searchTerm.length === 0 && filteredOptions.length === 0 && (
+        <div className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl shadow-lg p-4">
+          <div className="text-center text-gray-400">
+            No research papers available
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const CodingPage = () => {
   const navigate = useNavigate();
@@ -109,9 +281,14 @@ const CodingPage = () => {
       try {
         setIsLoading(true);
         const data = await fetchCodingProjects();
-        if (mounted) setProjects(data);
+        if (mounted) {
+          setProjects(data);
+          console.log("Loaded projects:", data);
+        }
       } catch (err) {
         console.error("Failed to load coding projects:", err);
+        // Set empty array if fetch fails
+        if (mounted) setProjects([]);
       } finally {
         if (mounted) setIsLoading(false);
       }
@@ -241,13 +418,16 @@ const CodingPage = () => {
           resultsTaken: parseInt(newProject.resultsTaken) || 0,
         };
 
-        // Remove progress if it exists
+        // Remove React-specific properties
+        delete projectToSubmit.renderRow;
+        delete projectToSubmit.expandContent;
+        delete projectToSubmit._projectData;
         delete projectToSubmit.progress;
 
-        await updateCodingProject(projectToSubmit);
+        const updated = await updateCodingProject(projectToSubmit);
         setProjects((prev) =>
           prev.map((p) =>
-            p.id === projectToSubmit.id ? { ...p, ...projectToSubmit } : p
+            p.id === projectToSubmit.id ? { ...p, ...updated } : p
           )
         );
       } else {
@@ -261,11 +441,7 @@ const CodingPage = () => {
       }
 
       // Show success message
-      alert(
-        editingProject
-          ? "Project updated successfully!"
-          : "Project added successfully!"
-      );
+     
     } catch (err) {
       console.error(err);
       alert("Failed to save project. Check console for details.");
@@ -324,15 +500,21 @@ const CodingPage = () => {
 
   // Format date for display
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+    if (!dateString) return "Not set";
+    try {
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch (e) {
+      return "Invalid date";
+    }
   };
 
   // Calculate days remaining
   const calculateDaysRemaining = (deadline) => {
+    if (!deadline) return null;
     const today = new Date();
     const deadlineDate = new Date(deadline);
     const diffTime = deadlineDate - today;
@@ -371,14 +553,14 @@ const CodingPage = () => {
         const projectStatusBg = projectStatusOption.bg;
 
         return (
-          <tr className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
+          <tr key={projectData.id} className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
             <td className="py-4 px-6 text-center">
               <div className="text-white font-semibold">{item.serial}</div>
             </td>
             <td className="py-4 px-6">
               <div>
                 <div className="text-white font-medium">
-                  {projectData.title}
+                  {projectData.title || "Untitled Project"}
                 </div>
                 <div className="text-gray-400 text-sm">
                   Started: {formatDate(projectData.startDate)}
@@ -399,7 +581,7 @@ const CodingPage = () => {
                   className="w-8 h-8 rounded-full border border-cyan-500/50 mr-3"
                 />
                 <div>
-                  <div className="text-gray-300">{projectData.takenBy}</div>
+                  <div className="text-gray-300">{projectData.takenBy || "Unassigned"}</div>
                   {projectData.takenBy === leadDeveloper.name && (
                     <div className="text-xs flex items-center text-yellow-400">
                       Lead Developer
@@ -412,7 +594,7 @@ const CodingPage = () => {
               <div className="flex items-center justify-center">
                 <div>
                   <div className="text-white font-semibold text-center">
-                    {projectData.resultsTaken}
+                    {projectData.resultsTaken || 0}
                   </div>
                   <div className="text-gray-400 text-xs text-center">
                     results
@@ -446,7 +628,7 @@ const CodingPage = () => {
                   className={`w-4 h-4 mr-2 ${projectStatusColor}`}
                 />
                 <span className={`text-sm font-medium ${projectStatusColor}`}>
-                  {projectData.status}
+                  {projectData.status || "Started"}
                 </span>
               </div>
             </td>
@@ -488,7 +670,7 @@ const CodingPage = () => {
                 Project Details
               </h4>
               <p className="text-gray-300 mb-6 bg-gray-800/50 p-4 rounded-lg">
-                {project.details}
+                {project.details || "No details provided"}
               </p>
             </div>
 
@@ -784,11 +966,34 @@ const CodingPage = () => {
           <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
             <Code className="w-16 h-16 text-gray-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">
-              No projects found
+              {isLoading ? "Loading projects..." : "No projects found"}
             </h3>
             <p className="text-gray-400 mb-6">
-              Start by adding your first coding project.
+              {isLoading 
+                ? "Fetching data from Firebase..." 
+                : "Start by adding your first coding project."}
             </p>
+            {!isLoading && (
+              <button
+                onClick={() => {
+                  setEditingProject(null);
+                  setNewProject({
+                    title: "",
+                    takenBy: "",
+                    startDate: "",
+                    deadline: "",
+                    status: "Started",
+                    resultsTaken: "",
+                    details: "",
+                  });
+                  setIsModalOpen(true);
+                }}
+                className="flex items-center justify-center mx-auto px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-cyan-500/25"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Add First Project
+              </button>
+            )}
           </div>
         )}
 
@@ -815,20 +1020,19 @@ const CodingPage = () => {
 
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Project Title */}
+                    {/* Project Title - NOW USING SEARCHABLE DROPDOWN */}
                     <div>
                       <label className="block text-sm font-medium text-cyan-300 mb-2">
                         Project Title
                       </label>
-                      <input
-                        type="text"
-                        id="title"
+                      <SearchableDropdown
                         value={newProject.title}
-                        onChange={handleInputChange}
-                        placeholder="Enter project title"
-                        required
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                        onChange={(value) => setNewProject(prev => ({ ...prev, title: value }))}
+                        placeholder="Search research paper titles..."
                       />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Type to search existing research papers
+                      </p>
                     </div>
 
                     {/* Taken By */}
@@ -881,9 +1085,6 @@ const CodingPage = () => {
                           className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Deadline will auto-set to start date + 3 days
-                      </p>
                     </div>
 
                     {/* Deadline */}
@@ -907,9 +1108,6 @@ const CodingPage = () => {
                           className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Auto-calculated or customize as needed
-                      </p>
                     </div>
 
                     {/* Results Taken */}
@@ -1007,9 +1205,18 @@ const CodingPage = () => {
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all shadow-lg flex items-center justify-center"
+                      disabled={isLoading}
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {editingProject ? (
+                      {isLoading ? (
+                        <span className="flex items-center">
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Saving...
+                        </span>
+                      ) : editingProject ? (
                         <>
                           <Save size={20} className="mr-2" />
                           Update Project

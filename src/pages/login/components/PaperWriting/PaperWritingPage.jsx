@@ -21,6 +21,7 @@ import {
   Crown,
   Filter,
   BarChart3,
+  Search,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import DataTable from "../../../../components/ResearchLayout/DataTable";
@@ -31,6 +32,8 @@ import {
   updatePaperWriting,
   deletePaperWriting,
 } from "../../../../services/PaperWritingService";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../../../../firebase";
 
 import img1 from "../../assets/santhiya.jpg";
 import img2 from "../../assets/ashika.jpg";
@@ -38,10 +41,198 @@ import img3 from "../../assets/ashmi.jpg";
 import img4 from "../../assets/ancy.jpg";
 import img5 from "../../assets/canute.jpg";
 
+// SearchableDropdown Component
+const SearchableDropdown = ({ value, onChange, placeholder }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [options, setOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Fetch research paper titles from Firestore
+  useEffect(() => {
+    const fetchTitles = async () => {
+      if (!isOpen || searchTerm.length === 0) {
+        setOptions([]);
+        return;
+      }
+      
+      setIsLoading(true);
+      try {
+        // Fetch titles from researchProposals collection excluding completed papers
+        const q = query(
+          collection(db, 'researchProposals'),
+          where('status', '!=', 'completed')
+        );
+        
+        const snapshot = await getDocs(q);
+        const titles = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          if (data.title && data.title.toLowerCase().startsWith(searchTerm.toLowerCase())) {
+            titles.push({
+              id: doc.id,
+              title: data.title,
+              status: data.status || 'unknown'
+            });
+          }
+        });
+        setOptions(titles);
+      } catch (error) {
+        console.error('Error fetching research proposals:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(() => {
+      if (searchTerm.length > 0) {
+        fetchTitles();
+      }
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm, isOpen]);
+
+  // Filter options based on search term
+  const filteredOptions = useMemo(() => {
+    return options.filter(option =>
+      option.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [options, searchTerm]);
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+        setSearchTerm('');
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSelect = (title) => {
+    onChange(title);
+    setIsOpen(false);
+    setSearchTerm('');
+  };
+
+  const handleClear = () => {
+    onChange('');
+    setSearchTerm('');
+  };
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <div className="relative">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value);
+            setSearchTerm(e.target.value);
+            if (!isOpen) setIsOpen(true);
+          }}
+          onFocus={() => setIsOpen(true)}
+          placeholder={placeholder}
+          required
+          className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+        />
+        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
+          {value && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <X size={16} />
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-gray-400 hover:text-white transition-colors"
+          >
+            <ChevronDown size={18} />
+          </button>
+        </div>
+      </div>
+
+      {isOpen && filteredOptions.length > 0 && (
+        <div className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+          <div className="p-2 border-b border-gray-800">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Type to filter paper titles..."
+                className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/20 outline-none"
+                autoFocus
+              />
+            </div>
+          </div>
+          
+          <div className="py-1">
+            {isLoading ? (
+              <div className="px-4 py-3 text-center text-gray-400">Loading paper titles...</div>
+            ) : (
+              <>
+                <div className="px-4 py-2 text-xs text-gray-400 border-b border-gray-800">
+                  {filteredOptions.length} paper{filteredOptions.length !== 1 ? 's' : ''} found (excluding completed papers)
+                </div>
+                {filteredOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => handleSelect(option.title)}
+                    className="w-full text-left px-4 py-3 hover:bg-gray-800/50 transition-colors flex items-center justify-between"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="text-white truncate">{option.title}</div>
+                    </div>
+                    <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ml-2 ${
+                      option.status === 'completed' ? 'bg-green-400/10 text-green-400' : 
+                      option.status === 'reviewing' ? 'bg-yellow-400/10 text-yellow-400' :
+                      option.status === 'started' ? 'bg-blue-400/10 text-blue-400' :
+                      option.status === 'on-hold' ? 'bg-red-400/10 text-red-400' :
+                      'bg-gray-400/10 text-gray-400'
+                    }`}>
+                      {option.status}
+                    </span>
+                  </button>
+                ))}
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {isOpen && !isLoading && searchTerm.length > 0 && filteredOptions.length === 0 && (
+        <div className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl shadow-lg p-4">
+          <div className="text-center">
+            <FileText className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+            <div className="text-gray-400">
+              No research papers found starting with "{searchTerm}"
+            </div>
+            <div className="text-gray-500 text-xs mt-1">
+              Try a different search term
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const PaperWritingPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("writing");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -97,9 +288,10 @@ const PaperWritingPage = () => {
   const [editingPaper, setEditingPaper] = useState(null);
   const [statusFilter, setStatusFilter] = useState(null);
 
-  // Refs for date inputs so we can open native picker on touch/click
+  // Refs for date inputs
   const startDateRef = useRef(null);
   const deadlineRef = useRef(null);
+  
   const [newPaper, setNewPaper] = useState({
     title: "",
     takenBy: "",
@@ -253,7 +445,7 @@ const PaperWritingPage = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsSaving(true);
     try {
       if (editingPaper) {
         const paperToSubmit = {
@@ -302,7 +494,7 @@ const PaperWritingPage = () => {
         status: "Started",
         details: "",
       });
-      setIsLoading(false);
+      setIsSaving(false);
     }
   };
 
@@ -830,19 +1022,19 @@ const PaperWritingPage = () => {
 
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Paper Title - NOW USING SEARCHABLE DROPDOWN */}
                     <div>
                       <label className="block text-sm font-medium text-cyan-300 mb-2">
                         Paper Title
                       </label>
-                      <input
-                        type="text"
-                        id="title"
+                      <SearchableDropdown
                         value={newPaper.title}
-                        onChange={handleInputChange}
-                        placeholder="Enter paper title"
-                        required
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                        onChange={(value) => setNewPaper(prev => ({ ...prev, title: value }))}
+                        placeholder="Search research paper titles..."
                       />
+                      {/* <p className="text-xs text-gray-400 mt-1">
+                        Start typing to search available paper titles (excludes completed papers)
+                      </p> */}
                     </div>
 
                     <div>
@@ -893,9 +1085,9 @@ const PaperWritingPage = () => {
                           className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
-                      <p className="text-xs text-gray-400 mt-1">
+                      {/* <p className="text-xs text-gray-400 mt-1">
                         Deadline will auto-set to start date + 4 days
-                      </p>
+                      </p> */}
                     </div>
 
                     <div className="relative">
@@ -918,9 +1110,9 @@ const PaperWritingPage = () => {
                           className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
-                      <p className="text-xs text-gray-400 mt-1">
+                      {/* <p className="text-xs text-gray-400 mt-1">
                         Auto-calculated or customize as needed
-                      </p>
+                      </p> */}
                     </div>
                   </div>
 
@@ -993,9 +1185,18 @@ const PaperWritingPage = () => {
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all shadow-lg flex items-center justify-center"
+                      disabled={isSaving}
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {editingPaper ? (
+                      {isSaving ? (
+                        <span className="flex items-center">
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Saving...
+                        </span>
+                      ) : editingPaper ? (
                         <>
                           <Save size={20} className="mr-2" />
                           Update Paper
