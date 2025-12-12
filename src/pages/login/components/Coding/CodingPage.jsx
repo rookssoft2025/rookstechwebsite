@@ -41,7 +41,7 @@ import { auth } from "../../../../firebase"; // Make sure this path is correct
 import img1 from "../../assets/abinesh.jpg";
 import img2 from "../../assets/mahesh.jpg";
 import img3 from "../../assets/arun.jpg";
-import img4 from "../../assets/akash.jpg";
+import img4 from "../../assets/aakash.png";
 
 // SearchableDropdown Component (remains the same)
 const SearchableDropdown = ({ value, onChange, placeholder }) => {
@@ -355,6 +355,75 @@ const CodingPage = () => {
     },
   ];
 
+  // Updated getDueStatus function to consider task status
+  const getDueStatus = (deadline, taskStatus) => {
+    if (!deadline) return null;
+     if (taskStatus === "Hold") {
+        return null;
+    }
+    const today = new Date();
+    const deadlineDate = new Date(deadline);
+    const diffTime = deadlineDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // If task is already completed, show different status
+    if (taskStatus === "Completed") {
+        return {
+            status: "completed",
+            label: "Completed",
+            color: "text-green-400",
+            bg: "bg-green-400/10",
+            borderColor: "border-green-400/30",
+            icon: CheckCircle,
+        };
+    }
+    
+    // Only calculate overdue/urgent status for "Started" tasks
+    if (diffDays < 0) {
+        return {
+            status: "overdue",
+            label: "Overdue",
+            color: "text-red-400",
+            bg: "bg-red-400/10",
+            borderColor: "border-red-400/30",
+            icon: AlertCircle,
+        };
+    } else if (diffDays === 0) {
+        return {
+            status: "today",
+            label: "Due Today",
+            color: "text-orange-400",
+            bg: "bg-orange-400/10",
+            borderColor: "border-orange-400/30",
+            icon: AlertCircle,
+        };
+    } else if (diffDays <= 2) {
+        return {
+            status: "urgent",
+            label: `Due in ${diffDays} day${diffDays === 1 ? "" : "s"}`,
+            color: "text-yellow-400",
+            bg: "bg-yellow-400/10",
+            borderColor: "border-yellow-400/30",
+            icon: Clock,
+        };
+    } else {
+        return {
+            status: "ontrack",
+            label: `${diffDays} days remaining`,
+            color: "text-green-400",
+            bg: "bg-green-400/10",
+            borderColor: "border-green-400/30",
+            icon: CheckCircle,
+        };
+    }
+  };
+
+  // Helper function to get appropriate icon for due status
+  const getDueStatusIcon = (dueStatus) => {
+    if (!dueStatus) return Calendar;
+    return dueStatus.icon || Calendar;
+  };
+
   // Filter projects based on selected filter
   const filteredProjects = useMemo(() => {
     if (statusFilter === null) {
@@ -372,49 +441,6 @@ const CodingPage = () => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
-  };
-
-  // Get due status (overdue, due soon, on track)
-  const getDueStatus = (deadline) => {
-    if (!deadline) return null;
-    const today = new Date();
-    const deadlineDate = new Date(deadline);
-    const diffTime = deadlineDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays < 0) {
-      return {
-        status: "overdue",
-        label: "Overdue",
-        color: "text-red-400",
-        bg: "bg-red-400/10",
-        borderColor: "border-red-400/30",
-      };
-    } else if (diffDays === 0) {
-      return {
-        status: "today",
-        label: "Due Today",
-        color: "text-orange-400",
-        bg: "bg-orange-400/10",
-        borderColor: "border-orange-400/30",
-      };
-    } else if (diffDays <= 2) {
-      return {
-        status: "urgent",
-        label: `Due in ${diffDays} day${diffDays === 1 ? "" : "s"}`,
-        color: "text-yellow-400",
-        bg: "bg-yellow-400/10",
-        borderColor: "border-yellow-400/30",
-      };
-    } else {
-      return {
-        status: "ontrack",
-        label: `${diffDays} days remaining`,
-        color: "text-green-400",
-        bg: "bg-green-400/10",
-        borderColor: "border-green-400/30",
-      };
-    }
   };
 
   // Handle input changes
@@ -578,6 +604,10 @@ const CodingPage = () => {
         const ProjectStatusIcon = projectStatusOption.icon;
         const projectStatusColor = projectStatusOption.color;
         const projectStatusBg = projectStatusOption.bg;
+        
+        // Pass task status to getDueStatus
+        const dueStatus = getDueStatus(projectData.deadline, projectData.status);
+        const DueStatusIcon = dueStatus ? getDueStatusIcon(dueStatus) : Calendar;
 
         return (
           <tr key={projectData.id} className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
@@ -631,19 +661,16 @@ const CodingPage = () => {
             </td>
             <td className="py-4 px-6">
               <div className="flex items-center">
-                <Calendar className="w-4 h-4 text-purple-400 mr-2" />
+                <DueStatusIcon className="w-4 h-4 text-purple-400 mr-2" />
                 <div>
                   <div className="text-gray-300">
                     {formatDate(projectData.deadline)}
                   </div>
-                  {(() => {
-                    const dueStatus = getDueStatus(projectData.deadline);
-                    return dueStatus ? (
-                      <div className={`text-xs font-medium ${dueStatus.color}`}>
-                        {dueStatus.label}
-                      </div>
-                    ) : null;
-                  })()}
+                  {dueStatus && (
+                    <div className={`text-xs font-medium ${dueStatus.color}`}>
+                      {dueStatus.label}
+                    </div>
+                  )}
                 </div>
               </div>
             </td>
@@ -718,7 +745,7 @@ const CodingPage = () => {
                 </div>
                 <div
                   className={`p-4 rounded-lg border ${(() => {
-                    const dueStatus = getDueStatus(project.deadline);
+                    const dueStatus = getDueStatus(project.deadline, project.status);
                     return dueStatus
                       ? `${dueStatus.bg} ${dueStatus.borderColor}`
                       : "bg-gray-800/50 border-gray-700";
@@ -732,7 +759,7 @@ const CodingPage = () => {
                     {formatDate(project.deadline)}
                   </div>
                   {(() => {
-                    const dueStatus = getDueStatus(project.deadline);
+                    const dueStatus = getDueStatus(project.deadline, project.status);
                     return dueStatus ? (
                       <div
                         className={`text-sm mt-1 font-medium ${dueStatus.color}`}

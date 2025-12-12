@@ -42,6 +42,7 @@ import img4 from "../../assets/ancy.jpg";
 import img5 from "../../assets/canute.jpg";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../../firebase";
+
 // SearchableDropdown Component
 const SearchableDropdown = ({ value, onChange, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -235,39 +236,29 @@ const PaperWritingPage = () => {
   const [activeTab, setActiveTab] = useState("writing");
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-const handleLogout = async () => {
-  // Show confirmation dialog
-  const confirmLogout = window.confirm("Are you sure you want to logout?");
-  if (!confirmLogout) return;
+  const handleLogout = async () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
 
-  setIsLoggingOut(true);
-  
-  try {
-    // Sign out from Firebase
-    await signOut(auth);
+    setIsLoggingOut(true);
     
-    // Clear any local storage/session storage if needed
-    localStorage.removeItem('rememberedEmail');
-    localStorage.removeItem('rememberMe');
-    sessionStorage.removeItem('isLoggedIn');
-    
-    // Show success message
-    console.log("Logout successful");
-    
-    // Navigate to login page
-    navigate("/login");
-    
-  } catch (error) {
-    console.error("Logout error:", error);
-    // Show error message to user
-    alert(`Logout failed: ${error.message}`);
-    setIsLoggingOut(false);
-  }
-};
+    try {
+      await signOut(auth);
+      localStorage.removeItem('rememberedEmail');
+      localStorage.removeItem('rememberMe');
+      sessionStorage.removeItem('isLoggedIn');
+      console.log("Logout successful");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert(`Logout failed: ${error.message}`);
+      setIsLoggingOut(false);
+    }
+  };
 
-  // Team members data - Lead researcher first
+  // Team members data
   const leadResearcher = {
     id: 1,
     name: "Santhiya",
@@ -277,37 +268,13 @@ const handleLogout = async () => {
   };
 
   const teamMembers = [
-    {
-      id: 2,
-      name: "Ashika",
-      role: "Senior Writer",
-      image: img2,
-      isLead: false,
-    },
-    {
-      id: 3,
-      name: "Ashmi",
-      role: "Writer",
-      image: img3,
-      isLead: false,
-    },
-    {
-      id: 4,
-      name: "Ancy",
-      role: "Writer",
-      image: img4,
-      isLead: false,
-    },
-    {
-      id: 5,
-      name: "Canute",
-      role: "Writer",
-      image: img5,
-      isLead: false,
-    },
+    { id: 2, name: "Ashika", role: "Senior Writer", image: img2, isLead: false },
+    { id: 3, name: "Ashmi", role: "Writer", image: img3, isLead: false },
+    { id: 4, name: "Ancy", role: "Writer", image: img4, isLead: false },
+    { id: 5, name: "Canute", role: "Writer", image: img5, isLead: false },
   ];
 
-  // State management - load from Firestore
+  // State management
   const [papers, setPapers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
@@ -334,7 +301,6 @@ const handleLogout = async () => {
         setIsLoading(true);
         const data = await fetchPaperWritings();
         if (mounted) {
-          // Map Firestore results to expected paper shape if needed
           const mapped = data.map((d, idx) => ({
             ...d,
             serialNo: d.serialNo || idx + 1,
@@ -354,47 +320,17 @@ const handleLogout = async () => {
     };
   }, []);
 
-  // Status options: Started, Reviewing, Completed, On Hold
+  // Status options
   const statusOptions = [
-    {
-      value: "Started",
-      label: "Started",
-      color: "text-blue-400",
-      bg: "bg-blue-400/10",
-      icon: Clock,
-      count: 0,
-    },
-    {
-      value: "Reviewing",
-      label: "Reviewing",
-      color: "text-yellow-400",
-      bg: "bg-yellow-400/10",
-      icon: Eye,
-      count: 0,
-    },
-    {
-      value: "Completed",
-      label: "Completed",
-      color: "text-green-400",
-      bg: "bg-green-400/10",
-      icon: CheckCircle,
-      count: 0,
-    },
-    {
-      value: "On Hold",
-      label: "On Hold",
-      color: "text-red-400",
-      bg: "bg-red-400/10",
-      icon: AlertCircle,
-      count: 0,
-    },
+    { value: "Started", label: "Started", color: "text-blue-400", bg: "bg-blue-400/10", icon: Clock, count: 0 },
+    { value: "Reviewing", label: "Reviewing", color: "text-yellow-400", bg: "bg-yellow-400/10", icon: Eye, count: 0 },
+    { value: "Completed", label: "Completed", color: "text-green-400", bg: "bg-green-400/10", icon: CheckCircle, count: 0 },
+    { value: "On Hold", label: "On Hold", color: "text-red-400", bg: "bg-red-400/10", icon: AlertCircle, count: 0 },
   ];
 
   // Filter papers based on selected filter
   const filteredPapers = useMemo(() => {
-    if (statusFilter === null) {
-      return papers;
-    }
+    if (statusFilter === null) return papers;
     return papers.filter((paper) => paper.status === statusFilter);
   }, [papers, statusFilter]);
 
@@ -409,9 +345,15 @@ const handleLogout = async () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Get due status (overdue, due soon, on track, completed)
-  const getDueStatus = (deadline) => {
+  // CORRECTED: Get due status considering paper status
+  const getDueStatus = (deadline, paperStatus) => {
     if (!deadline) return null;
+    
+    // Only calculate due status for "Started" papers
+    if (paperStatus !== "Started") {
+      return null;
+    }
+    
     const today = new Date();
     const deadlineDate = new Date(deadline);
     const diffTime = deadlineDate - today;
@@ -456,7 +398,6 @@ const handleLogout = async () => {
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     if (id === "startDate" && value) {
-      // Auto-calculate deadline when start date changes
       const autoDeadline = calculateAutoDeadline(value);
       setNewPaper((prev) => ({
         ...prev,
@@ -474,11 +415,7 @@ const handleLogout = async () => {
     setIsSaving(true);
     try {
       if (editingPaper) {
-        const paperToSubmit = {
-          ...editingPaper,
-          ...newPaper,
-        };
-
+        const paperToSubmit = { ...editingPaper, ...newPaper };
         await updatePaperWriting(paperToSubmit);
         setPapers((prev) =>
           prev.map((p) =>
@@ -486,24 +423,14 @@ const handleLogout = async () => {
           )
         );
       } else {
-        // compute serialNo locally
-        const nextSerialNo =
-          papers.length > 0
-            ? Math.max(...papers.map((p) => p.serialNo || 0)) + 1
-            : 1;
-        const paperToSubmit = {
-          serialNo: nextSerialNo,
-          ...newPaper,
-        };
-
+        const nextSerialNo = papers.length > 0
+          ? Math.max(...papers.map((p) => p.serialNo || 0)) + 1
+          : 1;
+        const paperToSubmit = { serialNo: nextSerialNo, ...newPaper };
         const created = await addPaperWriting(paperToSubmit);
         setPapers((prev) => [
           ...prev,
-          {
-            ...created,
-            serialNo: created.serialNo || paperToSubmit.serialNo,
-            progress: created.progress || paperToSubmit.progress,
-          },
+          { ...created, serialNo: created.serialNo || paperToSubmit.serialNo },
         ]);
       }
     } catch (err) {
@@ -602,9 +529,7 @@ const handleLogout = async () => {
 
   // Transform papers data for DataTable
   const tableData = papers.map((paper) => {
-    const paperDaysRemaining = calculateDaysRemaining(paper.deadline);
-    const paperStatusOption =
-      statusOptions.find((s) => s.value === paper.status) || statusOptions[0];
+    const paperStatusOption = statusOptions.find((s) => s.value === paper.status) || statusOptions[0];
     const PaperStatusIcon = paperStatusOption.icon;
     const paperStatusColor = paperStatusOption.color;
     const paperStatusBg = paperStatusOption.bg;
@@ -614,8 +539,11 @@ const handleLogout = async () => {
       _paperData: paper,
       renderRow: (item, onRowExpand) => {
         const paperData = item._paperData;
+        // Pass paper status to getDueStatus
+        const dueStatus = getDueStatus(paperData.deadline, paperData.status);
+
         return (
-          <tr className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
+          <tr key={paperData.id} className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
             <td className="py-4 px-4 text-center">
               <div className="text-cyan-400 font-bold text-lg">
                 {paperData.serialNo}
@@ -640,8 +568,7 @@ const handleLogout = async () => {
                   src={
                     paperData.takenBy === leadResearcher.name
                       ? leadResearcher.image
-                      : teamMembers.find((m) => m.name === paperData.takenBy)
-                          ?.image ||
+                      : teamMembers.find((m) => m.name === paperData.takenBy)?.image ||
                         "https://api.dicebear.com/7.x/avataaars/svg?seed=default"
                   }
                   alt={paperData.takenBy}
@@ -664,24 +591,18 @@ const handleLogout = async () => {
                   <div className="text-gray-300">
                     {formatDate(paperData.deadline)}
                   </div>
-                  {(() => {
-                    const dueStatus = getDueStatus(paperData.deadline);
-                    return dueStatus ? (
-                      <div className={`text-xs font-medium ${dueStatus.color}`}>
-                        {dueStatus.label}
-                      </div>
-                    ) : null;
-                  })()}
+                  {/* Only show due status for "Started" papers */}
+                  {paperData.status === "Started" && dueStatus && (
+                    <div className={`text-xs font-medium ${dueStatus.color}`}>
+                      {dueStatus.label}
+                    </div>
+                  )}
                 </div>
               </div>
             </td>
             <td className="py-4 px-4">
-              <div
-                className={`inline-flex items-center px-3 py-1 rounded-full ${paperStatusBg}`}
-              >
-                <PaperStatusIcon
-                  className={`w-4 h-4 mr-2 ${paperStatusColor}`}
-                />
+              <div className={`inline-flex items-center px-3 py-1 rounded-full ${paperStatusBg}`}>
+                <PaperStatusIcon className={`w-4 h-4 mr-2 ${paperStatusColor}`} />
                 <span className={`text-sm font-medium ${paperStatusColor}`}>
                   {paperData.status}
                 </span>
@@ -743,7 +664,7 @@ const handleLogout = async () => {
                 </div>
                 <div
                   className={`p-4 rounded-lg border ${(() => {
-                    const dueStatus = getDueStatus(paper.deadline);
+                    const dueStatus = getDueStatus(paper.deadline, paper.status);
                     return dueStatus
                       ? `${dueStatus.bg} ${dueStatus.borderColor}`
                       : "bg-gray-800/50 border-gray-700";
@@ -756,12 +677,11 @@ const handleLogout = async () => {
                   <div className="text-xl font-bold text-white">
                     {formatDate(paper.deadline)}
                   </div>
-                  {(() => {
-                    const dueStatus = getDueStatus(paper.deadline);
+                  {/* Only show due status for "Started" papers */}
+                  {paper.status === "Started" && (() => {
+                    const dueStatus = getDueStatus(paper.deadline, paper.status);
                     return dueStatus ? (
-                      <div
-                        className={`text-sm mt-1 font-medium ${dueStatus.color}`}
-                      >
+                      <div className={`text-sm mt-1 font-medium ${dueStatus.color}`}>
                         {dueStatus.label}
                       </div>
                     ) : null;
@@ -777,11 +697,11 @@ const handleLogout = async () => {
 
   return (
     <ReserchLayout
-  activeTab={activeTab}
-  setActiveTab={setActiveTab}
-  onLogout={handleLogout}
-  isLoading={isLoggingOut} // Pass logout loading state to layout
->
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
+      onLogout={handleLogout}
+      isLoading={isLoggingOut}
+    >
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
         {/* Header */}
         <div className="mb-8">
@@ -789,8 +709,7 @@ const handleLogout = async () => {
             Research Paper Writing 
           </h1>
           <p className="text-gray-400 mt-2">
-            Manage your research papers, track progress, and collaborate with
-            team members
+            Manage your research papers, track progress, and collaborate with team members
           </p>
         </div>
 
@@ -832,11 +751,7 @@ const handleLogout = async () => {
               </div>
               <div className="text-right">
                 <div className="text-white font-semibold">
-                  {
-                    papers.filter((p) => p.takenBy === leadResearcher.name)
-                      .length
-                  }{" "}
-                  Papers
+                  {papers.filter((p) => p.takenBy === leadResearcher.name).length} Papers
                 </div>
               </div>
             </div>
@@ -844,9 +759,7 @@ const handleLogout = async () => {
 
           {/* Team Members Section */}
           <div>
-            <h3 className="text-lg font-medium text-white mb-3">
-              Team Members
-            </h3>
+            <h3 className="text-lg font-medium text-white mb-3">Team Members</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {teamMembers.map((member) => (
                 <div
@@ -879,20 +792,13 @@ const handleLogout = async () => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
               <Filter className="w-5 h-5 text-cyan-400 mr-2" />
-              <h3 className="text-lg font-semibold text-white">
-                Filter by Status
-              </h3>
+              <h3 className="text-lg font-semibold text-white">Filter by Status</h3>
             </div>
             <div className="text-sm text-gray-400">
-              Showing{" "}
-              {statusFilter === null
-                ? papers.length
-                : papers.filter((p) => p.status === statusFilter).length}{" "}
-              of {papers.length} papers
+              Showing {statusFilter === null ? papers.length : papers.filter((p) => p.status === statusFilter).length} of {papers.length} papers
             </div>
           </div>
           <div className="flex flex-wrap gap-3">
-            {/* Show All Button */}
             <button
               onClick={() => setStatusFilter(null)}
               className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
@@ -901,25 +807,13 @@ const handleLogout = async () => {
                   : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
               }`}
             >
-              <Filter
-                className={`w-5 h-5 mr-3 ${
-                  statusFilter === null ? "text-gray-400" : "text-gray-400"
-                }`}
-              />
-              <span
-                className={`font-medium ${
-                  statusFilter === null ? "text-gray-400" : "text-gray-300"
-                }`}
-              >
+              <Filter className={`w-5 h-5 mr-3 ${statusFilter === null ? "text-gray-400" : "text-gray-400"}`} />
+              <span className={`font-medium ${statusFilter === null ? "text-gray-400" : "text-gray-300"}`}>
                 All Papers
               </span>
-              <span
-                className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                  statusFilter === null
-                    ? "bg-gray-800 text-white"
-                    : "bg-gray-800/70 text-gray-400"
-                }`}
-              >
+              <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
+                statusFilter === null ? "bg-gray-800 text-white" : "bg-gray-800/70 text-gray-400"
+              }`}>
                 {papers.length}
               </span>
             </button>
@@ -927,9 +821,7 @@ const handleLogout = async () => {
             {statusOptions.map((option) => {
               const Icon = option.icon;
               const isActive = statusFilter === option.value;
-              const count = papers.filter(
-                (p) => p.status === option.value
-              ).length;
+              const count = papers.filter((p) => p.status === option.value).length;
 
               return (
                 <button
@@ -941,25 +833,13 @@ const handleLogout = async () => {
                       : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
                   }`}
                 >
-                  <Icon
-                    className={`w-5 h-5 mr-3 ${
-                      isActive ? option.color : "text-gray-400"
-                    }`}
-                  />
-                  <span
-                    className={`font-medium ${
-                      isActive ? option.color : "text-gray-300"
-                    }`}
-                  >
+                  <Icon className={`w-5 h-5 mr-3 ${isActive ? option.color : "text-gray-400"}`} />
+                  <span className={`font-medium ${isActive ? option.color : "text-gray-300"}`}>
                     {option.label}
                   </span>
-                  <span
-                    className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                      isActive
-                        ? "bg-gray-800 text-white"
-                        : "bg-gray-800/70 text-gray-400"
-                    }`}
-                  >
+                  <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
+                    isActive ? "bg-gray-800 text-white" : "bg-gray-800/70 text-gray-400"
+                  }`}>
                     {count}
                   </span>
                 </button>
@@ -973,9 +853,7 @@ const handleLogout = async () => {
           <div>
             <h2 className="text-2xl font-bold text-white">Active Papers</h2>
             <p className="text-gray-400 text-sm mt-1">
-              {statusFilter === null
-                ? "Showing all papers"
-                : `Showing ${statusFilter} papers only`}
+              {statusFilter === null ? "Showing all papers" : `Showing ${statusFilter} papers only`}
             </p>
           </div>
           <button
@@ -1002,9 +880,7 @@ const handleLogout = async () => {
         <DataTable
           columns={tableColumns}
           data={tableData.filter((item) =>
-            statusFilter === null
-              ? true
-              : item._paperData.status === statusFilter
+            statusFilter === null ? true : item._paperData.status === statusFilter
           )}
           expandedRow={expandedRow}
           onRowExpand={toggleRowExpansion}
@@ -1015,12 +891,9 @@ const handleLogout = async () => {
         {filteredPapers.length === 0 && statusFilter !== null && (
           <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
             <Filter className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">
-              No papers found
-            </h3>
+            <h3 className="text-xl font-semibold text-white mb-2">No papers found</h3>
             <p className="text-gray-400 mb-6">
-              No {statusFilter.toLowerCase()} papers found. Try changing the
-              filter or add new papers.
+              No {statusFilter.toLowerCase()} papers found. Try changing the filter or add new papers.
             </p>
           </div>
         )}
@@ -1048,25 +921,17 @@ const handleLogout = async () => {
 
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Paper Title - NOW USING SEARCHABLE DROPDOWN */}
                     <div>
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
-                        Paper Title
-                      </label>
+                      <label className="block text-sm font-medium text-cyan-300 mb-2">Paper Title</label>
                       <SearchableDropdown
                         value={newPaper.title}
                         onChange={(value) => setNewPaper(prev => ({ ...prev, title: value }))}
                         placeholder="Search research paper titles..."
                       />
-                      {/* <p className="text-xs text-gray-400 mt-1">
-                        Start typing to search available paper titles (excludes completed papers)
-                      </p> */}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
-                        Taken By
-                      </label>
+                      <label className="block text-sm font-medium text-cyan-300 mb-2">Taken By</label>
                       <select
                         id="takenBy"
                         value={newPaper.takenBy}
@@ -1076,24 +941,18 @@ const handleLogout = async () => {
                       >
                         <option value="">Select researcher</option>
                         <optgroup label="Team lead">
-                          <option value={leadResearcher.name}>
-                            {leadResearcher.name} (Lead)
-                          </option>
+                          <option value={leadResearcher.name}>{leadResearcher.name} (Lead)</option>
                         </optgroup>
                         <optgroup label="Team Members">
                           {teamMembers.map((member) => (
-                            <option key={member.id} value={member.name}>
-                              {member.name} ({member.role})
-                            </option>
+                            <option key={member.id} value={member.name}>{member.name} ({member.role})</option>
                           ))}
                         </optgroup>
                       </select>
                     </div>
 
                     <div className="relative">
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
-                        Start Date
-                      </label>
+                      <label className="block text-sm font-medium text-cyan-300 mb-2">Start Date</label>
                       <div className="relative">
                         <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-cyan-400 pointer-events-none" />
                         <input
@@ -1104,22 +963,15 @@ const handleLogout = async () => {
                           onChange={handleInputChange}
                           onFocus={() => startDateRef.current?.showPicker?.()}
                           onClick={() => startDateRef.current?.showPicker?.()}
-                          onTouchStart={() =>
-                            startDateRef.current?.showPicker?.()
-                          }
+                          onTouchStart={() => startDateRef.current?.showPicker?.()}
                           required
                           className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
-                      {/* <p className="text-xs text-gray-400 mt-1">
-                        Deadline will auto-set to start date + 4 days
-                      </p> */}
                     </div>
 
                     <div className="relative">
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
-                        Deadline
-                      </label>
+                      <label className="block text-sm font-medium text-cyan-300 mb-2">Deadline</label>
                       <div className="relative">
                         <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none" />
                         <input
@@ -1130,22 +982,15 @@ const handleLogout = async () => {
                           onChange={handleInputChange}
                           onFocus={() => deadlineRef.current?.showPicker?.()}
                           onClick={() => deadlineRef.current?.showPicker?.()}
-                          onTouchStart={() =>
-                            deadlineRef.current?.showPicker?.()
-                          }
+                          onTouchStart={() => deadlineRef.current?.showPicker?.()}
                           className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
-                      {/* <p className="text-xs text-gray-400 mt-1">
-                        Auto-calculated or customize as needed
-                      </p> */}
                     </div>
                   </div>
 
                   <div className="mt-6">
-                    <label className="block text-sm font-medium text-cyan-300 mb-2">
-                      Status
-                    </label>
+                    <label className="block text-sm font-medium text-cyan-300 mb-2">Status</label>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                       {statusOptions.map((option) => {
                         const Icon = option.icon;
@@ -1153,32 +998,15 @@ const handleLogout = async () => {
                           <button
                             key={option.value}
                             type="button"
-                            onClick={() =>
-                              setNewPaper((prev) => ({
-                                ...prev,
-                                status: option.value,
-                              }))
-                            }
+                            onClick={() => setNewPaper((prev) => ({ ...prev, status: option.value }))}
                             className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
                               newPaper.status === option.value
                                 ? `${option.bg} border-cyan-500/50 shadow-lg shadow-cyan-500/10`
                                 : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
                             }`}
                           >
-                            <Icon
-                              className={`w-5 h-5 mb-1 ${
-                                newPaper.status === option.value
-                                  ? option.color
-                                  : "text-gray-400"
-                              }`}
-                            />
-                            <span
-                              className={`text-xs font-medium ${
-                                newPaper.status === option.value
-                                  ? option.color
-                                  : "text-gray-400"
-                              }`}
-                            >
+                            <Icon className={`w-5 h-5 mb-1 ${newPaper.status === option.value ? option.color : "text-gray-400"}`} />
+                            <span className={`text-xs font-medium ${newPaper.status === option.value ? option.color : "text-gray-400"}`}>
                               {option.label}
                             </span>
                           </button>
@@ -1188,9 +1016,7 @@ const handleLogout = async () => {
                   </div>
 
                   <div className="mt-6">
-                    <label className="block text-sm font-medium text-cyan-300 mb-2">
-                      Paper Details
-                    </label>
+                    <label className="block text-sm font-medium text-cyan-300 mb-2">Paper Details</label>
                     <textarea
                       id="details"
                       value={newPaper.details}

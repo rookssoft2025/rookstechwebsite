@@ -17,7 +17,6 @@ const COUNTER_DOC = "counter";
 
 const cleanCodingData = (data) => {
   const cleaned = { ...data };
-  // Remove React-specific properties
   delete cleaned.renderRow;
   delete cleaned.expandContent;
   delete cleaned.progress;

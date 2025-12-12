@@ -16,6 +16,8 @@ import {
   FileEdit,
   CalendarClock,
   Filter,
+  CheckCheck,
+  AlertOctagon,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
@@ -33,10 +35,11 @@ import img1 from "../../assets/abinesh.jpg";
 import img2 from "../../assets/shajini.jpg";
 import img3 from "../../assets/mahesh.jpg";
 import img4 from "../../assets/arun.jpg";
-import img5 from "../../assets/akash.jpg";
+import img5 from "../../assets/aakash.png";
 
 import { signOut } from "firebase/auth";
 import { auth } from "../../../../firebase";
+
 const ProposalPage = () => {
   const navigate = useNavigate();
 
@@ -65,6 +68,7 @@ const ProposalPage = () => {
     endDate: "",
     status: "Started",
     details: "",
+    completedDate: "",
   });
 
   // Refs for date inputs so we can open native picker on touch/click
@@ -72,7 +76,6 @@ const ProposalPage = () => {
   const endDateRef = useRef(null);
 
   // Research team
-  // Team Leader (Abinesh)
   const teamLeader = {
     id: 0,
     name: "Abinesh",
@@ -80,38 +83,13 @@ const ProposalPage = () => {
     image: img1,
   };
 
-  // Team Members (excluding leader)
   const teamMembers = [
-    {
-      id: 1,
-      name: "Shajini",
-      role: "Researcher",
-      image: img2,
-    },
-    {
-      id: 2,
-      name: "Mahesh",
-      role: "Programmer",
-      image: img3,
-    },
-    {
-      id: 3,
-      name: "Arun",
-      role: "Programmer",
-      image: img4,
-    },
-    {
-      id: 4,
-      name: "Akash",
-      role: "Programmer",
-      image: img5,
-    },
+    { id: 1, name: "Shajini", role: "Researcher", image: img2 },
+    { id: 2, name: "Mahesh", role: "Programmer", image: img3 },
+    { id: 3, name: "Arun", role: "Programmer", image: img4 },
+    { id: 4, name: "Akash", role: "Programmer", image: img5 },
   ];
 
-  // Lead researcher reference (first member)
-  const leadResearcher = teamMembers[0];
-
-  // Status options for filter and display - UPDATED: Removed "In Progress"
   const initialStatusOptions = [
     {
       value: "all",
@@ -147,7 +125,6 @@ const ProposalPage = () => {
     },
   ];
 
-  // State for status options with dynamic counts
   const [statusOptions, setStatusOptions] = useState(initialStatusOptions);
 
   // Load proposals
@@ -160,10 +137,9 @@ const ProposalPage = () => {
     load();
   }, []);
 
-  // Calculate counts for each status filter - UPDATED: Removed "In Progress"
+  // Calculate counts for each status filter
   useEffect(() => {
     if (proposals.length > 0) {
-      // Calculate counts for each status
       const counts = {
         all: proposals.length,
         Started: proposals.filter((p) => p.status === "Started").length,
@@ -171,7 +147,6 @@ const ProposalPage = () => {
         Completed: proposals.filter((p) => p.status === "Completed").length,
       };
 
-      // Update status options with counts - Create new array to trigger re-render
       const updatedOptions = initialStatusOptions.map((option) => ({
         ...option,
         count: counts[option.value] || 0,
@@ -179,7 +154,6 @@ const ProposalPage = () => {
 
       setStatusOptions(updatedOptions);
     } else {
-      // Reset counts if no proposals
       setStatusOptions(
         initialStatusOptions.map((option) => ({ ...option, count: 0 }))
       );
@@ -215,7 +189,6 @@ const ProposalPage = () => {
     const deadline = new Date(endDate);
     deadline.setHours(0, 0, 0, 0);
 
-    // Calculate difference in days
     const diffTime = deadline - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
@@ -233,42 +206,76 @@ const ProposalPage = () => {
 
     return null;
   };
-const [isLoggingOut, setIsLoggingOut] = useState(false);
-  // Logout
- const handleLogout = async () => {
-  // Show confirmation dialog
-  const confirmLogout = window.confirm("Are you sure you want to logout?");
-  if (!confirmLogout) return;
 
-  setIsLoggingOut(true);
-  
-  try {
-    // Sign out from Firebase
-    await signOut(auth);
+  // Calculate how many days it took to complete
+  const calculateCompletionTiming = (startDate, completedDate) => {
+    if (!startDate || !completedDate) return "";
     
-    // Clear any local storage/session storage if needed
-    localStorage.removeItem('rememberedEmail');
-    localStorage.removeItem('rememberMe');
-    sessionStorage.removeItem('isLoggedIn');
+    const start = new Date(startDate);
+    const completed = new Date(completedDate);
     
-    // Show success message
-    console.log("Logout successful");
+    const diffTime = completed - start;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    // Navigate to login page
-    navigate("/login");
+    return `${diffDays} days`;
+  };
+
+  // Check if completion was overdue
+  const checkIfOverdue = (endDate, completedDate) => {
+    if (!endDate || !completedDate) return false;
     
-  } catch (error) {
-    console.error("Logout error:", error);
-    // Show error message to user
-    alert(`Logout failed: ${error.message}`);
-    setIsLoggingOut(false);
-  }
-};
+    const deadline = new Date(endDate);
+    const completed = new Date(completedDate);
+    
+    deadline.setHours(0, 0, 0, 0);
+    completed.setHours(0, 0, 0, 0);
+    
+    return completed > deadline;
+  };
+
+  // Calculate how many days overdue or early
+  const calculateOverdueDays = (endDate, completedDate) => {
+    if (!endDate || !completedDate) return 0;
+    
+    const deadline = new Date(endDate);
+    const completed = new Date(completedDate);
+    
+    deadline.setHours(0, 0, 0, 0);
+    completed.setHours(0, 0, 0, 0);
+    
+    const diffTime = completed - deadline;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    return diffDays;
+  };
+
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Logout
+  const handleLogout = async () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+
+    setIsLoggingOut(true);
+    
+    try {
+      await signOut(auth);
+      localStorage.removeItem('rememberedEmail');
+      localStorage.removeItem('rememberMe');
+      sessionStorage.removeItem('isLoggedIn');
+      console.log("Logout successful");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert(`Logout failed: ${error.message}`);
+      setIsLoggingOut(false);
+    }
+  };
+
   // Input change
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     if (id === "startDate" && value) {
-      // Auto-calculate end date when start date changes
       const autoEndDate = calculateAutoDeadline(value);
       setNewPaper((prev) => ({
         ...prev,
@@ -296,6 +303,7 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
       endDate: "",
       status: "Started",
       details: "",
+      completedDate: "",
     });
     setIsSaving(false);
   };
@@ -313,10 +321,18 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
     e.preventDefault();
     setIsSaving(true);
 
-    const updated = { ...newPaper, id: editingId };
-    await updateProposal(updated);
+    const originalProposal = proposals.find((p) => p.id === editingId);
+    let updatedData = { ...newPaper, id: editingId };
+    
+    if (originalProposal?.status !== "Completed" && newPaper.status === "Completed") {
+      updatedData.completedDate = new Date().toISOString().split('T')[0];
+    }
+    else if (originalProposal?.status === "Completed" && newPaper.status !== "Completed") {
+      updatedData.completedDate = "";
+    }
 
-    setProposals((prev) => prev.map((p) => (p.id === editingId ? updated : p)));
+    await updateProposal(updatedData);
+    setProposals((prev) => prev.map((p) => (p.id === editingId ? updatedData : p)));
 
     setEditMode(false);
     setEditingId(null);
@@ -334,21 +350,23 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
     setExpandedRow(expandedRow === id ? null : id);
   };
 
-  const formatDate = (dateString) =>
-    new Date(dateString).toLocaleDateString("en-US", {
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
+  };
 
   return (
     <ReserchLayout
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       onLogout={handleLogout}
-      isLoading={isLoggingOut} // Pass logout loading state to layout
+      isLoading={isLoggingOut}
     >
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
+      <div className="bg-gradient-to-br from-gray-900 via-black to-gray-900 md:p-6">
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
             Research Proposals
@@ -372,16 +390,14 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
             </span>
           </div>
 
-          {/* Team Leader Card - Abinesh at top */}
+          {/* Team Leader Card */}
           <div className="mb-6">
-            <h3 className="text-lg font-medium text-white mb-3 flex items-center">
-              Team Leader
-            </h3>
+            <h3 className="text-lg font-medium text-white mb-3">Team Leader</h3>
             <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-gray-900/50 to-yellow-900/20 transition-all duration-300">
               <img
                 src={teamLeader.image}
                 alt={teamLeader.name}
-                className="w-12 h-12 rounded-full border-2 border-yellow-500/50 bg-gradient-to-r from-yellow-600 to-amber-600"
+                className="w-12 h-12 rounded-full border-2 border-yellow-500/50"
               />
               <div className="ml-4 flex-1">
                 <div className="flex items-center">
@@ -396,22 +412,16 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
               </div>
               <div className="text-right">
                 <div className="text-white font-semibold">
-                  {
-                    proposals.filter((p) => p.takenBy === teamLeader.name)
-                      .length
-                  }{" "}
-                  Papers
+                  {proposals.filter((p) => p.takenBy === teamLeader.name).length} Papers
                 </div>
                 <div className="text-yellow-400 text-xs">Leader</div>
               </div>
             </div>
           </div>
 
-          {/* Team Members Section - all except leader */}
+          {/* Team Members Section */}
           <div>
-            <h3 className="text-lg font-medium text-white mb-3">
-              Team Members
-            </h3>
+            <h3 className="text-lg font-medium text-white mb-3">Team Members</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {teamMembers.map((member) => (
                 <div
@@ -429,10 +439,7 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                   </div>
                   <div className="text-right">
                     <div className="text-white font-semibold text-sm">
-                      {
-                        proposals.filter((p) => p.takenBy === member.name)
-                          .length
-                      }
+                      {proposals.filter((p) => p.takenBy === member.name).length}
                     </div>
                     <div className="text-gray-400 text-xs">Papers</div>
                   </div>
@@ -447,9 +454,7 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
               <Filter className="w-5 h-5 text-cyan-400 mr-2" />
-              <h3 className="text-lg font-semibold text-white">
-                Filter by Status
-              </h3>
+              <h3 className="text-lg font-semibold text-white">Filter by Status</h3>
             </div>
             <div className="text-sm text-gray-400">
               Showing {filteredProposals.length} of {proposals.length} proposals
@@ -469,23 +474,13 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                       : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
                   }`}
                 >
-                  <Icon
-                    className={`w-5 h-5 mr-3 ${
-                      isActive ? option.color : "text-gray-400"
-                    }`}
-                  />
-                  <span
-                    className={`font-medium ${
-                      isActive ? option.color : "text-gray-300"
-                    }`}
-                  >
+                  <Icon className={`w-5 h-5 mr-3 ${isActive ? option.color : "text-gray-400"}`} />
+                  <span className={`font-medium ${isActive ? option.color : "text-gray-300"}`}>
                     {option.label}
                   </span>
                   <span
                     className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                      isActive
-                        ? "bg-gray-800 text-white"
-                        : "bg-gray-800/70 text-gray-400"
+                      isActive ? "bg-gray-800 text-white" : "bg-gray-800/70 text-gray-400"
                     }`}
                   >
                     {option.count}
@@ -517,70 +512,70 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
           </button>
         </div>
 
-        {/* TABLE - UPDATED COLUMN ORDER */}
+        {/* TABLE - UPDATED COLUMNS TO INCLUDE COMPLETION DATE */}
         <DataTable
           columns={[
             { key: "serialNo", label: "S.No" },
             { key: "title", label: "Paper Name" },
             { key: "takenBy", label: "Researcher" },
             { key: "timeline", label: "Timeline" },
-            { key: "deadline", label: "Deadline" },
+            { key: "deadline", label: "Deadline Status" },
+            // { key: "completion", label: "Completion Date" }, // New column
             { key: "status", label: "Status" },
             { key: "details", label: "Details" },
             { key: "actions", label: "Actions" },
           ]}
           data={filteredProposals.map((proposal, index) => {
-            const statusInfo = statusOptions.find(
-              (s) => s.value === proposal.status
-            );
+            const statusInfo = statusOptions.find((s) => s.value === proposal.status);
             const StatusIcon = statusInfo?.icon;
             const deadlineStatus = checkDeadlineStatus(proposal.endDate);
+            const isOverdue = checkIfOverdue(proposal.endDate, proposal.completedDate);
+            const overdueDays = calculateOverdueDays(proposal.endDate, proposal.completedDate);
 
             return {
               ...proposal,
-
-              // properly passed!
               renderRow: (item, onRowExpand) => (
                 <tr
                   onClick={() => onRowExpand(item.id)}
                   className="border-b border-gray-800 hover:bg-gray-900/50 cursor-pointer transition-colors"
                 >
-                  {/* Serial No Column - 1st */}
                   <td className="py-4 px-6 text-center">
                     <div className="text-white font-semibold">{index + 1}</div>
                   </td>
 
-                  {/* Paper Name Column - 2nd */}
-                  <td className="py-4 px-6 text-white font-medium">
-                    {item.title}
-                  </td>
+                  <td className="py-4 px-6 text-white font-medium">{item.title}</td>
 
-                  {/* Researcher Column - 2nd */}
                   <td className="py-4 px-6 text-gray-300">{item.takenBy}</td>
 
-                  {/* Timeline Column - 3rd */}
                   <td className="py-4 px-6 text-gray-300">
                     <div className="flex flex-col">
                       <span>{formatDate(item.startDate)}</span>
                       <span className="text-sm text-gray-400">to</span>
-                      <span
-                        className={
-                          deadlineStatus?.status === "overdue" ||
-                          deadlineStatus?.status === "today"
-                            ? "text-red-400 font-medium"
-                            : deadlineStatus?.status === "approaching"
-                            ? "text-yellow-400"
-                            : "text-gray-300"
-                        }
-                      >
+                      <span className="text-gray-300">
                         {formatDate(item.endDate)}
                       </span>
                     </div>
                   </td>
 
-                  {/* Deadline Indicator Column - 4th */}
                   <td className="py-4 px-4 text-center">
-                    {deadlineStatus && (
+                    {item.status === "Completed" ? (
+                      <div className="flex flex-col items-center">
+                        {isOverdue ? (
+                          <>
+                            <AlertOctagon className="w-4 h-4 text-red-500 mb-1" />
+                            <span className="text-xs text-red-400">Overdue</span>
+                            <span className="text-xs text-red-300">
+                              {overdueDays} days late
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <CheckCheck className="w-4 h-4 text-green-500 mb-1" />
+                            <span className="text-xs text-green-400">On Time</span>
+                          </>
+                        )}
+                      </div>
+                    ) : deadlineStatus ? (
                       <div className="flex flex-col items-center">
                         <div
                           className={`w-3 h-3 rounded-full mb-1 ${
@@ -593,40 +588,61 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                               : "bg-green-500"
                           }`}
                         />
-                        {deadlineStatus && (
-                          <span
-                            className={`text-xs ${
-                              deadlineStatus.status === "overdue"
-                                ? "text-red-400"
-                                : deadlineStatus.status === "today"
-                                ? "text-red-400"
-                                : deadlineStatus.status === "approaching"
-                                ? "text-yellow-400"
-                                : "text-green-400"
-                            }`}
-                          >
-                            {deadlineStatus.text}
-                          </span>
-                        )}
+                        <span
+                          className={`text-xs ${
+                            deadlineStatus.status === "overdue"
+                              ? "text-red-400"
+                              : deadlineStatus.status === "today"
+                              ? "text-red-400"
+                              : deadlineStatus.status === "approaching"
+                              ? "text-yellow-400"
+                              : "text-green-400"
+                          }`}
+                        >
+                          {deadlineStatus.text}
+                        </span>
                       </div>
-                    )}
+                    ) : null}
                   </td>
 
-                  {/* Status Column - 5th */}
+                  {/* NEW COMPLETION DATE COLUMN */}
+                  {/* <td className="py-4 px-6">
+                    {item.status === "Completed" ? (
+                      <div className="flex flex-col items-start">
+                        <div className="flex items-center">
+                          <CalendarDays className="w-4 h-4 text-green-400 mr-2" />
+                          <span className="text-green-300 font-medium">
+                            {formatDate(item.completedDate)}
+                          </span>
+                        </div>
+                        <div className={`text-xs mt-1 ${isOverdue ? "text-red-400" : "text-green-400"}`}>
+                          {isOverdue ? (
+                            <div className="flex items-center">
+                              <AlertTriangle className="w-3 h-3 mr-1" />
+                              <span>Overdue by {overdueDays} days</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center">
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              <span>Completed in {calculateCompletionTiming(item.startDate, item.completedDate)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-gray-500 italic">Not completed</div>
+                    )}
+                  </td> */}
+
                   <td className="py-4 px-6">
                     <div
                       className={`px-3 py-1 rounded-full ${statusInfo?.bg} inline-flex items-center border border-gray-700`}
                     >
-                      <StatusIcon
-                        className={`w-4 h-4 mr-2 ${statusInfo?.color}`}
-                      />
-                      <span className={`${statusInfo?.color} font-medium`}>
-                        {item.status}
-                      </span>
+                      <StatusIcon className={`w-4 h-4 mr-2 ${statusInfo?.color}`} />
+                      <span className={`${statusInfo?.color} font-medium`}>{item.status}</span>
                     </div>
                   </td>
 
-                  {/* Details Column - 6th */}
                   <td className="py-4 px-6 text-cyan-400">
                     {expandedRow === item.id ? (
                       <ChevronUp className="w-5 h-5" />
@@ -635,7 +651,6 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                     )}
                   </td>
 
-                  {/* Actions Column - 7th */}
                   <td className="py-4 px-6">
                     <div className="flex gap-3">
                       <button
@@ -660,14 +675,20 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                   </td>
                 </tr>
               ),
-
               expandContent: (
                 <div className="p-4 bg-gray-900/50 rounded-xl border border-gray-800">
                   <div className="flex justify-between items-start mb-4">
-                    <h4 className="text-lg font-semibold text-white">
-                      Paper Details
-                    </h4>
-                    {deadlineStatus && (
+                    <h4 className="text-lg font-semibold text-white">Paper Details</h4>
+                    {proposal.status === "Completed" ? (
+                      <div className={`px-3 py-1.5 rounded-full ${isOverdue ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-green-500/20 text-green-400 border border-green-500/30'}`}>
+                        <div className="flex items-center">
+                          {isOverdue ? <AlertOctagon className="w-4 h-4 mr-2" /> : <CheckCircle className="w-4 h-4 mr-2" />}
+                          <span className="text-sm font-medium">
+                            {isOverdue ? `Completed ${overdueDays} days overdue` : 'Completed on time'}
+                          </span>
+                        </div>
+                      </div>
+                    ) : deadlineStatus ? (
                       <div
                         className={`px-3 py-1.5 rounded-full ${
                           deadlineStatus.status === "overdue"
@@ -681,65 +702,59 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                       >
                         <div className="flex items-center">
                           <AlertTriangle className="w-4 h-4 mr-2" />
-                          <span className="text-sm font-medium">
-                            {deadlineStatus.text}
-                          </span>
+                          <span className="text-sm font-medium">{deadlineStatus.text}</span>
                         </div>
                       </div>
-                    )}
+                    ) : null}
                   </div>
                   <p className="text-gray-300 mb-4">{proposal.details}</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div className="bg-gray-900/30 p-3 rounded-lg">
                       <div className="flex items-center mb-1">
                         <Calendar className="w-4 h-4 text-cyan-400 mr-2" />
-                        <span className="text-cyan-400 font-medium">
-                          Start Date:
-                        </span>
+                        <span className="text-cyan-400 font-medium">Start Date:</span>
                       </div>
-                      <div className="text-gray-300 ml-6">
-                        {formatDate(proposal.startDate)}
-                      </div>
+                      <div className="text-gray-300 ml-6">{formatDate(proposal.startDate)}</div>
                     </div>
-                    <div
-                      className={`p-3 rounded-lg ${
-                        deadlineStatus?.status === "overdue" ||
-                        deadlineStatus?.status === "today"
-                          ? "bg-red-500/10"
-                          : "bg-gray-900/30"
-                      }`}
-                    >
+                    
+                    <div className="bg-gray-900/30 p-3 rounded-lg">
                       <div className="flex items-center mb-1">
-                        <CalendarDays
-                          className={`w-4 h-4 mr-2 ${
-                            deadlineStatus?.status === "overdue" ||
-                            deadlineStatus?.status === "today"
-                              ? "text-red-400"
-                              : "text-cyan-400"
-                          }`}
-                        />
-                        <span
-                          className={
-                            deadlineStatus?.status === "overdue" ||
-                            deadlineStatus?.status === "today"
-                              ? "text-red-400 font-medium"
-                              : "text-cyan-400 font-medium"
-                          }
-                        >
-                          End Date:
-                        </span>
+                        <CalendarDays className="w-4 h-4 text-cyan-400 mr-2" />
+                        <span className="text-cyan-400 font-medium">Due Date:</span>
                       </div>
-                      <div
-                        className={`ml-6 ${
-                          deadlineStatus?.status === "overdue" ||
-                          deadlineStatus?.status === "today"
-                            ? "text-red-400 font-medium"
-                            : "text-gray-300"
-                        }`}
-                      >
-                        {formatDate(proposal.endDate)}
-                      </div>
+                      <div className="text-gray-300 ml-6">{formatDate(proposal.endDate)}</div>
                     </div>
+
+                    {proposal.status === "Completed" ? (
+                      <div className={`p-3 rounded-lg ${isOverdue ? 'bg-red-500/10' : 'bg-green-500/10'}`}>
+                        <div className="flex items-center mb-1">
+                          <CheckCircle className={`w-4 h-4 mr-2 ${isOverdue ? 'text-red-400' : 'text-green-400'}`} />
+                          <span className={`font-medium ${isOverdue ? 'text-red-400' : 'text-green-400'}`}>
+                            Completion Date:
+                          </span>
+                        </div>
+                        <div className={`ml-6 ${isOverdue ? 'text-red-300' : 'text-green-300'}`}>
+                          {formatDate(proposal.completedDate)}
+                        </div>
+                        {proposal.completedDate && (
+                          <div className={`text-xs mt-2 ml-6 ${isOverdue ? 'text-red-400/70' : 'text-green-400/70'}`}>
+                            {isOverdue ? (
+                              <span>Overdue by {overdueDays} days</span>
+                            ) : (
+                              <span>Completed in {calculateCompletionTiming(proposal.startDate, proposal.completedDate)}</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="bg-gray-900/30 p-3 rounded-lg">
+                        <div className="flex items-center mb-1">
+                          <Clock className="w-4 h-4 text-gray-400 mr-2" />
+                          <span className="text-gray-400 font-medium">Completion:</span>
+                        </div>
+                        <div className="text-gray-500 ml-6 italic">Pending</div>
+                      </div>
+                    )}
                   </div>
                 </div>
               ),
@@ -753,9 +768,7 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
         {filteredProposals.length === 0 && (
           <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
             <Filter className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">
-              No proposals found
-            </h3>
+            <h3 className="text-xl font-semibold text-white mb-2">No proposals found</h3>
             <p className="text-gray-400 mb-6">
               {statusFilter === "all"
                 ? "No proposals have been added yet. Click 'Add New Paper' to get started."
@@ -772,11 +785,10 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
           </div>
         )}
 
-        {/* MODAL - UPDATED VISIBLE UI WITH WHITE ICONS */}
+        {/* MODAL */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
-            <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-2xl w-full max-w-2xl border border-cyan-500/30 shadow-2xl shadow-cyan-500/10 animate-fadeIn">
-              {/* Modal Header */}
+            <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-2xl w-full max-w-2xl border border-cyan-500/30 shadow-2xl shadow-cyan-500/10">
               <div className="relative p-6 border-b border-gray-700">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
@@ -789,9 +801,7 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                     </div>
                     <div>
                       <h3 className="text-2xl font-bold text-white">
-                        {editMode
-                          ? "Edit Research Paper"
-                          : "Add New Research Paper"}
+                        {editMode ? "Edit Research Paper" : "Add New Research Paper"}
                       </h3>
                       <p className="text-gray-400 mt-1">
                         {editMode
@@ -811,9 +821,7 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
 
               <form onSubmit={editMode ? handleUpdate : handleSubmit}>
                 <div className="p-6 max-h-[70vh] overflow-y-auto">
-                  {/* Form Fields Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Paper Name */}
                     <div className="space-y-2">
                       <label className="flex items-center text-sm font-medium text-white">
                         <FileText className="w-4 h-4 mr-2 text-white" />
@@ -832,7 +840,6 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                       </div>
                     </div>
 
-                    {/* Researcher */}
                     <div className="space-y-2">
                       <label className="flex items-center text-sm font-medium text-white">
                         <User className="w-4 h-4 mr-2 text-white" />
@@ -854,20 +861,13 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                             Select researcher
                           </option>
                           <optgroup label="Team lead">
-                            <option
-                              value={teamLeader.name}
-                              className="bg-gray-900"
-                            >
+                            <option value={teamLeader.name} className="bg-gray-900">
                               {teamLeader.name} (Lead)
                             </option>
                           </optgroup>
                           <optgroup label="Team Members">
                             {teamMembers.map((m) => (
-                              <option
-                                key={m.id}
-                                value={m.name}
-                                className="bg-gray-900"
-                              >
+                              <option key={m.id} value={m.name} className="bg-gray-900">
                                 {m.name} ({m.role})
                               </option>
                             ))}
@@ -878,13 +878,11 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                       </div>
                     </div>
 
-                    {/* Start Date */}
                     <div className="space-y-2">
                       <label className="flex items-center text-sm font-medium text-white">
                         <Calendar className="w-4 h-4 mr-2 text-white" />
                         Start Date
                       </label>
-
                       <div className="relative">
                         <input
                           type="date"
@@ -892,11 +890,6 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                           ref={startDateRef}
                           value={newPaper.startDate}
                           onChange={handleInputChange}
-                          onFocus={() => startDateRef.current?.showPicker?.()}
-                          onClick={() => startDateRef.current?.showPicker?.()}
-                          onTouchStart={() =>
-                            startDateRef.current?.showPicker?.()
-                          }
                           required
                           className="w-full px-4 pl-10 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
                         />
@@ -904,13 +897,11 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                       </div>
                     </div>
 
-                    {/* End Date */}
                     <div className="space-y-2">
                       <label className="flex items-center text-sm font-medium text-white">
                         <CalendarDays className="w-4 h-4 mr-2 text-white" />
                         End Date
                       </label>
-
                       <div className="relative">
                         <input
                           type="date"
@@ -918,48 +909,35 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                           ref={endDateRef}
                           value={newPaper.endDate}
                           onChange={handleInputChange}
-                          onFocus={() => endDateRef.current?.showPicker?.()}
-                          onClick={() => endDateRef.current?.showPicker?.()}
-                          onTouchStart={() =>
-                            endDateRef.current?.showPicker?.()
-                          }
                           required
                           className="w-full px-4 pl-10 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
                         />
                         <CalendarDays className="absolute left-3 top-3.5 w-4 h-4 text-white" />
                       </div>
-                      {newPaper.endDate &&
-                        checkDeadlineStatus(newPaper.endDate) && (
-                          <div
-                            className={`mt-2 flex items-center text-sm px-3 py-2 rounded-lg ${
-                              checkDeadlineStatus(newPaper.endDate).status ===
-                              "overdue"
-                                ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                                : checkDeadlineStatus(newPaper.endDate)
-                                    .status === "today"
-                                ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                                : checkDeadlineStatus(newPaper.endDate)
-                                    .status === "approaching"
-                                ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
-                                : "bg-green-500/20 text-green-400 border border-green-500/30"
-                            }`}
-                          >
-                            <AlertTriangle className="w-4 h-4 mr-2 flex-shrink-0 text-white" />
-                            <span>
-                              {checkDeadlineStatus(newPaper.endDate).text}
-                            </span>
-                          </div>
-                        )}
+                      {newPaper.endDate && checkDeadlineStatus(newPaper.endDate) && (
+                        <div
+                          className={`mt-2 flex items-center text-sm px-3 py-2 rounded-lg ${
+                            checkDeadlineStatus(newPaper.endDate).status === "overdue"
+                              ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                              : checkDeadlineStatus(newPaper.endDate).status === "today"
+                              ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                              : checkDeadlineStatus(newPaper.endDate).status === "approaching"
+                              ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
+                              : "bg-green-500/20 text-green-400 border border-green-500/30"
+                          }`}
+                        >
+                          <AlertTriangle className="w-4 h-4 mr-2 flex-shrink-0 text-white" />
+                          <span>{checkDeadlineStatus(newPaper.endDate).text}</span>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Status - Full Width - UPDATED: Only 3 options now */}
                     <div className="md:col-span-2 space-y-3">
                       <label className="flex items-center text-sm font-medium text-white">
                         <CalendarClock className="w-4 h-4 mr-2 text-white" />
                         Status
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        {/* Filter out "all" option and show only status options */}
                         {statusOptions
                           .filter((option) => option.value !== "all")
                           .map((option) => {
@@ -980,17 +958,14 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                                     : "bg-gray-900/70 border-gray-700 hover:border-gray-600"
                                 }`}
                               >
-                                <Icon className={`w-5 h-5 mr-3 text-white`} />
-                                <span className={`font-medium text-white`}>
-                                  {option.label}
-                                </span>
+                                <Icon className="w-5 h-5 mr-3 text-white" />
+                                <span className="font-medium text-white">{option.label}</span>
                               </button>
                             );
                           })}
                       </div>
                     </div>
 
-                    {/* Details - Full Width */}
                     <div className="md:col-span-2 space-y-2">
                       <label className="flex items-center text-sm font-medium text-white">
                         <FileEdit className="w-4 h-4 mr-2 text-white" />
@@ -1008,7 +983,6 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
                   </div>
                 </div>
 
-                {/* Modal Footer */}
                 <div className="p-6 border-t border-gray-700 bg-gray-900/50 rounded-b-2xl">
                   <div className="flex gap-4">
                     <button
@@ -1066,24 +1040,6 @@ const [isLoggingOut, setIsLoggingOut] = useState(false);
             </div>
           </div>
         )}
-
-        {/* Add animation styles */}
-        <style jsx>{`
-          @keyframes fadeIn {
-            from {
-              opacity: 0;
-              transform: translateY(-20px) scale(0.95);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0) scale(1);
-            }
-          }
-
-          .animate-fadeIn {
-            animation: fadeIn 0.3s ease-out;
-          }
-        `}</style>
       </div>
     </ReserchLayout>
   );
