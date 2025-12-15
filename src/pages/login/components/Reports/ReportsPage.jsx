@@ -17,6 +17,9 @@ import {
   ChevronUp,
   Clock,
   Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
@@ -25,9 +28,11 @@ import {
   getMonthlyReports,
   getYearlyReports,
   getCustomReports,
+  getMonthlyReportsByMonth,
 } from "../../../../services/ReportService";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../../firebase";
+
 // Load local avatar images from src/pages/login/assets and map by base filename
 const localAvatars = import.meta.glob("../../assets/*.{png,jpg,jpeg,svg}", {
   eager: true,
@@ -55,7 +60,7 @@ function getAvatarForName(name) {
 
 const teamsMeta = [
   {
-    id: 1,
+    id: "1",
     key: "coding",
     name: "Coding Team",
     department: "Software Development",
@@ -63,7 +68,7 @@ const teamsMeta = [
     icon: Code,
   },
   {
-    id: 2,
+    id: "2",
     key: "proposal",
     name: "Proposal Team",
     department: "Research Proposals",
@@ -71,7 +76,7 @@ const teamsMeta = [
     icon: FileText,
   },
   {
-    id: 3,
+    id: "3",
     key: "journal",
     name: "Journal Team",
     department: "Research Publications",
@@ -79,7 +84,7 @@ const teamsMeta = [
     icon: BookOpen,
   },
   {
-    id: 4,
+    id: "4",
     key: "writing",
     name: "Writing Team",
     department: "Technical Documentation",
@@ -115,6 +120,16 @@ const timeFilterOptions = [
   },
 ];
 
+// Month names for display
+const months = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+// Get current year and month
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth(); // 0-11
+
 function formatDate(date) {
   if (!date) return "-";
   const d =
@@ -131,35 +146,259 @@ function formatDate(date) {
 
 // Helper function to extract date based on team type
 function getStartDate(item, teamKey) {
-  // Check for startDate first (common for coding, writing, proposal)
   if (item.startDate) return item.startDate;
-
-  // For journals, check uploadedDate
   if (teamKey === "journal" && item.uploadedDate) return item.uploadedDate;
-
-  // Fallback to createdAt
   if (item.createdAt) return item.createdAt;
-
   return null;
 }
 
 function getEndDate(item, teamKey) {
-  // For coding and writing, check deadline
   if ((teamKey === "coding" || teamKey === "writing") && item.deadline)
     return item.deadline;
-
-  // For proposal, check endDate
   if (teamKey === "proposal" && item.endDate) return item.endDate;
-
-  // For journal, check dateOfReview
   if (teamKey === "journal" && item.dateOfReview) return item.dateOfReview;
-
-  // Fallback for all
   if (item.deadline) return item.deadline;
   if (item.endDate) return item.endDate;
-
   return null;
 }
+
+// TeamCard component
+const TeamCard = ({ meta, teamData, isExpanded, onToggle }) => {
+  const Icon = meta.icon;
+
+  return (
+    <div className="glass-card rounded-2xl border border-gray-800 overflow-hidden mb-6">
+      <div
+        className="p-6 cursor-pointer hover:bg-gray-900/30 transition-all"
+        onClick={() => onToggle(meta.id)}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div
+              className={`p-3 rounded-xl ${meta.color} bg-opacity-20 mr-4`}
+            >
+              <Icon className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white">{meta.name}</h3>
+              <p className="text-gray-400">{meta.department}</p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-6">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white">
+                {teamData.total}
+              </div>
+              <div className="text-sm text-gray-400">Total</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-cyan-400">
+                {teamData.active}
+              </div>
+              <div className="text-sm text-gray-400">Active</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-400">
+                {teamData.completed}
+              </div>
+              <div className="text-sm text-gray-400">Completed</div>
+            </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggle(meta.id);
+              }}
+              className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+            >
+              {isExpanded ? (
+                <ChevronUp className="w-5 h-5 text-gray-400" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-gray-400" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4 mt-6">
+          <div className="p-4 bg-gray-900/50 rounded-xl">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">All Items</span>
+              <span className="text-lg font-bold text-white">
+                {teamData.total}
+              </span>
+            </div>
+          </div>
+          <div className="p-4 bg-gray-900/50 rounded-xl">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">Completed</span>
+              <span className="text-lg font-bold text-cyan-400">
+                {teamData.completed}
+              </span>
+            </div>
+          </div>
+          <div className="p-4 bg-gray-900/50 rounded-xl">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">Active</span>
+              <span className="text-lg font-bold text-purple-400">
+                {teamData.active}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="border-t border-gray-800"
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h4 className="text-lg font-semibold text-white">
+                  All Items in Collection (
+                  {teamData.itemsInPeriod?.length || 0})
+                </h4>
+              </div>
+
+              {teamData.itemsInPeriod && teamData.itemsInPeriod.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-800">
+                        <th className="text-left py-3 px-4 text-gray-400 font-medium">
+                          Title
+                        </th>
+                        <th className="text-left py-3 px-4 text-gray-400 font-medium">
+                          Taken By
+                        </th>
+                        <th className="text-left py-3 px-4 text-gray-400 font-medium">
+                          Start Date
+                        </th>
+                        <th className="text-left py-3 px-4 text-gray-400 font-medium">
+                          End Date/Deadline
+                        </th>
+                        <th className="text-left py-3 px-4 text-gray-400 font-medium">
+                          Status
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {teamData.itemsInPeriod.map((item) => {
+                        let title =
+                          item.title ||
+                          item.projectName ||
+                          item.proposalTitle ||
+                          item.paperTitle ||
+                          item.journalTitle ||
+                          item.name ||
+                          item.documentTitle ||
+                          item.id ||
+                          "Untitled";
+
+                        let status = item.status || item.state || "-";
+                        let takenBy =
+                          item.takenBy ||
+                          item.assignedTo ||
+                          item.author ||
+                          item.createdBy ||
+                          item.assignee ||
+                          item.uploadedBy ||
+                          item.responsiblePerson ||
+                          "Unassigned";
+
+                        const startDateValue = getStartDate(item, meta.key);
+                        const endDateValue = getEndDate(item, meta.key);
+
+                        const userImg =
+                          getAvatarForName(takenBy) ||
+                          `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
+                            String(takenBy)
+                          )}`;
+
+                        return (
+                          <tr
+                            key={item.id}
+                            className="border-b border-gray-900 hover:bg-gray-900/30"
+                          >
+                            <td className="py-3 px-4">
+                              <div className="font-medium text-white">
+                                {title}
+                              </div>
+                              {item.details && (
+                                <div className="text-xs text-gray-400 truncate max-w-xs">
+                                  {item.details}
+                                </div>
+                              )}
+                            </td>
+                            <td className="py-3 px-4">
+                              <div className="flex items-center text-sm text-gray-300">
+                                <img
+                                  src={userImg}
+                                  alt="user"
+                                  className="w-6 h-6 rounded-full mr-2 object-cover border border-gray-700"
+                                />
+                                <span>{takenBy}</span>
+                              </div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <div className="flex items-center text-sm text-gray-300">
+                                <CalendarIcon className="w-3 h-3 mr-2 text-cyan-400" />
+                                {formatDate(startDateValue)}
+                              </div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <div className="flex items-center text-sm text-gray-300">
+                                <Clock className="w-3 h-3 mr-2 text-purple-400" />
+                                {formatDate(endDateValue)}
+                              </div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <span
+                                className={`px-2 py-1 rounded text-xs ${
+                                  status.toLowerCase() === "completed" ||
+                                  status.toLowerCase() === "complete" ||
+                                  status.toLowerCase() === "done" ||
+                                  status.toLowerCase() === "published"
+                                    ? "bg-green-900/30 text-green-400"
+                                    : status.toLowerCase() === "active" ||
+                                      status.toLowerCase() ===
+                                        "in progress" ||
+                                      status.toLowerCase() === "ongoing" ||
+                                      status.toLowerCase() === "started"
+                                    ? "bg-cyan-900/30 text-cyan-400"
+                                    : status.toLowerCase() === "on review" ||
+                                      status.toLowerCase() === "review"
+                                    ? "bg-yellow-900/30 text-yellow-400"
+                                    : "bg-gray-800 text-gray-300"
+                                }`}
+                              >
+                                {status}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="p-6 bg-gray-900/30 rounded-xl text-center">
+                  <CheckCircle className="w-6 h-6 text-gray-500 mx-auto mb-2" />
+                  <div className="text-gray-400">
+                    No items found in this collection.
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const ReportsPage = () => {
   const navigate = useNavigate();
@@ -169,6 +408,11 @@ const ReportsPage = () => {
 
   const [timeFilter, setTimeFilter] = useState("weekly");
   const [teamFilter, setTeamFilter] = useState("all");
+
+  // Month selection state
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -214,31 +458,24 @@ const ReportsPage = () => {
     },
     overall: { totals: { total: 0, active: 0, completed: 0 } },
   });
+  
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const handleLogout = async () => {
-    // Show confirmation dialog
     const confirmLogout = window.confirm("Are you sure you want to logout?");
     if (!confirmLogout) return;
 
     setIsLoggingOut(true);
 
     try {
-      // Sign out from Firebase
       await signOut(auth);
-
-      // Clear any local storage/session storage if needed
       localStorage.removeItem("rememberedEmail");
       localStorage.removeItem("rememberMe");
       sessionStorage.removeItem("isLoggedIn");
-
-      // Show success message
       console.log("Logout successful");
-
-      // Navigate to login page
       navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);
-      // Show error message to user
       alert(`Logout failed: ${error.message}`);
       setIsLoggingOut(false);
     }
@@ -246,6 +483,7 @@ const ReportsPage = () => {
 
   const handleCustomDateRange = () => {
     setShowDateRange(true);
+    setShowMonthPicker(false);
     setTimeFilter("custom");
   };
 
@@ -256,11 +494,47 @@ const ReportsPage = () => {
       setStartDate("");
       setEndDate("");
     }
+    if (filter === "monthly") {
+      setShowMonthPicker(true);
+    } else {
+      setShowMonthPicker(false);
+    }
+  };
+
+  // Navigate to previous month
+  const handlePrevMonth = () => {
+    if (selectedMonth === 0) {
+      setSelectedMonth(11);
+      setSelectedYear(selectedYear - 1);
+    } else {
+      setSelectedMonth(selectedMonth - 1);
+    }
+  };
+
+  // Navigate to next month
+  const handleNextMonth = () => {
+    if (selectedMonth === 11) {
+      setSelectedMonth(0);
+      setSelectedYear(selectedYear + 1);
+    } else {
+      setSelectedMonth(selectedMonth + 1);
+    }
+  };
+
+  // Reset to current month
+  const handleCurrentMonth = () => {
+    setSelectedMonth(currentMonth);
+    setSelectedYear(currentYear);
+  };
+
+  // Format month-year for display
+  const getMonthYearDisplay = () => {
+    return `${months[selectedMonth]} ${selectedYear}`;
   };
 
   const filteredTeams = useMemo(() => {
     if (teamFilter === "all") return teamsMeta;
-    return teamsMeta.filter((t) => t.id.toString() === teamFilter);
+    return teamsMeta.filter((t) => t.id === teamFilter);
   }, [teamFilter]);
 
   const toggleTeamExpansion = (teamId) => {
@@ -269,6 +543,9 @@ const ReportsPage = () => {
 
   const getReportTitle = () => {
     if (reportData?.period) {
+      if (timeFilter === "monthly" && showMonthPicker) {
+        return `Monthly Report (${getMonthYearDisplay()})`;
+      }
       const label = showDateRange
         ? "Custom"
         : timeFilter === "weekly"
@@ -281,6 +558,31 @@ const ReportsPage = () => {
     return "Performance Reports";
   };
 
+  // Get the selected team meta
+  const getSelectedTeamMeta = () => {
+    if (teamFilter === "all") return null;
+    return teamsMeta.find(team => team.id === teamFilter);
+  };
+
+  // Get filtered team data
+  const getFilteredTeamData = () => {
+    const selectedTeam = getSelectedTeamMeta();
+    if (!selectedTeam) return {};
+
+    const teamData = reportData.teams[selectedTeam.key] || {
+      total: 0,
+      active: 0,
+      completed: 0,
+      createdInPeriod: 0,
+      finishedInPeriod: 0,
+      itemsInPeriod: [],
+    };
+
+    return {
+      [selectedTeam.id]: teamData
+    };
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -288,8 +590,9 @@ const ReportsPage = () => {
       try {
         setIsLoading(true);
         console.log("🔄 Starting to load reports...");
-
+        
         let data;
+        
         if (showDateRange && startDate && endDate) {
           console.log("📅 Custom range selected");
           data = await getCustomReports(startDate, endDate);
@@ -298,7 +601,12 @@ const ReportsPage = () => {
           data = await getWeeklyReports();
         } else if (timeFilter === "monthly") {
           console.log("📅 Monthly report selected");
-          data = await getMonthlyReports();
+          if (showMonthPicker) {
+            // Use month-specific API call
+            data = await getMonthlyReportsByMonth(selectedYear, selectedMonth + 1);
+          } else {
+            data = await getMonthlyReports();
+          }
         } else if (timeFilter === "yearly") {
           console.log("📅 Yearly report selected");
           data = await getYearlyReports();
@@ -313,26 +621,16 @@ const ReportsPage = () => {
             total: data.teams?.coding?.total || 0,
             itemsCount: data.teams?.coding?.itemsInPeriod?.length || 0,
           });
-          console.log("📊 Writing Team:", {
-            total: data.teams?.writing?.total || 0,
-            itemsCount: data.teams?.writing?.itemsInPeriod?.length || 0,
-          });
-
-          // Log first few items for debugging
-          if (data.teams?.coding?.itemsInPeriod?.length > 0) {
-            console.log(
-              "📝 Coding Team items:",
-              data.teams.coding.itemsInPeriod.slice(0, 3)
-            );
-          }
-          if (data.teams?.writing?.itemsInPeriod?.length > 0) {
-            console.log(
-              "📝 Writing Team items:",
-              data.teams.writing.itemsInPeriod.slice(0, 3)
-            );
-          }
 
           setReportData(data);
+          
+          // If a specific team is selected, expand it by default
+          if (teamFilter !== "all") {
+            const team = teamsMeta.find(t => t.id === teamFilter);
+            if (team) {
+              setExpandedTeams({ [team.id]: true });
+            }
+          }
         }
       } catch (error) {
         console.error("❌ Error loading reports:", error);
@@ -386,260 +684,85 @@ const ReportsPage = () => {
     return () => {
       isMounted = false;
     };
-  }, [timeFilter, showDateRange, startDate, endDate]);
+  }, [timeFilter, showDateRange, startDate, endDate, selectedMonth, selectedYear, showMonthPicker]);
 
-  const TeamCard = ({ meta }) => {
-    const Icon = meta.icon;
-    const isExpanded = expandedTeams[meta.id];
-    const teamData = reportData.teams[meta.key] || {
-      total: 0,
-      active: 0,
-      completed: 0,
-      createdInPeriod: 0,
-      finishedInPeriod: 0,
-      itemsInPeriod: [],
-    };
+  // Handle team filter change
+  const handleTeamFilterChange = (teamId) => {
+    setTeamFilter(teamId);
+    
+    // Expand the selected team by default
+    if (teamId !== "all") {
+      setExpandedTeams({ [teamId]: true });
+    } else {
+      // If "All Teams" is selected, collapse all teams
+      setExpandedTeams({});
+    }
+  };
 
-    console.log(`🎯 Rendering ${meta.name} card:`, {
-      total: teamData.total,
-      itemsCount: teamData.itemsInPeriod?.length || 0,
-      isExpanded,
-    });
-
-    return (
-      <div className="glass-card rounded-2xl border border-gray-800 overflow-hidden mb-6">
-        <div
-          className="p-6 cursor-pointer hover:bg-gray-900/30 transition-all"
-          onClick={() => toggleTeamExpansion(meta.id)}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div
-                className={`p-3 rounded-xl ${meta.color} bg-opacity-20 mr-4`}
-              >
-                <Icon className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">{meta.name}</h3>
-                <p className="text-gray-400">{meta.department}</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">
-                  {teamData.total}
-                </div>
-                <div className="text-sm text-gray-400">Total</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-cyan-400">
-                  {teamData.active}
-                </div>
-                <div className="text-sm text-gray-400">Active</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-400">
-                  {teamData.completed}
-                </div>
-                <div className="text-sm text-gray-400">Completed</div>
-              </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleTeamExpansion(meta.id);
-                }}
-                className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-              >
-                {isExpanded ? (
-                  <ChevronUp className="w-5 h-5 text-gray-400" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-400" />
-                )}
-              </button>
+  // Render team statistics based on filter
+  const renderTeamStatistics = () => {
+    const selectedTeam = getSelectedTeamMeta();
+    
+    if (teamFilter === "all") {
+      // Show statistics for all teams
+      return (
+        <div className="grid grid-cols-3 gap-4">
+          <div className="p-3 bg-gray-900/30 rounded-lg">
+            <div className="text-sm text-gray-400">Total Items</div>
+            <div className="text-xl font-bold text-white">
+              {reportData.overall?.totals?.total ?? 0}
             </div>
           </div>
-
-          <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="p-4 bg-gray-900/50 rounded-xl">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-400">All Items</span>
-                <span className="text-lg font-bold text-white">
-                  {teamData.total}
-                </span>
-              </div>
+          <div className="p-3 bg-gray-900/30 rounded-lg">
+            <div className="text-sm text-gray-400">Active</div>
+            <div className="text-xl font-bold text-cyan-400">
+              {reportData.overall?.totals?.active ?? 0}
             </div>
-            <div className="p-4 bg-gray-900/50 rounded-xl">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-400">Completed</span>
-                <span className="text-lg font-bold text-cyan-400">
-                  {teamData.completed}
-                </span>
-              </div>
-            </div>
-            <div className="p-4 bg-gray-900/50 rounded-xl">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-400">Active</span>
-                <span className="text-lg font-bold text-purple-400">
-                  {teamData.active}
-                </span>
-              </div>
+          </div>
+          <div className="p-3 bg-gray-900/30 rounded-lg">
+            <div className="text-sm text-gray-400">Completed</div>
+            <div className="text-xl font-bold text-green-400">
+              {reportData.overall?.totals?.completed ?? 0}
             </div>
           </div>
         </div>
+      );
+    } else if (selectedTeam) {
+      // Show statistics for the selected team only
+      const teamData = reportData.teams[selectedTeam.key] || {
+        total: 0,
+        active: 0,
+        completed: 0,
+        createdInPeriod: 0,
+        finishedInPeriod: 0,
+        itemsInPeriod: [],
+      };
 
-        <AnimatePresence>
-          {isExpanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="border-t border-gray-800"
-            >
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h4 className="text-lg font-semibold text-white">
-                    All Items in Collection (
-                    {teamData.itemsInPeriod?.length || 0})
-                  </h4>
-                </div>
-
-                {teamData.itemsInPeriod && teamData.itemsInPeriod.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b border-gray-800">
-                          <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                            Title
-                          </th>
-                          <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                            Taken By
-                          </th>
-                          <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                            Start Date
-                          </th>
-                          <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                            End Date/Deadline
-                          </th>
-                          <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                            Status
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {teamData.itemsInPeriod.map((item) => {
-                          // Extract data
-                          let title =
-                            item.title ||
-                            item.projectName ||
-                            item.proposalTitle ||
-                            item.paperTitle ||
-                            item.journalTitle ||
-                            item.name ||
-                            item.documentTitle ||
-                            item.id ||
-                            "Untitled";
-
-                          let status = item.status || item.state || "-";
-                          let takenBy =
-                            item.takenBy ||
-                            item.assignedTo ||
-                            item.author ||
-                            item.createdBy ||
-                            item.assignee ||
-                            item.uploadedBy ||
-                            item.responsiblePerson ||
-                            "Unassigned";
-
-                          // Get dates based on team type
-                          const startDateValue = getStartDate(item, meta.key);
-                          const endDateValue = getEndDate(item, meta.key);
-
-                          const userImg =
-                            getAvatarForName(takenBy) ||
-                            `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
-                              String(takenBy)
-                            )}`;
-
-                          return (
-                            <tr
-                              key={item.id}
-                              className="border-b border-gray-900 hover:bg-gray-900/30"
-                            >
-                              <td className="py-3 px-4">
-                                <div className="font-medium text-white">
-                                  {title}
-                                </div>
-                                {item.details && (
-                                  <div className="text-xs text-gray-400 truncate max-w-xs">
-                                    {item.details}
-                                  </div>
-                                )}
-                              </td>
-                              <td className="py-3 px-4">
-                                <div className="flex items-center text-sm text-gray-300">
-                                  <img
-                                    src={userImg}
-                                    alt="user"
-                                    className="w-6 h-6 rounded-full mr-2 object-cover border border-gray-700"
-                                  />
-                                  <span>{takenBy}</span>
-                                </div>
-                              </td>
-                              <td className="py-3 px-4">
-                                <div className="flex items-center text-sm text-gray-300">
-                                  <CalendarIcon className="w-3 h-3 mr-2 text-cyan-400" />
-                                  {formatDate(startDateValue)}
-                                </div>
-                              </td>
-                              <td className="py-3 px-4">
-                                <div className="flex items-center text-sm text-gray-300">
-                                  <Clock className="w-3 h-3 mr-2 text-purple-400" />
-                                  {formatDate(endDateValue)}
-                                </div>
-                              </td>
-                              <td className="py-3 px-4">
-                                <span
-                                  className={`px-2 py-1 rounded text-xs ${
-                                    status.toLowerCase() === "completed" ||
-                                    status.toLowerCase() === "complete" ||
-                                    status.toLowerCase() === "done" ||
-                                    status.toLowerCase() === "published"
-                                      ? "bg-green-900/30 text-green-400"
-                                      : status.toLowerCase() === "active" ||
-                                        status.toLowerCase() ===
-                                          "in progress" ||
-                                        status.toLowerCase() === "ongoing" ||
-                                        status.toLowerCase() === "started"
-                                      ? "bg-cyan-900/30 text-cyan-400"
-                                      : status.toLowerCase() === "on review" ||
-                                        status.toLowerCase() === "review"
-                                      ? "bg-yellow-900/30 text-yellow-400"
-                                      : "bg-gray-800 text-gray-300"
-                                  }`}
-                                >
-                                  {status}
-                                </span>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="p-6 bg-gray-900/30 rounded-xl text-center">
-                    <CheckCircle className="w-6 h-6 text-gray-500 mx-auto mb-2" />
-                    <div className="text-gray-400">
-                      No items found in this collection.
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    );
+      return (
+        <div className="grid grid-cols-3 gap-4">
+          <div className="p-3 bg-gray-900/30 rounded-lg">
+            <div className="text-sm text-gray-400">Total Items</div>
+            <div className="text-xl font-bold text-white">
+              {teamData.total}
+            </div>
+          </div>
+          <div className="p-3 bg-gray-900/30 rounded-lg">
+            <div className="text-sm text-gray-400">Active</div>
+            <div className="text-xl font-bold text-cyan-400">
+              {teamData.active}
+            </div>
+          </div>
+          <div className="p-3 bg-gray-900/30 rounded-lg">
+            <div className="text-sm text-gray-400">Completed</div>
+            <div className="text-xl font-bold text-green-400">
+              {teamData.completed}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    return null;
   };
 
   return (
@@ -647,7 +770,7 @@ const ReportsPage = () => {
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       onLogout={handleLogout}
-      isLoading={isLoggingOut} // Pass logout loading state to layout
+      isLoading={isLoggingOut}
     >
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
         <div className="mb-8">
@@ -657,6 +780,14 @@ const ReportsPage = () => {
                 Reports Overview
               </h1>
               <p className="text-gray-400 mt-2">{getReportTitle()}</p>
+              {teamFilter !== "all" && (
+                <div className="flex items-center mt-2">
+                  <Filter className="w-4 h-4 text-cyan-400 mr-2" />
+                  <span className="text-sm text-cyan-300">
+                    Showing reports for: {getSelectedTeamMeta()?.name}
+                  </span>
+                </div>
+              )}
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex bg-gray-900/50 rounded-xl p-1">
@@ -712,13 +843,13 @@ const ReportsPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-cyan-300 mb-3">
-                <Users className="w-4 h-4 mr-2 inline" />
+              <label className="block text-sm font-medium text-cyan-300 mb-3 flex items-center">
+                <Users className="w-4 h-4 mr-2" />
                 Filter by Team
               </label>
               <select
                 value={teamFilter}
-                onChange={(e) => setTeamFilter(e.target.value)}
+                onChange={(e) => handleTeamFilterChange(e.target.value)}
                 className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
               >
                 <option value="all">All Teams</option>
@@ -728,8 +859,150 @@ const ReportsPage = () => {
                   </option>
                 ))}
               </select>
+              
+              {/* Quick team filter buttons */}
+              <div className="flex flex-wrap gap-2 mt-3">
+                <button
+                  onClick={() => handleTeamFilterChange("all")}
+                  className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${
+                    teamFilter === "all"
+                      ? "bg-cyan-900/40 text-cyan-300 border border-cyan-500/30"
+                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                  }`}
+                >
+                  All
+                </button>
+                {teamsMeta.map((team) => (
+                  <button
+                    key={team.id}
+                    onClick={() => handleTeamFilterChange(team.id)}
+                    className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${
+                      teamFilter === team.id
+                        ? `${team.color.replace('bg-', 'bg-')}/40 text-white border ${team.color.replace('bg-', 'border-')}/30`
+                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                    }`}
+                  >
+                    {team.name.split(" ")[0]}
+                  </button>
+                ))}
+              </div>
             </div>
 
+            {/* Month Picker Section */}
+            {showMonthPicker && (
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-cyan-300 mb-3">
+                  <CalendarRange className="w-4 h-4 mr-2 inline" />
+                  Select Month
+                </label>
+                <div className="bg-gray-900/30 rounded-xl p-4 border border-gray-700">
+                  <div className="flex items-center justify-between mb-4">
+                    <button
+                      onClick={handlePrevMonth}
+                      className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                    >
+                      <ChevronLeft className="w-5 h-5 text-gray-400" />
+                    </button>
+                    
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-white">
+                        {getMonthYearDisplay()}
+                      </div>
+                      <button
+                        onClick={handleCurrentMonth}
+                        className="text-xs text-cyan-400 hover:text-cyan-300 mt-1"
+                      >
+                        Go to Current Month
+                      </button>
+                    </div>
+                    
+                    <button
+                      onClick={handleNextMonth}
+                      className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                    >
+                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-4 gap-2">
+                    {months.slice(0, 4).map((month, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedMonth(index)}
+                        className={`p-2 text-center rounded-lg transition-colors ${
+                          selectedMonth === index
+                            ? "bg-cyan-900/40 text-cyan-300 border border-cyan-500/30"
+                            : "bg-gray-800/50 text-gray-300 hover:bg-gray-800"
+                        }`}
+                      >
+                        <div className="text-xs font-medium">{month.substring(0, 3)}</div>
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <div className="grid grid-cols-4 gap-2 mt-2">
+                    {months.slice(4, 8).map((month, index) => (
+                      <button
+                        key={index + 4}
+                        onClick={() => setSelectedMonth(index + 4)}
+                        className={`p-2 text-center rounded-lg transition-colors ${
+                          selectedMonth === index + 4
+                            ? "bg-cyan-900/40 text-cyan-300 border border-cyan-500/30"
+                            : "bg-gray-800/50 text-gray-300 hover:bg-gray-800"
+                        }`}
+                      >
+                        <div className="text-xs font-medium">{month.substring(0, 3)}</div>
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <div className="grid grid-cols-4 gap-2 mt-2">
+                    {months.slice(8, 12).map((month, index) => (
+                      <button
+                        key={index + 8}
+                        onClick={() => setSelectedMonth(index + 8)}
+                        className={`p-2 text-center rounded-lg transition-colors ${
+                          selectedMonth === index + 8
+                            ? "bg-cyan-900/40 text-cyan-300 border border-cyan-500/30"
+                            : "bg-gray-800/50 text-gray-300 hover:bg-gray-800"
+                        }`}
+                      >
+                        <div className="text-xs font-medium">{month.substring(0, 3)}</div>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-gray-700">
+                    <div className="text-sm text-gray-400 mb-2">Year</div>
+                    <div className="flex items-center justify-center space-x-2">
+                      <button
+                        onClick={() => setSelectedYear(prev => prev - 1)}
+                        className="p-2 hover:bg-gray-800 rounded-lg"
+                      >
+                        <ChevronLeft className="w-4 h-4 text-gray-400" />
+                      </button>
+                      <select
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                        className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1 text-white text-sm focus:outline-none focus:border-cyan-500"
+                      >
+                        {Array.from({ length: 10 }, (_, i) => currentYear - 5 + i).map(year => (
+                          <option key={year} value={year}>{year}</option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={() => setSelectedYear(prev => prev + 1)}
+                        className="p-2 hover:bg-gray-800 rounded-lg"
+                      >
+                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Custom Date Range Section */}
             {showDateRange && (
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-cyan-300 mb-3">
@@ -766,32 +1039,13 @@ const ReportsPage = () => {
               </div>
             )}
 
-            {!showDateRange && (
+            {!showMonthPicker && !showDateRange && (
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-cyan-300 mb-3">
-                  <BarChart className="w-4 h-4 mr-2 inline" />
-                  Summary Statistics
+                <label className="block text-sm font-medium text-cyan-300 mb-3 flex items-center">
+                  <BarChart className="w-4 h-4 mr-2" />
+                  {teamFilter === "all" ? "Summary Statistics" : "Team Statistics"}
                 </label>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="p-3 bg-gray-900/30 rounded-lg">
-                    <div className="text-sm text-gray-400">Total Items</div>
-                    <div className="text-xl font-bold text-white">
-                      {reportData.overall?.totals?.total ?? 0}
-                    </div>
-                  </div>
-                  <div className="p-3 bg-gray-900/30 rounded-lg">
-                    <div className="text-sm text-gray-400">Active</div>
-                    <div className="text-xl font-bold text-cyan-400">
-                      {reportData.overall?.totals?.active ?? 0}
-                    </div>
-                  </div>
-                  <div className="p-3 bg-gray-900/30 rounded-lg">
-                    <div className="text-sm text-gray-400">Completed</div>
-                    <div className="text-xl font-bold text-green-400">
-                      {reportData.overall?.totals?.completed ?? 0}
-                    </div>
-                  </div>
-                </div>
+                {renderTeamStatistics()}
               </div>
             )}
           </div>
@@ -808,9 +1062,48 @@ const ReportsPage = () => {
 
         {!isLoading && (
           <div>
-            {filteredTeams.map((t) => (
-              <TeamCard key={t.id} meta={t} />
-            ))}
+            {teamFilter === "all" ? (
+              // Show all teams when "All Teams" is selected
+              filteredTeams.map((team) => (
+                <TeamCard 
+                  key={team.id} 
+                  meta={team} 
+                  teamData={reportData.teams[team.key] || {
+                    total: 0,
+                    active: 0,
+                    completed: 0,
+                    createdInPeriod: 0,
+                    finishedInPeriod: 0,
+                    itemsInPeriod: [],
+                  }}
+                  isExpanded={expandedTeams[team.id] || false}
+                  onToggle={toggleTeamExpansion}
+                />
+              ))
+            ) : (
+              // Show only the selected team
+              (() => {
+                const selectedTeam = getSelectedTeamMeta();
+                if (!selectedTeam) return null;
+                
+                return (
+                  <TeamCard 
+                    key={selectedTeam.id} 
+                    meta={selectedTeam} 
+                    teamData={reportData.teams[selectedTeam.key] || {
+                      total: 0,
+                      active: 0,
+                      completed: 0,
+                      createdInPeriod: 0,
+                      finishedInPeriod: 0,
+                      itemsInPeriod: [],
+                    }}
+                    isExpanded={expandedTeams[selectedTeam.id] || true}
+                    onToggle={toggleTeamExpansion}
+                  />
+                );
+              })()
+            )}
           </div>
         )}
       </div>

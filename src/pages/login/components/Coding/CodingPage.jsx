@@ -41,7 +41,7 @@ import { auth } from "../../../../firebase"; // Make sure this path is correct
 import img1 from "../../assets/abinesh.jpg";
 import img2 from "../../assets/mahesh.jpg";
 import img3 from "../../assets/arun.jpg";
-import img4 from "../../assets/aakash.png";
+import img4 from "../../assets/akash.png";
 
 // SearchableDropdown Component (remains the same)
 const SearchableDropdown = ({ value, onChange, placeholder }) => {

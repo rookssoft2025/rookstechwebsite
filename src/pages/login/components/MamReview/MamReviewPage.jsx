@@ -32,7 +32,7 @@ import { auth } from "../../../../firebase"; // Make sure this path is correct
 import imgAbinesh from "../../assets/abinesh.jpg";
 import imgMahesh from "../../assets/mahesh.jpg";
 import imgArun from "../../assets/arun.jpg";
-import imgAkash from "../../assets/aakash.png";
+import imgAkash from "../../assets/akash.png";
 import imgSanthiya from "../../assets/santhiya.jpg";
 import imgAshika from "../../assets/ashika.jpg";
 import imgAshmi from "../../assets/ashmi.jpg";
