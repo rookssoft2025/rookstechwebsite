@@ -20,6 +20,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Filter,
+  User,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
@@ -162,9 +163,82 @@ function getEndDate(item, teamKey) {
   return null;
 }
 
+// Helper function to get default team structure
+const getDefaultTeamStructure = () => ({
+  total: 0,
+  active: 0,
+  completed: 0,
+  createdInPeriod: 0,
+  finishedInPeriod: 0,
+  itemsInPeriod: [],
+});
+
+// Helper function to safely get team data
+const getTeamData = (reportData, teamKey) => {
+  if (!reportData || !reportData.teams) {
+    return getDefaultTeamStructure();
+  }
+
+  const teamData = reportData.teams[teamKey];
+  if (!teamData) {
+    console.warn(`Team data not found for key: ${teamKey}`);
+    return getDefaultTeamStructure();
+  }
+
+  return {
+    total: Number(teamData.total || 0),
+    active: Number(teamData.active || 0),
+    completed: Number(teamData.completed || 0),
+    createdInPeriod: Number(teamData.createdInPeriod || 0),
+    finishedInPeriod: Number(teamData.finishedInPeriod || 0),
+    itemsInPeriod: Array.isArray(teamData.itemsInPeriod) ? teamData.itemsInPeriod : [],
+  };
+};
+
+// Helper to check if a date is in the current period (simplified)
+const isInPeriod = (date) => {
+  if (!date) return false;
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return false;
+  return true; // For now, include all items
+};
+
 // TeamCard component
-const TeamCard = ({ meta, teamData, isExpanded, onToggle }) => {
+const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
   const Icon = meta.icon;
+  // Helper to normalize 'takenBy' or similar fields into a display string
+  const getTakenByString = (item) => {
+    const raw = item?.takenBy || item?.assignedTo || item?.author || item?.createdBy || item?.assignee || item?.uploadedBy || item?.responsiblePerson;
+    if (!raw) return "Unassigned";
+    if (typeof raw === "string") return raw;
+    if (typeof raw === "object") {
+      // Prefer common name fields
+      return raw.name || raw.fullName || raw.displayName || JSON.stringify(raw);
+    }
+    return String(raw);
+  };
+
+  // Filter items by selected member if any (safely handle objects)
+  const filteredItems = useMemo(() => {
+    const items = teamData.itemsInPeriod || [];
+    if (!memberFilter) return items;
+    return items.filter(item => {
+      const takenByStr = getTakenByString(item);
+      return takenByStr.toLowerCase().includes(String(memberFilter).toLowerCase());
+    });
+  }, [teamData.itemsInPeriod, memberFilter]);
+
+  // Get unique members from items (normalized)
+  const uniqueMembers = useMemo(() => {
+    const items = teamData.itemsInPeriod || [];
+    if (items.length === 0) return [];
+    const members = new Set();
+    items.forEach(item => {
+      const takenByStr = getTakenByString(item);
+      if (takenByStr && takenByStr !== "Unassigned") members.add(takenByStr);
+    });
+    return Array.from(members).sort();
+  }, [teamData.itemsInPeriod]);
 
   return (
     <div className="glass-card rounded-2xl border border-gray-800 overflow-hidden mb-6">
@@ -182,24 +256,32 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle }) => {
             <div>
               <h3 className="text-xl font-bold text-white">{meta.name}</h3>
               <p className="text-gray-400">{meta.department}</p>
+              {memberFilter && (
+                <div className="flex items-center mt-1">
+                  <User className="w-3 h-3 text-cyan-400 mr-1" />
+                  <span className="text-xs text-cyan-300">
+                    Filtered by: {memberFilter}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center space-x-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-white">
-                {teamData.total}
+                {teamData.total || 0}
               </div>
               <div className="text-sm text-gray-400">Total</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-cyan-400">
-                {teamData.active}
+                {teamData.active || 0}
               </div>
               <div className="text-sm text-gray-400">Active</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-green-400">
-                {teamData.completed}
+                {teamData.completed || 0}
               </div>
               <div className="text-sm text-gray-400">Completed</div>
             </div>
@@ -219,12 +301,61 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle }) => {
           </div>
         </div>
 
+        {/* Team Members Section */}
+        {uniqueMembers.length > 0 && (
+          <div className="mt-6">
+            <div className="text-sm text-gray-400 mb-2 flex items-center">
+              <Users className="w-3 h-3 mr-2" />
+              Team Members ({uniqueMembers.length})
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {uniqueMembers.map(member => {
+                const userImg = getAvatarForName(member) ||
+                  `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(member)}`;
+                
+                return (
+                  <div
+                    key={member}
+                    className={`flex items-center px-3 py-2 rounded-lg transition-all cursor-pointer ${
+                      memberFilter === member
+                        ? `${meta.color.replace('bg-', 'bg-')}/40 border ${meta.color.replace('bg-', 'border-')}/50`
+                        : 'bg-gray-800/50 border border-gray-700 hover:border-gray-600'
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.dispatchEvent(new CustomEvent('filterByMember', { 
+                        detail: { teamId: meta.id, member: memberFilter === member ? null : member } 
+                      }));
+                    }}
+                  >
+                    <img
+                      src={userImg}
+                      alt={member}
+                      className="w-5 h-5 rounded-full mr-2 object-cover border border-gray-700"
+                    />
+                    <span className={`text-sm ${
+                      memberFilter === member ? 'text-white font-medium' : 'text-gray-300'
+                    }`}>
+                      {member}
+                    </span>
+                    {memberFilter === member && (
+                      <span className="ml-2 text-xs bg-cyan-900/30 text-cyan-400 px-1.5 py-0.5 rounded">
+                        Active
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-3 gap-4 mt-6">
           <div className="p-4 bg-gray-900/50 rounded-xl">
             <div className="flex items-center justify-between">
               <span className="text-gray-400">All Items</span>
               <span className="text-lg font-bold text-white">
-                {teamData.total}
+                {teamData.total || 0}
               </span>
             </div>
           </div>
@@ -232,7 +363,7 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle }) => {
             <div className="flex items-center justify-between">
               <span className="text-gray-400">Completed</span>
               <span className="text-lg font-bold text-cyan-400">
-                {teamData.completed}
+                {teamData.completed || 0}
               </span>
             </div>
           </div>
@@ -240,7 +371,7 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle }) => {
             <div className="flex items-center justify-between">
               <span className="text-gray-400">Active</span>
               <span className="text-lg font-bold text-purple-400">
-                {teamData.active}
+                {teamData.active || 0}
               </span>
             </div>
           </div>
@@ -258,12 +389,25 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle }) => {
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
                 <h4 className="text-lg font-semibold text-white">
-                  All Items in Collection (
-                  {teamData.itemsInPeriod?.length || 0})
+                  {memberFilter ? `${memberFilter}'s Items` : 'All Items'} (
+                  {filteredItems.length})
                 </h4>
+                {memberFilter && (
+                  <button
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent('filterByMember', { 
+                        detail: { teamId: meta.id, member: null } 
+                      }));
+                    }}
+                    className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center"
+                  >
+                    Clear Filter
+                    <span className="ml-1 text-xs">✕</span>
+                  </button>
+                )}
               </div>
 
-              {teamData.itemsInPeriod && teamData.itemsInPeriod.length > 0 ? (
+              {filteredItems.length > 0 ? (
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
@@ -286,101 +430,88 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {teamData.itemsInPeriod.map((item) => {
-                        let title =
-                          item.title ||
-                          item.projectName ||
-                          item.proposalTitle ||
-                          item.paperTitle ||
-                          item.journalTitle ||
-                          item.name ||
-                          item.documentTitle ||
-                          item.id ||
-                          "Untitled";
+                              {filteredItems.map((item) => {
+                                const title =
+                                  item.title ||
+                                  item.projectName ||
+                                  item.proposalTitle ||
+                                  item.paperTitle ||
+                                  item.journalTitle ||
+                                  item.name ||
+                                  item.documentTitle ||
+                                  item.id ||
+                                  "Untitled";
 
-                        let status = item.status || item.state || "-";
-                        let takenBy =
-                          item.takenBy ||
-                          item.assignedTo ||
-                          item.author ||
-                          item.createdBy ||
-                          item.assignee ||
-                          item.uploadedBy ||
-                          item.responsiblePerson ||
-                          "Unassigned";
+                                const status = item.status || item.state || "-";
+                                const takenByStr = getTakenByString(item);
 
-                        const startDateValue = getStartDate(item, meta.key);
-                        const endDateValue = getEndDate(item, meta.key);
+                                const startDateValue = getStartDate(item, meta.key);
+                                const endDateValue = getEndDate(item, meta.key);
 
-                        const userImg =
-                          getAvatarForName(takenBy) ||
-                          `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
-                            String(takenBy)
-                          )}`;
+                                const userImg =
+                                  getAvatarForName(takenByStr) ||
+                                  `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
+                                    String(takenByStr)
+                                  )}`;
 
-                        return (
-                          <tr
-                            key={item.id}
-                            className="border-b border-gray-900 hover:bg-gray-900/30"
-                          >
-                            <td className="py-3 px-4">
-                              <div className="font-medium text-white">
-                                {title}
-                              </div>
-                              {item.details && (
-                                <div className="text-xs text-gray-400 truncate max-w-xs">
-                                  {item.details}
-                                </div>
-                              )}
-                            </td>
-                            <td className="py-3 px-4">
-                              <div className="flex items-center text-sm text-gray-300">
-                                <img
-                                  src={userImg}
-                                  alt="user"
-                                  className="w-6 h-6 rounded-full mr-2 object-cover border border-gray-700"
-                                />
-                                <span>{takenBy}</span>
-                              </div>
-                            </td>
-                            <td className="py-3 px-4">
-                              <div className="flex items-center text-sm text-gray-300">
-                                <CalendarIcon className="w-3 h-3 mr-2 text-cyan-400" />
-                                {formatDate(startDateValue)}
-                              </div>
-                            </td>
-                            <td className="py-3 px-4">
-                              <div className="flex items-center text-sm text-gray-300">
-                                <Clock className="w-3 h-3 mr-2 text-purple-400" />
-                                {formatDate(endDateValue)}
-                              </div>
-                            </td>
-                            <td className="py-3 px-4">
-                              <span
-                                className={`px-2 py-1 rounded text-xs ${
-                                  status.toLowerCase() === "completed" ||
-                                  status.toLowerCase() === "complete" ||
-                                  status.toLowerCase() === "done" ||
-                                  status.toLowerCase() === "published"
-                                    ? "bg-green-900/30 text-green-400"
-                                    : status.toLowerCase() === "active" ||
-                                      status.toLowerCase() ===
-                                        "in progress" ||
-                                      status.toLowerCase() === "ongoing" ||
-                                      status.toLowerCase() === "started"
-                                    ? "bg-cyan-900/30 text-cyan-400"
-                                    : status.toLowerCase() === "on review" ||
-                                      status.toLowerCase() === "review"
-                                    ? "bg-yellow-900/30 text-yellow-400"
-                                    : "bg-gray-800 text-gray-300"
-                                }`}
-                              >
-                                {status}
-                              </span>
-                            </td>
-                          </tr>
-                        );
-                      })}
+                                return (
+                                  <tr
+                                    key={item.id || title}
+                                    className="border-b border-gray-900 hover:bg-gray-900/30"
+                                  >
+                                    <td className="py-3 px-4">
+                                      <div className="font-medium text-white">{title}</div>
+                                      {item.details && (
+                                        <div className="text-xs text-gray-400 truncate max-w-xs">{item.details}</div>
+                                      )}
+                                    </td>
+                                    <td className="py-3 px-4">
+                                      <div className="flex items-center text-sm text-gray-300">
+                                        <img
+                                          src={userImg}
+                                          alt={takenByStr}
+                                          className="w-6 h-6 rounded-full mr-2 object-cover border border-gray-700"
+                                        />
+                                        <span>{takenByStr}</span>
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-4">
+                                      <div className="flex items-center text-sm text-gray-300">
+                                        <CalendarIcon className="w-3 h-3 mr-2 text-cyan-400" />
+                                        {formatDate(startDateValue)}
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-4">
+                                      <div className="flex items-center text-sm text-gray-300">
+                                        <Clock className="w-3 h-3 mr-2 text-purple-400" />
+                                        {formatDate(endDateValue)}
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-4">
+                                      <span
+                                        className={`px-2 py-1 rounded text-xs ${
+                                          String(status).toLowerCase() === "completed" ||
+                                          String(status).toLowerCase() === "complete" ||
+                                          String(status).toLowerCase() === "done" ||
+                                          String(status).toLowerCase() === "published"
+                                            ? "bg-green-900/30 text-green-400"
+                                            : String(status).toLowerCase() === "active" ||
+                                              String(status).toLowerCase() === "in progress" ||
+                                              String(status).toLowerCase() === "ongoing" ||
+                                              String(status).toLowerCase() === "started"
+                                            ? "bg-cyan-900/30 text-cyan-400"
+                                            : String(status).toLowerCase() === "on review" ||
+                                              String(status).toLowerCase() === "review"
+                                            ? "bg-yellow-900/30 text-yellow-400"
+                                            : "bg-gray-800 text-gray-300"
+                                        }`}
+                                      >
+                                        {status}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
                     </tbody>
                   </table>
                 </div>
@@ -388,7 +519,9 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle }) => {
                 <div className="p-6 bg-gray-900/30 rounded-xl text-center">
                   <CheckCircle className="w-6 h-6 text-gray-500 mx-auto mb-2" />
                   <div className="text-gray-400">
-                    No items found in this collection.
+                    {memberFilter 
+                      ? `No items found for ${memberFilter} in this period.`
+                      : "No items found in this collection."}
                   </div>
                 </div>
               )}
@@ -408,6 +541,7 @@ const ReportsPage = () => {
 
   const [timeFilter, setTimeFilter] = useState("weekly");
   const [teamFilter, setTeamFilter] = useState("all");
+  const [memberFilter, setMemberFilter] = useState(null); // Store teamId:memberName mapping
 
   // Month selection state
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
@@ -423,38 +557,10 @@ const ReportsPage = () => {
   const [reportData, setReportData] = useState({
     period: "",
     teams: {
-      coding: {
-        total: 0,
-        active: 0,
-        completed: 0,
-        createdInPeriod: 0,
-        finishedInPeriod: 0,
-        itemsInPeriod: [],
-      },
-      proposal: {
-        total: 0,
-        active: 0,
-        completed: 0,
-        createdInPeriod: 0,
-        finishedInPeriod: 0,
-        itemsInPeriod: [],
-      },
-      journal: {
-        total: 0,
-        active: 0,
-        completed: 0,
-        createdInPeriod: 0,
-        finishedInPeriod: 0,
-        itemsInPeriod: [],
-      },
-      writing: {
-        total: 0,
-        active: 0,
-        completed: 0,
-        createdInPeriod: 0,
-        finishedInPeriod: 0,
-        itemsInPeriod: [],
-      },
+      coding: getDefaultTeamStructure(),
+      proposal: getDefaultTeamStructure(),
+      journal: getDefaultTeamStructure(),
+      writing: getDefaultTeamStructure(),
     },
     overall: { totals: { total: 0, active: 0, completed: 0 } },
   });
@@ -564,24 +670,277 @@ const ReportsPage = () => {
     return teamsMeta.find(team => team.id === teamFilter);
   };
 
-  // Get filtered team data
-  const getFilteredTeamData = () => {
-    const selectedTeam = getSelectedTeamMeta();
-    if (!selectedTeam) return {};
-
-    const teamData = reportData.teams[selectedTeam.key] || {
-      total: 0,
-      active: 0,
-      completed: 0,
-      createdInPeriod: 0,
-      finishedInPeriod: 0,
-      itemsInPeriod: [],
+  // Handle member filter from child component
+  useEffect(() => {
+    const handleMemberFilter = (event) => {
+      const { teamId, member } = event.detail;
+      if (member) {
+        setMemberFilter({ teamId, member });
+      } else {
+        setMemberFilter(null);
+      }
     };
 
-    return {
-      [selectedTeam.id]: teamData
+    window.addEventListener('filterByMember', handleMemberFilter);
+    
+    return () => {
+      window.removeEventListener('filterByMember', handleMemberFilter);
     };
+  }, []);
+
+  // Reset member filter when team changes
+  useEffect(() => {
+    setMemberFilter(null);
+  }, [teamFilter]);
+
+  // Helper functions to process each team's data
+  const processCodingTeamData = (rawData) => {
+    console.log("Processing Coding Team:", rawData);
+    
+    // If rawData already has the expected structure, use it
+    if (rawData.itemsInPeriod && Array.isArray(rawData.itemsInPeriod)) {
+      return {
+        total: Number(rawData.total || 0),
+        active: Number(rawData.active || 0),
+        completed: Number(rawData.completed || 0),
+        createdInPeriod: Number(rawData.createdInPeriod || 0),
+        finishedInPeriod: Number(rawData.finishedInPeriod || 0),
+        itemsInPeriod: rawData.itemsInPeriod.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(),
+          title: item.title || item.projectName || "Untitled",
+          status: item.status || "Active",
+          startDate: item.startDate,
+          deadline: item.deadline || item.endDate,
+          takenBy: item.takenBy || item.assignedTo || "Unassigned"
+        }))
+      };
+    }
+    
+    // Handle array directly (if the API returns just an array of items)
+    if (Array.isArray(rawData)) {
+      const items = rawData.filter(item => !item.isDeleted);
+      return {
+        total: items.length,
+        active: items.filter(item => 
+          ['active', 'in progress', 'started', 'hold'].includes(
+            (item.status || '').toLowerCase()
+          )).length,
+        completed: items.filter(item => 
+          ['completed', 'complete', 'done'].includes(
+            (item.status || '').toLowerCase()
+          )).length,
+        createdInPeriod: items.filter(item => {
+          const created = new Date(item.createdAt || item.startDate);
+          return isInPeriod(created);
+        }).length,
+        finishedInPeriod: items.filter(item => {
+          const finished = new Date(item.updatedAt || item.deadline);
+          return isInPeriod(finished) && 
+            ['completed', 'complete', 'done'].includes((item.status || '').toLowerCase());
+        }).length,
+        itemsInPeriod: items.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(),
+          title: item.title || "Untitled",
+          status: item.status || "Active",
+          startDate: item.startDate,
+          deadline: item.deadline,
+          takenBy: item.takenBy || "Unassigned"
+        }))
+      };
+    }
+    
+    // Fallback for empty or unexpected data
+    return getDefaultTeamStructure();
   };
+
+  const processProposalTeamData = (rawData) => {
+    console.log("Processing Proposal Team:", rawData);
+    
+    if (rawData.itemsInPeriod && Array.isArray(rawData.itemsInPeriod)) {
+      return {
+        total: Number(rawData.total || 0),
+        active: Number(rawData.active || 0),
+        completed: Number(rawData.completed || 0),
+        createdInPeriod: Number(rawData.createdInPeriod || 0),
+        finishedInPeriod: Number(rawData.finishedInPeriod || 0),
+        itemsInPeriod: rawData.itemsInPeriod.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(),
+          title: item.title || item.proposalTitle || "Untitled",
+          status: item.status || "Active",
+          startDate: item.startDate,
+          endDate: item.endDate,
+          takenBy: item.takenBy || item.author || "Unassigned"
+        }))
+      };
+    }
+    
+    if (Array.isArray(rawData)) {
+      const items = rawData.filter(item => !item.isDeleted);
+      return {
+        total: items.length,
+        active: items.filter(item => 
+          ['active', 'in progress', 'started', 'under review'].includes(
+            (item.status || '').toLowerCase()
+          )).length,
+        completed: items.filter(item => 
+          ['completed', 'complete', 'done', 'approved'].includes(
+            (item.status || '').toLowerCase()
+          )).length,
+        createdInPeriod: items.filter(item => {
+          const created = new Date(item.createdAt || item.startDate);
+          return isInPeriod(created);
+        }).length,
+        finishedInPeriod: items.filter(item => {
+          const finished = new Date(item.updatedAt || item.endDate);
+          return isInPeriod(finished) && 
+            ['completed', 'complete', 'done', 'approved'].includes((item.status || '').toLowerCase());
+        }).length,
+        itemsInPeriod: items.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(),
+          title: item.title || "Untitled",
+          status: item.status || "Active",
+          startDate: item.startDate,
+          endDate: item.endDate,
+          takenBy: item.takenBy || "Unassigned"
+        }))
+      };
+    }
+    
+    return getDefaultTeamStructure();
+  };
+
+  const processJournalTeamData = (rawData) => {
+    console.log("Processing Journal Team:", rawData);
+    
+    if (rawData.itemsInPeriod && Array.isArray(rawData.itemsInPeriod)) {
+      return {
+        total: Number(rawData.total || 0),
+        active: Number(rawData.active || 0),
+        completed: Number(rawData.completed || 0),
+        createdInPeriod: Number(rawData.createdInPeriod || 0),
+        finishedInPeriod: Number(rawData.finishedInPeriod || 0),
+        itemsInPeriod: rawData.itemsInPeriod.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(),
+          title: item.title || item.paperTitle || item.journalTitle || "Untitled",
+          status: item.status || item.reviewStatus || "Active",
+          startDate: item.uploadedDate || item.createdAt,
+          endDate: item.dateOfReview || item.deadline,
+          takenBy: item.takenBy || item.author || item.uploadedBy || "Unassigned"
+        }))
+      };
+    }
+    
+    if (Array.isArray(rawData)) {
+      const items = rawData.filter(item => !item.isDeleted);
+      return {
+        total: items.length,
+        active: items.filter(item => 
+          ['in progress', 'under review', 'submitted', 'started'].includes(
+            (item.status || item.reviewStatus || '').toLowerCase()
+          )).length,
+        completed: items.filter(item => 
+          ['published', 'accepted', 'completed', 'done'].includes(
+            (item.status || item.reviewStatus || '').toLowerCase()
+          )).length,
+        createdInPeriod: items.filter(item => {
+          const created = new Date(item.uploadedDate || item.createdAt);
+          return isInPeriod(created);
+        }).length,
+        finishedInPeriod: items.filter(item => {
+          const finished = new Date(item.dateOfReview || item.updatedAt);
+          return isInPeriod(finished) && 
+            ['published', 'accepted', 'completed', 'done'].includes(
+              (item.status || item.reviewStatus || '').toLowerCase()
+            );
+        }).length,
+        itemsInPeriod: items.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(),
+          title: item.title || "Untitled",
+          status: item.status || item.reviewStatus || "Active",
+          startDate: item.uploadedDate,
+          endDate: item.dateOfReview,
+          takenBy: item.takenBy || "Unassigned"
+        }))
+      };
+    }
+    
+    return getDefaultTeamStructure();
+  };
+
+  const processWritingTeamData = (rawData) => {
+    console.log("Processing Writing Team:", rawData);
+    
+    if (rawData.itemsInPeriod && Array.isArray(rawData.itemsInPeriod)) {
+      return {
+        total: Number(rawData.total || 0),
+        active: Number(rawData.active || 0),
+        completed: Number(rawData.completed || 0),
+        createdInPeriod: Number(rawData.createdInPeriod || 0),
+        finishedInPeriod: Number(rawData.finishedInPeriod || 0),
+        itemsInPeriod: rawData.itemsInPeriod.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(),
+          title: item.title || item.documentTitle || "Untitled",
+          status: item.status || "Active",
+          startDate: item.startDate || item.createdAt,
+          endDate: item.deadline || item.endDate,
+          takenBy: item.takenBy || item.author || "Unassigned"
+        }))
+      };
+    }
+    
+    if (Array.isArray(rawData)) {
+      const items = rawData.filter(item => !item.isDeleted);
+      return {
+        total: items.length,
+        active: items.filter(item => 
+          ['active', 'in progress', 'started', 'draft'].includes(
+            (item.status || '').toLowerCase()
+          )).length,
+        completed: items.filter(item => 
+          ['completed', 'complete', 'done', 'published', 'finalized'].includes(
+            (item.status || '').toLowerCase()
+          )).length,
+        createdInPeriod: items.filter(item => {
+          const created = new Date(item.createdAt || item.startDate);
+          return isInPeriod(created);
+        }).length,
+        finishedInPeriod: items.filter(item => {
+          const finished = new Date(item.updatedAt || item.deadline);
+          return isInPeriod(finished) && 
+            ['completed', 'complete', 'done', 'published', 'finalized'].includes((item.status || '').toLowerCase());
+        }).length,
+        itemsInPeriod: items.map(item => ({
+          ...item,
+          id: item.id || Math.random().toString(),
+          title: item.title || "Untitled",
+          status: item.status || "Active",
+          startDate: item.startDate,
+          endDate: item.deadline || item.endDate,
+          takenBy: item.takenBy || "Unassigned"
+        }))
+      };
+    }
+    
+    return getDefaultTeamStructure();
+  };
+
+  const getDefaultReportData = () => ({
+    period: "Error loading data",
+    teams: {
+      coding: getDefaultTeamStructure(),
+      proposal: getDefaultTeamStructure(),
+      journal: getDefaultTeamStructure(),
+      writing: getDefaultTeamStructure(),
+    },
+    overall: { totals: { total: 0, active: 0, completed: 0 } },
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -617,12 +976,22 @@ const ReportsPage = () => {
 
         if (isMounted && data) {
           console.log("✅ Reports loaded successfully!");
-          console.log("📊 Coding Team:", {
-            total: data.teams?.coding?.total || 0,
-            itemsCount: data.teams?.coding?.itemsInPeriod?.length || 0,
-          });
+          console.log("📊 Raw Data:", data);
 
-          setReportData(data);
+          // Process data for each team based on their structure
+          const processedData = {
+            period: data.period || "",
+            teams: {
+              coding: processCodingTeamData(data.teams?.coding || data.coding || []),
+              proposal: processProposalTeamData(data.teams?.proposal || data.proposal || []),
+              journal: processJournalTeamData(data.teams?.journal || data.journal || []),
+              writing: processWritingTeamData(data.teams?.writing || data.writing || []),
+            },
+            overall: data.overall || { totals: { total: 0, active: 0, completed: 0 } },
+          };
+
+          console.log("🔄 Processed Teams Data:", processedData.teams);
+          setReportData(processedData);
           
           // If a specific team is selected, expand it by default
           if (teamFilter !== "all") {
@@ -635,44 +1004,7 @@ const ReportsPage = () => {
       } catch (error) {
         console.error("❌ Error loading reports:", error);
         if (isMounted) {
-          setReportData({
-            period: "Error loading data",
-            teams: {
-              coding: {
-                total: 0,
-                active: 0,
-                completed: 0,
-                createdInPeriod: 0,
-                finishedInPeriod: 0,
-                itemsInPeriod: [],
-              },
-              proposal: {
-                total: 0,
-                active: 0,
-                completed: 0,
-                createdInPeriod: 0,
-                finishedInPeriod: 0,
-                itemsInPeriod: [],
-              },
-              journal: {
-                total: 0,
-                active: 0,
-                completed: 0,
-                createdInPeriod: 0,
-                finishedInPeriod: 0,
-                itemsInPeriod: [],
-              },
-              writing: {
-                total: 0,
-                active: 0,
-                completed: 0,
-                createdInPeriod: 0,
-                finishedInPeriod: 0,
-                itemsInPeriod: [],
-              },
-            },
-            overall: { totals: { total: 0, active: 0, completed: 0 } },
-          });
+          setReportData(getDefaultReportData());
         }
       } finally {
         if (isMounted) setIsLoading(false);
@@ -684,7 +1016,7 @@ const ReportsPage = () => {
     return () => {
       isMounted = false;
     };
-  }, [timeFilter, showDateRange, startDate, endDate, selectedMonth, selectedYear, showMonthPicker]);
+  }, [timeFilter, showDateRange, startDate, endDate, selectedMonth, selectedYear, showMonthPicker, teamFilter]);
 
   // Handle team filter change
   const handleTeamFilterChange = (teamId) => {
@@ -697,6 +1029,19 @@ const ReportsPage = () => {
       // If "All Teams" is selected, collapse all teams
       setExpandedTeams({});
     }
+  };
+
+  // Clear member filter
+  const clearMemberFilter = () => {
+    setMemberFilter(null);
+  };
+
+  // Get current member filter for a specific team
+  const getMemberFilterForTeam = (teamId) => {
+    if (memberFilter && memberFilter.teamId === teamId) {
+      return memberFilter.member;
+    }
+    return null;
   };
 
   // Render team statistics based on filter
@@ -729,33 +1074,49 @@ const ReportsPage = () => {
       );
     } else if (selectedTeam) {
       // Show statistics for the selected team only
-      const teamData = reportData.teams[selectedTeam.key] || {
-        total: 0,
-        active: 0,
-        completed: 0,
-        createdInPeriod: 0,
-        finishedInPeriod: 0,
-        itemsInPeriod: [],
-      };
+      const teamData = getTeamData(reportData, selectedTeam.key);
+
+      const currentMemberFilter = getMemberFilterForTeam(selectedTeam.id);
+      const filteredItems = currentMemberFilter 
+        ? (teamData.itemsInPeriod || []).filter(item => {
+            const takenBy = item.takenBy ||
+              item.assignedTo ||
+              item.author ||
+              item.createdBy ||
+              item.assignee ||
+              item.uploadedBy ||
+              item.responsiblePerson ||
+              "Unassigned";
+            return takenBy.toLowerCase().includes(currentMemberFilter.toLowerCase());
+          })
+        : teamData.itemsInPeriod || [];
 
       return (
         <div className="grid grid-cols-3 gap-4">
           <div className="p-3 bg-gray-900/30 rounded-lg">
             <div className="text-sm text-gray-400">Total Items</div>
             <div className="text-xl font-bold text-white">
-              {teamData.total}
+              {filteredItems.length}
             </div>
           </div>
           <div className="p-3 bg-gray-900/30 rounded-lg">
             <div className="text-sm text-gray-400">Active</div>
             <div className="text-xl font-bold text-cyan-400">
-              {teamData.active}
+              {filteredItems.filter(item => 
+                ['active', 'in progress', 'ongoing', 'started'].includes(
+                  (item.status || item.state || '').toLowerCase()
+                )
+              ).length}
             </div>
           </div>
           <div className="p-3 bg-gray-900/30 rounded-lg">
             <div className="text-sm text-gray-400">Completed</div>
             <div className="text-xl font-bold text-green-400">
-              {teamData.completed}
+              {filteredItems.filter(item => 
+                ['completed', 'complete', 'done', 'published'].includes(
+                  (item.status || item.state || '').toLowerCase()
+                )
+              ).length}
             </div>
           </div>
         </div>
@@ -786,6 +1147,21 @@ const ReportsPage = () => {
                   <span className="text-sm text-cyan-300">
                     Showing reports for: {getSelectedTeamMeta()?.name}
                   </span>
+                  {memberFilter && memberFilter.teamId === teamFilter && (
+                    <>
+                      <span className="mx-2 text-gray-500">•</span>
+                      <User className="w-3 h-3 text-cyan-400 mr-1" />
+                      <span className="text-sm text-cyan-300">
+                        Member: {memberFilter.member}
+                      </span>
+                      <button
+                        onClick={clearMemberFilter}
+                        className="ml-2 text-xs text-red-400 hover:text-red-300"
+                      >
+                        (clear)
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </div>
@@ -847,44 +1223,37 @@ const ReportsPage = () => {
                 <Users className="w-4 h-4 mr-2" />
                 Filter by Team
               </label>
-              <select
-                value={teamFilter}
-                onChange={(e) => handleTeamFilterChange(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
-              >
-                <option value="all">All Teams</option>
-                {teamsMeta.map((team) => (
-                  <option key={team.id} value={team.id}>
-                    {team.name}
-                  </option>
-                ))}
-              </select>
               
-              {/* Quick team filter buttons */}
-              <div className="flex flex-wrap gap-2 mt-3">
+              {/* Team filter buttons */}
+              <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => handleTeamFilterChange("all")}
-                  className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${
+                  className={`px-4 py-3 text-sm rounded-xl transition-colors flex items-center ${
                     teamFilter === "all"
-                      ? "bg-cyan-900/40 text-cyan-300 border border-cyan-500/30"
-                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                      ? "bg-gradient-to-r from-cyan-900/40 to-purple-900/40 text-cyan-300 border border-cyan-500/30"
+                      : "bg-gray-900/50 text-gray-300 hover:bg-gray-800 border border-gray-700"
                   }`}
                 >
-                  All
+                  <Users className="w-4 h-4 mr-2" />
+                  All Teams
                 </button>
-                {teamsMeta.map((team) => (
-                  <button
-                    key={team.id}
-                    onClick={() => handleTeamFilterChange(team.id)}
-                    className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${
-                      teamFilter === team.id
-                        ? `${team.color.replace('bg-', 'bg-')}/40 text-white border ${team.color.replace('bg-', 'border-')}/30`
-                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                    }`}
-                  >
-                    {team.name.split(" ")[0]}
-                  </button>
-                ))}
+                {teamsMeta.map((team) => {
+                  const Icon = team.icon;
+                  return (
+                    <button
+                      key={team.id}
+                      onClick={() => handleTeamFilterChange(team.id)}
+                      className={`px-4 py-3 text-sm rounded-xl transition-colors flex items-center ${
+                        teamFilter === team.id
+                          ? `${team.color.replace('bg-', 'bg-')}/40 text-white border ${team.color.replace('bg-', 'border-')}/50`
+                          : "bg-gray-900/50 text-gray-300 hover:bg-gray-800 border border-gray-700"
+                      }`}
+                    >
+                      <Icon className="w-4 h-4 mr-2" />
+                      {team.name.split(" ")[0]}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -1064,42 +1433,38 @@ const ReportsPage = () => {
           <div>
             {teamFilter === "all" ? (
               // Show all teams when "All Teams" is selected
-              filteredTeams.map((team) => (
-                <TeamCard 
-                  key={team.id} 
-                  meta={team} 
-                  teamData={reportData.teams[team.key] || {
-                    total: 0,
-                    active: 0,
-                    completed: 0,
-                    createdInPeriod: 0,
-                    finishedInPeriod: 0,
-                    itemsInPeriod: [],
-                  }}
-                  isExpanded={expandedTeams[team.id] || false}
-                  onToggle={toggleTeamExpansion}
-                />
-              ))
+              filteredTeams.map((team) => {
+                const teamData = getTeamData(reportData, team.key);
+                console.log(`Rendering ${team.name} with data:`, teamData);
+                
+                return (
+                  <TeamCard 
+                    key={team.id} 
+                    meta={team} 
+                    teamData={teamData}
+                    isExpanded={expandedTeams[team.id] || false}
+                    onToggle={toggleTeamExpansion}
+                    memberFilter={getMemberFilterForTeam(team.id)}
+                  />
+                );
+              })
             ) : (
               // Show only the selected team
               (() => {
                 const selectedTeam = getSelectedTeamMeta();
                 if (!selectedTeam) return null;
                 
+                const teamData = getTeamData(reportData, selectedTeam.key);
+                console.log(`Rendering selected team ${selectedTeam.name} with data:`, teamData);
+                
                 return (
                   <TeamCard 
                     key={selectedTeam.id} 
                     meta={selectedTeam} 
-                    teamData={reportData.teams[selectedTeam.key] || {
-                      total: 0,
-                      active: 0,
-                      completed: 0,
-                      createdInPeriod: 0,
-                      finishedInPeriod: 0,
-                      itemsInPeriod: [],
-                    }}
+                    teamData={teamData}
                     isExpanded={expandedTeams[selectedTeam.id] || true}
                     onToggle={toggleTeamExpansion}
+                    memberFilter={getMemberFilterForTeam(selectedTeam.id)}
                   />
                 );
               })()

@@ -12,6 +12,7 @@ import {
   LogOut,
   X,
   BarChart,
+  WineIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -69,6 +70,13 @@ const ReserchSidebar = ({
       label: "Reports",
       icon: BarChart,
       description: "Dashboard & analytics",
+      route: "/dashboard/reports-page",
+    },
+     {
+      id: "overview",
+      label: "Archiever",
+    icon: WineIcon,
+    description: "Completed & archived records",
       route: "/dashboard/reports-page",
     },
   ];
