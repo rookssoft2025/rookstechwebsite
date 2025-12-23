@@ -24,7 +24,7 @@ const ReserchSidebar = ({
   onLogout,
   isLoading,
 }) => {
-  // Exactly 7 sections as requested
+ 
   const navigate = useNavigate();
   const navigationItems = [
     {
@@ -73,7 +73,7 @@ const ReserchSidebar = ({
       route: "/dashboard/reports-page",
     },
      {
-      id: "overview",
+      id: "archive",
       label: "Archive",
     icon: WineIcon,
     description: "Completed & archived records",
@@ -115,7 +115,7 @@ const ReserchSidebar = ({
   const currentSection = getSectionContent(activeTab);
 
   return (
-    <motion.div
+    <div
       initial={{ x: -300 }}
       animate={{ x: sidebarOpen ? 0 : -300 }}
       className="fixed inset-y-0 left-0 w-80 bg-black/40 backdrop-blur-xl border-r border-white/10 z-50 lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 xl:static xl:w-80 xl:translate-x-0"
@@ -123,7 +123,7 @@ const ReserchSidebar = ({
       <div className="flex flex-col h-full p-6">
         {/* Header with close button for mobile */}
         <div className="flex items-center justify-between mb-8">
-          <motion.div
+          <div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -138,7 +138,7 @@ const ReserchSidebar = ({
                 journal Publishing Platform
               </p>
             </div>
-          </motion.div>
+          </div>
 
           <button
             onClick={() => setSidebarOpen(false)}
@@ -148,43 +148,9 @@ const ReserchSidebar = ({
           </button>
         </div>
 
-        {/* <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-6 p-4 rounded-xl bg-white/5 border border-white/10"
-                >
-                    <div className="flex items-center space-x-3 mb-3">
-                        <div className={`p-2 rounded-lg bg-gradient-to-r ${currentSection.color}`}>
-                            {navigationItems.find(item => item.id === activeTab)?.icon && 
-                                React.createElement(navigationItems.find(item => item.id === activeTab).icon, { 
-                                    size: 16, 
-                                    className: "text-white" 
-                                })
-                            }
-                        </div>
-                        <div>
-                            <h3 className="text-white font-semibold text-sm">
-                                {navigationItems.find(item => item.id === activeTab)?.label}
-                            </h3>
-                            <p className="text-white/40 text-xs">
-                                {navigationItems.find(item => item.id === activeTab)?.description}
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-3 gap-2 text-center">
-                        {Object.entries(currentSection.stats).map(([key, value], index) => (
-                            <div key={key} className="text-center">
-                                <p className="text-white font-bold text-sm">{value}</p>
-                                <p className="text-white/40 text-xs capitalize">{key}</p>
-                            </div>
-                        ))}
-                    </div>
-                </motion.div> */}
-
         <nav className="space-y-2 flex-1">
           {navigationItems.map((item, index) => (
-            <motion.button
+            <button
               key={item.id}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -227,41 +193,17 @@ const ReserchSidebar = ({
                 </span>
               </div>
               {activeTab === item.id && (
-                <motion.div
+                <div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   className="w-2 h-2 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full"
                 />
               )}
-            </motion.button>
+            </button>
           ))}
         </nav>
-
-        {/* <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8 }}
-                    className="space-y-4 pt-4 border-t border-white/10"
-                >
-                    <div className="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors duration-300 border border-white/5 cursor-pointer group">
-                        <div className="flex items-center space-x-3">
-                            <div className="relative">
-                                <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                                    <User size={18} className="text-white" />
-                                </div>
-                                <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-0.5 border-2 border-gray-900">
-                                    <Award size={10} className="text-white" />
-                                </div>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-white font-medium text-sm truncate">Dr. Sarah Chen</p>
-                                <p className="text-white/60 text-xs truncate">Lead Researcher</p>
-                            </div>
-                        </div>
-                    </div>
-                </motion.div> */}
       </div>
-    </motion.div>
+    </div>
   );
 };
 

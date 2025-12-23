@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Search, 
   Filter, 
@@ -13,6 +14,10 @@ import {
 import ReserchLayout from '../../../../components/loginLayout/ReserchLayout';
 
 const ArchivePage = () => {
+      const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("archive");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   // Mock data for completed papers
   const initialPapers = [
     {
@@ -106,6 +111,36 @@ const ArchivePage = () => {
   const categories = ['All', 'AI/ML', 'Quantum Computing', 'Environmental Science', 'Blockchain'];
   const statusOptions = ['all', 'published', 'archived'];
 
+const handleLogout = async () => {
+    // Show confirmation dialog
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+
+    setIsLoggingOut(true);
+    
+    try {
+      // Sign out from Firebase
+      await signOut(auth);
+      
+      // Clear any local storage/session storage if needed
+      localStorage.removeItem('rememberedEmail');
+      localStorage.removeItem('rememberMe');
+      sessionStorage.removeItem('isLoggedIn');
+      
+      // Show success message
+      console.log("Logout successful");
+      
+      // Navigate to login page
+      navigate("/login");
+      
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Show error message to user
+      alert(`Logout failed: ${error.message}`);
+      setIsLoggingOut(false);
+    }
+  };
+
   // Filter and sort papers
   useEffect(() => {
     let result = papers;
@@ -197,10 +232,10 @@ const ArchivePage = () => {
 
   return (
     <ReserchLayout
-    //   activeTab={activeTab}
-    //   setActiveTab={setActiveTab}
-    //   onLogout={handleLogout}
-    //   isLoading={isLoggingOut}
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
+      onLogout={handleLogout}
+      isLoading={isLoggingOut}
     >
     <div className="min-h-screen bg-gradient-to-br from-black-900 via-white-900 to-white-900 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
@@ -216,7 +251,7 @@ const ArchivePage = () => {
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="px-4 py-2 bg-blue-800/30 backdrop-blur-sm rounded-xl border border-blue-700/30">
+              <div className="px-4 py-2 bg-white-800/30 backdrop-blur-sm rounded-xl border border-blue-700/30">
                 <span className="text-blue-200 text-sm">
                   Last updated: Today
                 </span>
