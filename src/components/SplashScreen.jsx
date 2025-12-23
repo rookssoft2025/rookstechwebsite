@@ -18,6 +18,7 @@ const SplashScreen = ({ duration = 1500, children }) => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
+    
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 

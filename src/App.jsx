@@ -18,6 +18,7 @@ import CodingPage from "./pages/login/components/Coding/CodingPage";
 import JournalPage from "./pages/login/components/Journal/JournalPage";
 import MamReviewPage from "./pages/login/components/MamReview/MamReviewPage";
 import ReportsPage from "./pages/login/components/Reports/ReportsPage";
+import ArchivePage from "./pages/login/components/Archive/ArchivePage";
 
 export const SplashContext = createContext();
 
@@ -50,6 +51,7 @@ function App() {
         <Route path="/dashboard/journal-page" element={< JournalPage/>} />
         <Route path="/dashboard/mam-review-page" element={< MamReviewPage/>} />
         <Route path="/dashboard/reports-page" element={< ReportsPage/>} />
+        <Route path="/dashboard/archive-page" element={< ArchivePage/>} />
       </Routes>
       <ScrollToTopButton/>
     </SplashContext.Provider>

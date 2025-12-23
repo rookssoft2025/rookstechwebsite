@@ -74,10 +74,10 @@ const ReserchSidebar = ({
     },
      {
       id: "overview",
-      label: "Archiever",
+      label: "Archive",
     icon: WineIcon,
     description: "Completed & archived records",
-      route: "/dashboard/reports-page",
+      route: "/dashboard/archive-page",
     },
   ];
 
@@ -133,9 +133,9 @@ const ReserchSidebar = ({
               <BookOpen size={18} className="text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">ResearchHub</h1>
+              <h1 className="text-xl font-bold text-white">Rooks and Brooks</h1>
               <p className="text-white/40 text-xs">
-                Academic Publishing Platform
+                journal Publishing Platform
               </p>
             </div>
           </motion.div>
