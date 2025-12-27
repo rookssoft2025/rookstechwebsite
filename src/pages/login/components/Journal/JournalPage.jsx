@@ -23,6 +23,10 @@ import {
   CheckSquare,
   XCircle,
   LogOut,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import DataTable from "../../../../components/ResearchLayout/DataTable";
@@ -34,7 +38,7 @@ import {
   deleteJournal,
 } from "../../../../services/JournalService";
 import { signOut } from "firebase/auth";
-import { auth } from "../../../../firebase"; // Make sure this path is correct
+import { auth } from "../../../../firebase";
 
 const JournalPage = () => {
   const navigate = useNavigate();
@@ -42,32 +46,26 @@ const JournalPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
   // Enhanced logout function with Firebase
   const handleLogout = async () => {
-    // Show confirmation dialog
     const confirmLogout = window.confirm("Are you sure you want to logout?");
     if (!confirmLogout) return;
 
     setIsLoggingOut(true);
     
     try {
-      // Sign out from Firebase
       await signOut(auth);
-      
-      // Clear any local storage/session storage if needed
       localStorage.removeItem('rememberedEmail');
       localStorage.removeItem('rememberMe');
       sessionStorage.removeItem('isLoggedIn');
-      
-      // Show success message
       console.log("Logout successful");
-      
-      // Navigate to login page
       navigate("/login");
-      
     } catch (error) {
       console.error("Logout error:", error);
-      // Show error message to user
       alert(`Logout failed: ${error.message}`);
       setIsLoggingOut(false);
     }
@@ -107,7 +105,7 @@ const JournalPage = () => {
     details: "",
   });
 
-  // Refs for date inputs so we can open native picker on touch/click
+  // Refs for date inputs
   const uploadedDateRef = useRef(null);
   const dateOfReviewRef = useRef(null);
 
@@ -139,7 +137,7 @@ const JournalPage = () => {
     },
   ];
 
-  // UPDATED: Review status options with three options
+  // Review status options with three options
   const reviewStatusOptions = [
     {
       value: "all",
@@ -195,6 +193,58 @@ const JournalPage = () => {
     return filtered;
   }, [papers, statusFilter, reviewStatusFilter]);
 
+  // Calculate pagination data
+  const totalItems = filteredPapers.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  // Reset to first page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter, reviewStatusFilter]);
+
+  // Get current page items
+  const currentItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredPapers.slice(startIndex, endIndex);
+  }, [filteredPapers, currentPage, itemsPerPage]);
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('...');
+        pageNumbers.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(1);
+        pageNumbers.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pageNumbers.push(i);
+        }
+      } else {
+        pageNumbers.push(1);
+        pageNumbers.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('...');
+        pageNumbers.push(totalPages);
+      }
+    }
+    
+    return pageNumbers;
+  };
+
   // Handle input changes
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -204,7 +254,6 @@ const JournalPage = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Date of Review must be filled if reviewStatus is 'On Review'
     if (newPaper.reviewStatus === "On Review" && !newPaper.dateOfReview) {
       alert("Date of Review is required when review status is 'On Review'.");
       return;
@@ -289,7 +338,19 @@ const JournalPage = () => {
     });
   };
 
-  // Prepare data for DataTable component - UPDATED COLUMNS
+  // Pagination handlers
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goToFirstPage = () => goToPage(1);
+  const goToLastPage = () => goToPage(totalPages);
+  const goToPreviousPage = () => goToPage(currentPage - 1);
+  const goToNextPage = () => goToPage(currentPage + 1);
+
+  // Prepare data for DataTable component
   const tableColumns = [
     { key: "title", label: "Paper Title", width: "30%" },
     { key: "status", label: "Status", width: "15%" },
@@ -299,8 +360,9 @@ const JournalPage = () => {
     { key: "actions", label: "Actions", width: "10%" },
   ];
 
-  // Transform papers data for DataTable
-  const tableData = papers.map((paper) => {
+  // Transform current page papers data for DataTable
+  const tableData = currentItems.map((paper, index) => {
+    const globalIndex = (currentPage - 1) * itemsPerPage + index + 1;
     const statusOption =
       statusOptions.find((s) => s.value === paper.status) || statusOptions[1];
     const StatusIcon = statusOption.icon;
@@ -337,6 +399,9 @@ const JournalPage = () => {
           <tr className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
             <td className="py-4 px-6">
               <div className="flex items-center">
+                <div className="text-cyan-400 font-bold text-lg mr-3">
+                  {globalIndex}
+                </div>
                 <FileText className="w-5 h-5 text-cyan-400 mr-3" />
                 <div>
                   <div className="text-white font-medium">
@@ -417,7 +482,6 @@ const JournalPage = () => {
           </tr>
         );
       },
-      // UPDATED: Simplified expand content - only Paper Details
       expandContent: (
         <div className="glass-inner rounded-xl p-6 border border-gray-800">
           <div className="mb-6">
@@ -438,7 +502,7 @@ const JournalPage = () => {
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       onLogout={handleLogout}
-      isLoading={isLoggingOut} // Pass logout loading state to layout
+      isLoading={isLoggingOut}
     >
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
         {/* Header */}
@@ -630,37 +694,125 @@ const JournalPage = () => {
         </div>
 
         {/* DataTable Component */}
-        <DataTable
-          columns={tableColumns}
-          data={tableData.filter((item) => {
-            const paper = item._paperData;
-            const statusMatch =
-              !statusFilter ||
-              statusFilter === "all" ||
-              paper.status === statusFilter;
-            const reviewMatch =
-              !reviewStatusFilter ||
-              reviewStatusFilter === "all" ||
-              paper.reviewStatus === reviewStatusFilter;
-            return statusMatch && reviewMatch;
-          })}
-          expandedRow={expandedRow}
-          onRowExpand={toggleRowExpansion}
-          rowKey="id"
-        />
+        {filteredPapers.length > 0 ? (
+          <>
+            <DataTable
+              columns={tableColumns}
+              data={tableData}
+              expandedRow={expandedRow}
+              onRowExpand={toggleRowExpansion}
+              rowKey="id"
+            />
 
-        {/* Empty State */}
-        {filteredPapers.length === 0 && !loadingPapers && (
+            {/* Pagination Controls */}
+            {totalItems > 0 && (
+              <div className="glass-card rounded-2xl p-6 mt-6 border border-gray-800">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  {/* Items per page selector */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-400 text-sm">Items per page:</span>
+                    <select
+                      value={itemsPerPage}
+                      onChange={(e) => {
+                        setItemsPerPage(Number(e.target.value));
+                        setCurrentPage(1);
+                      }}
+                      className="px-3 py-2 bg-gray-900/70 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+                    >
+                      <option value={5} className="bg-gray-900">5</option>
+                      <option value={10} className="bg-gray-900">10</option>
+                      <option value={20} className="bg-gray-900">20</option>
+                      <option value={50} className="bg-gray-900">50</option>
+                    </select>
+                    <span className="text-gray-400 text-sm">
+                      Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} papers
+                    </span>
+                  </div>
+
+                  {/* Pagination buttons */}
+                  <div className="flex items-center gap-2">
+                    {/* First page button */}
+                    <button
+                      onClick={goToFirstPage}
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <ChevronsLeft className="w-4 h-4" />
+                    </button>
+
+                    {/* Previous page button */}
+                    <button
+                      onClick={goToPreviousPage}
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+
+                    {/* Page numbers */}
+                    <div className="flex gap-1 mx-2">
+                      {getPageNumbers().map((pageNum, index) => (
+                        pageNum === '...' ? (
+                          <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-500">
+                            ...
+                          </span>
+                        ) : (
+                          <button
+                            key={pageNum}
+                            onClick={() => goToPage(pageNum)}
+                            className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
+                              currentPage === pageNum
+                                ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/20'
+                                : 'bg-gray-900/70 border border-gray-700 text-white hover:border-cyan-500/50 hover:bg-gray-800/50'
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        )
+                      ))}
+                    </div>
+
+                    {/* Next page button */}
+                    <button
+                      onClick={goToNextPage}
+                      disabled={currentPage === totalPages}
+                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+
+                    {/* Last page button */}
+                    <button
+                      onClick={goToLastPage}
+                      disabled={currentPage === totalPages}
+                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <ChevronsRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Page info */}
+                <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-800">
+                  <span className="text-sm text-gray-400">
+                    Page {currentPage} of {totalPages} • {totalItems} total papers
+                  </span>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
           <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
             <Eye className="w-16 h-16 text-gray-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">
-              No papers found
+              {loadingPapers ? "Loading papers..." : "No papers found"}
             </h3>
             <p className="text-gray-400 mb-6">
-              No papers match the current filters. Try changing the filters or
-              add new papers.
+              {loadingPapers 
+                ? "Fetching data from Firebase..." 
+                : "No papers match the current filters. Try changing the filters or add new papers."}
             </p>
-            {(statusFilter || reviewStatusFilter) && (
+            {!loadingPapers && (statusFilter || reviewStatusFilter) && (
               <button
                 onClick={() => {
                   setStatusFilter(null);
@@ -671,21 +823,6 @@ const JournalPage = () => {
                 Clear Filters
               </button>
             )}
-          </div>
-        )}
-
-        {/* Loading State */}
-        {loadingPapers && (
-          <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mb-4"></div>
-              <h3 className="text-xl font-semibold text-white mb-2">
-                Loading papers...
-              </h3>
-              <p className="text-gray-400">
-                Fetching data from Firebase...
-              </p>
-            </div>
           </div>
         )}
 
@@ -937,4 +1074,4 @@ const JournalPage = () => {
   );
 };
 
-export default JournalPage;
+export default JournalPage; 

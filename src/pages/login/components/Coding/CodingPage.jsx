@@ -24,6 +24,10 @@ import {
   Percent,
   Search,
   LogOut,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import DataTable from "../../../../components/ResearchLayout/DataTable";
@@ -36,7 +40,7 @@ import {
   fetchResearchPaperTitles,
 } from "../../../../services/CodingService";
 import { signOut } from "firebase/auth";
-import { auth } from "../../../../firebase"; // Make sure this path is correct
+import { auth } from "../../../../firebase";
 
 import img1 from "../../assets/abinesh.jpg";
 import img2 from "../../assets/mahesh.jpg";
@@ -51,7 +55,6 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
   const [isLoading, setIsLoading] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Fetch research paper titles from Firestore
   useEffect(() => {
     const fetchTitles = async () => {
       if (!isOpen) {
@@ -61,14 +64,10 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
       
       setIsLoading(true);
       try {
-        // Use the service function instead of direct Firestore query
         const titles = await fetchResearchPaperTitles();
-        
-        // Filter based on search term
         const filtered = titles.filter(title => 
           title.title.toLowerCase().includes(searchTerm.toLowerCase())
         );
-        
         setOptions(filtered);
       } catch (error) {
         console.error('Error fetching research proposals:', error);
@@ -85,14 +84,12 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
     return () => clearTimeout(debounceTimer);
   }, [searchTerm, isOpen]);
 
-  // Filter options based on search term
   const filteredOptions = useMemo(() => {
     return options.filter(option =>
       option.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [options, searchTerm]);
 
-  // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -217,38 +214,11 @@ const CodingPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  // Enhanced logout function with Firebase
-  const handleLogout = async () => {
-    // Show confirmation dialog
-    const confirmLogout = window.confirm("Are you sure you want to logout?");
-    if (!confirmLogout) return;
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
-    setIsLoggingOut(true);
-    
-    try {
-      // Sign out from Firebase
-      await signOut(auth);
-      
-      // Clear any local storage/session storage if needed
-      localStorage.removeItem('rememberedEmail');
-      localStorage.removeItem('rememberMe');
-      sessionStorage.removeItem('isLoggedIn');
-      
-      // Show success message
-      console.log("Logout successful");
-      
-      // Navigate to login page
-      navigate("/login");
-      
-    } catch (error) {
-      console.error("Logout error:", error);
-      // Show error message to user
-      alert(`Logout failed: ${error.message}`);
-      setIsLoggingOut(false);
-    }
-  };
-
-  // Team members data - Lead developer first
+  // Team members data
   const leadDeveloper = {
     id: 1,
     name: "Abinesh",
@@ -288,7 +258,7 @@ const CodingPage = () => {
   const [editingProject, setEditingProject] = useState(null);
   const [statusFilter, setStatusFilter] = useState(null);
 
-  // Ref for date inputs so we can open native picker on touch/click
+  // Ref for date inputs
   const startDateRef = useRef(null);
   const deadlineRef = useRef(null);
   const [newProject, setNewProject] = useState({
@@ -314,7 +284,6 @@ const CodingPage = () => {
         }
       } catch (err) {
         console.error("Failed to load coding projects:", err);
-        // Set empty array if fetch fails
         if (mounted) setProjects([]);
       } finally {
         if (mounted) setIsLoading(false);
@@ -327,7 +296,7 @@ const CodingPage = () => {
     };
   }, []);
 
-  // Status options - Updated with Started, Hold, Completed
+  // Status options
   const statusOptions = [
     {
       value: "Started",
@@ -355,66 +324,64 @@ const CodingPage = () => {
     },
   ];
 
-  // Updated getDueStatus function to consider task status
+  // Updated getDueStatus function
   const getDueStatus = (deadline, taskStatus) => {
     if (!deadline) return null;
-     if (taskStatus === "Hold") {
-        return null;
+    if (taskStatus === "Hold") {
+      return null;
     }
     const today = new Date();
     const deadlineDate = new Date(deadline);
     const diffTime = deadlineDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    // If task is already completed, show different status
     if (taskStatus === "Completed") {
-        return {
-            status: "completed",
-            label: "Completed",
-            color: "text-green-400",
-            bg: "bg-green-400/10",
-            borderColor: "border-green-400/30",
-            icon: CheckCircle,
-        };
+      return {
+        status: "completed",
+        label: "Completed",
+        color: "text-green-400",
+        bg: "bg-green-400/10",
+        borderColor: "border-green-400/30",
+        icon: CheckCircle,
+      };
     }
     
-    // Only calculate overdue/urgent status for "Started" tasks
     if (diffDays < 0) {
-        return {
-            status: "overdue",
-            label: "Overdue",
-            color: "text-red-400",
-            bg: "bg-red-400/10",
-            borderColor: "border-red-400/30",
-            icon: AlertCircle,
-        };
+      return {
+        status: "overdue",
+        label: "Overdue",
+        color: "text-red-400",
+        bg: "bg-red-400/10",
+        borderColor: "border-red-400/30",
+        icon: AlertCircle,
+      };
     } else if (diffDays === 0) {
-        return {
-            status: "today",
-            label: "Due Today",
-            color: "text-orange-400",
-            bg: "bg-orange-400/10",
-            borderColor: "border-orange-400/30",
-            icon: AlertCircle,
-        };
+      return {
+        status: "today",
+        label: "Due Today",
+        color: "text-orange-400",
+        bg: "bg-orange-400/10",
+        borderColor: "border-orange-400/30",
+        icon: AlertCircle,
+      };
     } else if (diffDays <= 2) {
-        return {
-            status: "urgent",
-            label: `Due in ${diffDays} day${diffDays === 1 ? "" : "s"}`,
-            color: "text-yellow-400",
-            bg: "bg-yellow-400/10",
-            borderColor: "border-yellow-400/30",
-            icon: Clock,
-        };
+      return {
+        status: "urgent",
+        label: `Due in ${diffDays} day${diffDays === 1 ? "" : "s"}`,
+        color: "text-yellow-400",
+        bg: "bg-yellow-400/10",
+        borderColor: "border-yellow-400/30",
+        icon: Clock,
+      };
     } else {
-        return {
-            status: "ontrack",
-            label: `${diffDays} days remaining`,
-            color: "text-green-400",
-            bg: "bg-green-400/10",
-            borderColor: "border-green-400/30",
-            icon: CheckCircle,
-        };
+      return {
+        status: "ontrack",
+        label: `${diffDays} days remaining`,
+        color: "text-green-400",
+        bg: "bg-green-400/10",
+        borderColor: "border-green-400/30",
+        icon: CheckCircle,
+      };
     }
   };
 
@@ -432,6 +399,58 @@ const CodingPage = () => {
     return projects.filter((project) => project.status === statusFilter);
   }, [projects, statusFilter]);
 
+  // Calculate pagination data
+  const totalItems = filteredProjects.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  // Reset to first page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter]);
+
+  // Get current page items
+  const currentItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredProjects.slice(startIndex, endIndex);
+  }, [filteredProjects, currentPage, itemsPerPage]);
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('...');
+        pageNumbers.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(1);
+        pageNumbers.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pageNumbers.push(i);
+        }
+      } else {
+        pageNumbers.push(1);
+        pageNumbers.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('...');
+        pageNumbers.push(totalPages);
+      }
+    }
+    
+    return pageNumbers;
+  };
+
   // Calculate deadline (start date + 3 days)
   const calculateAutoDeadline = (startDate) => {
     if (!startDate) return "";
@@ -447,7 +466,6 @@ const CodingPage = () => {
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     if (id === "startDate" && value) {
-      // Auto-calculate deadline when start date changes
       const autoDeadline = calculateAutoDeadline(value);
       setNewProject((prev) => ({
         ...prev,
@@ -471,7 +489,6 @@ const CodingPage = () => {
           resultsTaken: parseInt(newProject.resultsTaken) || 0,
         };
 
-        // Remove React-specific properties
         delete projectToSubmit.renderRow;
         delete projectToSubmit.expandContent;
         delete projectToSubmit._projectData;
@@ -575,6 +592,39 @@ const CodingPage = () => {
     return diffDays;
   };
 
+  // Enhanced logout function with Firebase
+  const handleLogout = async () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+
+    setIsLoggingOut(true);
+    
+    try {
+      await signOut(auth);
+      localStorage.removeItem('rememberedEmail');
+      localStorage.removeItem('rememberMe');
+      sessionStorage.removeItem('isLoggedIn');
+      console.log("Logout successful");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert(`Logout failed: ${error.message}`);
+      setIsLoggingOut(false);
+    }
+  };
+
+  // Pagination handlers
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goToFirstPage = () => goToPage(1);
+  const goToLastPage = () => goToPage(totalPages);
+  const goToPreviousPage = () => goToPage(currentPage - 1);
+  const goToNextPage = () => goToPage(currentPage + 1);
+
   // Prepare data for DataTable component
   const tableColumns = [
     { key: "serial", label: "S.No", width: "8%" },
@@ -586,8 +636,9 @@ const CodingPage = () => {
     { key: "actions", label: "Actions", width: "8%" },
   ];
 
-  // Transform projects data for DataTable
-  const tableData = projects.map((project, index) => {
+  // Transform current page projects data for DataTable
+  const tableData = currentItems.map((project, index) => {
+    const globalIndex = (currentPage - 1) * itemsPerPage + index + 1;
     const statusOption =
       statusOptions.find((s) => s.value === project.status) || statusOptions[0];
     const StatusIcon = statusOption.icon;
@@ -595,7 +646,7 @@ const CodingPage = () => {
     return {
       id: project.id,
       _projectData: project,
-      serial: index + 1,
+      serial: globalIndex, // Use global index for pagination
       renderRow: (item, onRowExpand) => {
         const projectData = item._projectData;
         const projectStatusOption =
@@ -605,7 +656,6 @@ const CodingPage = () => {
         const projectStatusColor = projectStatusOption.color;
         const projectStatusBg = projectStatusOption.bg;
         
-        // Pass task status to getDueStatus
         const dueStatus = getDueStatus(projectData.deadline, projectData.status);
         const DueStatusIcon = dueStatus ? getDueStatusIcon(dueStatus) : Calendar;
 
@@ -718,7 +768,6 @@ const CodingPage = () => {
       expandContent: (
         <div className="glass-inner rounded-xl p-6 border border-gray-800">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Project Details Section */}
             <div>
               <h4 className="text-lg font-semibold text-white mb-4">
                 Project Details
@@ -727,8 +776,6 @@ const CodingPage = () => {
                 {project.details || "No details provided"}
               </p>
             </div>
-
-            {/* Dates Section */}
             <div>
               <h4 className="text-lg font-semibold text-white mb-4">
                 Timeline
@@ -782,7 +829,7 @@ const CodingPage = () => {
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       onLogout={handleLogout}
-      isLoading={isLoggingOut} // Pass logout loading state to layout
+      isLoading={isLoggingOut}
     >
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
         {/* Header */}
@@ -791,8 +838,7 @@ const CodingPage = () => {
             Research Coding Section
           </h1>
           <p className="text-gray-400 mt-2">
-            Manage Research projects, track progress, and monitor team
-            performance
+            Manage Research projects, track progress, and monitor team performance
           </p>
         </div>
 
@@ -1004,18 +1050,113 @@ const CodingPage = () => {
         </div>
 
         {/* DataTable Component */}
-        {projects.length > 0 ? (
-          <DataTable
-            columns={tableColumns}
-            data={tableData.filter((item) =>
-              statusFilter === null
-                ? true
-                : item._projectData.status === statusFilter
+        {filteredProjects.length > 0 ? (
+          <>
+            <DataTable
+              columns={tableColumns}
+              data={tableData}
+              expandedRow={expandedRow}
+              onRowExpand={toggleRowExpansion}
+              rowKey="id"
+            />
+
+            {/* Pagination Controls */}
+            {totalItems > 0 && (
+              <div className="glass-card rounded-2xl p-6 mt-6 border border-gray-800">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  {/* Items per page selector */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-400 text-sm">Items per page:</span>
+                    <select
+                      value={itemsPerPage}
+                      onChange={(e) => {
+                        setItemsPerPage(Number(e.target.value));
+                        setCurrentPage(1);
+                      }}
+                      className="px-3 py-2 bg-gray-900/70 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+                    >
+                      <option value={5} className="bg-gray-900">5</option>
+                      <option value={10} className="bg-gray-900">10</option>
+                      <option value={20} className="bg-gray-900">20</option>
+                      <option value={50} className="bg-gray-900">50</option>
+                    </select>
+                    <span className="text-gray-400 text-sm">
+                      Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} projects
+                    </span>
+                  </div>
+
+                  {/* Pagination buttons */}
+                  <div className="flex items-center gap-2">
+                    {/* First page button */}
+                    <button
+                      onClick={goToFirstPage}
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <ChevronsLeft className="w-4 h-4" />
+                    </button>
+
+                    {/* Previous page button */}
+                    <button
+                      onClick={goToPreviousPage}
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+
+                    {/* Page numbers */}
+                    <div className="flex gap-1 mx-2">
+                      {getPageNumbers().map((pageNum, index) => (
+                        pageNum === '...' ? (
+                          <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-500">
+                            ...
+                          </span>
+                        ) : (
+                          <button
+                            key={pageNum}
+                            onClick={() => goToPage(pageNum)}
+                            className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
+                              currentPage === pageNum
+                                ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/20'
+                                : 'bg-gray-900/70 border border-gray-700 text-white hover:border-cyan-500/50 hover:bg-gray-800/50'
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        )
+                      ))}
+                    </div>
+
+                    {/* Next page button */}
+                    <button
+                      onClick={goToNextPage}
+                      disabled={currentPage === totalPages}
+                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+
+                    {/* Last page button */}
+                    <button
+                      onClick={goToLastPage}
+                      disabled={currentPage === totalPages}
+                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <ChevronsRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Page info */}
+                <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-800">
+                  <span className="text-sm text-gray-400">
+                    Page {currentPage} of {totalPages} • {totalItems} total projects
+                  </span>
+                </div>
+              </div>
             )}
-            expandedRow={expandedRow}
-            onRowExpand={toggleRowExpansion}
-            rowKey="id"
-          />
+          </>
         ) : (
           <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
             <Code className="w-16 h-16 text-gray-600 mx-auto mb-4" />
@@ -1074,7 +1215,7 @@ const CodingPage = () => {
 
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Project Title - NOW USING SEARCHABLE DROPDOWN */}
+                    {/* Project Title - USING SEARCHABLE DROPDOWN */}
                     <div>
                       <label className="block text-sm font-medium text-cyan-300 mb-2">
                         Project Title

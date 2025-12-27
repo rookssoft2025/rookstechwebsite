@@ -18,6 +18,10 @@ import {
   Filter,
   CheckCheck,
   AlertOctagon,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
@@ -54,6 +58,10 @@ const ProposalPage = () => {
   // Filter state
   const [statusFilter, setStatusFilter] = useState("all");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  
   // Modal + form states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
@@ -167,6 +175,63 @@ const ProposalPage = () => {
     }
     return proposals.filter((proposal) => proposal.status === statusFilter);
   }, [proposals, statusFilter]);
+
+  // Calculate pagination data
+  const totalItems = filteredProposals.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  // Reset to first page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter]);
+
+  // Get current page items
+  const currentItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredProposals.slice(startIndex, endIndex);
+  }, [filteredProposals, currentPage, itemsPerPage]);
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      // Show all pages if total pages is less than or equal to maxVisiblePages
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      // Show limited pages with ellipsis
+      if (currentPage <= 3) {
+        // Near the beginning
+        for (let i = 1; i <= 4; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('...');
+        pageNumbers.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        // Near the end
+        pageNumbers.push(1);
+        pageNumbers.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pageNumbers.push(i);
+        }
+      } else {
+        // In the middle
+        pageNumbers.push(1);
+        pageNumbers.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('...');
+        pageNumbers.push(totalPages);
+      }
+    }
+    
+    return pageNumbers;
+  };
 
   // Calculate deadline (start date + 2 days)
   const calculateAutoDeadline = (startDate) => {
@@ -359,6 +424,18 @@ const ProposalPage = () => {
     });
   };
 
+  // Pagination handlers
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goToFirstPage = () => goToPage(1);
+  const goToLastPage = () => goToPage(totalPages);
+  const goToPreviousPage = () => goToPage(currentPage - 1);
+  const goToNextPage = () => goToPage(currentPage + 1);
+
   return (
     <ReserchLayout
       activeTab={activeTab}
@@ -520,12 +597,12 @@ const ProposalPage = () => {
             { key: "takenBy", label: "Researcher" },
             { key: "timeline", label: "Timeline" },
             { key: "deadline", label: "Deadline Status" },
-            // { key: "completion", label: "Completion Date" }, // New column
             { key: "status", label: "Status" },
             { key: "details", label: "Details" },
             { key: "actions", label: "Actions" },
           ]}
-          data={filteredProposals.map((proposal, index) => {
+          data={currentItems.map((proposal, index) => {
+            const globalIndex = (currentPage - 1) * itemsPerPage + index + 1;
             const statusInfo = statusOptions.find((s) => s.value === proposal.status);
             const StatusIcon = statusInfo?.icon;
             const deadlineStatus = checkDeadlineStatus(proposal.endDate);
@@ -540,7 +617,7 @@ const ProposalPage = () => {
                   className="border-b border-gray-800 hover:bg-gray-900/50 cursor-pointer transition-colors"
                 >
                   <td className="py-4 px-6 text-center">
-                    <div className="text-white font-semibold">{index + 1}</div>
+                    <div className="text-white font-semibold">{globalIndex}</div>
                   </td>
 
                   <td className="py-4 px-6 text-white font-medium">{item.title}</td>
@@ -604,35 +681,6 @@ const ProposalPage = () => {
                       </div>
                     ) : null}
                   </td>
-
-                  {/* NEW COMPLETION DATE COLUMN */}
-                  {/* <td className="py-4 px-6">
-                    {item.status === "Completed" ? (
-                      <div className="flex flex-col items-start">
-                        <div className="flex items-center">
-                          <CalendarDays className="w-4 h-4 text-green-400 mr-2" />
-                          <span className="text-green-300 font-medium">
-                            {formatDate(item.completedDate)}
-                          </span>
-                        </div>
-                        <div className={`text-xs mt-1 ${isOverdue ? "text-red-400" : "text-green-400"}`}>
-                          {isOverdue ? (
-                            <div className="flex items-center">
-                              <AlertTriangle className="w-3 h-3 mr-1" />
-                              <span>Overdue by {overdueDays} days</span>
-                            </div>
-                          ) : (
-                            <div className="flex items-center">
-                              <CheckCircle className="w-3 h-3 mr-1" />
-                              <span>Completed in {calculateCompletionTiming(item.startDate, item.completedDate)}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-gray-500 italic">Not completed</div>
-                    )}
-                  </td> */}
 
                   <td className="py-4 px-6">
                     <div
@@ -763,6 +811,103 @@ const ProposalPage = () => {
           expandedRow={expandedRow}
           onRowExpand={toggleRowExpansion}
         />
+
+        {/* Pagination Controls */}
+        {totalItems > 0 && (
+          <div className="glass-card rounded-2xl p-6 mt-6 border border-gray-800">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              {/* Items per page selector */}
+              <div className="flex items-center gap-3">
+                <span className="text-gray-400 text-sm">Items per page:</span>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => {
+                    setItemsPerPage(Number(e.target.value));
+                    setCurrentPage(1); // Reset to first page when changing items per page
+                  }}
+                  className="px-3 py-2 bg-gray-900/70 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+                >
+                  <option value={5} className="bg-gray-900">5</option>
+                  <option value={10} className="bg-gray-900">10</option>
+                  <option value={20} className="bg-gray-900">20</option>
+                  <option value={50} className="bg-gray-900">50</option>
+                </select>
+                <span className="text-gray-400 text-sm">
+                  Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} proposals
+                </span>
+              </div>
+
+              {/* Pagination buttons */}
+              <div className="flex items-center gap-2">
+                {/* First page button */}
+                <button
+                  onClick={goToFirstPage}
+                  disabled={currentPage === 1}
+                  className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                >
+                  <ChevronsLeft className="w-4 h-4" />
+                </button>
+
+                {/* Previous page button */}
+                <button
+                  onClick={goToPreviousPage}
+                  disabled={currentPage === 1}
+                  className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                {/* Page numbers */}
+                <div className="flex gap-1 mx-2">
+                  {getPageNumbers().map((pageNum, index) => (
+                    pageNum === '...' ? (
+                      <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-500">
+                        ...
+                      </span>
+                    ) : (
+                      <button
+                        key={pageNum}
+                        onClick={() => goToPage(pageNum)}
+                        className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
+                          currentPage === pageNum
+                            ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/20'
+                            : 'bg-gray-900/70 border border-gray-700 text-white hover:border-cyan-500/50 hover:bg-gray-800/50'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    )
+                  ))}
+                </div>
+
+                {/* Next page button */}
+                <button
+                  onClick={goToNextPage}
+                  disabled={currentPage === totalPages}
+                  className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+
+                {/* Last page button */}
+                <button
+                  onClick={goToLastPage}
+                  disabled={currentPage === totalPages}
+                  className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                >
+                  <ChevronsRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Page info */}
+            <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-800">
+              <span className="text-sm text-gray-400">
+                Page {currentPage} of {totalPages} • {totalItems} total proposals
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Empty state when no proposals match filter */}
         {filteredProposals.length === 0 && (

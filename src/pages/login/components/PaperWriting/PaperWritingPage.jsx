@@ -22,6 +22,10 @@ import {
   Filter,
   BarChart3,
   Search,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import DataTable from "../../../../components/ResearchLayout/DataTable";
@@ -52,7 +56,6 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
   
   const dropdownRef = useRef(null);
 
-  // Fetch research paper titles from Firestore
   useEffect(() => {
     const fetchTitles = async () => {
       if (!isOpen || searchTerm.length === 0) {
@@ -62,7 +65,6 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
       
       setIsLoading(true);
       try {
-        // Fetch titles from researchProposals collection excluding completed papers
         const q = query(
           collection(db, 'researchProposals'),
           where('status', '!=', 'completed')
@@ -97,14 +99,12 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
     return () => clearTimeout(debounceTimer);
   }, [searchTerm, isOpen]);
 
-  // Filter options based on search term
   const filteredOptions = useMemo(() => {
     return options.filter(option =>
       option.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [options, searchTerm]);
 
-  // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -238,25 +238,9 @@ const PaperWritingPage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleLogout = async () => {
-    const confirmLogout = window.confirm("Are you sure you want to logout?");
-    if (!confirmLogout) return;
-
-    setIsLoggingOut(true);
-    
-    try {
-      await signOut(auth);
-      localStorage.removeItem('rememberedEmail');
-      localStorage.removeItem('rememberMe');
-      sessionStorage.removeItem('isLoggedIn');
-      console.log("Logout successful");
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-      alert(`Logout failed: ${error.message}`);
-      setIsLoggingOut(false);
-    }
-  };
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Team members data
   const leadResearcher = {
@@ -334,6 +318,58 @@ const PaperWritingPage = () => {
     return papers.filter((paper) => paper.status === statusFilter);
   }, [papers, statusFilter]);
 
+  // Calculate pagination data
+  const totalItems = filteredPapers.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  // Reset to first page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter]);
+
+  // Get current page items
+  const currentItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredPapers.slice(startIndex, endIndex);
+  }, [filteredPapers, currentPage, itemsPerPage]);
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('...');
+        pageNumbers.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(1);
+        pageNumbers.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pageNumbers.push(i);
+        }
+      } else {
+        pageNumbers.push(1);
+        pageNumbers.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('...');
+        pageNumbers.push(totalPages);
+      }
+    }
+    
+    return pageNumbers;
+  };
+
   // Calculate deadline (start date + 4 days)
   const calculateAutoDeadline = (startDate) => {
     if (!startDate) return "";
@@ -345,11 +381,10 @@ const PaperWritingPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // CORRECTED: Get due status considering paper status
+  // Get due status considering paper status
   const getDueStatus = (deadline, paperStatus) => {
     if (!deadline) return null;
     
-    // Only calculate due status for "Started" papers
     if (paperStatus !== "Started") {
       return null;
     }
@@ -517,6 +552,39 @@ const PaperWritingPage = () => {
     return diffDays;
   };
 
+  // Enhanced logout function with Firebase
+  const handleLogout = async () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+
+    setIsLoggingOut(true);
+    
+    try {
+      await signOut(auth);
+      localStorage.removeItem('rememberedEmail');
+      localStorage.removeItem('rememberMe');
+      sessionStorage.removeItem('isLoggedIn');
+      console.log("Logout successful");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert(`Logout failed: ${error.message}`);
+      setIsLoggingOut(false);
+    }
+  };
+
+  // Pagination handlers
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goToFirstPage = () => goToPage(1);
+  const goToLastPage = () => goToPage(totalPages);
+  const goToPreviousPage = () => goToPage(currentPage - 1);
+  const goToNextPage = () => goToPage(currentPage + 1);
+
   // Prepare data for DataTable component
   const tableColumns = [
     { key: "serialNo", label: "S.No", width: "8%" },
@@ -527,8 +595,9 @@ const PaperWritingPage = () => {
     { key: "actions", label: "Actions", width: "15%" },
   ];
 
-  // Transform papers data for DataTable
-  const tableData = papers.map((paper) => {
+  // Transform current page papers data for DataTable
+  const tableData = currentItems.map((paper) => {
+    const globalIndex = (currentPage - 1) * itemsPerPage + paper.serialNo;
     const paperStatusOption = statusOptions.find((s) => s.value === paper.status) || statusOptions[0];
     const PaperStatusIcon = paperStatusOption.icon;
     const paperStatusColor = paperStatusOption.color;
@@ -539,14 +608,13 @@ const PaperWritingPage = () => {
       _paperData: paper,
       renderRow: (item, onRowExpand) => {
         const paperData = item._paperData;
-        // Pass paper status to getDueStatus
         const dueStatus = getDueStatus(paperData.deadline, paperData.status);
 
         return (
           <tr key={paperData.id} className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
             <td className="py-4 px-4 text-center">
               <div className="text-cyan-400 font-bold text-lg">
-                {paperData.serialNo}
+                {globalIndex}
               </div>
             </td>
             <td className="py-4 px-4">
@@ -591,7 +659,6 @@ const PaperWritingPage = () => {
                   <div className="text-gray-300">
                     {formatDate(paperData.deadline)}
                   </div>
-                  {/* Only show due status for "Started" papers */}
                   {paperData.status === "Started" && dueStatus && (
                     <div className={`text-xs font-medium ${dueStatus.color}`}>
                       {dueStatus.label}
@@ -677,7 +744,6 @@ const PaperWritingPage = () => {
                   <div className="text-xl font-bold text-white">
                     {formatDate(paper.deadline)}
                   </div>
-                  {/* Only show due status for "Started" papers */}
                   {paper.status === "Started" && (() => {
                     const dueStatus = getDueStatus(paper.deadline, paper.status);
                     return dueStatus ? (
@@ -877,24 +943,130 @@ const PaperWritingPage = () => {
         </div>
 
         {/* DataTable Component */}
-        <DataTable
-          columns={tableColumns}
-          data={tableData.filter((item) =>
-            statusFilter === null ? true : item._paperData.status === statusFilter
-          )}
-          expandedRow={expandedRow}
-          onRowExpand={toggleRowExpansion}
-          rowKey="id"
-        />
+        {filteredPapers.length > 0 ? (
+          <>
+            <DataTable
+              columns={tableColumns}
+              data={tableData}
+              expandedRow={expandedRow}
+              onRowExpand={toggleRowExpansion}
+              rowKey="id"
+            />
 
-        {/* Empty State */}
-        {filteredPapers.length === 0 && statusFilter !== null && (
+            {/* Pagination Controls */}
+            {totalItems > 0 && (
+              <div className="glass-card rounded-2xl p-6 mt-6 border border-gray-800">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  {/* Items per page selector */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-400 text-sm">Items per page:</span>
+                    <select
+                      value={itemsPerPage}
+                      onChange={(e) => {
+                        setItemsPerPage(Number(e.target.value));
+                        setCurrentPage(1);
+                      }}
+                      className="px-3 py-2 bg-gray-900/70 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+                    >
+                      <option value={5} className="bg-gray-900">5</option>
+                      <option value={10} className="bg-gray-900">10</option>
+                      <option value={20} className="bg-gray-900">20</option>
+                      <option value={50} className="bg-gray-900">50</option>
+                    </select>
+                    <span className="text-gray-400 text-sm">
+                      Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} papers
+                    </span>
+                  </div>
+
+                  {/* Pagination buttons */}
+                  <div className="flex items-center gap-2">
+                    {/* First page button */}
+                    <button
+                      onClick={goToFirstPage}
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <ChevronsLeft className="w-4 h-4" />
+                    </button>
+
+                    {/* Previous page button */}
+                    <button
+                      onClick={goToPreviousPage}
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+
+                    {/* Page numbers */}
+                    <div className="flex gap-1 mx-2">
+                      {getPageNumbers().map((pageNum, index) => (
+                        pageNum === '...' ? (
+                          <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-500">
+                            ...
+                          </span>
+                        ) : (
+                          <button
+                            key={pageNum}
+                            onClick={() => goToPage(pageNum)}
+                            className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
+                              currentPage === pageNum
+                                ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/20'
+                                : 'bg-gray-900/70 border border-gray-700 text-white hover:border-cyan-500/50 hover:bg-gray-800/50'
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        )
+                      ))}
+                    </div>
+
+                    {/* Next page button */}
+                    <button
+                      onClick={goToNextPage}
+                      disabled={currentPage === totalPages}
+                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+
+                    {/* Last page button */}
+                    <button
+                      onClick={goToLastPage}
+                      disabled={currentPage === totalPages}
+                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <ChevronsRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Page info */}
+                <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-800">
+                  <span className="text-sm text-gray-400">
+                    Page {currentPage} of {totalPages} • {totalItems} total papers
+                  </span>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
           <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
             <Filter className="w-16 h-16 text-gray-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">No papers found</h3>
             <p className="text-gray-400 mb-6">
-              No {statusFilter.toLowerCase()} papers found. Try changing the filter or add new papers.
+              {statusFilter === null
+                ? "No papers have been added yet. Click 'New Paper' to get started."
+                : `No ${statusFilter.toLowerCase()} papers found. Try changing the filter or add new papers.`}
             </p>
+            {statusFilter !== "all" && statusFilter !== null && (
+              <button
+                onClick={() => setStatusFilter(null)}
+                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
+              >
+                Show All Papers
+              </button>
+            )}
           </div>
         )}
 

@@ -13,6 +13,7 @@ import {
   X,
   BarChart,
   WineIcon,
+  ArchiveIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -75,7 +76,7 @@ const ReserchSidebar = ({
      {
       id: "archive",
       label: "Archive",
-    icon: WineIcon,
+    icon: ArchiveIcon,
     description: "Completed & archived records",
       route: "/dashboard/archive-page",
     },
@@ -139,7 +140,6 @@ const ReserchSidebar = ({
               </p>
             </div>
           </div>
-
           <button
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden text-white/70 hover:text-white transition-colors duration-300 p-1"
