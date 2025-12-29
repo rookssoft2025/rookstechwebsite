@@ -47,7 +47,7 @@ import img2 from "../../assets/mahesh.jpg";
 import img3 from "../../assets/arun.jpg";
 import img4 from "../../assets/akash.png";
 
-// SearchableDropdown Component (remains the same)
+// SearchableDropdown Component (Light Theme)
 const SearchableDropdown = ({ value, onChange, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -125,14 +125,14 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
           }}
           onFocus={() => setIsOpen(true)}
           placeholder={placeholder}
-          className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+          className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
         />
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
           {value && (
             <button
               type="button"
               onClick={handleClear}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-500 hover:text-gray-800 transition-colors"
             >
               <X size={16} />
             </button>
@@ -140,7 +140,7 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-500 hover:text-gray-800 transition-colors"
           >
             <ChevronDown size={18} />
           </button>
@@ -148,16 +148,16 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
       </div>
 
       {isOpen && filteredOptions.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto">
-          <div className="p-2 border-b border-gray-800">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+          <div className="p-2 border-b border-gray-200">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Type to filter titles..."
-                className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/20 outline-none"
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none"
                 autoFocus
               />
             </div>
@@ -165,20 +165,20 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
           
           <div className="py-1">
             {isLoading ? (
-              <div className="px-4 py-3 text-center text-gray-400">Loading titles...</div>
+              <div className="px-4 py-3 text-center text-gray-600">Loading titles...</div>
             ) : (
               filteredOptions.map((option) => (
                 <button
                   key={option.id}
                   type="button"
                   onClick={() => handleSelect(option.title)}
-                  className="w-full text-left px-4 py-3 hover:bg-gray-800/50 transition-colors flex items-center justify-between"
+                  className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors flex items-center justify-between"
                 >
-                  <span className="text-white truncate">{option.title}</span>
+                  <span className="text-gray-800 truncate">{option.title}</span>
                   <span className={`text-xs px-2 py-1 rounded-full ${
-                    option.status === 'active' ? 'bg-green-400/10 text-green-400' : 
-                    option.status === 'in-progress' ? 'bg-blue-400/10 text-blue-400' :
-                    'bg-yellow-400/10 text-yellow-400'
+                    option.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 
+                    option.status === 'in-progress' ? 'bg-blue-100 text-blue-700' :
+                    'bg-amber-100 text-amber-700'
                   }`}>
                     {option.status}
                   </span>
@@ -190,16 +190,16 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
       )}
 
       {isOpen && !isLoading && searchTerm.length > 0 && filteredOptions.length === 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl shadow-lg p-4">
-          <div className="text-center text-gray-400">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg p-4">
+          <div className="text-center text-gray-600">
             No research papers found
           </div>
         </div>
       )}
 
       {isOpen && !isLoading && searchTerm.length === 0 && filteredOptions.length === 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl shadow-lg p-4">
-          <div className="text-center text-gray-400">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg p-4">
+          <div className="text-center text-gray-600">
             No research papers available
           </div>
         </div>
@@ -296,35 +296,38 @@ const CodingPage = () => {
     };
   }, []);
 
-  // Status options
+  // Status options (Light Theme)
   const statusOptions = [
     {
       value: "Started",
       label: "Started",
-      color: "text-blue-400",
-      bg: "bg-blue-400/10",
+      color: "text-blue-600",
+      bg: "bg-blue-50",
+      border: "border-blue-200",
       icon: Code,
       count: 0,
     },
     {
       value: "Hold",
       label: "Hold",
-      color: "text-yellow-400",
-      bg: "bg-yellow-400/10",
+      color: "text-amber-600",
+      bg: "bg-amber-50",
+      border: "border-amber-200",
       icon: Clock,
       count: 0,
     },
     {
       value: "Completed",
       label: "Completed",
-      color: "text-green-400",
-      bg: "bg-green-400/10",
+      color: "text-emerald-600",
+      bg: "bg-emerald-50",
+      border: "border-emerald-200",
       icon: CheckCircle,
       count: 0,
     },
   ];
 
-  // Updated getDueStatus function
+  // Updated getDueStatus function (Light Theme)
   const getDueStatus = (deadline, taskStatus) => {
     if (!deadline) return null;
     if (taskStatus === "Hold") {
@@ -339,9 +342,9 @@ const CodingPage = () => {
       return {
         status: "completed",
         label: "Completed",
-        color: "text-green-400",
-        bg: "bg-green-400/10",
-        borderColor: "border-green-400/30",
+        color: "text-emerald-600",
+        bg: "bg-emerald-100",
+        borderColor: "border-emerald-300",
         icon: CheckCircle,
       };
     }
@@ -350,36 +353,36 @@ const CodingPage = () => {
       return {
         status: "overdue",
         label: "Overdue",
-        color: "text-red-400",
-        bg: "bg-red-400/10",
-        borderColor: "border-red-400/30",
+        color: "text-red-600",
+        bg: "bg-red-100",
+        borderColor: "border-red-300",
         icon: AlertCircle,
       };
     } else if (diffDays === 0) {
       return {
         status: "today",
         label: "Due Today",
-        color: "text-orange-400",
-        bg: "bg-orange-400/10",
-        borderColor: "border-orange-400/30",
+        color: "text-orange-600",
+        bg: "bg-orange-100",
+        borderColor: "border-orange-300",
         icon: AlertCircle,
       };
     } else if (diffDays <= 2) {
       return {
         status: "urgent",
         label: `Due in ${diffDays} day${diffDays === 1 ? "" : "s"}`,
-        color: "text-yellow-400",
-        bg: "bg-yellow-400/10",
-        borderColor: "border-yellow-400/30",
+        color: "text-amber-600",
+        bg: "bg-amber-100",
+        borderColor: "border-amber-300",
         icon: Clock,
       };
     } else {
       return {
         status: "ontrack",
         label: `${diffDays} days remaining`,
-        color: "text-green-400",
-        bg: "bg-green-400/10",
-        borderColor: "border-green-400/30",
+        color: "text-emerald-600",
+        bg: "bg-emerald-100",
+        borderColor: "border-emerald-300",
         icon: CheckCircle,
       };
     }
@@ -509,9 +512,6 @@ const CodingPage = () => {
         const created = await addCodingProject(projectToSubmit);
         setProjects((prev) => [...prev, created]);
       }
-
-      // Show success message
-     
     } catch (err) {
       console.error(err);
       alert("Failed to save project. Check console for details.");
@@ -554,7 +554,6 @@ const CodingPage = () => {
       setIsLoading(true);
       await deleteCodingProject(id);
       setProjects((prev) => prev.filter((project) => project.id !== id));
-      alert("Project deleted successfully!");
     } catch (err) {
       console.error("Failed to delete project:", err);
       alert("Failed to delete project. Check console for details.");
@@ -580,16 +579,6 @@ const CodingPage = () => {
     } catch (e) {
       return "Invalid date";
     }
-  };
-
-  // Calculate days remaining
-  const calculateDaysRemaining = (deadline) => {
-    if (!deadline) return null;
-    const today = new Date();
-    const deadlineDate = new Date(deadline);
-    const diffTime = deadlineDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
   };
 
   // Enhanced logout function with Firebase
@@ -646,7 +635,7 @@ const CodingPage = () => {
     return {
       id: project.id,
       _projectData: project,
-      serial: globalIndex, // Use global index for pagination
+      serial: globalIndex,
       renderRow: (item, onRowExpand) => {
         const projectData = item._projectData;
         const projectStatusOption =
@@ -655,21 +644,22 @@ const CodingPage = () => {
         const ProjectStatusIcon = projectStatusOption.icon;
         const projectStatusColor = projectStatusOption.color;
         const projectStatusBg = projectStatusOption.bg;
+        const projectStatusBorder = projectStatusOption.border;
         
         const dueStatus = getDueStatus(projectData.deadline, projectData.status);
         const DueStatusIcon = dueStatus ? getDueStatusIcon(dueStatus) : Calendar;
 
         return (
-          <tr key={projectData.id} className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
+          <tr key={projectData.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
             <td className="py-4 px-6 text-center">
-              <div className="text-white font-semibold">{item.serial}</div>
+              <div className="text-gray-800 font-semibold">{item.serial}</div>
             </td>
             <td className="py-4 px-6">
               <div>
-                <div className="text-white font-medium">
+                <div className="text-gray-800 font-medium">
                   {projectData.title || "Untitled Project"}
                 </div>
-                <div className="text-gray-400 text-sm">
+                <div className="text-gray-600 text-sm">
                   Started: {formatDate(projectData.startDate)}
                 </div>
               </div>
@@ -685,12 +675,12 @@ const CodingPage = () => {
                         "https://api.dicebear.com/7.x/avataaars/svg?seed=default"
                   }
                   alt={projectData.takenBy}
-                  className="w-8 h-8 rounded-full border border-cyan-500/50 mr-3"
+                  className="w-8 h-8 rounded-full border-2 border-indigo-300 mr-3"
                 />
                 <div>
-                  <div className="text-gray-300">{projectData.takenBy || "Unassigned"}</div>
+                  <div className="text-gray-700">{projectData.takenBy || "Unassigned"}</div>
                   {projectData.takenBy === leadDeveloper.name && (
-                    <div className="text-xs flex items-center text-yellow-400">
+                    <div className="text-xs flex items-center text-amber-600">
                       Lead Developer
                     </div>
                   )}
@@ -700,10 +690,10 @@ const CodingPage = () => {
             <td className="py-4 px-6">
               <div className="flex items-center justify-center">
                 <div>
-                  <div className="text-white font-semibold text-center">
+                  <div className="text-gray-800 font-semibold text-center">
                     {projectData.resultsTaken || 0}
                   </div>
-                  <div className="text-gray-400 text-xs text-center">
+                  <div className="text-gray-600 text-xs text-center">
                     results
                   </div>
                 </div>
@@ -711,9 +701,9 @@ const CodingPage = () => {
             </td>
             <td className="py-4 px-6">
               <div className="flex items-center">
-                <DueStatusIcon className="w-4 h-4 text-purple-400 mr-2" />
+                <DueStatusIcon className="w-4 h-4 text-purple-500 mr-2" />
                 <div>
-                  <div className="text-gray-300">
+                  <div className="text-gray-700">
                     {formatDate(projectData.deadline)}
                   </div>
                   {dueStatus && (
@@ -726,7 +716,7 @@ const CodingPage = () => {
             </td>
             <td className="py-4 px-6">
               <div
-                className={`inline-flex items-center px-3 py-1 rounded-full ${projectStatusBg}`}
+                className={`inline-flex items-center px-3 py-1 rounded-full ${projectStatusBg} border ${projectStatusBorder}`}
               >
                 <ProjectStatusIcon
                   className={`w-4 h-4 mr-2 ${projectStatusColor}`}
@@ -740,7 +730,7 @@ const CodingPage = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => toggleRowExpansion(projectData.id)}
-                  className="p-2 text-cyan-400 hover:text-cyan-300 transition-colors"
+                  className="p-2 text-indigo-600 hover:text-indigo-800 transition-colors"
                 >
                   {expandedRow === projectData.id ? (
                     <ChevronUp size={18} />
@@ -750,13 +740,13 @@ const CodingPage = () => {
                 </button>
                 <button
                   onClick={() => handleEdit(projectData)}
-                  className="p-2 text-blue-400 hover:text-blue-300 transition-colors"
+                  className="p-2 text-blue-600 hover:text-blue-800 transition-colors"
                 >
                   <Edit size={18} />
                 </button>
                 <button
                   onClick={() => handleDelete(projectData.id)}
-                  className="p-2 text-red-400 hover:text-red-300 transition-colors"
+                  className="p-2 text-red-600 hover:text-red-800 transition-colors"
                 >
                   <Trash2 size={18} />
                 </button>
@@ -766,27 +756,27 @@ const CodingPage = () => {
         );
       },
       expandContent: (
-        <div className="glass-inner rounded-xl p-6 border border-gray-800">
+        <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="text-lg font-semibold text-white mb-4">
+              <h4 className="text-lg font-semibold text-gray-800 mb-4">
                 Project Details
               </h4>
-              <p className="text-gray-300 mb-6 bg-gray-800/50 p-4 rounded-lg">
+              <p className="text-gray-700 mb-6 bg-white p-4 rounded-lg border border-gray-200">
                 {project.details || "No details provided"}
               </p>
             </div>
             <div>
-              <h4 className="text-lg font-semibold text-white mb-4">
+              <h4 className="text-lg font-semibold text-gray-800 mb-4">
                 Timeline
               </h4>
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-gray-800/50 rounded-lg">
-                  <div className="text-sm text-gray-400 flex items-center mb-2">
-                    <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
+                <div className="p-4 bg-white rounded-lg border border-gray-200">
+                  <div className="text-sm text-gray-600 flex items-center mb-2">
+                    <Calendar className="w-4 h-4 mr-2 text-indigo-600" />
                     Start Date
                   </div>
-                  <div className="text-xl font-bold text-white">
+                  <div className="text-xl font-bold text-gray-800">
                     {formatDate(project.startDate)}
                   </div>
                 </div>
@@ -795,14 +785,14 @@ const CodingPage = () => {
                     const dueStatus = getDueStatus(project.deadline, project.status);
                     return dueStatus
                       ? `${dueStatus.bg} ${dueStatus.borderColor}`
-                      : "bg-gray-800/50 border-gray-700";
+                      : "bg-white border-gray-200";
                   })()}`}
                 >
-                  <div className="text-sm text-gray-400 flex items-center mb-2">
-                    <Calendar className="w-4 h-4 mr-2 text-purple-400" />
+                  <div className="text-sm text-gray-600 flex items-center mb-2">
+                    <Calendar className="w-4 h-4 mr-2 text-purple-600" />
                     Deadline
                   </div>
-                  <div className="text-xl font-bold text-white">
+                  <div className="text-xl font-bold text-gray-800">
                     {formatDate(project.deadline)}
                   </div>
                   {(() => {
@@ -831,57 +821,57 @@ const CodingPage = () => {
       onLogout={handleLogout}
       isLoading={isLoggingOut}
     >
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-4 md:p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
             Research Coding Section
           </h1>
-          <p className="text-gray-400 mt-2">
+          <p className="text-gray-600 mt-2">
             Manage Research projects, track progress, and monitor team performance
           </p>
         </div>
 
         {/* Team Section */}
-        <div className="glass-card rounded-2xl p-6 mb-8 border border-gray-800">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <Users className="w-6 h-6 text-cyan-400 mr-3" />
-              <h2 className="text-xl font-semibold text-white">
+              <Users className="w-6 h-6 text-indigo-600 mr-3" />
+              <h2 className="text-xl font-semibold text-gray-800">
                 Research Coding Team
               </h2>
             </div>
-            <span className="text-cyan-300/70 text-sm">
+            <span className="text-indigo-500/70 text-sm font-medium">
               {1 + teamMembers.length} Members
             </span>
           </div>
 
           {/* Lead Developer Card */}
           <div className="mb-6">
-            <h3 className="text-lg font-medium text-white mb-3 flex items-center">
+            <h3 className="text-lg font-medium text-gray-800 mb-3 flex items-center">
               Team Lead
             </h3>
-            <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-gray-900/50 to-yellow-900/20 transition-all duration-300">
+            <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 transition-all duration-300">
               <img
                 src={leadDeveloper.image}
                 alt={leadDeveloper.name}
-                className="w-12 h-12 rounded-full border-2 border-yellow-500/50"
+                className="w-12 h-12 rounded-full border-2 border-amber-400"
               />
               <div className="ml-4 flex-1">
                 <div className="flex items-center">
-                  <h3 className="text-lg font-medium text-white">
+                  <h3 className="text-lg font-semibold text-gray-800">
                     {leadDeveloper.name}
                   </h3>
-                  <span className="ml-2 px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
+                  <span className="ml-2 px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
                     Lead
                   </span>
                 </div>
-                <p className="text-yellow-300/70 text-sm">
+                <p className="text-amber-600 text-sm">
                   {leadDeveloper.role}
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-white font-semibold">
+                <div className="text-gray-800 font-semibold">
                   {
                     projects.filter((p) => p.takenBy === leadDeveloper.name)
                       .length
@@ -894,29 +884,29 @@ const CodingPage = () => {
 
           {/* Team Members Section */}
           <div>
-            <h3 className="text-lg font-medium text-white mb-3">
+            <h3 className="text-lg font-medium text-gray-800 mb-3">
               Team Members
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {teamMembers.map((member) => (
                 <div
                   key={member.id}
-                  className="flex items-center p-4 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-cyan-500/30 transition-all duration-300"
+                  className="flex items-center p-4 rounded-xl bg-white border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all duration-300"
                 >
                   <img
                     src={member.image}
                     alt={member.name}
-                    className="w-10 h-10 rounded-full border-2 border-cyan-500/50"
+                    className="w-10 h-10 rounded-full border-2 border-indigo-400"
                   />
                   <div className="ml-3 flex-1">
-                    <h3 className="text-white font-medium">{member.name}</h3>
-                    <p className="text-cyan-300/70 text-xs">{member.role}</p>
+                    <h3 className="text-gray-800 font-medium">{member.name}</h3>
+                    <p className="text-indigo-600 text-xs">{member.role}</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-white font-semibold text-sm">
+                    <div className="text-gray-800 font-semibold text-sm">
                       {projects.filter((p) => p.takenBy === member.name).length}
                     </div>
-                    <div className="text-gray-400 text-xs">Projects</div>
+                    <div className="text-gray-600 text-xs">Projects</div>
                   </div>
                 </div>
               ))}
@@ -925,15 +915,15 @@ const CodingPage = () => {
         </div>
 
         {/* STATUS FILTER SECTION */}
-        <div className="glass-card rounded-2xl p-4 mb-6 border border-gray-800">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 mb-6 border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
-              <Filter className="w-5 h-5 text-cyan-400 mr-2" />
-              <h3 className="text-lg font-semibold text-white">
+              <Filter className="w-5 h-5 text-indigo-600 mr-2" />
+              <h3 className="text-lg font-semibold text-gray-800">
                 Filter by Status
               </h3>
             </div>
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-gray-600 font-medium">
               Showing{" "}
               {statusFilter === null
                 ? projects.length
@@ -947,18 +937,18 @@ const CodingPage = () => {
               onClick={() => setStatusFilter(null)}
               className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
                 statusFilter === null
-                  ? `bg-gray-400/10 border-cyan-500 shadow-lg shadow-cyan-500/20`
-                  : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                  ? `bg-gray-100 border-indigo-400 shadow-md shadow-indigo-500/10`
+                  : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
               }`}
             >
               <Filter
                 className={`w-5 h-5 mr-3 ${
-                  statusFilter === null ? "text-gray-400" : "text-gray-400"
+                  statusFilter === null ? "text-gray-600" : "text-gray-500"
                 }`}
               />
               <span
                 className={`font-medium ${
-                  statusFilter === null ? "text-gray-400" : "text-gray-300"
+                  statusFilter === null ? "text-gray-700" : "text-gray-600"
                 }`}
               >
                 All Projects
@@ -966,8 +956,8 @@ const CodingPage = () => {
               <span
                 className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
                   statusFilter === null
-                    ? "bg-gray-800 text-white"
-                    : "bg-gray-800/70 text-gray-400"
+                    ? "bg-gray-200 text-gray-800"
+                    : "bg-gray-100 text-gray-600"
                 }`}
               >
                 {projects.length}
@@ -987,18 +977,18 @@ const CodingPage = () => {
                   onClick={() => setStatusFilter(option.value)}
                   className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
                     isActive
-                      ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
-                      : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                      ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
+                      : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                   }`}
                 >
                   <Icon
                     className={`w-5 h-5 mr-3 ${
-                      isActive ? option.color : "text-gray-400"
+                      isActive ? option.color : "text-gray-500"
                     }`}
                   />
                   <span
                     className={`font-medium ${
-                      isActive ? option.color : "text-gray-300"
+                      isActive ? option.color : "text-gray-600"
                     }`}
                   >
                     {option.label}
@@ -1006,8 +996,8 @@ const CodingPage = () => {
                   <span
                     className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
                       isActive
-                        ? "bg-gray-800 text-white"
-                        : "bg-gray-800/70 text-gray-400"
+                        ? "bg-gray-200 text-gray-800"
+                        : "bg-gray-100 text-gray-600"
                     }`}
                   >
                     {count}
@@ -1021,8 +1011,8 @@ const CodingPage = () => {
         {/* Add New Project Button */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-white">Active Projects</h2>
-            <p className="text-gray-400 text-sm mt-1">
+            <h2 className="text-2xl font-bold text-gray-800">Active Projects</h2>
+            <p className="text-gray-600 text-sm mt-1">
               {statusFilter === null
                 ? "Showing all projects"
                 : `Showing ${statusFilter} projects only`}
@@ -1042,7 +1032,7 @@ const CodingPage = () => {
               });
               setIsModalOpen(true);
             }}
-            className="flex items-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-cyan-500/25 hover:scale-[1.02]"
+            className="flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-blue-600 transition-all duration-300 shadow-md hover:shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30"
           >
             <Plus className="w-5 h-5 mr-2" />
             New Project
@@ -1062,25 +1052,25 @@ const CodingPage = () => {
 
             {/* Pagination Controls */}
             {totalItems > 0 && (
-              <div className="glass-card rounded-2xl p-6 mt-6 border border-gray-800">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mt-6 border border-gray-200 shadow-sm">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   {/* Items per page selector */}
                   <div className="flex items-center gap-3">
-                    <span className="text-gray-400 text-sm">Items per page:</span>
+                    <span className="text-gray-700 text-sm font-medium">Items per page:</span>
                     <select
                       value={itemsPerPage}
                       onChange={(e) => {
                         setItemsPerPage(Number(e.target.value));
                         setCurrentPage(1);
                       }}
-                      className="px-3 py-2 bg-gray-900/70 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+                      className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-800 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
                     >
-                      <option value={5} className="bg-gray-900">5</option>
-                      <option value={10} className="bg-gray-900">10</option>
-                      <option value={20} className="bg-gray-900">20</option>
-                      <option value={50} className="bg-gray-900">50</option>
+                      <option value={5} className="bg-white">5</option>
+                      <option value={10} className="bg-white">10</option>
+                      <option value={20} className="bg-white">20</option>
+                      <option value={50} className="bg-white">50</option>
                     </select>
-                    <span className="text-gray-400 text-sm">
+                    <span className="text-gray-600 text-sm">
                       Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} projects
                     </span>
                   </div>
@@ -1091,7 +1081,7 @@ const CodingPage = () => {
                     <button
                       onClick={goToFirstPage}
                       disabled={currentPage === 1}
-                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                      className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                     >
                       <ChevronsLeft className="w-4 h-4" />
                     </button>
@@ -1100,7 +1090,7 @@ const CodingPage = () => {
                     <button
                       onClick={goToPreviousPage}
                       disabled={currentPage === 1}
-                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                      className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
@@ -1118,8 +1108,8 @@ const CodingPage = () => {
                             onClick={() => goToPage(pageNum)}
                             className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
                               currentPage === pageNum
-                                ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/20'
-                                : 'bg-gray-900/70 border border-gray-700 text-white hover:border-cyan-500/50 hover:bg-gray-800/50'
+                                ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-md shadow-indigo-500/20'
+                                : 'bg-white border border-gray-300 text-gray-700 hover:border-indigo-400 hover:bg-gray-50'
                             }`}
                           >
                             {pageNum}
@@ -1132,7 +1122,7 @@ const CodingPage = () => {
                     <button
                       onClick={goToNextPage}
                       disabled={currentPage === totalPages}
-                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                      className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
@@ -1141,7 +1131,7 @@ const CodingPage = () => {
                     <button
                       onClick={goToLastPage}
                       disabled={currentPage === totalPages}
-                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                      className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                     >
                       <ChevronsRight className="w-4 h-4" />
                     </button>
@@ -1149,8 +1139,8 @@ const CodingPage = () => {
                 </div>
 
                 {/* Page info */}
-                <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-800">
-                  <span className="text-sm text-gray-400">
+                <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-200">
+                  <span className="text-sm text-gray-600 font-medium">
                     Page {currentPage} of {totalPages} • {totalItems} total projects
                   </span>
                 </div>
@@ -1158,12 +1148,12 @@ const CodingPage = () => {
             )}
           </>
         ) : (
-          <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
-            <Code className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center border border-gray-200 shadow-sm">
+            <Code className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
               {isLoading ? "Loading projects..." : "No projects found"}
             </h3>
-            <p className="text-gray-400 mb-6">
+            <p className="text-gray-600 mb-6">
               {isLoading 
                 ? "Fetching data from Firebase..." 
                 : "Start by adding your first coding project."}
@@ -1183,7 +1173,7 @@ const CodingPage = () => {
                   });
                   setIsModalOpen(true);
                 }}
-                className="flex items-center justify-center mx-auto px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-cyan-500/25"
+                className="flex items-center justify-center mx-auto px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-blue-600 transition-all duration-300 shadow-md hover:shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30"
               >
                 <Plus className="w-5 h-5 mr-2" />
                 Add First Project
@@ -1194,20 +1184,20 @@ const CodingPage = () => {
 
         {/* Add/Edit Project Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="glass-card rounded-2xl w-full max-w-2xl border border-gray-800 max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-2xl w-full max-w-2xl border border-gray-300 shadow-2xl max-h-[90vh] overflow-y-auto"
             >
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-bold text-white">
+                  <h3 className="text-2xl font-bold text-gray-900">
                     {editingProject ? "Edit Project" : "Add New Project"}
                   </h3>
                   <button
                     onClick={() => setIsModalOpen(false)}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-600 hover:text-gray-900 transition-colors"
                   >
                     <X className="w-6 h-6" />
                   </button>
@@ -1217,7 +1207,7 @@ const CodingPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Project Title - USING SEARCHABLE DROPDOWN */}
                     <div>
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
                         Project Title
                       </label>
                       <SearchableDropdown
@@ -1225,14 +1215,14 @@ const CodingPage = () => {
                         onChange={(value) => setNewProject(prev => ({ ...prev, title: value }))}
                         placeholder="Search research paper titles..."
                       />
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-600 mt-1">
                         Type to search existing research papers
                       </p>
                     </div>
 
                     {/* Taken By */}
                     <div>
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
                         Assigned To
                       </label>
                       <select
@@ -1240,7 +1230,7 @@ const CodingPage = () => {
                         value={newProject.takenBy}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
                       >
                         <option value="">Select developer</option>
                         <optgroup label="Team lead">
@@ -1260,11 +1250,11 @@ const CodingPage = () => {
 
                     {/* Start Date */}
                     <div>
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
                         Start Date
                       </label>
                       <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-cyan-400 pointer-events-none" />
+                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-indigo-600 pointer-events-none" />
                         <input
                           type="date"
                           id="startDate"
@@ -1277,18 +1267,18 @@ const CodingPage = () => {
                             startDateRef.current?.showPicker?.()
                           }
                           required
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
                     </div>
 
                     {/* Deadline */}
                     <div>
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
                         Deadline
                       </label>
                       <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none" />
+                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-600 pointer-events-none" />
                         <input
                           type="date"
                           id="deadline"
@@ -1300,18 +1290,18 @@ const CodingPage = () => {
                           onTouchStart={() =>
                             deadlineRef.current?.showPicker?.()
                           }
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
                     </div>
 
                     {/* Results Taken */}
                     <div>
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
                         Results Taken
                       </label>
                       <div className="relative">
-                        <BarChart className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-400 pointer-events-none" />
+                        <BarChart className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-emerald-600 pointer-events-none" />
                         <input
                           type="number"
                           id="resultsTaken"
@@ -1319,14 +1309,14 @@ const CodingPage = () => {
                           onChange={handleInputChange}
                           placeholder="How many results"
                           min="0"
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
                         />
                       </div>
                     </div>
 
                     {/* Status - Full Width */}
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
                         Status
                       </label>
                       <div className="grid grid-cols-3 gap-2">
@@ -1344,24 +1334,22 @@ const CodingPage = () => {
                               }
                               className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
                                 newProject.status === option.value
-                                  ? `${option.bg} border-${
-                                      option.color.split("-")[1]
-                                    }-400/50`
-                                  : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                                  ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
+                                  : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                               }`}
                             >
                               <Icon
                                 className={`w-5 h-5 mb-1 ${
                                   newProject.status === option.value
                                     ? option.color
-                                    : "text-gray-400"
+                                    : "text-gray-500"
                                 }`}
                               />
                               <span
                                 className={`text-xs font-medium ${
                                   newProject.status === option.value
                                     ? option.color
-                                    : "text-gray-400"
+                                    : "text-gray-600"
                                 }`}
                               >
                                 {option.label}
@@ -1375,7 +1363,7 @@ const CodingPage = () => {
 
                   {/* Project Details */}
                   <div className="mt-6">
-                    <label className="block text-sm font-medium text-cyan-300 mb-2">
+                    <label className="block text-sm font-medium text-indigo-700 mb-2">
                       Project Details
                     </label>
                     <textarea
@@ -1385,7 +1373,7 @@ const CodingPage = () => {
                       placeholder="Enter project description, objectives, and technical details..."
                       rows="4"
                       required
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
                     />
                   </div>
 
@@ -1394,14 +1382,14 @@ const CodingPage = () => {
                     <button
                       type="button"
                       onClick={() => setIsModalOpen(false)}
-                      className="flex-1 px-6 py-3 border border-gray-700 text-gray-300 font-semibold rounded-xl hover:bg-gray-800/50 transition-all"
+                      className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-blue-600 transition-all shadow-md hover:shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isLoading ? (
                         <span className="flex items-center">

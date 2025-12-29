@@ -42,7 +42,7 @@ import { auth } from "../../../../firebase";
 
 const JournalPage = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("review");
+  const [activeTab, setActiveTab] = useState("journal");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -109,65 +109,72 @@ const JournalPage = () => {
   const uploadedDateRef = useRef(null);
   const dateOfReviewRef = useRef(null);
 
-  // Status options
+  // Status options (Light Theme)
   const statusOptions = [
     {
       value: "all",
       label: "All Papers",
-      color: "text-gray-400",
-      bg: "bg-gray-400/10",
+      color: "text-gray-600",
+      bg: "bg-gray-100",
+      border: "border-gray-200",
       icon: Filter,
       count: 0,
     },
     {
       value: "In Progress",
       label: "In Progress",
-      color: "text-blue-400",
-      bg: "bg-blue-400/10",
+      color: "text-blue-600",
+      bg: "bg-blue-50",
+      border: "border-blue-200",
       icon: Clock,
       count: 0,
     },
     {
       value: "Completed",
       label: "Completed",
-      color: "text-green-400",
-      bg: "bg-green-400/10",
+      color: "text-emerald-600",
+      bg: "bg-emerald-50",
+      border: "border-emerald-200",
       icon: CheckCircle,
       count: 0,
     },
   ];
 
-  // Review status options with three options
+  // Review status options with three options (Light Theme)
   const reviewStatusOptions = [
     {
       value: "all",
       label: "All Reviews",
-      color: "text-gray-400",
-      bg: "bg-gray-400/10",
+      color: "text-gray-600",
+      bg: "bg-gray-100",
+      border: "border-gray-200",
       icon: Eye,
       count: 0,
     },
     {
       value: "On Review",
       label: "On Review",
-      color: "text-yellow-400",
-      bg: "bg-yellow-400/10",
+      color: "text-amber-600",
+      bg: "bg-amber-50",
+      border: "border-amber-200",
       icon: Clock,
       count: 0,
     },
     {
       value: "Reviewed",
       label: "Reviewed",
-      color: "text-green-400",
-      bg: "bg-green-400/10",
+      color: "text-emerald-600",
+      bg: "bg-emerald-50",
+      border: "border-emerald-200",
       icon: CheckSquare,
       count: 0,
     },
     {
       value: "Rejected",
       label: "Rejected",
-      color: "text-red-400",
-      bg: "bg-red-400/10",
+      color: "text-red-600",
+      bg: "bg-red-50",
+      border: "border-red-200",
       icon: XCircle,
       count: 0,
     },
@@ -387,6 +394,7 @@ const JournalPage = () => {
         const PaperStatusIcon = paperStatusOption.icon;
         const paperStatusColor = paperStatusOption.color;
         const paperStatusBg = paperStatusOption.bg;
+        const paperStatusBorder = paperStatusOption.border;
 
         const paperReviewOption =
           reviewStatusOptions.find((s) => s.value === paperData.reviewStatus) ||
@@ -394,20 +402,21 @@ const JournalPage = () => {
         const PaperReviewIcon = paperReviewOption.icon;
         const paperReviewColor = paperReviewOption.color;
         const paperReviewBg = paperReviewOption.bg;
+        const paperReviewBorder = paperReviewOption.border;
 
         return (
-          <tr className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
+          <tr className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
             <td className="py-4 px-6">
               <div className="flex items-center">
-                <div className="text-cyan-400 font-bold text-lg mr-3">
+                <div className="text-indigo-600 font-bold text-lg mr-3">
                   {globalIndex}
                 </div>
-                <FileText className="w-5 h-5 text-cyan-400 mr-3" />
+                <FileText className="w-5 h-5 text-indigo-600 mr-3" />
                 <div>
-                  <div className="text-white font-medium">
+                  <div className="text-gray-800 font-medium">
                     {paperData.title}
                   </div>
-                  <div className="text-gray-400 text-sm">
+                  <div className="text-gray-600 text-sm">
                     {paperData.details.substring(0, 60)}...
                   </div>
                 </div>
@@ -415,7 +424,7 @@ const JournalPage = () => {
             </td>
             <td className="py-4 px-6">
               <div
-                className={`inline-flex items-center px-3 py-1.5 rounded-full ${paperStatusBg}`}
+                className={`inline-flex items-center px-3 py-1.5 rounded-full ${paperStatusBg} border ${paperStatusBorder}`}
               >
                 <PaperStatusIcon
                   className={`w-4 h-4 mr-2 ${paperStatusColor}`}
@@ -427,7 +436,7 @@ const JournalPage = () => {
             </td>
             <td className="py-4 px-6">
               <div
-                className={`inline-flex items-center px-3 py-1.5 rounded-full ${paperReviewBg}`}
+                className={`inline-flex items-center px-3 py-1.5 rounded-full ${paperReviewBg} border ${paperReviewBorder}`}
               >
                 <PaperReviewIcon
                   className={`w-4 h-4 mr-2 ${paperReviewColor}`}
@@ -439,16 +448,16 @@ const JournalPage = () => {
             </td>
             <td className="py-4 px-6">
               <div className="flex items-center text-sm">
-                <Upload className="w-4 h-4 text-green-400 mr-2" />
-                <span className="text-gray-300">
+                <Upload className="w-4 h-4 text-emerald-600 mr-2" />
+                <span className="text-gray-700">
                   {formatDate(paperData.uploadedDate)}
                 </span>
               </div>
             </td>
             <td className="py-4 px-6">
               <div className="flex items-center text-sm">
-                <Calendar className="w-4 h-4 text-purple-400 mr-2" />
-                <span className="text-gray-300">
+                <Calendar className="w-4 h-4 text-purple-600 mr-2" />
+                <span className="text-gray-700">
                   {formatDate(paperData.dateOfReview)}
                 </span>
               </div>
@@ -457,7 +466,7 @@ const JournalPage = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => toggleRowExpansion(paperData.id)}
-                  className="p-2 text-cyan-400 hover:text-cyan-300 transition-colors"
+                  className="p-2 text-indigo-600 hover:text-indigo-800 transition-colors"
                 >
                   {expandedRow === paperData.id ? (
                     <ChevronUp size={18} />
@@ -467,13 +476,13 @@ const JournalPage = () => {
                 </button>
                 <button
                   onClick={() => handleEdit(paperData)}
-                  className="p-2 text-blue-400 hover:text-blue-300 transition-colors"
+                  className="p-2 text-blue-600 hover:text-blue-800 transition-colors"
                 >
                   <Edit size={18} />
                 </button>
                 <button
                   onClick={() => handleDelete(paperData.id)}
-                  className="p-2 text-red-400 hover:text-red-300 transition-colors"
+                  className="p-2 text-red-600 hover:text-red-800 transition-colors"
                 >
                   <Trash2 size={18} />
                 </button>
@@ -483,12 +492,12 @@ const JournalPage = () => {
         );
       },
       expandContent: (
-        <div className="glass-inner rounded-xl p-6 border border-gray-800">
+        <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
           <div className="mb-6">
-            <h4 className="text-lg font-semibold text-white mb-4">
+            <h4 className="text-lg font-semibold text-gray-800 mb-4">
               Paper Details
             </h4>
-            <p className="text-gray-300 bg-gray-800/50 p-4 rounded-lg">
+            <p className="text-gray-700 bg-white p-4 rounded-lg border border-gray-200">
               {paper.details}
             </p>
           </div>
@@ -504,13 +513,13 @@ const JournalPage = () => {
       onLogout={handleLogout}
       isLoading={isLoggingOut}
     >
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-4 md:p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
             Journal Section
           </h1>
-          <p className="text-gray-400 mt-2">
+          <p className="text-gray-600 mt-2">
             Manage paper reviews, track status, and monitor review progress
           </p>
         </div>
@@ -518,15 +527,15 @@ const JournalPage = () => {
         {/* FILTER SECTIONS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Status Filter */}
-          <div className="glass-card rounded-2xl p-4 border border-gray-800">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
-                <Filter className="w-5 h-5 text-cyan-400 mr-2" />
-                <h3 className="text-lg font-semibold text-white">
+                <Filter className="w-5 h-5 text-indigo-600 mr-2" />
+                <h3 className="text-lg font-semibold text-gray-800">
                   Filter by Status
                 </h3>
               </div>
-              <div className="text-sm text-gray-400">
+              <div className="text-sm text-gray-600 font-medium">
                 {statusFilter === "all" || !statusFilter
                   ? "All papers"
                   : papers.filter((p) => p.status === statusFilter).length +
@@ -552,8 +561,8 @@ const JournalPage = () => {
                     className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
                       isActive ||
                       (option.value === "all" && statusFilter === null)
-                        ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
-                        : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                        ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
+                        : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                     }`}
                   >
                     <Icon
@@ -561,7 +570,7 @@ const JournalPage = () => {
                         isActive ||
                         (option.value === "all" && statusFilter === null)
                           ? option.color
-                          : "text-gray-400"
+                          : "text-gray-500"
                       }`}
                     />
                     <span
@@ -569,7 +578,7 @@ const JournalPage = () => {
                         isActive ||
                         (option.value === "all" && statusFilter === null)
                           ? option.color
-                          : "text-gray-300"
+                          : "text-gray-600"
                       }`}
                     >
                       {option.label}
@@ -578,8 +587,8 @@ const JournalPage = () => {
                       className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
                         isActive ||
                         (option.value === "all" && statusFilter === null)
-                          ? "bg-gray-800 text-white"
-                          : "bg-gray-800/70 text-gray-400"
+                          ? "bg-gray-200 text-gray-800"
+                          : "bg-gray-100 text-gray-600"
                       }`}
                     >
                       {option.value === "all" ? papers.length : count}
@@ -591,15 +600,15 @@ const JournalPage = () => {
           </div>
 
           {/* Review Status Filter */}
-          <div className="glass-card rounded-2xl p-4 border border-gray-800">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
-                <Eye className="w-5 h-5 text-cyan-400 mr-2" />
-                <h3 className="text-lg font-semibold text-white">
+                <Eye className="w-5 h-5 text-indigo-600 mr-2" />
+                <h3 className="text-lg font-semibold text-gray-800">
                   Filter by Review Status
                 </h3>
               </div>
-              <div className="text-sm text-gray-400">
+              <div className="text-sm text-gray-600 font-medium">
                 {reviewStatusFilter === "all" || !reviewStatusFilter
                   ? "All reviews"
                   : papers.filter((p) => p.reviewStatus === reviewStatusFilter)
@@ -625,8 +634,8 @@ const JournalPage = () => {
                     className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
                       isActive ||
                       (option.value === "all" && reviewStatusFilter === null)
-                        ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
-                        : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                        ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
+                        : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                     }`}
                   >
                     <Icon
@@ -634,7 +643,7 @@ const JournalPage = () => {
                         isActive ||
                         (option.value === "all" && reviewStatusFilter === null)
                           ? option.color
-                          : "text-gray-400"
+                          : "text-gray-500"
                       }`}
                     />
                     <span
@@ -642,7 +651,7 @@ const JournalPage = () => {
                         isActive ||
                         (option.value === "all" && reviewStatusFilter === null)
                           ? option.color
-                          : "text-gray-300"
+                          : "text-gray-600"
                       }`}
                     >
                       {option.label}
@@ -651,8 +660,8 @@ const JournalPage = () => {
                       className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
                         isActive ||
                         (option.value === "all" && reviewStatusFilter === null)
-                          ? "bg-gray-800 text-white"
-                          : "bg-gray-800/70 text-gray-400"
+                          ? "bg-gray-200 text-gray-800"
+                          : "bg-gray-100 text-gray-600"
                       }`}
                     >
                       {option.value === "all" ? papers.length : count}
@@ -667,8 +676,8 @@ const JournalPage = () => {
         {/* Add New Paper Button */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-white">Review Papers</h2>
-            <p className="text-gray-400 text-sm mt-1">
+            <h2 className="text-2xl font-bold text-gray-800">Review Papers</h2>
+            <p className="text-gray-600 text-sm mt-1">
               Showing {filteredPapers.length} of {papers.length} papers
               {(statusFilter || reviewStatusFilter) && <> (filtered)</>}
             </p>
@@ -686,7 +695,7 @@ const JournalPage = () => {
               });
               setIsModalOpen(true);
             }}
-            className="flex items-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-cyan-500/25 hover:scale-[1.02]"
+            className="flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-blue-600 transition-all duration-300 shadow-md hover:shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30"
           >
             <Plus className="w-5 h-5 mr-2" />
             New Paper
@@ -706,25 +715,25 @@ const JournalPage = () => {
 
             {/* Pagination Controls */}
             {totalItems > 0 && (
-              <div className="glass-card rounded-2xl p-6 mt-6 border border-gray-800">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mt-6 border border-gray-200 shadow-sm">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   {/* Items per page selector */}
                   <div className="flex items-center gap-3">
-                    <span className="text-gray-400 text-sm">Items per page:</span>
+                    <span className="text-gray-700 text-sm font-medium">Items per page:</span>
                     <select
                       value={itemsPerPage}
                       onChange={(e) => {
                         setItemsPerPage(Number(e.target.value));
                         setCurrentPage(1);
                       }}
-                      className="px-3 py-2 bg-gray-900/70 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+                      className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-800 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
                     >
-                      <option value={5} className="bg-gray-900">5</option>
-                      <option value={10} className="bg-gray-900">10</option>
-                      <option value={20} className="bg-gray-900">20</option>
-                      <option value={50} className="bg-gray-900">50</option>
+                      <option value={5} className="bg-white">5</option>
+                      <option value={10} className="bg-white">10</option>
+                      <option value={20} className="bg-white">20</option>
+                      <option value={50} className="bg-white">50</option>
                     </select>
-                    <span className="text-gray-400 text-sm">
+                    <span className="text-gray-600 text-sm">
                       Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} papers
                     </span>
                   </div>
@@ -735,7 +744,7 @@ const JournalPage = () => {
                     <button
                       onClick={goToFirstPage}
                       disabled={currentPage === 1}
-                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                      className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                     >
                       <ChevronsLeft className="w-4 h-4" />
                     </button>
@@ -744,7 +753,7 @@ const JournalPage = () => {
                     <button
                       onClick={goToPreviousPage}
                       disabled={currentPage === 1}
-                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                      className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
@@ -762,8 +771,8 @@ const JournalPage = () => {
                             onClick={() => goToPage(pageNum)}
                             className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
                               currentPage === pageNum
-                                ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/20'
-                                : 'bg-gray-900/70 border border-gray-700 text-white hover:border-cyan-500/50 hover:bg-gray-800/50'
+                                ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-md shadow-indigo-500/20'
+                                : 'bg-white border border-gray-300 text-gray-700 hover:border-indigo-400 hover:bg-gray-50'
                             }`}
                           >
                             {pageNum}
@@ -776,7 +785,7 @@ const JournalPage = () => {
                     <button
                       onClick={goToNextPage}
                       disabled={currentPage === totalPages}
-                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                      className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
@@ -785,7 +794,7 @@ const JournalPage = () => {
                     <button
                       onClick={goToLastPage}
                       disabled={currentPage === totalPages}
-                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                      className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                     >
                       <ChevronsRight className="w-4 h-4" />
                     </button>
@@ -793,8 +802,8 @@ const JournalPage = () => {
                 </div>
 
                 {/* Page info */}
-                <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-800">
-                  <span className="text-sm text-gray-400">
+                <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-200">
+                  <span className="text-sm text-gray-600 font-medium">
                     Page {currentPage} of {totalPages} • {totalItems} total papers
                   </span>
                 </div>
@@ -802,12 +811,12 @@ const JournalPage = () => {
             )}
           </>
         ) : (
-          <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
-            <Eye className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center border border-gray-200 shadow-sm">
+            <Eye className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
               {loadingPapers ? "Loading papers..." : "No papers found"}
             </h3>
-            <p className="text-gray-400 mb-6">
+            <p className="text-gray-600 mb-6">
               {loadingPapers 
                 ? "Fetching data from Firebase..." 
                 : "No papers match the current filters. Try changing the filters or add new papers."}
@@ -818,7 +827,7 @@ const JournalPage = () => {
                   setStatusFilter(null);
                   setReviewStatusFilter(null);
                 }}
-                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
+                className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transition-all"
               >
                 Clear Filters
               </button>
@@ -828,20 +837,20 @@ const JournalPage = () => {
 
         {/* Add/Edit Paper Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="glass-card rounded-2xl w-full max-w-2xl border border-gray-800 max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-2xl w-full max-w-2xl border border-gray-300 shadow-2xl max-h-[90vh] overflow-y-auto"
             >
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-bold text-white">
+                  <h3 className="text-2xl font-bold text-gray-900">
                     {editingPaper ? "Edit Paper" : "Add New Paper"}
                   </h3>
                   <button
                     onClick={() => setIsModalOpen(false)}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-600 hover:text-gray-900 transition-colors"
                   >
                     <X className="w-6 h-6" />
                   </button>
@@ -850,7 +859,7 @@ const JournalPage = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
                         Paper Title
                       </label>
                       <input
@@ -860,12 +869,12 @@ const JournalPage = () => {
                         onChange={handleInputChange}
                         placeholder="Enter paper title"
                         required
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
                         Status
                       </label>
                       <div className="grid grid-cols-2 gap-2">
@@ -883,24 +892,22 @@ const JournalPage = () => {
                               }
                               className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
                                 newPaper.status === option.value
-                                  ? `${option.bg} border-${
-                                      option.color.split("-")[1]
-                                    }-400/50`
-                                  : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                                  ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
+                                  : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                               }`}
                             >
                               <Icon
                                 className={`w-5 h-5 mb-1 ${
                                   newPaper.status === option.value
                                     ? option.color
-                                    : "text-gray-400"
+                                    : "text-gray-500"
                                 }`}
                               />
                               <span
                                 className={`text-xs font-medium ${
                                   newPaper.status === option.value
                                     ? option.color
-                                    : "text-gray-400"
+                                    : "text-gray-600"
                                 }`}
                               >
                                 {option.label}
@@ -912,7 +919,7 @@ const JournalPage = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
                         Review Status
                       </label>
                       <div className="grid grid-cols-3 gap-2">
@@ -930,24 +937,22 @@ const JournalPage = () => {
                               }
                               className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
                                 newPaper.reviewStatus === option.value
-                                  ? `${option.bg} border-${
-                                      option.color.split("-")[1]
-                                    }-400/50`
-                                  : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                                  ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
+                                  : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                               }`}
                             >
                               <Icon
                                 className={`w-5 h-5 mb-1 ${
                                   newPaper.reviewStatus === option.value
                                     ? option.color
-                                    : "text-gray-400"
+                                    : "text-gray-500"
                                 }`}
                               />
                               <span
                                 className={`text-xs font-medium ${
                                   newPaper.reviewStatus === option.value
                                     ? option.color
-                                    : "text-gray-400"
+                                    : "text-gray-600"
                                 }`}
                               >
                                 {option.label}
@@ -959,11 +964,11 @@ const JournalPage = () => {
                     </div>
 
                     <div className="relative">
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
                         Uploaded Date
                       </label>
                       <div className="relative">
-                        <Upload className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-400 pointer-events-none" />
+                        <Upload className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-emerald-600 pointer-events-none" />
                         <input
                           type="date"
                           id="uploadedDate"
@@ -980,18 +985,18 @@ const JournalPage = () => {
                             uploadedDateRef.current?.showPicker?.()
                           }
                           required
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
                     </div>
 
                     {newPaper.reviewStatus === "On Review" && (
                       <div className="relative">
-                        <label className="block text-sm font-medium text-cyan-300 mb-2">
+                        <label className="block text-sm font-medium text-indigo-700 mb-2">
                           Date of Review
                         </label>
                         <div className="relative">
-                          <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none" />
+                          <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-600 pointer-events-none" />
                           <input
                             type="date"
                             id="dateOfReview"
@@ -1008,7 +1013,7 @@ const JournalPage = () => {
                               dateOfReviewRef.current?.showPicker?.()
                             }
                             required
-                            className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
+                            className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all appearance-none"
                           />
                         </div>
                       </div>
@@ -1016,7 +1021,7 @@ const JournalPage = () => {
                   </div>
 
                   <div className="mt-6">
-                    <label className="block text-sm font-medium text-cyan-300 mb-2">
+                    <label className="block text-sm font-medium text-indigo-700 mb-2">
                       Paper Details
                     </label>
                     <textarea
@@ -1026,7 +1031,7 @@ const JournalPage = () => {
                       placeholder="Enter paper description and details..."
                       rows="4"
                       required
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
                     />
                   </div>
 
@@ -1034,14 +1039,14 @@ const JournalPage = () => {
                     <button
                       type="button"
                       onClick={() => setIsModalOpen(false)}
-                      className="flex-1 px-6 py-3 border border-gray-700 text-gray-300 font-semibold rounded-xl hover:bg-gray-800/50 transition-all"
+                      className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-blue-600 transition-all shadow-md hover:shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isLoading ? (
                         <span className="flex items-center">
@@ -1074,4 +1079,4 @@ const JournalPage = () => {
   );
 };
 
-export default JournalPage; 
+export default JournalPage;

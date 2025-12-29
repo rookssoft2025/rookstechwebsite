@@ -23,7 +23,6 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
-
 import { useNavigate } from "react-router-dom";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
 import DataTable from "../../../../components/ResearchLayout/DataTable";
@@ -102,32 +101,36 @@ const ProposalPage = () => {
     {
       value: "all",
       label: "All Proposals",
-      color: "text-gray-400",
-      bg: "bg-gray-400/10",
+      color: "text-gray-600",
+      bg: "bg-gray-100",
+      border: "border-gray-200",
       icon: Filter,
       count: 0,
     },
     {
       value: "Started",
       label: "Started",
-      color: "text-blue-400",
-      bg: "bg-blue-400/10",
+      color: "text-blue-600",
+      bg: "bg-blue-50",
+      border: "border-blue-200",
       icon: Clock,
       count: 0,
     },
     {
       value: "On Hold",
       label: "On Hold",
-      color: "text-yellow-400",
-      bg: "bg-yellow-400/10",
+      color: "text-amber-600",
+      bg: "bg-amber-50",
+      border: "border-amber-200",
       icon: AlertCircle,
       count: 0,
     },
     {
       value: "Completed",
       label: "Completed",
-      color: "text-green-400",
-      bg: "bg-green-400/10",
+      color: "text-emerald-600",
+      bg: "bg-emerald-50",
+      border: "border-emerald-200",
       icon: CheckCircle,
       count: 0,
     },
@@ -443,82 +446,82 @@ const ProposalPage = () => {
       onLogout={handleLogout}
       isLoading={isLoggingOut}
     >
-      <div className="bg-gradient-to-br from-gray-900 via-black to-gray-900 md:p-6">
+      <div className="bg-gradient-to-br from-gray-50 via-white to-gray-100 p-4 md:p-6">
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
             Research Proposals
           </h1>
-          <p className="text-gray-400 mt-2">
+          <p className="text-gray-600 mt-2">
             Manage and track all research papers
           </p>
         </div>
 
         {/* TEAM */}
-        <div className="glass-card rounded-2xl p-6 mb-8 border border-gray-800">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <Users className="w-6 h-6 text-cyan-400 mr-3" />
-              <h2 className="text-xl font-semibold text-white">
+              <Users className="w-6 h-6 text-indigo-600 mr-3" />
+              <h2 className="text-xl font-semibold text-gray-800">
                 Research Proposal Team
               </h2>
             </div>
-            <span className="text-cyan-300/70 text-sm">
+            <span className="text-indigo-500/70 text-sm font-medium">
               {1 + teamMembers.length} Members
             </span>
           </div>
 
           {/* Team Leader Card */}
           <div className="mb-6">
-            <h3 className="text-lg font-medium text-white mb-3">Team Leader</h3>
-            <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-gray-900/50 to-yellow-900/20 transition-all duration-300">
+            <h3 className="text-lg font-medium text-gray-800 mb-3">Team Leader</h3>
+            <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 transition-all duration-300">
               <img
                 src={teamLeader.image}
                 alt={teamLeader.name}
-                className="w-12 h-12 rounded-full border-2 border-yellow-500/50"
+                className="w-12 h-12 rounded-full border-2 border-amber-400"
               />
               <div className="ml-4 flex-1">
                 <div className="flex items-center">
-                  <h3 className="text-lg font-medium text-white">
+                  <h3 className="text-lg font-semibold text-gray-800">
                     {teamLeader.name}
                   </h3>
-                  <span className="ml-2 px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
+                  <span className="ml-2 px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
                     Leader
                   </span>
                 </div>
-                <p className="text-yellow-300/70 text-sm">{teamLeader.role}</p>
+                <p className="text-amber-600 text-sm">{teamLeader.role}</p>
               </div>
               <div className="text-right">
-                <div className="text-white font-semibold">
+                <div className="text-gray-800 font-semibold">
                   {proposals.filter((p) => p.takenBy === teamLeader.name).length} Papers
                 </div>
-                <div className="text-yellow-400 text-xs">Leader</div>
+                <div className="text-amber-600 text-xs font-medium">Leader</div>
               </div>
             </div>
           </div>
 
           {/* Team Members Section */}
           <div>
-            <h3 className="text-lg font-medium text-white mb-3">Team Members</h3>
+            <h3 className="text-lg font-medium text-gray-800 mb-3">Team Members</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {teamMembers.map((member) => (
                 <div
                   key={member.id}
-                  className="flex items-center p-4 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-cyan-500/30 transition-all duration-300"
+                  className="flex items-center p-4 rounded-xl bg-white border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all duration-300"
                 >
                   <img
                     src={member.image}
                     alt={member.name}
-                    className="w-10 h-10 rounded-full border-2 border-cyan-500/50"
+                    className="w-10 h-10 rounded-full border-2 border-indigo-400"
                   />
                   <div className="ml-3 flex-1">
-                    <h3 className="text-white font-medium">{member.name}</h3>
-                    <p className="text-cyan-300/70 text-xs">{member.role}</p>
+                    <h3 className="text-gray-800 font-medium">{member.name}</h3>
+                    <p className="text-indigo-600 text-xs">{member.role}</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-white font-semibold text-sm">
+                    <div className="text-gray-800 font-semibold text-sm">
                       {proposals.filter((p) => p.takenBy === member.name).length}
                     </div>
-                    <div className="text-gray-400 text-xs">Papers</div>
+                    <div className="text-gray-500 text-xs">Papers</div>
                   </div>
                 </div>
               ))}
@@ -527,13 +530,13 @@ const ProposalPage = () => {
         </div>
 
         {/* STATUS FILTER SECTION */}
-        <div className="glass-card rounded-2xl p-4 mb-6 border border-gray-800">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 mb-6 border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
-              <Filter className="w-5 h-5 text-cyan-400 mr-2" />
-              <h3 className="text-lg font-semibold text-white">Filter by Status</h3>
+              <Filter className="w-5 h-5 text-indigo-600 mr-2" />
+              <h3 className="text-lg font-semibold text-gray-800">Filter by Status</h3>
             </div>
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-gray-600 font-medium">
               Showing {filteredProposals.length} of {proposals.length} proposals
             </div>
           </div>
@@ -547,17 +550,17 @@ const ProposalPage = () => {
                   onClick={() => setStatusFilter(option.value)}
                   className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
                     isActive
-                      ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
-                      : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                      ? `${option.bg} border-indigo-400 shadow-md shadow-indigo-500/10`
+                      : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                   }`}
                 >
-                  <Icon className={`w-5 h-5 mr-3 ${isActive ? option.color : "text-gray-400"}`} />
-                  <span className={`font-medium ${isActive ? option.color : "text-gray-300"}`}>
+                  <Icon className={`w-5 h-5 mr-3 ${isActive ? option.color : "text-gray-500"}`} />
+                  <span className={`font-medium ${isActive ? option.color : "text-gray-700"}`}>
                     {option.label}
                   </span>
                   <span
                     className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                      isActive ? "bg-gray-800 text-white" : "bg-gray-800/70 text-gray-400"
+                      isActive ? "bg-gray-100 text-gray-800" : "bg-gray-100 text-gray-600"
                     }`}
                   >
                     {option.count}
@@ -571,8 +574,8 @@ const ProposalPage = () => {
         {/* ADD BUTTON */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-white">Proposals</h2>
-            <p className="text-gray-400 text-sm mt-1">
+            <h2 className="text-2xl font-bold text-gray-800">Proposals</h2>
+            <p className="text-gray-600 text-sm mt-1">
               {statusFilter === "all"
                 ? "Showing all proposals"
                 : `Showing ${statusFilter} proposals only`}
@@ -583,7 +586,7 @@ const ProposalPage = () => {
               setEditMode(false);
               setIsModalOpen(true);
             }}
-            className="flex items-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
+            className="flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transition-all hover:scale-105 active:scale-95"
           >
             <Plus className="w-5 h-5 mr-2" /> Add New Paper
           </button>
@@ -614,21 +617,21 @@ const ProposalPage = () => {
               renderRow: (item, onRowExpand) => (
                 <tr
                   onClick={() => onRowExpand(item.id)}
-                  className="border-b border-gray-800 hover:bg-gray-900/50 cursor-pointer transition-colors"
+                  className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors"
                 >
                   <td className="py-4 px-6 text-center">
-                    <div className="text-white font-semibold">{globalIndex}</div>
+                    <div className="text-gray-800 font-semibold">{globalIndex}</div>
                   </td>
 
-                  <td className="py-4 px-6 text-white font-medium">{item.title}</td>
+                  <td className="py-4 px-6 text-gray-800 font-medium">{item.title}</td>
 
-                  <td className="py-4 px-6 text-gray-300">{item.takenBy}</td>
+                  <td className="py-4 px-6 text-gray-700">{item.takenBy}</td>
 
-                  <td className="py-4 px-6 text-gray-300">
+                  <td className="py-4 px-6 text-gray-700">
                     <div className="flex flex-col">
                       <span>{formatDate(item.startDate)}</span>
-                      <span className="text-sm text-gray-400">to</span>
-                      <span className="text-gray-300">
+                      <span className="text-sm text-gray-500">to</span>
+                      <span className="text-gray-700">
                         {formatDate(item.endDate)}
                       </span>
                     </div>
@@ -640,15 +643,15 @@ const ProposalPage = () => {
                         {isOverdue ? (
                           <>
                             <AlertOctagon className="w-4 h-4 text-red-500 mb-1" />
-                            <span className="text-xs text-red-400">Overdue</span>
-                            <span className="text-xs text-red-300">
+                            <span className="text-xs text-red-600 font-medium">Overdue</span>
+                            <span className="text-xs text-red-500">
                               {overdueDays} days late
                             </span>
                           </>
                         ) : (
                           <>
-                            <CheckCheck className="w-4 h-4 text-green-500 mb-1" />
-                            <span className="text-xs text-green-400">On Time</span>
+                            <CheckCheck className="w-4 h-4 text-emerald-500 mb-1" />
+                            <span className="text-xs text-emerald-600 font-medium">On Time</span>
                           </>
                         )}
                       </div>
@@ -661,19 +664,19 @@ const ProposalPage = () => {
                               : deadlineStatus.status === "today"
                               ? "bg-red-500"
                               : deadlineStatus.status === "approaching"
-                              ? "bg-yellow-500"
-                              : "bg-green-500"
+                              ? "bg-amber-500"
+                              : "bg-emerald-500"
                           }`}
                         />
                         <span
-                          className={`text-xs ${
+                          className={`text-xs font-medium ${
                             deadlineStatus.status === "overdue"
-                              ? "text-red-400"
+                              ? "text-red-600"
                               : deadlineStatus.status === "today"
-                              ? "text-red-400"
+                              ? "text-red-600"
                               : deadlineStatus.status === "approaching"
-                              ? "text-yellow-400"
-                              : "text-green-400"
+                              ? "text-amber-600"
+                              : "text-emerald-600"
                           }`}
                         >
                           {deadlineStatus.text}
@@ -684,14 +687,14 @@ const ProposalPage = () => {
 
                   <td className="py-4 px-6">
                     <div
-                      className={`px-3 py-1 rounded-full ${statusInfo?.bg} inline-flex items-center border border-gray-700`}
+                      className={`px-3 py-1.5 rounded-full ${statusInfo?.bg} border ${statusInfo?.border} inline-flex items-center`}
                     >
                       <StatusIcon className={`w-4 h-4 mr-2 ${statusInfo?.color}`} />
                       <span className={`${statusInfo?.color} font-medium`}>{item.status}</span>
                     </div>
                   </td>
 
-                  <td className="py-4 px-6 text-cyan-400">
+                  <td className="py-4 px-6 text-indigo-600">
                     {expandedRow === item.id ? (
                       <ChevronUp className="w-5 h-5" />
                     ) : (
@@ -706,7 +709,7 @@ const ProposalPage = () => {
                           e.stopPropagation();
                           openEdit(item);
                         }}
-                        className="px-4 py-1.5 bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 rounded-lg font-medium transition-colors"
+                        className="px-4 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 font-medium rounded-lg transition-colors hover:shadow-sm"
                       >
                         Edit
                       </button>
@@ -715,7 +718,7 @@ const ProposalPage = () => {
                           e.stopPropagation();
                           handleDelete(item.id);
                         }}
-                        className="px-4 py-1.5 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-lg font-medium transition-colors"
+                        className="px-4 py-1.5 bg-red-100 text-red-700 hover:bg-red-200 font-medium rounded-lg transition-colors hover:shadow-sm"
                       >
                         Delete
                       </button>
@@ -724,11 +727,11 @@ const ProposalPage = () => {
                 </tr>
               ),
               expandContent: (
-                <div className="p-4 bg-gray-900/50 rounded-xl border border-gray-800">
+                <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
                   <div className="flex justify-between items-start mb-4">
-                    <h4 className="text-lg font-semibold text-white">Paper Details</h4>
+                    <h4 className="text-lg font-semibold text-gray-800">Paper Details</h4>
                     {proposal.status === "Completed" ? (
-                      <div className={`px-3 py-1.5 rounded-full ${isOverdue ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-green-500/20 text-green-400 border border-green-500/30'}`}>
+                      <div className={`px-3 py-1.5 rounded-full ${isOverdue ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}`}>
                         <div className="flex items-center">
                           {isOverdue ? <AlertOctagon className="w-4 h-4 mr-2" /> : <CheckCircle className="w-4 h-4 mr-2" />}
                           <span className="text-sm font-medium">
@@ -740,12 +743,12 @@ const ProposalPage = () => {
                       <div
                         className={`px-3 py-1.5 rounded-full ${
                           deadlineStatus.status === "overdue"
-                            ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                            ? "bg-red-100 text-red-700 border border-red-200"
                             : deadlineStatus.status === "today"
-                            ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                            ? "bg-red-100 text-red-700 border border-red-200"
                             : deadlineStatus.status === "approaching"
-                            ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
-                            : "bg-green-500/20 text-green-400 border border-green-500/30"
+                            ? "bg-amber-100 text-amber-700 border border-amber-200"
+                            : "bg-emerald-100 text-emerald-700 border border-emerald-200"
                         }`}
                       >
                         <div className="flex items-center">
@@ -755,52 +758,52 @@ const ProposalPage = () => {
                       </div>
                     ) : null}
                   </div>
-                  <p className="text-gray-300 mb-4">{proposal.details}</p>
+                  <p className="text-gray-700 mb-4">{proposal.details}</p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                    <div className="bg-gray-900/30 p-3 rounded-lg">
+                    <div className="bg-white p-3 rounded-lg border border-gray-200">
                       <div className="flex items-center mb-1">
-                        <Calendar className="w-4 h-4 text-cyan-400 mr-2" />
-                        <span className="text-cyan-400 font-medium">Start Date:</span>
+                        <Calendar className="w-4 h-4 text-indigo-600 mr-2" />
+                        <span className="text-indigo-600 font-medium">Start Date:</span>
                       </div>
-                      <div className="text-gray-300 ml-6">{formatDate(proposal.startDate)}</div>
+                      <div className="text-gray-700 ml-6 font-medium">{formatDate(proposal.startDate)}</div>
                     </div>
                     
-                    <div className="bg-gray-900/30 p-3 rounded-lg">
+                    <div className="bg-white p-3 rounded-lg border border-gray-200">
                       <div className="flex items-center mb-1">
-                        <CalendarDays className="w-4 h-4 text-cyan-400 mr-2" />
-                        <span className="text-cyan-400 font-medium">Due Date:</span>
+                        <CalendarDays className="w-4 h-4 text-indigo-600 mr-2" />
+                        <span className="text-indigo-600 font-medium">Due Date:</span>
                       </div>
-                      <div className="text-gray-300 ml-6">{formatDate(proposal.endDate)}</div>
+                      <div className="text-gray-700 ml-6 font-medium">{formatDate(proposal.endDate)}</div>
                     </div>
 
                     {proposal.status === "Completed" ? (
-                      <div className={`p-3 rounded-lg ${isOverdue ? 'bg-red-500/10' : 'bg-green-500/10'}`}>
+                      <div className={`p-3 rounded-lg border ${isOverdue ? 'bg-red-50 border-red-200' : 'bg-emerald-50 border-emerald-200'}`}>
                         <div className="flex items-center mb-1">
-                          <CheckCircle className={`w-4 h-4 mr-2 ${isOverdue ? 'text-red-400' : 'text-green-400'}`} />
-                          <span className={`font-medium ${isOverdue ? 'text-red-400' : 'text-green-400'}`}>
+                          <CheckCircle className={`w-4 h-4 mr-2 ${isOverdue ? 'text-red-600' : 'text-emerald-600'}`} />
+                          <span className={`font-medium ${isOverdue ? 'text-red-600' : 'text-emerald-600'}`}>
                             Completion Date:
                           </span>
                         </div>
-                        <div className={`ml-6 ${isOverdue ? 'text-red-300' : 'text-green-300'}`}>
+                        <div className={`ml-6 font-medium ${isOverdue ? 'text-red-700' : 'text-emerald-700'}`}>
                           {formatDate(proposal.completedDate)}
                         </div>
                         {proposal.completedDate && (
-                          <div className={`text-xs mt-2 ml-6 ${isOverdue ? 'text-red-400/70' : 'text-green-400/70'}`}>
+                          <div className={`text-xs mt-2 ml-6 ${isOverdue ? 'text-red-600' : 'text-emerald-600'}`}>
                             {isOverdue ? (
-                              <span>Overdue by {overdueDays} days</span>
+                              <span className="font-medium">Overdue by {overdueDays} days</span>
                             ) : (
-                              <span>Completed in {calculateCompletionTiming(proposal.startDate, proposal.completedDate)}</span>
+                              <span className="font-medium">Completed in {calculateCompletionTiming(proposal.startDate, proposal.completedDate)}</span>
                             )}
                           </div>
                         )}
                       </div>
                     ) : (
-                      <div className="bg-gray-900/30 p-3 rounded-lg">
+                      <div className="bg-white p-3 rounded-lg border border-gray-200">
                         <div className="flex items-center mb-1">
-                          <Clock className="w-4 h-4 text-gray-400 mr-2" />
-                          <span className="text-gray-400 font-medium">Completion:</span>
+                          <Clock className="w-4 h-4 text-gray-500 mr-2" />
+                          <span className="text-gray-600 font-medium">Completion:</span>
                         </div>
-                        <div className="text-gray-500 ml-6 italic">Pending</div>
+                        <div className="text-gray-500 ml-6 italic font-medium">Pending</div>
                       </div>
                     )}
                   </div>
@@ -814,25 +817,25 @@ const ProposalPage = () => {
 
         {/* Pagination Controls */}
         {totalItems > 0 && (
-          <div className="glass-card rounded-2xl p-6 mt-6 border border-gray-800">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mt-6 border border-gray-200 shadow-sm">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               {/* Items per page selector */}
               <div className="flex items-center gap-3">
-                <span className="text-gray-400 text-sm">Items per page:</span>
+                <span className="text-gray-700 text-sm font-medium">Items per page:</span>
                 <select
                   value={itemsPerPage}
                   onChange={(e) => {
                     setItemsPerPage(Number(e.target.value));
-                    setCurrentPage(1); // Reset to first page when changing items per page
+                    setCurrentPage(1);
                   }}
-                  className="px-3 py-2 bg-gray-900/70 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+                  className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-800 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
                 >
-                  <option value={5} className="bg-gray-900">5</option>
-                  <option value={10} className="bg-gray-900">10</option>
-                  <option value={20} className="bg-gray-900">20</option>
-                  <option value={50} className="bg-gray-900">50</option>
+                  <option value={5} className="bg-white">5</option>
+                  <option value={10} className="bg-white">10</option>
+                  <option value={20} className="bg-white">20</option>
+                  <option value={50} className="bg-white">50</option>
                 </select>
-                <span className="text-gray-400 text-sm">
+                <span className="text-gray-600 text-sm">
                   Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} proposals
                 </span>
               </div>
@@ -843,7 +846,7 @@ const ProposalPage = () => {
                 <button
                   onClick={goToFirstPage}
                   disabled={currentPage === 1}
-                  className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                  className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                 >
                   <ChevronsLeft className="w-4 h-4" />
                 </button>
@@ -852,7 +855,7 @@ const ProposalPage = () => {
                 <button
                   onClick={goToPreviousPage}
                   disabled={currentPage === 1}
-                  className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                  className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
@@ -870,8 +873,8 @@ const ProposalPage = () => {
                         onClick={() => goToPage(pageNum)}
                         className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
                           currentPage === pageNum
-                            ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/20'
-                            : 'bg-gray-900/70 border border-gray-700 text-white hover:border-cyan-500/50 hover:bg-gray-800/50'
+                            ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-md shadow-indigo-500/20'
+                            : 'bg-white border border-gray-300 text-gray-700 hover:border-indigo-400 hover:bg-gray-50'
                         }`}
                       >
                         {pageNum}
@@ -884,7 +887,7 @@ const ProposalPage = () => {
                 <button
                   onClick={goToNextPage}
                   disabled={currentPage === totalPages}
-                  className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                  className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -893,7 +896,7 @@ const ProposalPage = () => {
                 <button
                   onClick={goToLastPage}
                   disabled={currentPage === totalPages}
-                  className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                  className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                 >
                   <ChevronsRight className="w-4 h-4" />
                 </button>
@@ -901,8 +904,8 @@ const ProposalPage = () => {
             </div>
 
             {/* Page info */}
-            <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-800">
-              <span className="text-sm text-gray-400">
+            <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-200">
+              <span className="text-sm text-gray-600 font-medium">
                 Page {currentPage} of {totalPages} • {totalItems} total proposals
               </span>
             </div>
@@ -911,10 +914,10 @@ const ProposalPage = () => {
 
         {/* Empty state when no proposals match filter */}
         {filteredProposals.length === 0 && (
-          <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
-            <Filter className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">No proposals found</h3>
-            <p className="text-gray-400 mb-6">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center border border-gray-200 shadow-sm">
+            <Filter className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">No proposals found</h3>
+            <p className="text-gray-600 mb-6">
               {statusFilter === "all"
                 ? "No proposals have been added yet. Click 'Add New Paper' to get started."
                 : `No ${statusFilter.toLowerCase()} proposals found. Try changing the filter or add new proposals.`}
@@ -922,7 +925,7 @@ const ProposalPage = () => {
             {statusFilter !== "all" && (
               <button
                 onClick={() => setStatusFilter("all")}
-                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
+                className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transition-all hover:scale-105 active:scale-95"
               >
                 Show All Proposals
               </button>
@@ -932,23 +935,23 @@ const ProposalPage = () => {
 
         {/* MODAL */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
-            <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-2xl w-full max-w-2xl border border-cyan-500/30 shadow-2xl shadow-cyan-500/10">
-              <div className="relative p-6 border-b border-gray-700">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-2xl w-full max-w-2xl border border-indigo-200 shadow-2xl shadow-indigo-500/10">
+              <div className="relative p-6 border-b border-gray-200">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <div className="p-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-purple-500/20 mr-4">
+                    <div className="p-3 rounded-xl bg-gradient-to-r from-indigo-100 to-blue-100 mr-4">
                       {editMode ? (
-                        <FileEdit className="w-8 h-8 text-white" />
+                        <FileEdit className="w-8 h-8 text-indigo-600" />
                       ) : (
-                        <Plus className="w-8 h-8 text-white" />
+                        <Plus className="w-8 h-8 text-indigo-600" />
                       )}
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-white">
+                      <h3 className="text-2xl font-bold text-gray-900">
                         {editMode ? "Edit Research Paper" : "Add New Research Paper"}
                       </h3>
-                      <p className="text-gray-400 mt-1">
+                      <p className="text-gray-600 mt-1">
                         {editMode
                           ? "Update the research paper details below"
                           : "Fill in the details to add a new research paper"}
@@ -957,9 +960,9 @@ const ProposalPage = () => {
                   </div>
                   <button
                     onClick={() => setIsModalOpen(false)}
-                    className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
+                    className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
                   >
-                    <X className="w-6 h-6 text-white hover:text-gray-300" />
+                    <X className="w-6 h-6 text-gray-700 hover:text-gray-900" />
                   </button>
                 </div>
               </div>
@@ -968,8 +971,8 @@ const ProposalPage = () => {
                 <div className="p-6 max-h-[70vh] overflow-y-auto">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="flex items-center text-sm font-medium text-white">
-                        <FileText className="w-4 h-4 mr-2 text-white" />
+                      <label className="flex items-center text-sm font-medium text-gray-800">
+                        <FileText className="w-4 h-4 mr-2 text-indigo-600" />
                         Paper Name
                       </label>
                       <div className="relative">
@@ -977,17 +980,17 @@ const ProposalPage = () => {
                           id="title"
                           value={newPaper.title}
                           onChange={handleInputChange}
-                          className="w-full px-4 pl-10 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                          className="w-full px-4 pl-10 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                           placeholder="Enter paper title"
                           required
                         />
-                        <FileText className="absolute left-3 top-3.5 w-4 h-4 text-white" />
+                        <FileText className="absolute left-3 top-3.5 w-4 h-4 text-gray-500" />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="flex items-center text-sm font-medium text-white">
-                        <User className="w-4 h-4 mr-2 text-white" />
+                      <label className="flex items-center text-sm font-medium text-gray-800">
+                        <User className="w-4 h-4 mr-2 text-indigo-600" />
                         Researcher
                       </label>
                       <div className="relative">
@@ -1000,32 +1003,32 @@ const ProposalPage = () => {
                             }))
                           }
                           required
-                          className="w-full px-4 pl-10 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white appearance-none focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                          className="w-full px-4 pl-10 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 appearance-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                         >
-                          <option value="" className="bg-gray-900">
+                          <option value="" className="bg-white">
                             Select researcher
                           </option>
-                          <optgroup label="Team lead">
-                            <option value={teamLeader.name} className="bg-gray-900">
+                          <optgroup label="Team lead" className="bg-white">
+                            <option value={teamLeader.name} className="bg-white">
                               {teamLeader.name} (Lead)
                             </option>
                           </optgroup>
-                          <optgroup label="Team Members">
+                          <optgroup label="Team Members" className="bg-white">
                             {teamMembers.map((m) => (
-                              <option key={m.id} value={m.name} className="bg-gray-900">
+                              <option key={m.id} value={m.name} className="bg-white">
                                 {m.name} ({m.role})
                               </option>
                             ))}
                           </optgroup>
                         </select>
-                        <User className="absolute left-3 top-3.5 w-4 h-4 text-white" />
-                        <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-white" />
+                        <User className="absolute left-3 top-3.5 w-4 h-4 text-gray-500" />
+                        <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-gray-500" />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="flex items-center text-sm font-medium text-white">
-                        <Calendar className="w-4 h-4 mr-2 text-white" />
+                      <label className="flex items-center text-sm font-medium text-gray-800">
+                        <Calendar className="w-4 h-4 mr-2 text-indigo-600" />
                         Start Date
                       </label>
                       <div className="relative">
@@ -1036,15 +1039,15 @@ const ProposalPage = () => {
                           value={newPaper.startDate}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 pl-10 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                          className="w-full px-4 pl-10 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                         />
-                        <Calendar className="absolute left-3 top-3.5 w-4 h-4 text-white" />
+                        <Calendar className="absolute left-3 top-3.5 w-4 h-4 text-gray-500" />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="flex items-center text-sm font-medium text-white">
-                        <CalendarDays className="w-4 h-4 mr-2 text-white" />
+                      <label className="flex items-center text-sm font-medium text-gray-800">
+                        <CalendarDays className="w-4 h-4 mr-2 text-indigo-600" />
                         End Date
                       </label>
                       <div className="relative">
@@ -1055,31 +1058,31 @@ const ProposalPage = () => {
                           value={newPaper.endDate}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 pl-10 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                          className="w-full px-4 pl-10 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                         />
-                        <CalendarDays className="absolute left-3 top-3.5 w-4 h-4 text-white" />
+                        <CalendarDays className="absolute left-3 top-3.5 w-4 h-4 text-gray-500" />
                       </div>
                       {newPaper.endDate && checkDeadlineStatus(newPaper.endDate) && (
                         <div
                           className={`mt-2 flex items-center text-sm px-3 py-2 rounded-lg ${
                             checkDeadlineStatus(newPaper.endDate).status === "overdue"
-                              ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                              ? "bg-red-100 text-red-700 border border-red-200"
                               : checkDeadlineStatus(newPaper.endDate).status === "today"
-                              ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                              ? "bg-red-100 text-red-700 border border-red-200"
                               : checkDeadlineStatus(newPaper.endDate).status === "approaching"
-                              ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
-                              : "bg-green-500/20 text-green-400 border border-green-500/30"
+                              ? "bg-amber-100 text-amber-700 border border-amber-200"
+                              : "bg-emerald-100 text-emerald-700 border border-emerald-200"
                           }`}
                         >
-                          <AlertTriangle className="w-4 h-4 mr-2 flex-shrink-0 text-white" />
+                          <AlertTriangle className="w-4 h-4 mr-2 flex-shrink-0" />
                           <span>{checkDeadlineStatus(newPaper.endDate).text}</span>
                         </div>
                       )}
                     </div>
 
                     <div className="md:col-span-2 space-y-3">
-                      <label className="flex items-center text-sm font-medium text-white">
-                        <CalendarClock className="w-4 h-4 mr-2 text-white" />
+                      <label className="flex items-center text-sm font-medium text-gray-800">
+                        <CalendarClock className="w-4 h-4 mr-2 text-indigo-600" />
                         Status
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -1099,12 +1102,14 @@ const ProposalPage = () => {
                                 }
                                 className={`flex items-center justify-center px-4 py-4 rounded-xl border transition-all ${
                                   newPaper.status === option.value
-                                    ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
-                                    : "bg-gray-900/70 border-gray-700 hover:border-gray-600"
+                                    ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
+                                    : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                                 }`}
                               >
-                                <Icon className="w-5 h-5 mr-3 text-white" />
-                                <span className="font-medium text-white">{option.label}</span>
+                                <Icon className={`w-5 h-5 mr-3 ${newPaper.status === option.value ? option.color : "text-gray-600"}`} />
+                                <span className={`font-medium ${newPaper.status === option.value ? option.color : "text-gray-700"}`}>
+                                  {option.label}
+                                </span>
                               </button>
                             );
                           })}
@@ -1112,15 +1117,15 @@ const ProposalPage = () => {
                     </div>
 
                     <div className="md:col-span-2 space-y-2">
-                      <label className="flex items-center text-sm font-medium text-white">
-                        <FileEdit className="w-4 h-4 mr-2 text-white" />
+                      <label className="flex items-center text-sm font-medium text-gray-800">
+                        <FileEdit className="w-4 h-4 mr-2 text-indigo-600" />
                         Paper Details
                       </label>
                       <textarea
                         id="details"
                         value={newPaper.details}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-gray-900/70 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                         rows={4}
                         placeholder="Enter paper description, objectives, methodology..."
                       ></textarea>
@@ -1128,12 +1133,12 @@ const ProposalPage = () => {
                   </div>
                 </div>
 
-                <div className="p-6 border-t border-gray-700 bg-gray-900/50 rounded-b-2xl">
+                <div className="p-6 border-t border-gray-200 bg-gray-50/50 rounded-b-2xl">
                   <div className="flex gap-4">
                     <button
                       type="button"
                       onClick={() => setIsModalOpen(false)}
-                      className="flex-1 px-6 py-3.5 border border-gray-700 text-white hover:text-gray-300 hover:border-gray-600 hover:bg-gray-800/50 rounded-xl font-medium transition-all flex items-center justify-center"
+                      className="flex-1 px-6 py-3.5 border border-gray-300 text-gray-700 hover:text-gray-900 hover:border-gray-400 hover:bg-gray-100 rounded-xl font-medium transition-all flex items-center justify-center"
                     >
                       Cancel
                     </button>
@@ -1141,7 +1146,7 @@ const ProposalPage = () => {
                     <button
                       type="submit"
                       disabled={isSaving}
-                      className="flex-1 px-6 py-3.5 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-indigo-500/25 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isSaving ? (
                         <span className="flex items-center">
@@ -1169,12 +1174,12 @@ const ProposalPage = () => {
                         </span>
                       ) : editMode ? (
                         <>
-                          <CheckCircle className="w-5 h-5 mr-2 text-white" />
+                          <CheckCircle className="w-5 h-5 mr-2" />
                           Update Paper
                         </>
                       ) : (
                         <>
-                          <Plus className="w-5 h-5 mr-2 text-white" />
+                          <Plus className="w-5 h-5 mr-2" />
                           Add Paper
                         </>
                       )}

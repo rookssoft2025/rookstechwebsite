@@ -47,7 +47,7 @@ import img5 from "../../assets/canute.jpg";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../../firebase";
 
-// SearchableDropdown Component
+// SearchableDropdown Component (Light Theme)
 const SearchableDropdown = ({ value, onChange, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -141,14 +141,14 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
           onFocus={() => setIsOpen(true)}
           placeholder={placeholder}
           required
-          className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+          className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
         />
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
           {value && (
             <button
               type="button"
               onClick={handleClear}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-500 hover:text-gray-800 transition-colors"
             >
               <X size={16} />
             </button>
@@ -156,7 +156,7 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-500 hover:text-gray-800 transition-colors"
           >
             <ChevronDown size={18} />
           </button>
@@ -164,16 +164,16 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
       </div>
 
       {isOpen && filteredOptions.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto">
-          <div className="p-2 border-b border-gray-800">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+          <div className="p-2 border-b border-gray-200">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Type to filter paper titles..."
-                className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/20 outline-none"
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none"
                 autoFocus
               />
             </div>
@@ -181,10 +181,10 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
           
           <div className="py-1">
             {isLoading ? (
-              <div className="px-4 py-3 text-center text-gray-400">Loading paper titles...</div>
+              <div className="px-4 py-3 text-center text-gray-600">Loading paper titles...</div>
             ) : (
               <>
-                <div className="px-4 py-2 text-xs text-gray-400 border-b border-gray-800">
+                <div className="px-4 py-2 text-xs text-gray-600 border-b border-gray-200">
                   {filteredOptions.length} paper{filteredOptions.length !== 1 ? 's' : ''} found (excluding completed papers)
                 </div>
                 {filteredOptions.map((option) => (
@@ -192,17 +192,17 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
                     key={option.id}
                     type="button"
                     onClick={() => handleSelect(option.title)}
-                    className="w-full text-left px-4 py-3 hover:bg-gray-800/50 transition-colors flex items-center justify-between"
+                    className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors flex items-center justify-between"
                   >
                     <div className="flex-1 min-w-0">
-                      <div className="text-white truncate">{option.title}</div>
+                      <div className="text-gray-800 truncate">{option.title}</div>
                     </div>
                     <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ml-2 ${
-                      option.status === 'completed' ? 'bg-green-400/10 text-green-400' : 
-                      option.status === 'reviewing' ? 'bg-yellow-400/10 text-yellow-400' :
-                      option.status === 'started' ? 'bg-blue-400/10 text-blue-400' :
-                      option.status === 'on-hold' ? 'bg-red-400/10 text-red-400' :
-                      'bg-gray-400/10 text-gray-400'
+                      option.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 
+                      option.status === 'reviewing' ? 'bg-amber-100 text-amber-700' :
+                      option.status === 'started' ? 'bg-blue-100 text-blue-700' :
+                      option.status === 'on-hold' ? 'bg-red-100 text-red-700' :
+                      'bg-gray-100 text-gray-700'
                     }`}>
                       {option.status}
                     </span>
@@ -215,10 +215,10 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
       )}
 
       {isOpen && !isLoading && searchTerm.length > 0 && filteredOptions.length === 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl shadow-lg p-4">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg p-4">
           <div className="text-center">
-            <FileText className="w-8 h-8 text-gray-600 mx-auto mb-2" />
-            <div className="text-gray-400">
+            <FileText className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+            <div className="text-gray-600">
               No research papers found starting with "{searchTerm}"
             </div>
             <div className="text-gray-500 text-xs mt-1">
@@ -304,12 +304,44 @@ const PaperWritingPage = () => {
     };
   }, []);
 
-  // Status options
+  // Status options (Light Theme)
   const statusOptions = [
-    { value: "Started", label: "Started", color: "text-blue-400", bg: "bg-blue-400/10", icon: Clock, count: 0 },
-    { value: "Reviewing", label: "Reviewing", color: "text-yellow-400", bg: "bg-yellow-400/10", icon: Eye, count: 0 },
-    { value: "Completed", label: "Completed", color: "text-green-400", bg: "bg-green-400/10", icon: CheckCircle, count: 0 },
-    { value: "On Hold", label: "On Hold", color: "text-red-400", bg: "bg-red-400/10", icon: AlertCircle, count: 0 },
+    { 
+      value: "Started", 
+      label: "Started", 
+      color: "text-blue-600", 
+      bg: "bg-blue-50",
+      border: "border-blue-200",
+      icon: Clock, 
+      count: 0 
+    },
+    { 
+      value: "Reviewing", 
+      label: "Reviewing", 
+      color: "text-amber-600", 
+      bg: "bg-amber-50",
+      border: "border-amber-200",
+      icon: Eye, 
+      count: 0 
+    },
+    { 
+      value: "Completed", 
+      label: "Completed", 
+      color: "text-emerald-600", 
+      bg: "bg-emerald-50",
+      border: "border-emerald-200",
+      icon: CheckCircle, 
+      count: 0 
+    },
+    { 
+      value: "On Hold", 
+      label: "On Hold", 
+      color: "text-red-600", 
+      bg: "bg-red-50",
+      border: "border-red-200",
+      icon: AlertCircle, 
+      count: 0 
+    },
   ];
 
   // Filter papers based on selected filter
@@ -381,7 +413,7 @@ const PaperWritingPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Get due status considering paper status
+  // Get due status considering paper status (Light Theme)
   const getDueStatus = (deadline, paperStatus) => {
     if (!deadline) return null;
     
@@ -398,33 +430,33 @@ const PaperWritingPage = () => {
       return {
         status: "overdue",
         label: "Overdue",
-        color: "text-red-400",
-        bg: "bg-red-400/10",
-        borderColor: "border-red-400/30",
+        color: "text-red-600",
+        bg: "bg-red-100",
+        borderColor: "border-red-300",
       };
     } else if (diffDays === 0) {
       return {
         status: "today",
         label: "Due Today",
-        color: "text-orange-400",
-        bg: "bg-orange-400/10",
-        borderColor: "border-orange-400/30",
+        color: "text-orange-600",
+        bg: "bg-orange-100",
+        borderColor: "border-orange-300",
       };
     } else if (diffDays <= 2) {
       return {
         status: "urgent",
         label: `Due in ${diffDays} day${diffDays === 1 ? "" : "s"}`,
-        color: "text-yellow-400",
-        bg: "bg-yellow-400/10",
-        borderColor: "border-yellow-400/30",
+        color: "text-amber-600",
+        bg: "bg-amber-100",
+        borderColor: "border-amber-300",
       };
     } else {
       return {
         status: "ontrack",
         label: `${diffDays} days remaining`,
-        color: "text-green-400",
-        bg: "bg-green-400/10",
-        borderColor: "border-green-400/30",
+        color: "text-emerald-600",
+        bg: "bg-emerald-100",
+        borderColor: "border-emerald-300",
       };
     }
   };
@@ -542,16 +574,6 @@ const PaperWritingPage = () => {
     });
   };
 
-  // Calculate days remaining
-  const calculateDaysRemaining = (deadline) => {
-    if (!deadline) return 0;
-    const today = new Date();
-    const deadlineDate = new Date(deadline);
-    const diffTime = deadlineDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
   // Enhanced logout function with Firebase
   const handleLogout = async () => {
     const confirmLogout = window.confirm("Are you sure you want to logout?");
@@ -602,6 +624,7 @@ const PaperWritingPage = () => {
     const PaperStatusIcon = paperStatusOption.icon;
     const paperStatusColor = paperStatusOption.color;
     const paperStatusBg = paperStatusOption.bg;
+    const paperStatusBorder = paperStatusOption.border;
 
     return {
       id: paper.id,
@@ -611,20 +634,20 @@ const PaperWritingPage = () => {
         const dueStatus = getDueStatus(paperData.deadline, paperData.status);
 
         return (
-          <tr key={paperData.id} className="border-b border-gray-800 hover:bg-gray-900/50 transition-colors">
+          <tr key={paperData.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
             <td className="py-4 px-4 text-center">
-              <div className="text-cyan-400 font-bold text-lg">
+              <div className="text-indigo-600 font-bold text-lg">
                 {globalIndex}
               </div>
             </td>
             <td className="py-4 px-4">
               <div className="flex items-center">
-                <FileText className="w-5 h-5 text-cyan-400 mr-3" />
+                <FileText className="w-5 h-5 text-indigo-600 mr-3" />
                 <div>
-                  <div className="text-white font-medium">
+                  <div className="text-gray-800 font-medium">
                     {paperData.title}
                   </div>
-                  <div className="text-gray-400 text-sm">
+                  <div className="text-gray-600 text-sm">
                     Started: {formatDate(paperData.startDate)}
                   </div>
                 </div>
@@ -640,12 +663,12 @@ const PaperWritingPage = () => {
                         "https://api.dicebear.com/7.x/avataaars/svg?seed=default"
                   }
                   alt={paperData.takenBy}
-                  className="w-8 h-8 rounded-full border border-cyan-500/50 mr-3"
+                  className="w-8 h-8 rounded-full border-2 border-indigo-300 mr-3"
                 />
                 <div>
-                  <div className="text-gray-300">{paperData.takenBy}</div>
+                  <div className="text-gray-700">{paperData.takenBy}</div>
                   {paperData.takenBy === leadResearcher.name && (
-                    <div className="text-xs flex items-center text-yellow-400">
+                    <div className="text-xs flex items-center text-amber-600">
                       Team Lead
                     </div>
                   )}
@@ -654,9 +677,9 @@ const PaperWritingPage = () => {
             </td>
             <td className="py-4 px-4">
               <div className="flex items-center">
-                <Calendar className="w-4 h-4 text-purple-400 mr-2" />
+                <Calendar className="w-4 h-4 text-purple-600 mr-2" />
                 <div>
-                  <div className="text-gray-300">
+                  <div className="text-gray-700">
                     {formatDate(paperData.deadline)}
                   </div>
                   {paperData.status === "Started" && dueStatus && (
@@ -668,7 +691,7 @@ const PaperWritingPage = () => {
               </div>
             </td>
             <td className="py-4 px-4">
-              <div className={`inline-flex items-center px-3 py-1 rounded-full ${paperStatusBg}`}>
+              <div className={`inline-flex items-center px-3 py-1 rounded-full ${paperStatusBg} border ${paperStatusBorder}`}>
                 <PaperStatusIcon className={`w-4 h-4 mr-2 ${paperStatusColor}`} />
                 <span className={`text-sm font-medium ${paperStatusColor}`}>
                   {paperData.status}
@@ -679,7 +702,7 @@ const PaperWritingPage = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => toggleRowExpansion(paper.id)}
-                  className="p-2 text-cyan-400 hover:text-cyan-300 transition-colors"
+                  className="p-2 text-indigo-600 hover:text-indigo-800 transition-colors"
                 >
                   {expandedRow === paper.id ? (
                     <ChevronUp size={18} />
@@ -689,13 +712,13 @@ const PaperWritingPage = () => {
                 </button>
                 <button
                   onClick={() => handleEdit(paper)}
-                  className="p-2 text-blue-400 hover:text-blue-300 transition-colors"
+                  className="p-2 text-blue-600 hover:text-blue-800 transition-colors"
                 >
                   <Edit size={18} />
                 </button>
                 <button
                   onClick={() => handleDelete(paper.id)}
-                  className="p-2 text-red-400 hover:text-red-300 transition-colors"
+                  className="p-2 text-red-600 hover:text-red-800 transition-colors"
                 >
                   <Trash2 size={18} />
                 </button>
@@ -705,27 +728,27 @@ const PaperWritingPage = () => {
         );
       },
       expandContent: (
-        <div className="glass-inner rounded-xl p-6 border border-gray-800">
+        <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
-              <h4 className="text-lg font-semibold text-white mb-4">
+              <h4 className="text-lg font-semibold text-gray-800 mb-4">
                 Paper Details
               </h4>
-              <p className="text-gray-300 mb-6 bg-gray-800/50 p-4 rounded-lg">
+              <p className="text-gray-700 mb-6 bg-white p-4 rounded-lg border border-gray-200">
                 {paper.details}
               </p>
             </div>
             <div>
-              <h4 className="text-lg font-semibold text-white mb-4">
+              <h4 className="text-lg font-semibold text-gray-800 mb-4">
                 Timeline & Progress
               </h4>
               <div className="space-y-4">
-                <div className="p-4 bg-gray-800/50 rounded-lg">
-                  <div className="text-sm text-gray-400 flex items-center mb-2">
-                    <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
+                <div className="p-4 bg-white rounded-lg border border-gray-200">
+                  <div className="text-sm text-gray-600 flex items-center mb-2">
+                    <Calendar className="w-4 h-4 mr-2 text-indigo-600" />
                     Start Date
                   </div>
-                  <div className="text-xl font-bold text-white">
+                  <div className="text-xl font-bold text-gray-800">
                     {formatDate(paper.startDate)}
                   </div>
                 </div>
@@ -734,14 +757,14 @@ const PaperWritingPage = () => {
                     const dueStatus = getDueStatus(paper.deadline, paper.status);
                     return dueStatus
                       ? `${dueStatus.bg} ${dueStatus.borderColor}`
-                      : "bg-gray-800/50 border-gray-700";
+                      : "bg-white border-gray-200";
                   })()}`}
                 >
-                  <div className="text-sm text-gray-400 flex items-center mb-2">
-                    <Calendar className="w-4 h-4 mr-2 text-purple-400" />
+                  <div className="text-sm text-gray-600 flex items-center mb-2">
+                    <Calendar className="w-4 h-4 mr-2 text-purple-600" />
                     Deadline
                   </div>
-                  <div className="text-xl font-bold text-white">
+                  <div className="text-xl font-bold text-gray-800">
                     {formatDate(paper.deadline)}
                   </div>
                   {paper.status === "Started" && (() => {
@@ -768,55 +791,55 @@ const PaperWritingPage = () => {
       onLogout={handleLogout}
       isLoading={isLoggingOut}
     >
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-4 md:p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
             Research Paper Writing 
           </h1>
-          <p className="text-gray-400 mt-2">
+          <p className="text-gray-600 mt-2">
             Manage your research papers, track progress, and collaborate with team members
           </p>
         </div>
 
         {/* Team Section */}
-        <div className="glass-card rounded-2xl p-6 mb-8 border border-gray-800">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <Users className="w-6 h-6 text-cyan-400 mr-3" />
-              <h2 className="text-xl font-semibold text-white">Writing Team</h2>
+              <Users className="w-6 h-6 text-indigo-600 mr-3" />
+              <h2 className="text-xl font-semibold text-gray-800">Writing Team</h2>
             </div>
-            <span className="text-cyan-300/70 text-sm">
+            <span className="text-indigo-500/70 text-sm font-medium">
               {1 + teamMembers.length} Members
             </span>
           </div>
 
           {/* Lead Researcher Card */}
           <div className="mb-6">
-            <h3 className="text-lg font-medium text-white mb-3 flex items-center">
+            <h3 className="text-lg font-medium text-gray-800 mb-3 flex items-center">
               Team Lead
             </h3>
-            <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-gray-900/50 to-yellow-900/20 transition-all duration-300">
+            <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 transition-all duration-300">
               <img
                 src={leadResearcher.image}
                 alt={leadResearcher.name}
-                className="w-12 h-12 rounded-full border-2 border-yellow-500/50"
+                className="w-12 h-12 rounded-full border-2 border-amber-400"
               />
               <div className="ml-4 flex-1">
                 <div className="flex items-center">
-                  <h3 className="text-lg font-medium text-white">
+                  <h3 className="text-lg font-semibold text-gray-800">
                     {leadResearcher.name}
                   </h3>
-                  <span className="ml-2 px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
+                  <span className="ml-2 px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
                     Lead
                   </span>
                 </div>
-                <p className="text-yellow-300/70 text-sm">
+                <p className="text-amber-600 text-sm">
                   {leadResearcher.role}
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-white font-semibold">
+                <div className="text-gray-800 font-semibold">
                   {papers.filter((p) => p.takenBy === leadResearcher.name).length} Papers
                 </div>
               </div>
@@ -825,27 +848,27 @@ const PaperWritingPage = () => {
 
           {/* Team Members Section */}
           <div>
-            <h3 className="text-lg font-medium text-white mb-3">Team Members</h3>
+            <h3 className="text-lg font-medium text-gray-800 mb-3">Team Members</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {teamMembers.map((member) => (
                 <div
                   key={member.id}
-                  className="flex items-center p-4 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-cyan-500/30 transition-all duration-300"
+                  className="flex items-center p-4 rounded-xl bg-white border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all duration-300"
                 >
                   <img
                     src={member.image}
                     alt={member.name}
-                    className="w-10 h-10 rounded-full border-2 border-cyan-500/50"
+                    className="w-10 h-10 rounded-full border-2 border-indigo-400"
                   />
                   <div className="ml-3 flex-1">
-                    <h3 className="text-white font-medium">{member.name}</h3>
-                    <p className="text-cyan-300/70 text-xs">{member.role}</p>
+                    <h3 className="text-gray-800 font-medium">{member.name}</h3>
+                    <p className="text-indigo-600 text-xs">{member.role}</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-white font-semibold text-sm">
+                    <div className="text-gray-800 font-semibold text-sm">
                       {papers.filter((p) => p.takenBy === member.name).length}
                     </div>
-                    <div className="text-gray-400 text-xs">Papers</div>
+                    <div className="text-gray-600 text-xs">Papers</div>
                   </div>
                 </div>
               ))}
@@ -854,13 +877,13 @@ const PaperWritingPage = () => {
         </div>
 
         {/* STATUS FILTER SECTION */}
-        <div className="glass-card rounded-2xl p-4 mb-6 border border-gray-800">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 mb-6 border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
-              <Filter className="w-5 h-5 text-cyan-400 mr-2" />
-              <h3 className="text-lg font-semibold text-white">Filter by Status</h3>
+              <Filter className="w-5 h-5 text-indigo-600 mr-2" />
+              <h3 className="text-lg font-semibold text-gray-800">Filter by Status</h3>
             </div>
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-gray-600 font-medium">
               Showing {statusFilter === null ? papers.length : papers.filter((p) => p.status === statusFilter).length} of {papers.length} papers
             </div>
           </div>
@@ -869,16 +892,16 @@ const PaperWritingPage = () => {
               onClick={() => setStatusFilter(null)}
               className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
                 statusFilter === null
-                  ? `bg-gray-400/10 border-cyan-500 shadow-lg shadow-cyan-500/20`
-                  : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                  ? `bg-gray-100 border-indigo-400 shadow-md shadow-indigo-500/10`
+                  : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
               }`}
             >
-              <Filter className={`w-5 h-5 mr-3 ${statusFilter === null ? "text-gray-400" : "text-gray-400"}`} />
-              <span className={`font-medium ${statusFilter === null ? "text-gray-400" : "text-gray-300"}`}>
+              <Filter className={`w-5 h-5 mr-3 ${statusFilter === null ? "text-gray-700" : "text-gray-500"}`} />
+              <span className={`font-medium ${statusFilter === null ? "text-gray-800" : "text-gray-600"}`}>
                 All Papers
               </span>
               <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                statusFilter === null ? "bg-gray-800 text-white" : "bg-gray-800/70 text-gray-400"
+                statusFilter === null ? "bg-gray-200 text-gray-800" : "bg-gray-100 text-gray-600"
               }`}>
                 {papers.length}
               </span>
@@ -895,16 +918,16 @@ const PaperWritingPage = () => {
                   onClick={() => setStatusFilter(option.value)}
                   className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
                     isActive
-                      ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
-                      : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                      ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
+                      : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                   }`}
                 >
-                  <Icon className={`w-5 h-5 mr-3 ${isActive ? option.color : "text-gray-400"}`} />
-                  <span className={`font-medium ${isActive ? option.color : "text-gray-300"}`}>
+                  <Icon className={`w-5 h-5 mr-3 ${isActive ? option.color : "text-gray-500"}`} />
+                  <span className={`font-medium ${isActive ? option.color : "text-gray-600"}`}>
                     {option.label}
                   </span>
                   <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                    isActive ? "bg-gray-800 text-white" : "bg-gray-800/70 text-gray-400"
+                    isActive ? "bg-gray-200 text-gray-800" : "bg-gray-100 text-gray-600"
                   }`}>
                     {count}
                   </span>
@@ -917,8 +940,8 @@ const PaperWritingPage = () => {
         {/* Add New Paper Button */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-white">Active Papers</h2>
-            <p className="text-gray-400 text-sm mt-1">
+            <h2 className="text-2xl font-bold text-gray-800">Active Papers</h2>
+            <p className="text-gray-600 text-sm mt-1">
               {statusFilter === null ? "Showing all papers" : `Showing ${statusFilter} papers only`}
             </p>
           </div>
@@ -935,7 +958,7 @@ const PaperWritingPage = () => {
               });
               setIsModalOpen(true);
             }}
-            className="flex items-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-cyan-500/25 hover:scale-[1.02]"
+            className="flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-blue-600 transition-all duration-300 shadow-md hover:shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30"
           >
             <Plus className="w-5 h-5 mr-2" />
             New Paper
@@ -955,25 +978,25 @@ const PaperWritingPage = () => {
 
             {/* Pagination Controls */}
             {totalItems > 0 && (
-              <div className="glass-card rounded-2xl p-6 mt-6 border border-gray-800">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mt-6 border border-gray-200 shadow-sm">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   {/* Items per page selector */}
                   <div className="flex items-center gap-3">
-                    <span className="text-gray-400 text-sm">Items per page:</span>
+                    <span className="text-gray-700 text-sm font-medium">Items per page:</span>
                     <select
                       value={itemsPerPage}
                       onChange={(e) => {
                         setItemsPerPage(Number(e.target.value));
                         setCurrentPage(1);
                       }}
-                      className="px-3 py-2 bg-gray-900/70 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+                      className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-800 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
                     >
-                      <option value={5} className="bg-gray-900">5</option>
-                      <option value={10} className="bg-gray-900">10</option>
-                      <option value={20} className="bg-gray-900">20</option>
-                      <option value={50} className="bg-gray-900">50</option>
+                      <option value={5} className="bg-white">5</option>
+                      <option value={10} className="bg-white">10</option>
+                      <option value={20} className="bg-white">20</option>
+                      <option value={50} className="bg-white">50</option>
                     </select>
-                    <span className="text-gray-400 text-sm">
+                    <span className="text-gray-600 text-sm">
                       Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} papers
                     </span>
                   </div>
@@ -984,7 +1007,7 @@ const PaperWritingPage = () => {
                     <button
                       onClick={goToFirstPage}
                       disabled={currentPage === 1}
-                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                      className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                     >
                       <ChevronsLeft className="w-4 h-4" />
                     </button>
@@ -993,7 +1016,7 @@ const PaperWritingPage = () => {
                     <button
                       onClick={goToPreviousPage}
                       disabled={currentPage === 1}
-                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                      className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
@@ -1011,8 +1034,8 @@ const PaperWritingPage = () => {
                             onClick={() => goToPage(pageNum)}
                             className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
                               currentPage === pageNum
-                                ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/20'
-                                : 'bg-gray-900/70 border border-gray-700 text-white hover:border-cyan-500/50 hover:bg-gray-800/50'
+                                ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-md shadow-indigo-500/20'
+                                : 'bg-white border border-gray-300 text-gray-700 hover:border-indigo-400 hover:bg-gray-50'
                             }`}
                           >
                             {pageNum}
@@ -1025,7 +1048,7 @@ const PaperWritingPage = () => {
                     <button
                       onClick={goToNextPage}
                       disabled={currentPage === totalPages}
-                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                      className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
@@ -1034,7 +1057,7 @@ const PaperWritingPage = () => {
                     <button
                       onClick={goToLastPage}
                       disabled={currentPage === totalPages}
-                      className="p-2 rounded-lg bg-gray-900/70 border border-gray-700 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-500/50 hover:bg-gray-800/50 transition-colors"
+                      className="p-2 rounded-lg bg-white border border-gray-300 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:border-indigo-400 hover:bg-gray-50 transition-colors"
                     >
                       <ChevronsRight className="w-4 h-4" />
                     </button>
@@ -1042,8 +1065,8 @@ const PaperWritingPage = () => {
                 </div>
 
                 {/* Page info */}
-                <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-800">
-                  <span className="text-sm text-gray-400">
+                <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-200">
+                  <span className="text-sm text-gray-600 font-medium">
                     Page {currentPage} of {totalPages} • {totalItems} total papers
                   </span>
                 </div>
@@ -1051,10 +1074,10 @@ const PaperWritingPage = () => {
             )}
           </>
         ) : (
-          <div className="glass-card rounded-2xl p-8 text-center border border-gray-800">
-            <Filter className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">No papers found</h3>
-            <p className="text-gray-400 mb-6">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center border border-gray-200 shadow-sm">
+            <Filter className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">No papers found</h3>
+            <p className="text-gray-600 mb-6">
               {statusFilter === null
                 ? "No papers have been added yet. Click 'New Paper' to get started."
                 : `No ${statusFilter.toLowerCase()} papers found. Try changing the filter or add new papers.`}
@@ -1062,7 +1085,7 @@ const PaperWritingPage = () => {
             {statusFilter !== "all" && statusFilter !== null && (
               <button
                 onClick={() => setStatusFilter(null)}
-                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
+                className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transition-all"
               >
                 Show All Papers
               </button>
@@ -1072,20 +1095,20 @@ const PaperWritingPage = () => {
 
         {/* Add/Edit Paper Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="glass-card rounded-2xl w-full max-w-2xl border border-gray-800 max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-2xl w-full max-w-2xl border border-gray-300 shadow-2xl max-h-[90vh] overflow-y-auto"
             >
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-bold text-white">
+                  <h3 className="text-2xl font-bold text-gray-900">
                     {editingPaper ? "Edit Paper" : "Add New Paper"}
                   </h3>
                   <button
                     onClick={() => setIsModalOpen(false)}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-600 hover:text-gray-900 transition-colors"
                   >
                     <X className="w-6 h-6" />
                   </button>
@@ -1094,7 +1117,7 @@ const PaperWritingPage = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">Paper Title</label>
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">Paper Title</label>
                       <SearchableDropdown
                         value={newPaper.title}
                         onChange={(value) => setNewPaper(prev => ({ ...prev, title: value }))}
@@ -1103,13 +1126,13 @@ const PaperWritingPage = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">Taken By</label>
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">Taken By</label>
                       <select
                         id="takenBy"
                         value={newPaper.takenBy}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
                       >
                         <option value="">Select researcher</option>
                         <optgroup label="Team lead">
@@ -1124,9 +1147,9 @@ const PaperWritingPage = () => {
                     </div>
 
                     <div className="relative">
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">Start Date</label>
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">Start Date</label>
                       <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-cyan-400 pointer-events-none" />
+                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-indigo-600 pointer-events-none" />
                         <input
                           type="date"
                           id="startDate"
@@ -1137,15 +1160,15 @@ const PaperWritingPage = () => {
                           onClick={() => startDateRef.current?.showPicker?.()}
                           onTouchStart={() => startDateRef.current?.showPicker?.()}
                           required
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
                     </div>
 
                     <div className="relative">
-                      <label className="block text-sm font-medium text-cyan-300 mb-2">Deadline</label>
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">Deadline</label>
                       <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none" />
+                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-600 pointer-events-none" />
                         <input
                           type="date"
                           id="deadline"
@@ -1155,14 +1178,14 @@ const PaperWritingPage = () => {
                           onFocus={() => deadlineRef.current?.showPicker?.()}
                           onClick={() => deadlineRef.current?.showPicker?.()}
                           onTouchStart={() => deadlineRef.current?.showPicker?.()}
-                          className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all appearance-none"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
                     </div>
                   </div>
 
                   <div className="mt-6">
-                    <label className="block text-sm font-medium text-cyan-300 mb-2">Status</label>
+                    <label className="block text-sm font-medium text-indigo-700 mb-2">Status</label>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                       {statusOptions.map((option) => {
                         const Icon = option.icon;
@@ -1173,12 +1196,12 @@ const PaperWritingPage = () => {
                             onClick={() => setNewPaper((prev) => ({ ...prev, status: option.value }))}
                             className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
                               newPaper.status === option.value
-                                ? `${option.bg} border-cyan-500/50 shadow-lg shadow-cyan-500/10`
-                                : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                                ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
+                                : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                             }`}
                           >
-                            <Icon className={`w-5 h-5 mb-1 ${newPaper.status === option.value ? option.color : "text-gray-400"}`} />
-                            <span className={`text-xs font-medium ${newPaper.status === option.value ? option.color : "text-gray-400"}`}>
+                            <Icon className={`w-5 h-5 mb-1 ${newPaper.status === option.value ? option.color : "text-gray-500"}`} />
+                            <span className={`text-xs font-medium ${newPaper.status === option.value ? option.color : "text-gray-600"}`}>
                               {option.label}
                             </span>
                           </button>
@@ -1188,14 +1211,14 @@ const PaperWritingPage = () => {
                   </div>
 
                   <div className="mt-6">
-                    <label className="block text-sm font-medium text-cyan-300 mb-2">Paper Details</label>
+                    <label className="block text-sm font-medium text-indigo-700 mb-2">Paper Details</label>
                     <textarea
                       id="details"
                       value={newPaper.details}
                       onChange={handleInputChange}
                       placeholder="Enter paper description and details..."
                       rows="3"
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
                     />
                   </div>
 
@@ -1203,14 +1226,14 @@ const PaperWritingPage = () => {
                     <button
                       type="button"
                       onClick={() => setIsModalOpen(false)}
-                      className="flex-1 px-6 py-3 border border-gray-700 text-gray-300 font-semibold rounded-xl hover:bg-gray-800/50 transition-all"
+                      className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={isSaving}
-                      className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-blue-600 transition-all shadow-md hover:shadow-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isSaving ? (
                         <span className="flex items-center">

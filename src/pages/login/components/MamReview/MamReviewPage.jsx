@@ -156,41 +156,46 @@ const MamReviewPage = () => {
     return "started";
   };
 
-  // Status options for filtering (base set)
+  // Status options for filtering (Light Theme)
   const baseStatusOptions = [
     {
       value: "all",
       label: "All",
-      color: "text-gray-400",
-      bg: "bg-gray-400/10",
+      color: "text-gray-600",
+      bg: "bg-gray-100",
+      border: "border-gray-200",
       icon: Filter,
     },
     {
       value: "started",
       label: "Started",
-      color: "text-blue-400",
-      bg: "bg-blue-400/10",
+      color: "text-blue-600",
+      bg: "bg-blue-50",
+      border: "border-blue-200",
       icon: Clock,
     },
     {
       value: "completed",
       label: "Completed",
-      color: "text-green-400",
-      bg: "bg-green-400/10",
+      color: "text-emerald-600",
+      bg: "bg-emerald-50",
+      border: "border-emerald-200",
       icon: CheckCircle,
     },
     {
       value: "on-hold",
       label: "On Hold",
-      color: "text-yellow-400",
-      bg: "bg-yellow-400/10",
+      color: "text-amber-600",
+      bg: "bg-amber-50",
+      border: "border-amber-200",
       icon: Clock,
     },
     {
       value: "review",
       label: "Review",
-      color: "text-purple-400",
-      bg: "bg-purple-400/10",
+      color: "text-purple-600",
+      bg: "bg-purple-50",
+      border: "border-purple-200",
       icon: Eye,
     },
   ];
@@ -199,8 +204,9 @@ const MamReviewPage = () => {
   const journalRejectedOption = {
     value: "rejected",
     label: "Rejected",
-    color: "text-red-400",
-    bg: "bg-red-400/10",
+    color: "text-red-600",
+    bg: "bg-red-50",
+    border: "border-red-200",
     icon: AlertCircle,
   };
 
@@ -454,18 +460,6 @@ const MamReviewPage = () => {
     };
   }, []);
 
-  // Coding Teams Data - Updated with results taken
-  const [codingTeams, setCodingTeams] = useState([]);
-
-  // Proposal Teams Data
-  const [proposalTeams, setProposalTeams] = useState([]);
-
-  // Journal Teams Data - Fixed: Added researcherId for Dr. Sarah Johnson
-  const [journalTeams, setJournalTeams] = useState([]);
-
-  // Writing Teams Data
-  const [writingTeams, setWritingTeams] = useState([]);
-
   // State for editing and filters per tab
   const [editingItem, setEditingItem] = useState(null);
   const [editForm, setEditForm] = useState({});
@@ -500,32 +494,16 @@ const MamReviewPage = () => {
     // Update the appropriate state based on type
     switch (editingItem.type) {
       case "coding":
-        setCodingTeams(
-          codingTeams.map((item) =>
-            item.id === editingItem.id ? { ...item, ...editForm } : item
-          )
-        );
+        // Update coding teams if they exist
         break;
       case "proposal":
-        setProposalTeams(
-          proposalTeams.map((item) =>
-            item.id === editingItem.id ? { ...item, ...editForm } : item
-          )
-        );
+        // Update proposal teams if they exist
         break;
       case "journal":
-        setJournalTeams(
-          journalTeams.map((item) =>
-            item.id === editingItem.id ? { ...item, ...editForm } : item
-          )
-        );
+        // Update journal teams if they exist
         break;
       case "writing":
-        setWritingTeams(
-          writingTeams.map((item) =>
-            item.id === editingItem.id ? { ...item, ...editForm } : item
-          )
-        );
+        // Update writing teams if they exist
         break;
     }
 
@@ -644,18 +622,18 @@ const MamReviewPage = () => {
       let icon, color, bgColor, typeLabel;
       if (type === "coding") {
         icon = FileCode;
-        color = "text-blue-400";
-        bgColor = "bg-blue-900/20";
+        color = "text-blue-600";
+        bgColor = "bg-blue-100";
         typeLabel = "Coding Project";
       } else if (type === "paper") {
         icon = Edit2;
-        color = "text-yellow-400";
-        bgColor = "bg-yellow-900/20";
+        color = "text-amber-600";
+        bgColor = "bg-amber-100";
         typeLabel = "Paper Writing";
       } else {
         icon = FileText;
-        color = "text-green-400";
-        bgColor = "bg-green-900/20";
+        color = "text-emerald-600";
+        bgColor = "bg-emerald-100";
         typeLabel = "Research Proposal";
       }
 
@@ -691,8 +669,8 @@ const MamReviewPage = () => {
         }}
         className={`p-4 rounded-xl border transition-all cursor-pointer ${
           isSelected
-            ? "bg-gradient-to-r from-cyan-900/20 to-purple-900/20 border-cyan-500/50 shadow-lg shadow-cyan-500/10"
-            : "bg-gray-900/50 border-gray-700 hover:border-gray-600 hover:bg-gray-800/50"
+            ? "bg-gradient-to-r from-indigo-50 to-blue-50 border-indigo-400 shadow-lg shadow-indigo-500/20"
+            : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-md"
         }`}
       >
         <div className="flex items-center">
@@ -700,7 +678,7 @@ const MamReviewPage = () => {
             <img
               src={employee.image}
               alt={employee.name}
-              className="w-12 h-12 rounded-full border-2 border-cyan-500/50 mr-4 object-cover"
+              className="w-12 h-12 rounded-full border-2 border-indigo-300 mr-4 object-cover"
             />
           ) : (
             <div
@@ -715,8 +693,8 @@ const MamReviewPage = () => {
             </div>
           )}
           <div className="flex-1">
-            <h4 className="font-semibold text-white">{employee.name}</h4>
-            <p className="text-sm text-gray-400">{employee.role}</p>
+            <h4 className="font-semibold text-gray-800">{employee.name}</h4>
+            <p className="text-sm text-gray-600">{employee.role}</p>
             <div className="flex items-center mt-2 text-xs text-gray-500">
               <Briefcase className="w-3 h-3 mr-1" />
               {employee.department}
@@ -724,8 +702,8 @@ const MamReviewPage = () => {
           </div>
           <div className="text-right">
             <div className="flex items-center justify-end">
-              <Target className="w-4 h-4 text-cyan-400 mr-2" />
-              <span className="text-sm font-semibold text-white">
+              <Target className="w-4 h-4 text-indigo-600 mr-2" />
+              <span className="text-sm font-semibold text-gray-800">
                 {memberCounts[employee.name]?.active ?? 0}
               </span>
             </div>
@@ -744,26 +722,26 @@ const MamReviewPage = () => {
     const StatusIcon = statusOption.icon;
 
     return (
-      <div className="glass-card rounded-xl p-4 border border-gray-800 hover:border-gray-700 transition-all">
+      <div className="bg-white rounded-xl p-4 border border-gray-200 hover:border-gray-300 transition-all shadow-sm hover:shadow-md">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-start">
             <div className={`p-2 rounded-lg ${work.bgColor} mr-3`}>
               <Icon className={`w-5 h-5 ${work.color}`} />
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-white">
+              <h4 className="font-semibold text-gray-800">
                 {work.projectTitle ||
                   work.title ||
                   work.paperTitle ||
                   work.document}
               </h4>
-              <span className="text-xs px-2 py-1 rounded-full bg-gray-800 text-gray-300">
+              <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">
                 {work.typeLabel}
               </span>
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <div className={`px-3 py-1 rounded-full ${statusOption.bg}`}>
+            <div className={`px-3 py-1 rounded-full ${statusOption.bg} border ${statusOption.border}`}>
               <div className="flex items-center">
                 <StatusIcon className={`w-3 h-3 mr-1 ${statusOption.color}`} />
                 <span className={`text-xs font-medium ${statusOption.color}`}>
@@ -773,7 +751,7 @@ const MamReviewPage = () => {
             </div>
             <button
               onClick={() => handleViewWorkDetails(work)}
-              className="p-1.5 text-gray-400 hover:text-cyan-400 transition-colors rounded-lg hover:bg-cyan-900/20"
+              className="p-1.5 text-gray-500 hover:text-indigo-600 transition-colors rounded-lg hover:bg-indigo-50"
               title="View Details"
             >
               <Eye className="w-4 h-4" />
@@ -781,7 +759,7 @@ const MamReviewPage = () => {
           </div>
         </div>
 
-        <div className="flex justify-between text-xs text-gray-400">
+        <div className="flex justify-between text-xs text-gray-600">
           <div className="flex items-center">
             <Calendar className="w-3 h-3 mr-1" />
             {formatDate(work.startDate || work.uploadedDate)}
@@ -806,11 +784,11 @@ const MamReviewPage = () => {
     const StatusIcon = statusOption.icon;
 
     return (
-      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="glass-card rounded-2xl w-full max-w-2xl border border-gray-800 max-h-[90vh] overflow-y-auto"
+          className="bg-white rounded-2xl w-full max-w-2xl border border-gray-300 shadow-2xl max-h-[90vh] overflow-y-auto"
         >
           <div className="p-6">
             {/* Modal Header */}
@@ -822,18 +800,18 @@ const MamReviewPage = () => {
                   <Icon className={`w-6 h-6 ${selectedWorkDetails.color}`} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white">
+                  <h3 className="text-2xl font-bold text-gray-900">
                     {selectedWorkDetails.projectTitle ||
                       selectedWorkDetails.title ||
                       selectedWorkDetails.paperTitle ||
                       selectedWorkDetails.document}
                   </h3>
                   <div className="flex items-center mt-2">
-                    <span className="px-3 py-1 rounded-full bg-gray-800 text-sm text-gray-300">
+                    <span className="px-3 py-1 rounded-full bg-gray-100 text-sm text-gray-700">
                       {selectedWorkDetails.typeLabel}
                     </span>
                     <div
-                      className={`ml-3 px-3 py-1 rounded-full ${statusOption.bg}`}
+                      className={`ml-3 px-3 py-1 rounded-full ${statusOption.bg} border ${statusOption.border}`}
                     >
                       <div className="flex items-center">
                         <StatusIcon
@@ -851,7 +829,7 @@ const MamReviewPage = () => {
               </div>
               <button
                 onClick={() => setIsWorkDetailsModalOpen(false)}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-600 hover:text-gray-900 transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -861,11 +839,11 @@ const MamReviewPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                    <User className="w-5 h-5 mr-2 text-cyan-400" />
+                  <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                    <User className="w-5 h-5 mr-2 text-indigo-600" />
                     Assigned To
                   </h4>
-                  <p className="text-white font-medium">
+                  <p className="text-gray-800 font-medium">
                     {selectedWorkDetails.takenBy ||
                       selectedWorkDetails.assignedTo ||
                       selectedWorkDetails.researcher ||
@@ -874,14 +852,14 @@ const MamReviewPage = () => {
                 </div>
 
                 <div>
-                  <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                    <Calendar className="w-5 h-5 mr-2 text-cyan-400" />
+                  <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                    <Calendar className="w-5 h-5 mr-2 text-indigo-600" />
                     Timeline
                   </h4>
                   <div className="space-y-3">
                     <div>
-                      <span className="text-sm text-gray-400">Start Date:</span>
-                      <p className="text-white font-medium">
+                      <span className="text-sm text-gray-600">Start Date:</span>
+                      <p className="text-gray-800 font-medium">
                         {formatDate(
                           selectedWorkDetails.startDate ||
                             selectedWorkDetails.uploadedDate
@@ -889,14 +867,14 @@ const MamReviewPage = () => {
                       </p>
                     </div>
                     <div>
-                      <span className="text-sm text-gray-400">
+                      <span className="text-sm text-gray-600">
                         {selectedWorkDetails.type === "proposal"
                           ? "End Date"
                           : selectedWorkDetails.type === "journal"
                           ? "Review Date"
                           : "Deadline"}
                       </span>
-                      <p className="text-white font-medium">
+                      <p className="text-gray-800 font-medium">
                         {formatDate(
                           selectedWorkDetails.deadline ||
                             selectedWorkDetails.dateOfReview ||
@@ -912,28 +890,28 @@ const MamReviewPage = () => {
               <div className="space-y-4">
                 {selectedWorkDetails.type === "coding" && (
                   <div>
-                    <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                      <BarChart className="w-5 h-5 mr-2 text-blue-400" />
+                    <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                      <BarChart className="w-5 h-5 mr-2 text-blue-600" />
                       Project Metrics
                     </h4>
                     <div className="grid grid-cols-3 gap-3">
-                      <div className="p-3 bg-blue-900/20 rounded-lg">
-                        <div className="text-sm text-blue-400">
+                      <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="text-sm text-blue-600">
                           Results Taken
                         </div>
-                        <div className="text-xl font-bold text-white">
+                        <div className="text-xl font-bold text-gray-800">
                           {selectedWorkDetails.resultsTaken || 0}
                         </div>
                       </div>
-                      <div className="p-3 bg-gray-900/50 rounded-lg">
-                        <div className="text-sm text-gray-400">Test Cases</div>
-                        <div className="text-xl font-bold text-white">
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <div className="text-sm text-gray-600">Test Cases</div>
+                        <div className="text-xl font-bold text-gray-800">
                           {selectedWorkDetails.testCases || 0}
                         </div>
                       </div>
-                      <div className="p-3 bg-gray-900/50 rounded-lg">
-                        <div className="text-sm text-gray-400">Features</div>
-                        <div className="text-xl font-bold text-white">
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <div className="text-sm text-gray-600">Features</div>
+                        <div className="text-xl font-bold text-gray-800">
                           {selectedWorkDetails.featuresImplemented || 0}
                         </div>
                       </div>
@@ -944,25 +922,25 @@ const MamReviewPage = () => {
                 {selectedWorkDetails.type === "journal" &&
                   selectedWorkDetails.journal && (
                     <div>
-                      <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                        <BookOpen className="w-5 h-5 mr-2 text-purple-400" />
+                      <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                        <BookOpen className="w-5 h-5 mr-2 text-purple-600" />
                         Journal Details
                       </h4>
                       <div className="space-y-2">
                         <div>
-                          <span className="text-sm text-gray-400">
+                          <span className="text-sm text-gray-600">
                             Journal:
                           </span>
-                          <p className="text-white font-medium">
+                          <p className="text-gray-800 font-medium">
                             {selectedWorkDetails.journal}
                           </p>
                         </div>
                         {selectedWorkDetails.impactFactor && (
                           <div>
-                            <span className="text-sm text-gray-400">
+                            <span className="text-sm text-gray-600">
                               Impact Factor:
                             </span>
-                            <p className="text-white font-medium">
+                            <p className="text-gray-800 font-medium">
                               {selectedWorkDetails.impactFactor}
                             </p>
                           </div>
@@ -974,16 +952,16 @@ const MamReviewPage = () => {
                 {selectedWorkDetails.type === "writing" &&
                   selectedWorkDetails.wordCount && (
                     <div>
-                      <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                        <Edit2 className="w-5 h-5 mr-2 text-yellow-400" />
+                      <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                        <Edit2 className="w-5 h-5 mr-2 text-amber-600" />
                         Document Details
                       </h4>
                       <div className="space-y-2">
                         <div>
-                          <span className="text-sm text-gray-400">
+                          <span className="text-sm text-gray-600">
                             Word Count:
                           </span>
-                          <p className="text-white font-medium">
+                          <p className="text-gray-800 font-medium">
                             {selectedWorkDetails.wordCount}
                           </p>
                         </div>
@@ -995,25 +973,25 @@ const MamReviewPage = () => {
 
             {/* Description Section */}
             <div className="mb-8">
-              <h4 className="text-lg font-semibold text-white mb-3">
+              <h4 className="text-lg font-semibold text-gray-800 mb-3">
                 Description
               </h4>
-              <div className="p-4 bg-gray-800/50 rounded-lg">
-                <p className="text-gray-300">{selectedWorkDetails.details}</p>
+              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <p className="text-gray-700">{selectedWorkDetails.details}</p>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-4 pt-6 border-t border-gray-800">
+            <div className="flex gap-4 pt-6 border-t border-gray-200">
               <button
                 onClick={() => setIsWorkDetailsModalOpen(false)}
-                className="flex-1 px-6 py-3 border border-gray-700 text-gray-300 font-semibold rounded-xl hover:bg-gray-800/50 transition-all"
+                className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all"
               >
                 Close
               </button>
               <button
                 onClick={handleEditFromDetails}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all flex items-center justify-center"
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-blue-600 transition-all flex items-center justify-center"
               >
                 <Edit2 size={20} className="mr-2" />
                 Edit Details
@@ -1030,11 +1008,11 @@ const MamReviewPage = () => {
     if (!selectedEmployee) return null;
 
     return (
-      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="glass-card rounded-2xl w-full max-w-3xl border border-gray-800 max-h-[90vh] overflow-y-auto"
+          className="bg-white rounded-2xl w-full max-w-3xl border border-gray-300 shadow-2xl max-h-[90vh] overflow-y-auto"
         >
           <div className="p-8">
             {/* Modal Header */}
@@ -1044,7 +1022,7 @@ const MamReviewPage = () => {
                   <img
                     src={selectedEmployee.image}
                     alt={selectedEmployee.name}
-                    className="w-20 h-20 rounded-full border-3 border-cyan-500/50 mr-6 object-cover"
+                    className="w-20 h-20 rounded-full border-3 border-indigo-300 mr-6 object-cover"
                   />
                 ) : (
                   <div
@@ -1059,14 +1037,14 @@ const MamReviewPage = () => {
                   </div>
                 )}
                 <div>
-                  <h2 className="text-3xl font-bold text-white">
+                  <h2 className="text-3xl font-bold text-gray-900">
                     {selectedEmployee.name}
                   </h2>
                   <div className="flex items-center mt-3 space-x-3">
-                    <span className="px-4 py-2 bg-cyan-900/30 text-cyan-400 rounded-full text-sm font-medium">
+                    <span className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium">
                       {selectedEmployee.role}
                     </span>
-                    <span className="px-4 py-2 bg-purple-900/30 text-purple-400 rounded-full text-sm font-medium">
+                    <span className="px-4 py-2 bg-purple-50 text-purple-700 rounded-full text-sm font-medium">
                       {selectedEmployee.department}
                     </span>
                   </div>
@@ -1074,29 +1052,29 @@ const MamReviewPage = () => {
               </div>
               <button
                 onClick={() => setIsEmployeeModalOpen(false)}
-                className="text-gray-400 hover:text-white transition-colors p-2"
+                className="text-gray-600 hover:text-gray-900 transition-colors p-2"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
 
             {/* Statistics */}
-            <div className="grid grid-cols-3 gap-3 mb-8 pb-8 border-b border-gray-700">
-              <div className="p-4 bg-gray-900/50 rounded-lg border border-gray-700">
-                <div className="text-sm text-gray-400 mb-2">Total Works</div>
-                <div className="text-3xl font-bold text-white">
+            <div className="grid grid-cols-3 gap-3 mb-8 pb-8 border-b border-gray-200">
+              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="text-sm text-gray-600 mb-2">Total Works</div>
+                <div className="text-3xl font-bold text-gray-800">
                   {memberCounts[selectedEmployee.name]?.total ?? 0}
                 </div>
               </div>
-              <div className="p-4 bg-cyan-900/20 rounded-lg border border-cyan-700/30">
-                <div className="text-sm text-cyan-400 mb-2">Active</div>
-                <div className="text-3xl font-bold text-cyan-400">
+              <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                <div className="text-sm text-indigo-700 mb-2">Active</div>
+                <div className="text-3xl font-bold text-indigo-700">
                   {memberCounts[selectedEmployee.name]?.active ?? 0}
                 </div>
               </div>
-              <div className="p-4 bg-green-900/20 rounded-lg border border-green-700/30">
-                <div className="text-sm text-green-400 mb-2">Completed</div>
-                <div className="text-3xl font-bold text-green-400">
+              <div className="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                <div className="text-sm text-emerald-700 mb-2">Completed</div>
+                <div className="text-3xl font-bold text-emerald-700">
                   {memberCounts[selectedEmployee.name]?.completed ?? 0}
                 </div>
               </div>
@@ -1104,15 +1082,15 @@ const MamReviewPage = () => {
 
             {/* Current Works Section */}
             <div className="mb-8">
-              <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
-                <Briefcase className="w-6 h-6 mr-3 text-cyan-400" />
+              <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <Briefcase className="w-6 h-6 mr-3 text-indigo-600" />
                 Current Works
               </h3>
 
               {memberLoading ? (
-                <div className="text-center py-12 bg-gray-900/30 rounded-xl border border-gray-800">
-                  <Briefcase className="w-12 h-12 text-gray-600 mx-auto mb-3 animate-pulse" />
-                  <p className="text-gray-400">Loading tasks...</p>
+                <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
+                  <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-3 animate-pulse" />
+                  <p className="text-gray-600">Loading tasks...</p>
                 </div>
               ) : getEmployeeCurrentWorks.length > 0 ? (
                 <div className="space-y-4">
@@ -1126,7 +1104,7 @@ const MamReviewPage = () => {
                     return (
                       <div
                         key={index}
-                        className="p-4 bg-gray-900/30 rounded-lg border border-gray-700 hover:border-cyan-500/30 transition-all"
+                        className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-indigo-300 transition-all"
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-start">
@@ -1136,19 +1114,19 @@ const MamReviewPage = () => {
                               <Icon className={`w-5 h-5 ${work.color}`} />
                             </div>
                             <div>
-                              <h4 className="font-semibold text-white">
+                              <h4 className="font-semibold text-gray-800">
                                 {work.projectTitle ||
                                   work.title ||
                                   work.paperTitle ||
                                   work.document}
                               </h4>
-                              <span className="text-xs text-gray-400 mt-1 inline-block">
+                              <span className="text-xs text-gray-600 mt-1 inline-block">
                                 {work.typeLabel}
                               </span>
                             </div>
                           </div>
                           <div
-                            className={`px-3 py-1 rounded-full ${statusOption.bg}`}
+                            className={`px-3 py-1 rounded-full ${statusOption.bg} border ${statusOption.border}`}
                           >
                             <div className="flex items-center">
                               <StatusIcon
@@ -1164,7 +1142,7 @@ const MamReviewPage = () => {
                         </div>
 
                         <div className="ml-10">
-                          <div className="flex justify-between text-xs text-gray-400">
+                          <div className="flex justify-between text-xs text-gray-600">
                             <div>
                               Start:{" "}
                               {formatDate(work.startDate || work.uploadedDate)}
@@ -1184,12 +1162,12 @@ const MamReviewPage = () => {
                   })}
                 </div>
               ) : (
-                <div className="text-center py-12 bg-gray-900/30 rounded-xl border border-gray-800">
-                  <Briefcase className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                  <h4 className="text-lg font-semibold text-white mb-2">
+                <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
+                  <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <h4 className="text-lg font-semibold text-gray-800 mb-2">
                     No Current Works
                   </h4>
-                  <p className="text-gray-400">
+                  <p className="text-gray-600">
                     This employee has no active projects or assignments.
                   </p>
                 </div>
@@ -1197,10 +1175,10 @@ const MamReviewPage = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-4 pt-6 border-t border-gray-800">
+            <div className="flex gap-4 pt-6 border-t border-gray-200">
               <button
                 onClick={() => setIsEmployeeModalOpen(false)}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-700 transition-all"
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-blue-600 transition-all"
               >
                 Close
               </button>
@@ -1211,7 +1189,7 @@ const MamReviewPage = () => {
     );
   };
 
-  // Render team card component - PROGRESS BAR REMOVED
+  // Render team card component
   const TeamCard = ({ team, type }) => {
     const isExpanded = expandedItems[`${type}-${team.id}`];
 
@@ -1225,37 +1203,42 @@ const MamReviewPage = () => {
         case "coding":
           return {
             icon: FileCode,
-            color: "bg-blue-900/20",
-            textColor: "text-blue-400",
+            color: "bg-blue-50",
+            textColor: "text-blue-600",
+            border: "border-blue-200",
           };
         case "journal":
           return {
             icon: BookOpen,
-            color: "bg-purple-900/20",
-            textColor: "text-purple-400",
+            color: "bg-purple-50",
+            textColor: "text-purple-600",
+            border: "border-purple-200",
           };
         case "paper":
           return {
             icon: Edit2,
-            color: "bg-yellow-900/20",
-            textColor: "text-yellow-400",
+            color: "bg-amber-50",
+            textColor: "text-amber-600",
+            border: "border-amber-200",
           };
         case "proposal":
           return {
             icon: FileText,
-            color: "bg-green-900/20",
-            textColor: "text-green-400",
+            color: "bg-emerald-50",
+            textColor: "text-emerald-600",
+            border: "border-emerald-200",
           };
         default:
           return {
             icon: Users,
-            color: "bg-gray-900/20",
-            textColor: "text-gray-400",
+            color: "bg-gray-50",
+            textColor: "text-gray-600",
+            border: "border-gray-200",
           };
       }
     };
 
-    const { icon: Icon, color: iconColor, textColor } = getTeamTypeConfig();
+    const { icon: Icon, color: iconColor, textColor, border } = getTeamTypeConfig();
 
     // Calculate days remaining
     const calculateDaysRemaining = () => {
@@ -1277,22 +1260,22 @@ const MamReviewPage = () => {
     const daysRemainingText = calculateDaysRemaining();
 
     return (
-      <div className="glass-card rounded-2xl p-6 mb-6 border border-gray-800 hover:border-cyan-500/30 transition-all duration-300">
+      <div className="bg-white rounded-2xl p-6 mb-6 border border-gray-200 hover:border-indigo-300 shadow-sm hover:shadow-md transition-all duration-300">
         {/* Header */}
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-start">
-            <div className={`p-3 rounded-xl ${iconColor} mr-4`}>
+            <div className={`p-3 rounded-xl ${iconColor} ${border} mr-4`}>
               <Icon className={`w-6 h-6 ${textColor}`} />
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-white">
+              <h3 className="text-xl font-bold text-gray-800">
                 {team.projectTitle ||
                   team.title ||
                   team.paperTitle ||
                   team.document}
               </h3>
               <div className="flex flex-wrap gap-4 mt-2">
-                <div className="flex items-center text-sm text-gray-400">
+                <div className="flex items-center text-sm text-gray-600">
                   <User className="w-4 h-4 mr-2" />
                   {`Taken By: ${
                     team.takenBy ||
@@ -1303,7 +1286,7 @@ const MamReviewPage = () => {
                   }`}
                 </div>
                 {type === "coding" && team.resultsTaken !== undefined && (
-                  <div className="flex items-center text-sm text-gray-400">
+                  <div className="flex items-center text-sm text-gray-600">
                     <BarChart className="w-4 h-4 mr-2" />
                     Results Taken: {team.resultsTaken || 0}
                   </div>
@@ -1313,7 +1296,7 @@ const MamReviewPage = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <div className={`px-4 py-2 rounded-full ${statusOption.bg}`}>
+            <div className={`px-4 py-2 rounded-full ${statusOption.bg} border ${statusOption.border}`}>
               <div className="flex items-center">
                 <StatusIcon className={`w-4 h-4 mr-2 ${statusOption.color}`} />
                 <span className={`text-sm font-medium ${statusOption.color}`}>
@@ -1323,68 +1306,68 @@ const MamReviewPage = () => {
             </div>
             <button
               onClick={() => toggleExpansion(type, team.id)}
-              className="p-2 text-cyan-400 hover:text-cyan-300 transition-colors rounded-lg hover:bg-cyan-900/20"
+              className="p-2 text-indigo-600 hover:text-indigo-800 transition-colors rounded-lg hover:bg-indigo-50"
             >
               {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </button>
           </div>
         </div>
 
-        {/* Timeline Section - Like in the image */}
+        {/* Timeline Section */}
         <div className="mb-6">
-          <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-            <Calendar className="w-5 h-5 mr-2 text-cyan-400" />
+          <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+            <Calendar className="w-5 h-5 mr-2 text-indigo-600" />
             Project Timeline
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-3 bg-gray-900/50 rounded-lg">
-              <div className="text-sm text-gray-400 flex items-center">
-                <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
+            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="text-sm text-gray-600 flex items-center">
+                <Calendar className="w-4 h-4 mr-2 text-indigo-600" />
                 Start Date
               </div>
-              <div className="text-xl font-bold text-white mt-2">
+              <div className="text-xl font-bold text-gray-800 mt-2">
                 {formatDate(team.startDate || team.uploadedDate)}
               </div>
             </div>
 
-            <div className="p-3 bg-gray-900/50 rounded-lg">
-              <div className="text-sm text-gray-400 flex items-center">
-                <Calendar className="w-4 h-4 mr-2 text-purple-400" />
+            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="text-sm text-gray-600 flex items-center">
+                <Calendar className="w-4 h-4 mr-2 text-purple-600" />
                 {type === "proposal"
                   ? "End Date"
                   : type === "journal"
                   ? "Review Date"
                   : "Deadline"}
               </div>
-              <div className="text-xl font-bold text-white mt-2">
+              <div className="text-xl font-bold text-gray-800 mt-2">
                 {formatDate(team.deadline || team.dateOfReview || team.endDate)}
               </div>
             </div>
 
-            <div className="p-3 bg-cyan-900/20 rounded-lg">
-              <div className="text-sm text-cyan-400 flex items-center">
+            <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+              <div className="text-sm text-indigo-700 flex items-center">
                 <Clock className="w-4 h-4 mr-2" />
                 Time Remaining
               </div>
-              <div className="text-xl font-bold text-cyan-400 mt-2">
+              <div className="text-xl font-bold text-indigo-700 mt-2">
                 {daysRemainingText}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Expanded Content - Show paper details, start date, deadline like in image */}
+        {/* Expanded Content */}
         {isExpanded && (
-          <div className="mt-6 pt-6 border-t border-gray-800">
+          <div className="mt-6 pt-6 border-t border-gray-200">
             <div className="space-y-6">
-              {/* Project Details Section - Main content like in image */}
+              {/* Project Details Section */}
               <div>
-                <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                  <FileText className="w-5 h-5 mr-2 text-cyan-400" />
+                <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                  <FileText className="w-5 h-5 mr-2 text-indigo-600" />
                   Project Details
                 </h4>
-                <div className="p-4 bg-gray-800/50 rounded-lg">
-                  <p className="text-gray-300">
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <p className="text-gray-700">
                     {team.details || "No details provided."}
                   </p>
                 </div>
@@ -1395,26 +1378,26 @@ const MamReviewPage = () => {
                 {/* Type-specific Information */}
                 {type === "coding" && (
                   <div>
-                    <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                      <BarChart className="w-5 h-5 mr-2 text-blue-400" />
+                    <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                      <BarChart className="w-5 h-5 mr-2 text-blue-600" />
                       Project Statistics
                     </h4>
                     <div className="space-y-3">
-                      <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
-                        <span className="text-gray-400">Results Taken</span>
-                        <span className="text-white font-bold">
+                      <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <span className="text-gray-600">Results Taken</span>
+                        <span className="text-gray-800 font-bold">
                           {team.resultsTaken || 0}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
-                        <span className="text-gray-400">Test Cases</span>
-                        <span className="text-white font-bold">
+                      <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <span className="text-gray-600">Test Cases</span>
+                        <span className="text-gray-800 font-bold">
                           {team.testCases || 0}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
-                        <span className="text-gray-400">Features</span>
-                        <span className="text-white font-bold">
+                      <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <span className="text-gray-600">Features</span>
+                        <span className="text-gray-800 font-bold">
                           {team.featuresImplemented || 0}
                         </span>
                       </div>
@@ -1424,23 +1407,23 @@ const MamReviewPage = () => {
 
                 {type === "journal" && (
                   <div>
-                    <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                      <BookOpen className="w-5 h-5 mr-2 text-purple-400" />
+                    <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                      <BookOpen className="w-5 h-5 mr-2 text-purple-600" />
                       Journal Information
                     </h4>
                     <div className="space-y-3">
                       {team.journal && (
-                        <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
-                          <span className="text-gray-400">Journal</span>
-                          <span className="text-white font-bold">
+                        <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                          <span className="text-gray-600">Journal</span>
+                          <span className="text-gray-800 font-bold">
                             {team.journal}
                           </span>
                         </div>
                       )}
                       {team.impactFactor && (
-                        <div className="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg">
-                          <span className="text-gray-400">Impact Factor</span>
-                          <span className="text-white font-bold">
+                        <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                          <span className="text-gray-600">Impact Factor</span>
+                          <span className="text-gray-800 font-bold">
                             {team.impactFactor}
                           </span>
                         </div>
@@ -1451,25 +1434,25 @@ const MamReviewPage = () => {
 
                 {/* Timeline Details (Expanded version) */}
                 <div>
-                  <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                    <Calendar className="w-5 h-5 mr-2 text-green-400" />
+                  <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                    <Calendar className="w-5 h-5 mr-2 text-emerald-600" />
                     Timeline Details
                   </h4>
                   <div className="space-y-3">
-                    <div className="p-3 bg-gray-900/50 rounded-lg">
-                      <div className="text-sm text-gray-400 mb-2">
+                    <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="text-sm text-gray-600 mb-2">
                         Start Date
                       </div>
                       <div className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
-                        <span className="text-white font-bold">
+                        <Calendar className="w-4 h-4 mr-2 text-indigo-600" />
+                        <span className="text-gray-800 font-bold">
                           {formatDate(team.startDate || team.uploadedDate)}
                         </span>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-gray-900/50 rounded-lg">
-                      <div className="text-sm text-gray-400 mb-2">
+                    <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="text-sm text-gray-600 mb-2">
                         {type === "proposal"
                           ? "End Date"
                           : type === "journal"
@@ -1477,8 +1460,8 @@ const MamReviewPage = () => {
                           : "Deadline"}
                       </div>
                       <div className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-2 text-purple-400" />
-                        <span className="text-white font-bold">
+                        <Calendar className="w-4 h-4 mr-2 text-purple-600" />
+                        <span className="text-gray-800 font-bold">
                           {formatDate(
                             team.deadline || team.dateOfReview || team.endDate
                           )}
@@ -1486,13 +1469,13 @@ const MamReviewPage = () => {
                       </div>
                     </div>
 
-                    <div className="p-3 bg-cyan-900/20 rounded-lg">
-                      <div className="text-sm text-cyan-400 mb-2">
+                    <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+                      <div className="text-sm text-indigo-700 mb-2">
                         Time Remaining
                       </div>
                       <div className="flex items-center">
                         <Clock className="w-4 h-4 mr-2" />
-                        <span className="text-cyan-400 font-bold">
+                        <span className="text-indigo-700 font-bold">
                           {daysRemainingText}
                         </span>
                       </div>
@@ -1504,15 +1487,15 @@ const MamReviewPage = () => {
               {/* Team Members Section */}
               {team.members && team.members.length > 0 && (
                 <div>
-                  <h4 className="text-lg font-semibold text-white mb-3 flex items-center">
-                    <Users className="w-5 h-5 mr-2 text-cyan-400" />
+                  <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                    <Users className="w-5 h-5 mr-2 text-indigo-600" />
                     Team Members
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {team.members.map((member, index) => (
                       <span
                         key={index}
-                        className="px-3 py-1 bg-cyan-900/20 text-cyan-400 rounded-full text-sm"
+                        className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm"
                       >
                         {member}
                       </span>
@@ -1527,7 +1510,7 @@ const MamReviewPage = () => {
     );
   };
 
-  // Tab configurations for content tabs (computed from teamData so counts stay in sync)
+  // Tab configurations for content tabs
   const tabs = useMemo(
     () => [
       {
@@ -1563,26 +1546,25 @@ const MamReviewPage = () => {
       activeTab={sidebarTab}
       setActiveTab={setSidebarTab}
       onLogout={handleLogout}
-      isLoading={isLoggingOut} // Pass logout loading state to layout
+      isLoading={isLoggingOut}
     >
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 md:p-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-4 md:p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
             Manager Review Dashboard
           </h1>
-          <p className="text-gray-400 mt-2">
-            Review and manage all team works - Coding, Proposals, Journals, and
-            Writing
+          <p className="text-gray-600 mt-2">
+            Review and manage all team works - Coding, Proposals, Journals, and Writing
           </p>
         </div>
 
         {/* Current Works Section */}
-        <div className="glass-card rounded-2xl p-6 mb-8 border border-gray-800">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <Briefcase className="w-6 h-6 text-cyan-400 mr-3" />
-              <h2 className="text-xl font-semibold text-white">
+              <Briefcase className="w-6 h-6 text-indigo-600 mr-3" />
+              <h2 className="text-xl font-semibold text-gray-800">
                 Current Works by Employee
               </h2>
             </div>
@@ -1597,7 +1579,7 @@ const MamReviewPage = () => {
                   value={employeeSearch}
                   onChange={(e) => setEmployeeSearch(e.target.value)}
                   placeholder="Search employees by name, role, or department..."
-                  className="w-full pl-12 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
                 />
               </div>
             </div>
@@ -1611,11 +1593,11 @@ const MamReviewPage = () => {
 
             {/* Instructions when no employee is selected */}
             {!selectedEmployee && (
-              <div className="text-center py-12 bg-gray-900/30 rounded-xl border border-gray-800">
-                <h4 className="text-xl font-semibold text-white mb-2">
+              <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
+                <h4 className="text-xl font-semibold text-gray-800 mb-2">
                   Select an Employee
                 </h4>
-                <p className="text-gray-400">
+                <p className="text-gray-600">
                   Click on an employee card above to view their current works
                   and assignments.
                 </p>
@@ -1625,11 +1607,11 @@ const MamReviewPage = () => {
         </div>
 
         {/* Tabs Navigation */}
-        <div className="glass-card rounded-2xl p-2 mb-6 border border-gray-800">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-2 mb-6 border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <Briefcase className="w-6 h-6 text-cyan-400 mr-3" />
-              <h2 className="text-xl font-semibold text-white">
+              <Briefcase className="w-6 h-6 text-indigo-600 mr-3" />
+              <h2 className="text-xl font-semibold text-gray-800">
                 Current Works by Team
               </h2>
             </div>
@@ -1646,18 +1628,18 @@ const MamReviewPage = () => {
                   onClick={() => setContentTab(tab.id)}
                   className={`flex items-center px-6 py-4 rounded-xl transition-all ${
                     isActive
-                      ? "bg-gradient-to-r from-cyan-900/30 to-purple-900/30 border border-cyan-500/30"
-                      : "bg-gray-900/50 hover:bg-gray-800/50"
+                      ? "bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-300"
+                      : "bg-white hover:bg-gray-50 border border-gray-200"
                   }`}
                 >
                   <Icon
                     className={`w-5 h-5 mr-3 ${
-                      isActive ? "text-cyan-400" : "text-gray-400"
+                      isActive ? "text-indigo-600" : "text-gray-500"
                     }`}
                   />
                   <span
                     className={`font-semibold ${
-                      isActive ? "text-white" : "text-gray-300"
+                      isActive ? "text-gray-800" : "text-gray-600"
                     }`}
                   >
                     {tab.label}
@@ -1665,8 +1647,8 @@ const MamReviewPage = () => {
                   <span
                     className={`ml-3 px-2 py-1 rounded-full text-xs font-medium ${
                       isActive
-                        ? "bg-cyan-900/50 text-cyan-300"
-                        : "bg-gray-800/70 text-gray-400"
+                        ? "bg-indigo-100 text-indigo-700"
+                        : "bg-gray-100 text-gray-600"
                     }`}
                   >
                     {currentTeams.length}/{tab.count}
@@ -1677,12 +1659,12 @@ const MamReviewPage = () => {
           </div>
         </div>
 
-        {/* Filter Section (Without Add Button) */}
-        <div className="glass-card rounded-2xl p-6 mb-8 border border-gray-800">
+        {/* Filter Section */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-gray-200 shadow-sm">
           <div className="flex items-center mb-6">
             <div className="flex items-center">
-              <Filter className="w-6 h-6 text-cyan-400 mr-3" />
-              <h2 className="text-xl font-semibold text-white">
+              <Filter className="w-6 h-6 text-indigo-600 mr-3" />
+              <h2 className="text-xl font-semibold text-gray-800">
                 {contentTab === "coding" && "Filter Coding Projects"}
                 {contentTab === "journal" && "Filter Journal Papers"}
                 {contentTab === "paper" && "Filter Paper Writings"}
@@ -1701,18 +1683,18 @@ const MamReviewPage = () => {
                   onClick={() => handleFilterChange(contentTab, option.value)}
                   className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
                     isActive
-                      ? `${option.bg} border-cyan-500 shadow-lg shadow-cyan-500/20`
-                      : "bg-gray-900/50 border-gray-700 hover:border-gray-600"
+                      ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
+                      : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                   }`}
                 >
                   <Icon
                     className={`w-5 h-5 mr-3 ${
-                      isActive ? option.color : "text-gray-400"
+                      isActive ? option.color : "text-gray-500"
                     }`}
                   />
                   <span
                     className={`font-medium ${
-                      isActive ? option.color : "text-gray-300"
+                      isActive ? option.color : "text-gray-600"
                     }`}
                   >
                     {option.label}
@@ -1726,9 +1708,9 @@ const MamReviewPage = () => {
         {/* Team Cards Section */}
         <div>
           {teamLoading ? (
-            <div className="glass-card rounded-2xl p-12 text-center border border-gray-800">
-              <Briefcase className="w-20 h-20 text-gray-600 mx-auto mb-6 animate-pulse" />
-              <h3 className="text-xl font-semibold text-white">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 text-center border border-gray-200 shadow-sm">
+              <Briefcase className="w-20 h-20 text-gray-400 mx-auto mb-6 animate-pulse" />
+              <h3 className="text-xl font-semibold text-gray-800">
                 Loading team works...
               </h3>
             </div>
@@ -1741,31 +1723,31 @@ const MamReviewPage = () => {
               />
             ))
           ) : (
-            <div className="glass-card rounded-2xl p-12 text-center border border-gray-800">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 text-center border border-gray-200 shadow-sm">
               {contentTab === "coding" && (
-                <FileCode className="w-20 h-20 text-gray-600 mx-auto mb-6" />
+                <FileCode className="w-20 h-20 text-gray-400 mx-auto mb-6" />
               )}
               {contentTab === "journal" && (
-                <BookOpen className="w-20 h-20 text-gray-600 mx-auto mb-6" />
+                <BookOpen className="w-20 h-20 text-gray-400 mx-auto mb-6" />
               )}
               {contentTab === "paper" && (
-                <Edit2 className="w-20 h-20 text-gray-600 mx-auto mb-6" />
+                <Edit2 className="w-20 h-20 text-gray-400 mx-auto mb-6" />
               )}
               {contentTab === "proposal" && (
-                <FileText className="w-20 h-20 text-gray-600 mx-auto mb-6" />
+                <FileText className="w-20 h-20 text-gray-400 mx-auto mb-6" />
               )}
 
-              <h3 className="text-2xl font-semibold text-white mb-3">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-3">
                 No {contentTab} teams found
               </h3>
-              <p className="text-gray-400 mb-6 max-w-md mx-auto">
+              <p className="text-gray-600 mb-6 max-w-md mx-auto">
                 No {contentTab} teams match the current filter. Try selecting a
                 different filter option.
               </p>
               {getCurrentFilter() !== "all" && (
                 <button
                   onClick={() => handleFilterChange(contentTab, "all")}
-                  className="px-6 py-3 border border-gray-700 text-gray-300 font-semibold rounded-xl hover:bg-gray-800/50 transition-all"
+                  className="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all"
                 >
                   Show All
                 </button>
