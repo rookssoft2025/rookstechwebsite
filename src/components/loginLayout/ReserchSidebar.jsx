@@ -6,7 +6,6 @@ import {
   Edit,
   Users,
   BookOpen,
-  X,
   BarChart,
   ArchiveIcon,
 } from "lucide-react";
@@ -126,88 +125,85 @@ const ReserchSidebar = ({
 
   return (
     <motion.div
-      initial={{ x: -300 }}
-      animate={{ x: sidebarOpen ? 0 : -300 }}
-      transition={{ type: "spring", damping: 20 }}
-      className="fixed inset-y-0 left-0 w-80 bg-gradient-to-b from-white to-gray-50 backdrop-blur-lg border-r border-gray-200 shadow-xl z-50 lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 xl:static xl:w-80 xl:translate-x-0"
+      initial={{ x: -400 }}
+      animate={{ x: sidebarOpen ? 0 : -400 }}
+      transition={{ type: "spring", damping: 20, stiffness: 260 }}
+      className="fixed inset-y-0 left-0 w-full sm:w-96 h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 backdrop-blur-xl border-r border-slate-700 shadow-2xl z-50 overflow-hidden"
     >
-      <div className="flex flex-col h-full p-6">
-        {/* Header with close button for mobile */}
-        <div className="flex items-center justify-between mb-8">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="flex items-center space-x-3"
-          >
-            <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-              <BookOpen size={20} className="text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-800">Rooks and Brooks</h1>
-              <p className="text-gray-500 text-xs">
-                Journal Publishing Platform
-              </p>
-            </div>
-          </motion.div>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="lg:hidden text-gray-500 hover:text-gray-700 transition-colors duration-300 p-2 hover:bg-gray-100 rounded-lg"
-          >
-            <X size={20} />
-          </button>
-        </div>
+      <div className="flex flex-col h-full p-6 sm:p-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="flex items-center space-x-3 mb-8"
+        >
+          <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+            <BookOpen size={24} className="text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-white">Rooks & Brooks</h1>
+            <p className="text-indigo-200 text-sm">Research Platform</p>
+          </div>
+        </motion.div>
 
-        <nav className="space-y-2 flex-1 overflow-y-auto">
+        {/* Divider */}
+        <div className="h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent mb-6"></div>
+
+        <nav className="space-y-3 flex-1 overflow-y-auto scrollbar-hide">
           {navigationItems.map((item, index) => (
             <motion.button
               key={item.id}
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.05 * index }}
+              transition={{ delay: 0.08 * index }}
               onClick={() => {
                 setActiveTab(item.id);
                 if (item.route) {
                   navigate(item.route);
                 }
-                if (window.innerWidth < 1024) {
-                  setSidebarOpen(false);
-                }
               }}
-              className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 group text-left relative overflow-hidden ${
+              className={`w-full flex items-center space-x-4 px-5 py-4 rounded-xl transition-all duration-300 group text-left relative overflow-hidden ${
                 activeTab === item.id
-                  ? `${item.bgColor} ${item.borderColor} border-2 shadow-md shadow-gray-200/50 text-gray-900`
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 hover:border-gray-100 border border-transparent"
+                  ? `bg-gradient-to-r ${item.color.replace(
+                      "text-",
+                      "from-"
+                    )} to-opacity-10 shadow-lg border border-slate-600 text-white`
+                  : "text-slate-300 hover:text-white hover:bg-slate-700/50 border border-transparent"
               }`}
-              whileHover={{ 
-                scale: 1.01,
-                transition: { duration: 0.2 }
+              whileHover={{
+                scale: 1.02,
+                transition: { duration: 0.2 },
               }}
               whileTap={{ scale: 0.98 }}
             >
               {/* Active indicator */}
               {activeTab === item.id && (
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className={`absolute left-0 top-0 bottom-0 w-1 ${item.bgColor.replace('bg-', 'bg-').replace('50', '400')} rounded-r-full`}
+                  initial={{ scaleY: 0 }}
+                  animate={{ scaleY: 1 }}
+                  className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-400 to-blue-500 rounded-r-full"
                 />
               )}
-              
+
               <div
-                className={`p-2.5 rounded-lg transition-all duration-300 ${
+                className={`p-3 rounded-lg transition-all duration-300 flex-shrink-0 ${
                   activeTab === item.id
-                    ? `${item.bgColor.replace('50', '100')} ${item.color}`
-                    : "bg-gray-100 text-gray-500 group-hover:bg-gray-200 group-hover:text-gray-700"
+                    ? `bg-white/10 ${item.color}`
+                    : "bg-slate-700 text-slate-400 group-hover:bg-slate-600 group-hover:text-slate-300"
                 }`}
               >
-                <item.icon size={18} />
+                <item.icon size={20} />
               </div>
               <div className="flex-1 min-w-0">
-                <span className="font-semibold block text-sm tracking-wide">
+                <span className="font-semibold block text-base tracking-wide">
                   {item.label}
                 </span>
-                <span className="text-xs text-gray-500 block mt-0.5 truncate">
+                <span
+                  className={`text-xs block mt-1 truncate ${
+                    activeTab === item.id ? "text-indigo-200" : "text-slate-400"
+                  }`}
+                >
                   {item.description}
                 </span>
               </div>
@@ -215,7 +211,7 @@ const ReserchSidebar = ({
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className={`w-2.5 h-2.5 ${item.bgColor.replace('bg-', 'bg-').replace('50', '400')} rounded-full ring-2 ring-white`}
+                  className="w-2.5 h-2.5 bg-gradient-to-r from-indigo-400 to-blue-500 rounded-full flex-shrink-0 ring-2 ring-white/20"
                 />
               )}
             </motion.button>
@@ -223,21 +219,21 @@ const ReserchSidebar = ({
         </nav>
 
         {/* Footer/User section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-auto pt-6 border-t border-gray-100"
+          className="mt-auto pt-6 border-t border-slate-700"
         >
-          <div className="flex items-center space-x-3 p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-100">
-            <div className="w-9 h-9 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center shadow">
-              <Users size={16} className="text-white" />
+          <div className="flex items-center space-x-3 p-4 rounded-xl bg-gradient-to-r from-indigo-900/40 to-blue-900/40 border border-indigo-700/50 backdrop-blur-sm">
+            <div className="w-11 h-11 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
+              <Users size={18} className="text-white" />
             </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-gray-800">Research Team</p>
-              <p className="text-xs text-gray-600">Active now</p>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-white">Research Team</p>
+              <p className="text-xs text-indigo-200">Active now</p>
             </div>
-            <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-emerald-100 animate-pulse"></div>
+            <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-emerald-300 animate-pulse flex-shrink-0"></div>
           </div>
         </motion.div>
       </div>

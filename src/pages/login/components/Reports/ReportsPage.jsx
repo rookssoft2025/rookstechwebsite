@@ -132,8 +132,18 @@ const timeFilterOptions = [
 
 // Month names for display
 const months = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 // Get current year and month
@@ -200,7 +210,9 @@ const getTeamData = (reportData, teamKey) => {
     completed: Number(teamData.completed || 0),
     createdInPeriod: Number(teamData.createdInPeriod || 0),
     finishedInPeriod: Number(teamData.finishedInPeriod || 0),
-    itemsInPeriod: Array.isArray(teamData.itemsInPeriod) ? teamData.itemsInPeriod : [],
+    itemsInPeriod: Array.isArray(teamData.itemsInPeriod)
+      ? teamData.itemsInPeriod
+      : [],
   };
 };
 
@@ -217,7 +229,14 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
   const Icon = meta.icon;
   // Helper to normalize 'takenBy' or similar fields into a display string
   const getTakenByString = (item) => {
-    const raw = item?.takenBy || item?.assignedTo || item?.author || item?.createdBy || item?.assignee || item?.uploadedBy || item?.responsiblePerson;
+    const raw =
+      item?.takenBy ||
+      item?.assignedTo ||
+      item?.author ||
+      item?.createdBy ||
+      item?.assignee ||
+      item?.uploadedBy ||
+      item?.responsiblePerson;
     if (!raw) return "Unassigned";
     if (typeof raw === "string") return raw;
     if (typeof raw === "object") {
@@ -231,9 +250,11 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
   const filteredItems = useMemo(() => {
     const items = teamData.itemsInPeriod || [];
     if (!memberFilter) return items;
-    return items.filter(item => {
+    return items.filter((item) => {
       const takenByStr = getTakenByString(item);
-      return takenByStr.toLowerCase().includes(String(memberFilter).toLowerCase());
+      return takenByStr
+        .toLowerCase()
+        .includes(String(memberFilter).toLowerCase());
     });
   }, [teamData.itemsInPeriod, memberFilter]);
 
@@ -242,7 +263,7 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
     const items = teamData.itemsInPeriod || [];
     if (items.length === 0) return [];
     const members = new Set();
-    items.forEach(item => {
+    items.forEach((item) => {
       const takenByStr = getTakenByString(item);
       if (takenByStr && takenByStr !== "Unassigned") members.add(takenByStr);
     });
@@ -258,7 +279,9 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <div
-              className={`p-3 rounded-xl ${meta.color.split(' ')[0]} ${meta.borderColor} border mr-4`}
+              className={`p-3 rounded-xl ${meta.color.split(" ")[0]} ${
+                meta.borderColor
+              } border mr-4`}
             >
               <Icon className="w-6 h-6" />
             </div>
@@ -278,19 +301,39 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
           <div className="flex items-center space-x-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-gray-800">
-                {teamData.total || 0}
+                {filteredItems.length}
               </div>
               <div className="text-sm text-gray-600">Total</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-cyan-600">
-                {teamData.active || 0}
+                {
+                  filteredItems.filter((item) =>
+                    [
+                      "active",
+                      "in progress",
+                      "ongoing",
+                      "started",
+                      "hold",
+                    ].includes((item.status || item.state || "").toLowerCase())
+                  ).length
+                }
               </div>
               <div className="text-sm text-gray-600">Active</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-emerald-600">
-                {teamData.completed || 0}
+                {
+                  filteredItems.filter((item) =>
+                    [
+                      "completed",
+                      "complete",
+                      "done",
+                      "published",
+                      "finalized",
+                    ].includes((item.status || item.state || "").toLowerCase())
+                  ).length
+                }
               </div>
               <div className="text-sm text-gray-600">Completed</div>
             </div>
@@ -318,23 +361,33 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
               Team Members ({uniqueMembers.length})
             </div>
             <div className="flex flex-wrap gap-2">
-              {uniqueMembers.map(member => {
-                const userImg = getAvatarForName(member) ||
-                  `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(member)}`;
-                
+              {uniqueMembers.map((member) => {
+                const userImg =
+                  getAvatarForName(member) ||
+                  `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
+                    member
+                  )}`;
+
                 return (
                   <div
                     key={member}
                     className={`flex items-center px-3 py-2 rounded-lg transition-all cursor-pointer ${
                       memberFilter === member
-                        ? `${meta.color.split(' ')[0]} ${meta.borderColor} border`
-                        : 'bg-gray-50 border border-gray-200 hover:border-gray-300'
+                        ? `${meta.color.split(" ")[0]} ${
+                            meta.borderColor
+                          } border`
+                        : "bg-gray-50 border border-gray-200 hover:border-gray-300"
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
-                      window.dispatchEvent(new CustomEvent('filterByMember', { 
-                        detail: { teamId: meta.id, member: memberFilter === member ? null : member } 
-                      }));
+                      window.dispatchEvent(
+                        new CustomEvent("filterByMember", {
+                          detail: {
+                            teamId: meta.id,
+                            member: memberFilter === member ? null : member,
+                          },
+                        })
+                      );
                     }}
                   >
                     <img
@@ -342,9 +395,13 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
                       alt={member}
                       className="w-5 h-5 rounded-full mr-2 object-cover border border-gray-300"
                     />
-                    <span className={`text-sm ${
-                      memberFilter === member ? 'text-gray-800 font-medium' : 'text-gray-700'
-                    }`}>
+                    <span
+                      className={`text-sm ${
+                        memberFilter === member
+                          ? "text-gray-800 font-medium"
+                          : "text-gray-700"
+                      }`}
+                    >
                       {member}
                     </span>
                     {memberFilter === member && (
@@ -364,7 +421,7 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
             <div className="flex items-center justify-between">
               <span className="text-gray-600">All Items</span>
               <span className="text-lg font-bold text-gray-800">
-                {teamData.total || 0}
+                {filteredItems.length}
               </span>
             </div>
           </div>
@@ -372,7 +429,17 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
             <div className="flex items-center justify-between">
               <span className="text-gray-600">Completed</span>
               <span className="text-lg font-bold text-cyan-600">
-                {teamData.completed || 0}
+                {
+                  filteredItems.filter((item) =>
+                    [
+                      "completed",
+                      "complete",
+                      "done",
+                      "published",
+                      "finalized",
+                    ].includes((item.status || item.state || "").toLowerCase())
+                  ).length
+                }
               </span>
             </div>
           </div>
@@ -380,7 +447,17 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
             <div className="flex items-center justify-between">
               <span className="text-gray-600">Active</span>
               <span className="text-lg font-bold text-violet-600">
-                {teamData.active || 0}
+                {
+                  filteredItems.filter((item) =>
+                    [
+                      "active",
+                      "in progress",
+                      "ongoing",
+                      "started",
+                      "hold",
+                    ].includes((item.status || item.state || "").toLowerCase())
+                  ).length
+                }
               </span>
             </div>
           </div>
@@ -398,15 +475,17 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
                 <h4 className="text-lg font-semibold text-gray-800">
-                  {memberFilter ? `${memberFilter}'s Items` : 'All Items'} (
+                  {memberFilter ? `${memberFilter}'s Items` : "All Items"} (
                   {filteredItems.length})
                 </h4>
                 {memberFilter && (
                   <button
                     onClick={() => {
-                      window.dispatchEvent(new CustomEvent('filterByMember', { 
-                        detail: { teamId: meta.id, member: null } 
-                      }));
+                      window.dispatchEvent(
+                        new CustomEvent("filterByMember", {
+                          detail: { teamId: meta.id, member: null },
+                        })
+                      );
                     }}
                     className="text-sm text-cyan-600 hover:text-cyan-700 flex items-center"
                   >
@@ -469,9 +548,13 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
                             className="border-b border-gray-100 hover:bg-gray-50"
                           >
                             <td className="py-3 px-4">
-                              <div className="font-medium text-gray-800">{title}</div>
+                              <div className="font-medium text-gray-800">
+                                {title}
+                              </div>
                               {item.details && (
-                                <div className="text-xs text-gray-600 truncate max-w-xs">{item.details}</div>
+                                <div className="text-xs text-gray-600 truncate max-w-xs">
+                                  {item.details}
+                                </div>
                               )}
                             </td>
                             <td className="py-3 px-4">
@@ -499,17 +582,22 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
                             <td className="py-3 px-4">
                               <span
                                 className={`px-2 py-1 rounded text-xs ${
-                                  String(status).toLowerCase() === "completed" ||
+                                  String(status).toLowerCase() ===
+                                    "completed" ||
                                   String(status).toLowerCase() === "complete" ||
                                   String(status).toLowerCase() === "done" ||
                                   String(status).toLowerCase() === "published"
                                     ? "bg-emerald-100 text-emerald-700"
-                                    : String(status).toLowerCase() === "active" ||
-                                      String(status).toLowerCase() === "in progress" ||
-                                      String(status).toLowerCase() === "ongoing" ||
+                                    : String(status).toLowerCase() ===
+                                        "active" ||
+                                      String(status).toLowerCase() ===
+                                        "in progress" ||
+                                      String(status).toLowerCase() ===
+                                        "ongoing" ||
                                       String(status).toLowerCase() === "started"
                                     ? "bg-cyan-100 text-cyan-700"
-                                    : String(status).toLowerCase() === "on review" ||
+                                    : String(status).toLowerCase() ===
+                                        "on review" ||
                                       String(status).toLowerCase() === "review"
                                     ? "bg-amber-100 text-amber-700"
                                     : "bg-gray-100 text-gray-700"
@@ -528,7 +616,7 @@ const TeamCard = ({ meta, teamData, isExpanded, onToggle, memberFilter }) => {
                 <div className="p-6 bg-gray-50 rounded-xl text-center border border-gray-200">
                   <CheckCircle className="w-6 h-6 text-gray-400 mx-auto mb-2" />
                   <div className="text-gray-600">
-                    {memberFilter 
+                    {memberFilter
                       ? `No items found for ${memberFilter} in this period.`
                       : "No items found in this collection."}
                   </div>
@@ -573,8 +661,105 @@ const ReportsPage = () => {
     },
     overall: { totals: { total: 0, active: 0, completed: 0 } },
   });
-  
+
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Calculate derived overview based on filtered data
+  const derivedOverview = useMemo(() => {
+    const teams = reportData?.teams || {};
+    let total = 0;
+    let active = 0;
+    let completed = 0;
+
+    // Helper to test status
+    const isActiveStatus = (s) =>
+      ["active", "in progress", "ongoing", "started", "hold"].includes(
+        (s || "").toLowerCase()
+      );
+    const isCompletedStatus = (s) =>
+      ["completed", "complete", "done", "published", "finalized"].includes(
+        (s || "").toLowerCase()
+      );
+
+    // If a specific team is selected, only include that team's items
+    if (teamFilter && teamFilter !== "all") {
+      const meta = teamsMeta.find((t) => t.id === teamFilter);
+      const key = meta ? meta.key : null;
+      const team = key
+        ? teams[key] || { itemsInPeriod: [] }
+        : { itemsInPeriod: [] };
+
+      // Use itemsInPeriod which contains filtered items for the selected period
+      let items = team.itemsInPeriod || [];
+
+      // Apply member filter if set
+      if (
+        memberFilter &&
+        memberFilter.teamId === teamFilter &&
+        memberFilter.member
+      ) {
+        const mf = String(memberFilter.member).toLowerCase();
+        items = items.filter((it) => {
+          const taken = (
+            it.takenBy ||
+            it.assignedTo ||
+            it.author ||
+            it.createdBy ||
+            it.assignee ||
+            it.uploadedBy ||
+            it.responsiblePerson ||
+            ""
+          ).toString();
+          return taken.toLowerCase().includes(mf);
+        });
+      }
+
+      total = items.length;
+      items.forEach((it) => {
+        const s = (it.status || it.state || "").toLowerCase();
+        if (isActiveStatus(s)) active += 1;
+        if (isCompletedStatus(s)) completed += 1;
+      });
+      return { total, active, completed };
+    }
+
+    // For 'all' teams: sum across all teams (itemsInPeriod contains filtered items)
+    Object.keys(teams).forEach((teamKey) => {
+      const teamMeta = teamsMeta.find((tm) => tm.key === teamKey);
+      const teamId = teamMeta ? teamMeta.id : null;
+
+      // Get itemsInPeriod which contains filtered items for the selected period
+      let items = teams[teamKey]?.itemsInPeriod || [];
+
+      // Apply member filter if it targets this specific team
+      if (memberFilter && memberFilter.teamId && memberFilter.member) {
+        if (memberFilter.teamId !== teamId) return;
+        const mf = String(memberFilter.member).toLowerCase();
+        items = items.filter((it) => {
+          const taken = (
+            it.takenBy ||
+            it.assignedTo ||
+            it.author ||
+            it.createdBy ||
+            it.assignee ||
+            it.uploadedBy ||
+            it.responsiblePerson ||
+            ""
+          ).toString();
+          return taken.toLowerCase().includes(mf);
+        });
+      }
+
+      total += items.length;
+      items.forEach((it) => {
+        const s = (it.status || it.state || "").toLowerCase();
+        if (isActiveStatus(s)) active += 1;
+        if (isCompletedStatus(s)) completed += 1;
+      });
+    });
+
+    return { total, active, completed };
+  }, [reportData, teamFilter, memberFilter]);
 
   const handleLogout = async () => {
     const confirmLogout = window.confirm("Are you sure you want to logout?");
@@ -676,7 +861,7 @@ const ReportsPage = () => {
   // Get the selected team meta
   const getSelectedTeamMeta = () => {
     if (teamFilter === "all") return null;
-    return teamsMeta.find(team => team.id === teamFilter);
+    return teamsMeta.find((team) => team.id === teamFilter);
   };
 
   // Handle member filter from child component
@@ -690,10 +875,10 @@ const ReportsPage = () => {
       }
     };
 
-    window.addEventListener('filterByMember', handleMemberFilter);
-    
+    window.addEventListener("filterByMember", handleMemberFilter);
+
     return () => {
-      window.removeEventListener('filterByMember', handleMemberFilter);
+      window.removeEventListener("filterByMember", handleMemberFilter);
     };
   }, []);
 
@@ -705,7 +890,7 @@ const ReportsPage = () => {
   // Helper functions to process each team's data
   const processCodingTeamData = (rawData) => {
     console.log("Processing Coding Team:", rawData);
-    
+
     // If rawData already has the expected structure, use it
     if (rawData.itemsInPeriod && Array.isArray(rawData.itemsInPeriod)) {
       return {
@@ -714,59 +899,65 @@ const ReportsPage = () => {
         completed: Number(rawData.completed || 0),
         createdInPeriod: Number(rawData.createdInPeriod || 0),
         finishedInPeriod: Number(rawData.finishedInPeriod || 0),
-        itemsInPeriod: rawData.itemsInPeriod.map(item => ({
+        itemsInPeriod: rawData.itemsInPeriod.map((item) => ({
           ...item,
           id: item.id || Math.random().toString(),
           title: item.title || item.projectName || "Untitled",
           status: item.status || "Active",
           startDate: item.startDate,
           deadline: item.deadline || item.endDate,
-          takenBy: item.takenBy || item.assignedTo || "Unassigned"
-        }))
+          takenBy: item.takenBy || item.assignedTo || "Unassigned",
+        })),
       };
     }
-    
+
     // Handle array directly (if the API returns just an array of items)
     if (Array.isArray(rawData)) {
-      const items = rawData.filter(item => !item.isDeleted);
+      const items = rawData.filter((item) => !item.isDeleted);
       return {
         total: items.length,
-        active: items.filter(item => 
-          ['active', 'in progress', 'started', 'hold'].includes(
-            (item.status || '').toLowerCase()
-          )).length,
-        completed: items.filter(item => 
-          ['completed', 'complete', 'done'].includes(
-            (item.status || '').toLowerCase()
-          )).length,
-        createdInPeriod: items.filter(item => {
+        active: items.filter((item) =>
+          ["active", "in progress", "started", "hold"].includes(
+            (item.status || "").toLowerCase()
+          )
+        ).length,
+        completed: items.filter((item) =>
+          ["completed", "complete", "done"].includes(
+            (item.status || "").toLowerCase()
+          )
+        ).length,
+        createdInPeriod: items.filter((item) => {
           const created = new Date(item.createdAt || item.startDate);
           return isInPeriod(created);
         }).length,
-        finishedInPeriod: items.filter(item => {
+        finishedInPeriod: items.filter((item) => {
           const finished = new Date(item.updatedAt || item.deadline);
-          return isInPeriod(finished) && 
-            ['completed', 'complete', 'done'].includes((item.status || '').toLowerCase());
+          return (
+            isInPeriod(finished) &&
+            ["completed", "complete", "done"].includes(
+              (item.status || "").toLowerCase()
+            )
+          );
         }).length,
-        itemsInPeriod: items.map(item => ({
+        itemsInPeriod: items.map((item) => ({
           ...item,
           id: item.id || Math.random().toString(),
           title: item.title || "Untitled",
           status: item.status || "Active",
           startDate: item.startDate,
           deadline: item.deadline,
-          takenBy: item.takenBy || "Unassigned"
-        }))
+          takenBy: item.takenBy || "Unassigned",
+        })),
       };
     }
-    
+
     // Fallback for empty or unexpected data
     return getDefaultTeamStructure();
   };
 
   const processProposalTeamData = (rawData) => {
     console.log("Processing Proposal Team:", rawData);
-    
+
     if (rawData.itemsInPeriod && Array.isArray(rawData.itemsInPeriod)) {
       return {
         total: Number(rawData.total || 0),
@@ -774,57 +965,63 @@ const ReportsPage = () => {
         completed: Number(rawData.completed || 0),
         createdInPeriod: Number(rawData.createdInPeriod || 0),
         finishedInPeriod: Number(rawData.finishedInPeriod || 0),
-        itemsInPeriod: rawData.itemsInPeriod.map(item => ({
+        itemsInPeriod: rawData.itemsInPeriod.map((item) => ({
           ...item,
           id: item.id || Math.random().toString(),
           title: item.title || item.proposalTitle || "Untitled",
           status: item.status || "Active",
           startDate: item.startDate,
           endDate: item.endDate,
-          takenBy: item.takenBy || item.author || "Unassigned"
-        }))
+          takenBy: item.takenBy || item.author || "Unassigned",
+        })),
       };
     }
-    
+
     if (Array.isArray(rawData)) {
-      const items = rawData.filter(item => !item.isDeleted);
+      const items = rawData.filter((item) => !item.isDeleted);
       return {
         total: items.length,
-        active: items.filter(item => 
-          ['active', 'in progress', 'started', 'under review'].includes(
-            (item.status || '').toLowerCase()
-          )).length,
-        completed: items.filter(item => 
-          ['completed', 'complete', 'done', 'approved'].includes(
-            (item.status || '').toLowerCase()
-          )).length,
-        createdInPeriod: items.filter(item => {
+        active: items.filter((item) =>
+          ["active", "in progress", "started", "under review"].includes(
+            (item.status || "").toLowerCase()
+          )
+        ).length,
+        completed: items.filter((item) =>
+          ["completed", "complete", "done", "approved"].includes(
+            (item.status || "").toLowerCase()
+          )
+        ).length,
+        createdInPeriod: items.filter((item) => {
           const created = new Date(item.createdAt || item.startDate);
           return isInPeriod(created);
         }).length,
-        finishedInPeriod: items.filter(item => {
+        finishedInPeriod: items.filter((item) => {
           const finished = new Date(item.updatedAt || item.endDate);
-          return isInPeriod(finished) && 
-            ['completed', 'complete', 'done', 'approved'].includes((item.status || '').toLowerCase());
+          return (
+            isInPeriod(finished) &&
+            ["completed", "complete", "done", "approved"].includes(
+              (item.status || "").toLowerCase()
+            )
+          );
         }).length,
-        itemsInPeriod: items.map(item => ({
+        itemsInPeriod: items.map((item) => ({
           ...item,
           id: item.id || Math.random().toString(),
           title: item.title || "Untitled",
           status: item.status || "Active",
           startDate: item.startDate,
           endDate: item.endDate,
-          takenBy: item.takenBy || "Unassigned"
-        }))
+          takenBy: item.takenBy || "Unassigned",
+        })),
       };
     }
-    
+
     return getDefaultTeamStructure();
   };
 
   const processJournalTeamData = (rawData) => {
     console.log("Processing Journal Team:", rawData);
-    
+
     if (rawData.itemsInPeriod && Array.isArray(rawData.itemsInPeriod)) {
       return {
         total: Number(rawData.total || 0),
@@ -832,59 +1029,65 @@ const ReportsPage = () => {
         completed: Number(rawData.completed || 0),
         createdInPeriod: Number(rawData.createdInPeriod || 0),
         finishedInPeriod: Number(rawData.finishedInPeriod || 0),
-        itemsInPeriod: rawData.itemsInPeriod.map(item => ({
+        itemsInPeriod: rawData.itemsInPeriod.map((item) => ({
           ...item,
           id: item.id || Math.random().toString(),
-          title: item.title || item.paperTitle || item.journalTitle || "Untitled",
+          title:
+            item.title || item.paperTitle || item.journalTitle || "Untitled",
           status: item.status || item.reviewStatus || "Active",
           startDate: item.uploadedDate || item.createdAt,
           endDate: item.dateOfReview || item.deadline,
-          takenBy: item.takenBy || item.author || item.uploadedBy || "Unassigned"
-        }))
+          takenBy:
+            item.takenBy || item.author || item.uploadedBy || "Unassigned",
+        })),
       };
     }
-    
+
     if (Array.isArray(rawData)) {
-      const items = rawData.filter(item => !item.isDeleted);
+      const items = rawData.filter((item) => !item.isDeleted);
       return {
         total: items.length,
-        active: items.filter(item => 
-          ['in progress', 'under review', 'submitted', 'started'].includes(
-            (item.status || item.reviewStatus || '').toLowerCase()
-          )).length,
-        completed: items.filter(item => 
-          ['published', 'accepted', 'completed', 'done'].includes(
-            (item.status || item.reviewStatus || '').toLowerCase()
-          )).length,
-        createdInPeriod: items.filter(item => {
+        active: items.filter((item) =>
+          ["in progress", "under review", "submitted", "started"].includes(
+            (item.status || item.reviewStatus || "").toLowerCase()
+          )
+        ).length,
+        completed: items.filter((item) =>
+          ["published", "accepted", "completed", "done"].includes(
+            (item.status || item.reviewStatus || "").toLowerCase()
+          )
+        ).length,
+        createdInPeriod: items.filter((item) => {
           const created = new Date(item.uploadedDate || item.createdAt);
           return isInPeriod(created);
         }).length,
-        finishedInPeriod: items.filter(item => {
+        finishedInPeriod: items.filter((item) => {
           const finished = new Date(item.dateOfReview || item.updatedAt);
-          return isInPeriod(finished) && 
-            ['published', 'accepted', 'completed', 'done'].includes(
-              (item.status || item.reviewStatus || '').toLowerCase()
-            );
+          return (
+            isInPeriod(finished) &&
+            ["published", "accepted", "completed", "done"].includes(
+              (item.status || item.reviewStatus || "").toLowerCase()
+            )
+          );
         }).length,
-        itemsInPeriod: items.map(item => ({
+        itemsInPeriod: items.map((item) => ({
           ...item,
           id: item.id || Math.random().toString(),
           title: item.title || "Untitled",
           status: item.status || item.reviewStatus || "Active",
           startDate: item.uploadedDate,
           endDate: item.dateOfReview,
-          takenBy: item.takenBy || "Unassigned"
-        }))
+          takenBy: item.takenBy || "Unassigned",
+        })),
       };
     }
-    
+
     return getDefaultTeamStructure();
   };
 
   const processWritingTeamData = (rawData) => {
     console.log("Processing Writing Team:", rawData);
-    
+
     if (rawData.itemsInPeriod && Array.isArray(rawData.itemsInPeriod)) {
       return {
         total: Number(rawData.total || 0),
@@ -892,51 +1095,61 @@ const ReportsPage = () => {
         completed: Number(rawData.completed || 0),
         createdInPeriod: Number(rawData.createdInPeriod || 0),
         finishedInPeriod: Number(rawData.finishedInPeriod || 0),
-        itemsInPeriod: rawData.itemsInPeriod.map(item => ({
+        itemsInPeriod: rawData.itemsInPeriod.map((item) => ({
           ...item,
           id: item.id || Math.random().toString(),
           title: item.title || item.documentTitle || "Untitled",
           status: item.status || "Active",
           startDate: item.startDate || item.createdAt,
           endDate: item.deadline || item.endDate,
-          takenBy: item.takenBy || item.author || "Unassigned"
-        }))
+          takenBy: item.takenBy || item.author || "Unassigned",
+        })),
       };
     }
-    
+
     if (Array.isArray(rawData)) {
-      const items = rawData.filter(item => !item.isDeleted);
+      const items = rawData.filter((item) => !item.isDeleted);
       return {
         total: items.length,
-        active: items.filter(item => 
-          ['active', 'in progress', 'started', 'draft'].includes(
-            (item.status || '').toLowerCase()
-          )).length,
-        completed: items.filter(item => 
-          ['completed', 'complete', 'done', 'published', 'finalized'].includes(
-            (item.status || '').toLowerCase()
-          )).length,
-        createdInPeriod: items.filter(item => {
+        active: items.filter((item) =>
+          ["active", "in progress", "started", "draft"].includes(
+            (item.status || "").toLowerCase()
+          )
+        ).length,
+        completed: items.filter((item) =>
+          ["completed", "complete", "done", "published", "finalized"].includes(
+            (item.status || "").toLowerCase()
+          )
+        ).length,
+        createdInPeriod: items.filter((item) => {
           const created = new Date(item.createdAt || item.startDate);
           return isInPeriod(created);
         }).length,
-        finishedInPeriod: items.filter(item => {
+        finishedInPeriod: items.filter((item) => {
           const finished = new Date(item.updatedAt || item.deadline);
-          return isInPeriod(finished) && 
-            ['completed', 'complete', 'done', 'published', 'finalized'].includes((item.status || '').toLowerCase());
+          return (
+            isInPeriod(finished) &&
+            [
+              "completed",
+              "complete",
+              "done",
+              "published",
+              "finalized",
+            ].includes((item.status || "").toLowerCase())
+          );
         }).length,
-        itemsInPeriod: items.map(item => ({
+        itemsInPeriod: items.map((item) => ({
           ...item,
           id: item.id || Math.random().toString(),
           title: item.title || "Untitled",
           status: item.status || "Active",
           startDate: item.startDate,
           endDate: item.deadline || item.endDate,
-          takenBy: item.takenBy || "Unassigned"
-        }))
+          takenBy: item.takenBy || "Unassigned",
+        })),
       };
     }
-    
+
     return getDefaultTeamStructure();
   };
 
@@ -958,9 +1171,9 @@ const ReportsPage = () => {
       try {
         setIsLoading(true);
         console.log("🔄 Starting to load reports...");
-        
+
         let data;
-        
+
         if (showDateRange && startDate && endDate) {
           console.log("📅 Custom range selected");
           data = await getCustomReports(startDate, endDate);
@@ -971,7 +1184,10 @@ const ReportsPage = () => {
           console.log("📅 Monthly report selected");
           if (showMonthPicker) {
             // Use month-specific API call
-            data = await getMonthlyReportsByMonth(selectedYear, selectedMonth + 1);
+            data = await getMonthlyReportsByMonth(
+              selectedYear,
+              selectedMonth + 1
+            );
           } else {
             data = await getMonthlyReports();
           }
@@ -991,20 +1207,30 @@ const ReportsPage = () => {
           const processedData = {
             period: data.period || "",
             teams: {
-              coding: processCodingTeamData(data.teams?.coding || data.coding || []),
-              proposal: processProposalTeamData(data.teams?.proposal || data.proposal || []),
-              journal: processJournalTeamData(data.teams?.journal || data.journal || []),
-              writing: processWritingTeamData(data.teams?.writing || data.writing || []),
+              coding: processCodingTeamData(
+                data.teams?.coding || data.coding || []
+              ),
+              proposal: processProposalTeamData(
+                data.teams?.proposal || data.proposal || []
+              ),
+              journal: processJournalTeamData(
+                data.teams?.journal || data.journal || []
+              ),
+              writing: processWritingTeamData(
+                data.teams?.writing || data.writing || []
+              ),
             },
-            overall: data.overall || { totals: { total: 0, active: 0, completed: 0 } },
+            overall: data.overall || {
+              totals: { total: 0, active: 0, completed: 0 },
+            },
           };
 
           console.log("🔄 Processed Teams Data:", processedData.teams);
           setReportData(processedData);
-          
+
           // If a specific team is selected, expand it by default
           if (teamFilter !== "all") {
-            const team = teamsMeta.find(t => t.id === teamFilter);
+            const team = teamsMeta.find((t) => t.id === teamFilter);
             if (team) {
               setExpandedTeams({ [team.id]: true });
             }
@@ -1025,12 +1251,21 @@ const ReportsPage = () => {
     return () => {
       isMounted = false;
     };
-  }, [timeFilter, showDateRange, startDate, endDate, selectedMonth, selectedYear, showMonthPicker, teamFilter]);
+  }, [
+    timeFilter,
+    showDateRange,
+    startDate,
+    endDate,
+    selectedMonth,
+    selectedYear,
+    showMonthPicker,
+    teamFilter,
+  ]);
 
   // Handle team filter change
   const handleTeamFilterChange = (teamId) => {
     setTeamFilter(teamId);
-    
+
     // Expand the selected team by default
     if (teamId !== "all") {
       setExpandedTeams({ [teamId]: true });
@@ -1056,7 +1291,7 @@ const ReportsPage = () => {
   // Render team statistics based on filter
   const renderTeamStatistics = () => {
     const selectedTeam = getSelectedTeamMeta();
-    
+
     if (teamFilter === "all") {
       // Show statistics for all teams
       return (
@@ -1064,19 +1299,19 @@ const ReportsPage = () => {
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
             <div className="text-sm text-gray-600">Total Items</div>
             <div className="text-xl font-bold text-gray-800">
-              {reportData.overall?.totals?.total ?? 0}
+              {derivedOverview.total ?? 0}
             </div>
           </div>
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
             <div className="text-sm text-gray-600">Active</div>
             <div className="text-xl font-bold text-cyan-600">
-              {reportData.overall?.totals?.active ?? 0}
+              {derivedOverview.active ?? 0}
             </div>
           </div>
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
             <div className="text-sm text-gray-600">Completed</div>
             <div className="text-xl font-bold text-emerald-600">
-              {reportData.overall?.totals?.completed ?? 0}
+              {derivedOverview.completed ?? 0}
             </div>
           </div>
         </div>
@@ -1086,9 +1321,10 @@ const ReportsPage = () => {
       const teamData = getTeamData(reportData, selectedTeam.key);
 
       const currentMemberFilter = getMemberFilterForTeam(selectedTeam.id);
-      const filteredItems = currentMemberFilter 
-        ? (teamData.itemsInPeriod || []).filter(item => {
-            const takenBy = item.takenBy ||
+      const filteredItems = currentMemberFilter
+        ? (teamData.itemsInPeriod || []).filter((item) => {
+            const takenBy =
+              item.takenBy ||
               item.assignedTo ||
               item.author ||
               item.createdBy ||
@@ -1096,7 +1332,9 @@ const ReportsPage = () => {
               item.uploadedBy ||
               item.responsiblePerson ||
               "Unassigned";
-            return takenBy.toLowerCase().includes(currentMemberFilter.toLowerCase());
+            return takenBy
+              .toLowerCase()
+              .includes(currentMemberFilter.toLowerCase());
           })
         : teamData.itemsInPeriod || [];
 
@@ -1111,27 +1349,31 @@ const ReportsPage = () => {
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
             <div className="text-sm text-gray-600">Active</div>
             <div className="text-xl font-bold text-cyan-600">
-              {filteredItems.filter(item => 
-                ['active', 'in progress', 'ongoing', 'started'].includes(
-                  (item.status || item.state || '').toLowerCase()
-                )
-              ).length}
+              {
+                filteredItems.filter((item) =>
+                  ["active", "in progress", "ongoing", "started"].includes(
+                    (item.status || item.state || "").toLowerCase()
+                  )
+                ).length
+              }
             </div>
           </div>
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
             <div className="text-sm text-gray-600">Completed</div>
             <div className="text-xl font-bold text-emerald-600">
-              {filteredItems.filter(item => 
-                ['completed', 'complete', 'done', 'published'].includes(
-                  (item.status || item.state || '').toLowerCase()
-                )
-              ).length}
+              {
+                filteredItems.filter((item) =>
+                  ["completed", "complete", "done", "published"].includes(
+                    (item.status || item.state || "").toLowerCase()
+                  )
+                ).length
+              }
             </div>
           </div>
         </div>
       );
     }
-    
+
     return null;
   };
 
@@ -1232,7 +1474,7 @@ const ReportsPage = () => {
                 <Users className="w-4 h-4 mr-2" />
                 Filter by Team
               </label>
-              
+
               {/* Team filter buttons */}
               <div className="flex flex-wrap gap-2">
                 <button
@@ -1254,7 +1496,9 @@ const ReportsPage = () => {
                       onClick={() => handleTeamFilterChange(team.id)}
                       className={`px-4 py-3 text-sm rounded-xl transition-colors flex items-center ${
                         teamFilter === team.id
-                          ? `${team.color.split(' ')[0]} text-gray-800 border ${team.borderColor}`
+                          ? `${team.color.split(" ")[0]} text-gray-800 border ${
+                              team.borderColor
+                            }`
                           : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                       }`}
                     >
@@ -1281,7 +1525,7 @@ const ReportsPage = () => {
                     >
                       <ChevronLeft className="w-5 h-5 text-gray-600" />
                     </button>
-                    
+
                     <div className="text-center">
                       <div className="text-lg font-bold text-gray-800">
                         {getMonthYearDisplay()}
@@ -1293,7 +1537,7 @@ const ReportsPage = () => {
                         Go to Current Month
                       </button>
                     </div>
-                    
+
                     <button
                       onClick={handleNextMonth}
                       className="p-2 hover:bg-gray-50 rounded-lg transition-colors border border-gray-200"
@@ -1313,11 +1557,13 @@ const ReportsPage = () => {
                             : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
                         }`}
                       >
-                        <div className="text-xs font-medium">{month.substring(0, 3)}</div>
+                        <div className="text-xs font-medium">
+                          {month.substring(0, 3)}
+                        </div>
                       </button>
                     ))}
                   </div>
-                  
+
                   <div className="grid grid-cols-4 gap-2 mt-2">
                     {months.slice(4, 8).map((month, index) => (
                       <button
@@ -1329,11 +1575,13 @@ const ReportsPage = () => {
                             : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
                         }`}
                       >
-                        <div className="text-xs font-medium">{month.substring(0, 3)}</div>
+                        <div className="text-xs font-medium">
+                          {month.substring(0, 3)}
+                        </div>
                       </button>
                     ))}
                   </div>
-                  
+
                   <div className="grid grid-cols-4 gap-2 mt-2">
                     {months.slice(8, 12).map((month, index) => (
                       <button
@@ -1345,7 +1593,9 @@ const ReportsPage = () => {
                             : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
                         }`}
                       >
-                        <div className="text-xs font-medium">{month.substring(0, 3)}</div>
+                        <div className="text-xs font-medium">
+                          {month.substring(0, 3)}
+                        </div>
                       </button>
                     ))}
                   </div>
@@ -1354,22 +1604,29 @@ const ReportsPage = () => {
                     <div className="text-sm text-gray-600 mb-2">Year</div>
                     <div className="flex items-center justify-center space-x-2">
                       <button
-                        onClick={() => setSelectedYear(prev => prev - 1)}
+                        onClick={() => setSelectedYear((prev) => prev - 1)}
                         className="p-2 hover:bg-gray-50 rounded-lg border border-gray-200"
                       >
                         <ChevronLeft className="w-4 h-4 text-gray-600" />
                       </button>
                       <select
                         value={selectedYear}
-                        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                        onChange={(e) =>
+                          setSelectedYear(parseInt(e.target.value))
+                        }
                         className="bg-white border border-gray-300 rounded-lg px-3 py-1 text-gray-800 text-sm focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
                       >
-                        {Array.from({ length: 10 }, (_, i) => currentYear - 5 + i).map(year => (
-                          <option key={year} value={year}>{year}</option>
+                        {Array.from(
+                          { length: 10 },
+                          (_, i) => currentYear - 5 + i
+                        ).map((year) => (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
                         ))}
                       </select>
                       <button
-                        onClick={() => setSelectedYear(prev => prev + 1)}
+                        onClick={() => setSelectedYear((prev) => prev + 1)}
                         className="p-2 hover:bg-gray-50 rounded-lg border border-gray-200"
                       >
                         <ChevronRight className="w-4 h-4 text-gray-600" />
@@ -1421,7 +1678,9 @@ const ReportsPage = () => {
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-cyan-700 mb-3 flex items-center">
                   <BarChart className="w-4 h-4 mr-2" />
-                  {teamFilter === "all" ? "Summary Statistics" : "Team Statistics"}
+                  {teamFilter === "all"
+                    ? "Summary Statistics"
+                    : "Team Statistics"}
                 </label>
                 {renderTeamStatistics()}
               </div>
@@ -1440,44 +1699,45 @@ const ReportsPage = () => {
 
         {!isLoading && (
           <div>
-            {teamFilter === "all" ? (
-              // Show all teams when "All Teams" is selected
-              filteredTeams.map((team) => {
-                const teamData = getTeamData(reportData, team.key);
-                console.log(`Rendering ${team.name} with data:`, teamData);
-                
-                return (
-                  <TeamCard 
-                    key={team.id} 
-                    meta={team} 
-                    teamData={teamData}
-                    isExpanded={expandedTeams[team.id] || false}
-                    onToggle={toggleTeamExpansion}
-                    memberFilter={getMemberFilterForTeam(team.id)}
-                  />
-                );
-              })
-            ) : (
-              // Show only the selected team
-              (() => {
-                const selectedTeam = getSelectedTeamMeta();
-                if (!selectedTeam) return null;
-                
-                const teamData = getTeamData(reportData, selectedTeam.key);
-                console.log(`Rendering selected team ${selectedTeam.name} with data:`, teamData);
-                
-                return (
-                  <TeamCard 
-                    key={selectedTeam.id} 
-                    meta={selectedTeam} 
-                    teamData={teamData}
-                    isExpanded={expandedTeams[selectedTeam.id] || true}
-                    onToggle={toggleTeamExpansion}
-                    memberFilter={getMemberFilterForTeam(selectedTeam.id)}
-                  />
-                );
-              })()
-            )}
+            {teamFilter === "all"
+              ? // Show all teams when "All Teams" is selected
+                filteredTeams.map((team) => {
+                  const teamData = getTeamData(reportData, team.key);
+                  console.log(`Rendering ${team.name} with data:`, teamData);
+
+                  return (
+                    <TeamCard
+                      key={team.id}
+                      meta={team}
+                      teamData={teamData}
+                      isExpanded={expandedTeams[team.id] || false}
+                      onToggle={toggleTeamExpansion}
+                      memberFilter={getMemberFilterForTeam(team.id)}
+                    />
+                  );
+                })
+              : // Show only the selected team
+                (() => {
+                  const selectedTeam = getSelectedTeamMeta();
+                  if (!selectedTeam) return null;
+
+                  const teamData = getTeamData(reportData, selectedTeam.key);
+                  console.log(
+                    `Rendering selected team ${selectedTeam.name} with data:`,
+                    teamData
+                  );
+
+                  return (
+                    <TeamCard
+                      key={selectedTeam.id}
+                      meta={selectedTeam}
+                      teamData={teamData}
+                      isExpanded={expandedTeams[selectedTeam.id] || true}
+                      onToggle={toggleTeamExpansion}
+                      memberFilter={getMemberFilterForTeam(selectedTeam.id)}
+                    />
+                  );
+                })()}
           </div>
         )}
       </div>
