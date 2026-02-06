@@ -44,7 +44,7 @@ import { auth } from "../../../../firebase";
 
 import img1 from "../../assets/abinesh.jpg";
 import img2 from "../../assets/mahesh.jpg";
-import img3 from "../../assets/arun.jpg";
+import img3 from "../../assets/mike.jpeg";
 import img4 from "../../assets/akash.png";
 
 // SearchableDropdown Component (Light Theme)
@@ -237,7 +237,7 @@ const CodingPage = () => {
     },
     {
       id: 3,
-      name: "Arun",
+      name: "Mike",
       role: "Programmer",
       image: img3,
       isLead: false,

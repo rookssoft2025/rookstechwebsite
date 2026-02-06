@@ -42,8 +42,8 @@ import { db } from "../../../../firebase";
 import img1 from "../../assets/santhiya.jpg";
 import img2 from "../../assets/ashika.jpg";
 import img3 from "../../assets/ashmi.jpg";
-import img4 from "../../assets/ancy.jpg";
-import img5 from "../../assets/canute.jpg";
+import img4 from "../../assets/abi.jpg";
+// import img5 from "../../assets/canute.jpg";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../../firebase";
 
@@ -254,8 +254,8 @@ const PaperWritingPage = () => {
   const teamMembers = [
     { id: 2, name: "Ashika", role: "Senior Writer", image: img2, isLead: false },
     { id: 3, name: "Ashmi", role: "Writer", image: img3, isLead: false },
-    { id: 4, name: "Ancy", role: "Writer", image: img4, isLead: false },
-    { id: 5, name: "Canute", role: "Writer", image: img5, isLead: false },
+    { id: 4, name: "Abirame Susee", role: "Writer", image: img4, isLead: false },
+    // { id: 5, name: "Canute", role: "Writer", image: img5, isLead: false },
   ];
 
   // State management

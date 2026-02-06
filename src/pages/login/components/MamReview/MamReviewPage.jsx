@@ -31,13 +31,13 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../../../firebase"; // Make sure this path is correct
 import imgAbinesh from "../../assets/abinesh.jpg";
 import imgMahesh from "../../assets/mahesh.jpg";
-import imgArun from "../../assets/arun.jpg";
+import imgMike from "../../assets/mike.jpeg";
 import imgAkash from "../../assets/akash.png";
 import imgSanthiya from "../../assets/santhiya.jpg";
 import imgAshika from "../../assets/ashika.jpg";
 import imgAshmi from "../../assets/ashmi.jpg";
-import imgAncy from "../../assets/ancy.jpg";
-import imgCanute from "../../assets/canute.jpg";
+import imgAbi from "../../assets/abi.jpg";
+// import imgCanute from "../../assets/canute.jpg";
 import imgShajini from "../../assets/shajini.jpg";
 
 const MamReviewPage = () => {
@@ -247,13 +247,13 @@ const MamReviewPage = () => {
     },
     {
       id: 3,
-      name: "Arun",
+      name: "Mike",
       role: "Programmer",
-      email: "arun@research.com",
+      email: "mike@research.com",
       phone: "N/A",
       department: "Coding",
       avatarColor: "bg-purple-500",
-      image: imgArun,
+      image: imgMike,
       totalProjects: 0,
       activeProjects: 0,
       completedProjects: 0,
@@ -287,7 +287,7 @@ const MamReviewPage = () => {
     {
       id: 6,
       name: "Ashika",
-      role: "Senior Writer",
+      role: "Writer",
       email: "ashika@research.com",
       phone: "N/A",
       department: "Writing",
@@ -312,30 +312,30 @@ const MamReviewPage = () => {
     },
     {
       id: 8,
-      name: "Ancy",
+      name: "Abirame Susee",
       role: "Writer",
-      email: "ancy@research.com",
+      email: "abi@research.com",
       phone: "N/A",
       department: "Writing",
       avatarColor: "bg-teal-500",
-      image: imgAncy,
+      image: imgAbi,
       totalProjects: 0,
       activeProjects: 0,
       completedProjects: 0,
     },
-    {
-      id: 9,
-      name: "Canute",
-      role: "Writer",
-      email: "canute@research.com",
-      phone: "N/A",
-      department: "Writing",
-      avatarColor: "bg-cyan-500",
-      image: imgCanute,
-      totalProjects: 0,
-      activeProjects: 0,
-      completedProjects: 0,
-    },
+    // {
+    //   id: 9,
+    //   name: "Canute",
+    //   role: "Writer",
+    //   email: "canute@research.com",
+    //   phone: "N/A",
+    //   department: "Writing",
+    //   avatarColor: "bg-cyan-500",
+    //   image: imgCanute,
+    //   totalProjects: 0,
+    //   activeProjects: 0,
+    //   completedProjects: 0,
+    // },
     {
       id: 10,
       name: "Shajini",

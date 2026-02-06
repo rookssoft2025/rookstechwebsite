@@ -37,7 +37,7 @@ import {
 import img1 from "../../assets/abinesh.jpg";
 import img2 from "../../assets/shajini.jpg";
 import img3 from "../../assets/mahesh.jpg";
-import img4 from "../../assets/arun.jpg";
+// import img4 from "../../assets/arun.jpg";
 import img5 from "../../assets/akash.png";
 
 import { signOut } from "firebase/auth";
@@ -93,7 +93,7 @@ const ProposalPage = () => {
   const teamMembers = [
     { id: 1, name: "Shajini", role: "Researcher", image: img2 },
     { id: 2, name: "Mahesh", role: "Programmer", image: img3 },
-    { id: 3, name: "Arun", role: "Programmer", image: img4 },
+    // { id: 3, name: "Arun", role: "Programmer", image: img4 },
     { id: 4, name: "Akash", role: "Programmer", image: img5 },
   ];
 
