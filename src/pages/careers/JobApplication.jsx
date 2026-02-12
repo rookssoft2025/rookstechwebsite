@@ -579,12 +579,12 @@ export default function JobApplication() {
                                                         className="w-full bg-[#112240] border border-[#233554] rounded-lg px-4 py-3 focus:outline-none focus:border-[#64ffda] transition-colors text-white"
                                                         placeholder="95.5" />
                                                 </div>
-                                                <div className="space-y-2 md:col-span-2">
+                                                {/* <div className="space-y-2 md:col-span-2">
                                                     <label className="text-sm font-medium text-gray-400">Main Subjects</label>
                                                     <input type="text" name="tenthSubjects" value={formData.tenthSubjects} onChange={handleInputChange}
                                                         className="w-full bg-[#112240] border border-[#233554] rounded-lg px-4 py-3 focus:outline-none focus:border-[#64ffda] transition-colors text-white"
                                                         placeholder="Science, Mathematics, Social Studies, English, Hindi" />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
 
@@ -633,12 +633,12 @@ export default function JobApplication() {
                                                         ))}
                                                     </select>
                                                 </div>
-                                                <div className="space-y-2 md:col-span-2">
+                                                {/* <div className="space-y-2 md:col-span-2">
                                                     <label className="text-sm font-medium text-gray-400">Main Subjects</label>
                                                     <input type="text" name="twelfthSubjects" value={formData.twelfthSubjects} onChange={handleInputChange}
                                                         className="w-full bg-[#112240] border border-[#233554] rounded-lg px-4 py-3 focus:outline-none focus:border-[#64ffda] transition-colors text-white"
                                                         placeholder="Physics, Chemistry, Mathematics, Computer Science" />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
 
