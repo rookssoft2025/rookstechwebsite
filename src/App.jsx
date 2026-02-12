@@ -6,6 +6,7 @@ import Solutions from "./pages/solutions/Solutions";
 import About from "./pages/about/About";
 import Work from "./pages/works/Works";
 import Careers from "./pages/careers/Career";
+import JobApplication from "./pages/careers/JobApplication";
 import SplashScreen from "./components/SplashScreen";
 import ScrollToTop from "./components/layout/ScrollTop";
 import Research from "./pages/reserch/Reserch";
@@ -43,17 +44,18 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/work" element={<Work />} />
         <Route path="/careers" element={<Careers />} />
+        <Route path="/careers/apply" element={<JobApplication />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/proposal" element={<ProposalPage />} />
         <Route path="/dashboard/paper-writing-page" element={<PaperWritingPage />} />
         <Route path="/dashboard/coding-page" element={<CodingPage />} />
-        <Route path="/dashboard/journal-page" element={< JournalPage/>} />
-        <Route path="/dashboard/mam-review-page" element={< MamReviewPage/>} />
-        <Route path="/dashboard/reports-page" element={< ReportsPage/>} />
-        <Route path="/dashboard/archive-page" element={< ArchivePage/>} />
+        <Route path="/dashboard/journal-page" element={< JournalPage />} />
+        <Route path="/dashboard/mam-review-page" element={< MamReviewPage />} />
+        <Route path="/dashboard/reports-page" element={< ReportsPage />} />
+        <Route path="/dashboard/archive-page" element={< ArchivePage />} />
       </Routes>
-      <ScrollToTopButton/>
+      <ScrollToTopButton />
     </SplashContext.Provider>
   );
 }
