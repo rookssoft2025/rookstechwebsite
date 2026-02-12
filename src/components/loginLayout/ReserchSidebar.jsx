@@ -8,6 +8,7 @@ import {
   BookOpen,
   BarChart,
   ArchiveIcon,
+  CheckCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -89,6 +90,16 @@ const ReserchSidebar = ({
       bgColor: "bg-slate-50",
       borderColor: "border-slate-200",
     },
+    {
+      id: "application-review",
+      label: "Application Review",
+      icon: CheckCircle,
+      description: "Review job applications",
+      route: "/dashboard/application-review",
+      color: "text-pink-600",
+      bgColor: "bg-pink-50",
+      borderColor: "border-pink-200",
+    },
   ];
 
   const getSectionContent = (sectionId) => {
@@ -163,14 +174,13 @@ const ReserchSidebar = ({
                   navigate(item.route);
                 }
               }}
-              className={`w-full flex items-center space-x-4 px-5 py-4 rounded-xl transition-all duration-300 group text-left relative overflow-hidden ${
-                activeTab === item.id
-                  ? `bg-gradient-to-r ${item.color.replace(
-                      "text-",
-                      "from-"
-                    )} to-opacity-10 shadow-lg border border-slate-600 text-white`
-                  : "text-slate-300 hover:text-white hover:bg-slate-700/50 border border-transparent"
-              }`}
+              className={`w-full flex items-center space-x-4 px-5 py-4 rounded-xl transition-all duration-300 group text-left relative overflow-hidden ${activeTab === item.id
+                ? `bg-gradient-to-r ${item.color.replace(
+                  "text-",
+                  "from-"
+                )} to-opacity-10 shadow-lg border border-slate-600 text-white`
+                : "text-slate-300 hover:text-white hover:bg-slate-700/50 border border-transparent"
+                }`}
               whileHover={{
                 scale: 1.02,
                 transition: { duration: 0.2 },
@@ -187,11 +197,10 @@ const ReserchSidebar = ({
               )}
 
               <div
-                className={`p-3 rounded-lg transition-all duration-300 flex-shrink-0 ${
-                  activeTab === item.id
-                    ? `bg-white/10 ${item.color}`
-                    : "bg-slate-700 text-slate-400 group-hover:bg-slate-600 group-hover:text-slate-300"
-                }`}
+                className={`p-3 rounded-lg transition-all duration-300 flex-shrink-0 ${activeTab === item.id
+                  ? `bg-white/10 ${item.color}`
+                  : "bg-slate-700 text-slate-400 group-hover:bg-slate-600 group-hover:text-slate-300"
+                  }`}
               >
                 <item.icon size={20} />
               </div>
@@ -200,9 +209,8 @@ const ReserchSidebar = ({
                   {item.label}
                 </span>
                 <span
-                  className={`text-xs block mt-1 truncate ${
-                    activeTab === item.id ? "text-indigo-200" : "text-slate-400"
-                  }`}
+                  className={`text-xs block mt-1 truncate ${activeTab === item.id ? "text-indigo-200" : "text-slate-400"
+                    }`}
                 >
                   {item.description}
                 </span>

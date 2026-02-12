@@ -351,7 +351,6 @@ export default function JobApplication() {
                     </motion.div>
                 </div>
             </div>
-            <Footer />
         </div>
     );
 }

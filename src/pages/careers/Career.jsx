@@ -3,7 +3,7 @@ import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import CareerHero from "./CareerHero";
 import CoreValues from "./CareersCard";
-import ServiceCards from "./AnimatedCard";
+// import ServiceCards from "./AnimatedCard";
 
 export default function Careers() {
   const [showNavbar, setShowNavbar] = useState(true);
@@ -130,21 +130,24 @@ export default function Careers() {
 
         {/* Content */}
         <div className="pt-[calc(80px+24px)]">
-          <CareerHero /><div className="flex flex-col items-center justify-center text-white my-10">
+          <CareerHero />
+
+          <div className="flex flex-col items-center justify-center text-white my-10 border border-white">
             <h1 className="text-[20px] md:text-[30px]">Let’s Build the Future Together</h1>
             <a href="/careers/apply" className="mt-6 px-8 py-3 bg-[#64ffda] text-[#0a192f] font-bold rounded-full hover:bg-[#52dcb8] transition-all transform hover:-translate-y-1 shadow-lg shadow-[#64ffda]/20">
               Apply Now
             </a>
           </div>
+
           <CoreValues />
         </div>
 
-        <div className="">
+        {/* <div className="">
 
           <div className="mt-10">
             <ServiceCards />
           </div>
-        </div>
+        </div> */}
 
       </div>
 
