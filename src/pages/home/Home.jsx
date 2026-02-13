@@ -115,13 +115,13 @@ export default function Home() {
           }}
         >
           {/* Individual moving blinking stars */}
-          <div className="absolute top-[10%] left-[10%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarHorizontal" style={{animationDelay: '0s'}}></div>
-          <div className="absolute top-[25%] left-[75%] w-0.5 h-0.5 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarVertical" style={{animationDelay: '1.5s'}}></div>
-          <div className="absolute top-[40%] left-[30%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarDiagonal" style={{animationDelay: '0.7s'}}></div>
-          <div className="absolute top-[60%] left-[60%] w-0.5 h-0.5 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarHorizontal" style={{animationDelay: '2.2s'}}></div>
-          <div className="absolute top-[80%] left-[20%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarVertical" style={{animationDelay: '1s'}}></div>
-          <div className="absolute top-[15%] left-[50%] w-0.5 h-0.5 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarDiagonal" style={{animationDelay: '0.5s'}}></div>
-          <div className="absolute top-[70%] left-[85%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarHorizontal" style={{animationDelay: '1.8s'}}></div>
+          <div className="absolute top-[10%] left-[10%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarHorizontal" style={{ animationDelay: '0s' }}></div>
+          <div className="absolute top-[25%] left-[75%] w-0.5 h-0.5 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarVertical" style={{ animationDelay: '1.5s' }}></div>
+          <div className="absolute top-[40%] left-[30%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarDiagonal" style={{ animationDelay: '0.7s' }}></div>
+          <div className="absolute top-[60%] left-[60%] w-0.5 h-0.5 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarHorizontal" style={{ animationDelay: '2.2s' }}></div>
+          <div className="absolute top-[80%] left-[20%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarVertical" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute top-[15%] left-[50%] w-0.5 h-0.5 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarDiagonal" style={{ animationDelay: '0.5s' }}></div>
+          <div className="absolute top-[70%] left-[85%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarHorizontal" style={{ animationDelay: '1.8s' }}></div>
         </div>
 
         {/* Navbar */}

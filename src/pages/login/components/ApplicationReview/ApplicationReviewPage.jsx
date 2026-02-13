@@ -33,6 +33,7 @@ import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
 import { db } from "../../../../firebase";
 import { collection, onSnapshot, query, orderBy, updateDoc, doc } from "firebase/firestore";
 
+
 const ApplicationReviewPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [activeTab, setActiveTab] = useState("application-review");
@@ -40,9 +41,12 @@ const ApplicationReviewPage = () => {
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filterStatus, setFilterStatus] = useState("applications");
+    const [applicationType, setApplicationType] = useState("fellowship"); // 'fellowship' or 'intern'
 
     useEffect(() => {
-        const q = query(collection(db, "Application"), orderBy("submittedAt", "desc"));
+        setLoading(true);
+        const collectionName = applicationType === "fellowship" ? "Application" : "internships";
+        const q = query(collection(db, collectionName), orderBy("submittedAt", "desc"));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const apps = [];
             querySnapshot.forEach((doc) => {
@@ -56,7 +60,7 @@ const ApplicationReviewPage = () => {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [applicationType]);
 
     const filteredApplications = applications.filter(app => {
         const matchesSearch = app.personal?.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -85,7 +89,8 @@ const ApplicationReviewPage = () => {
 
     const handleUpdateStatus = async (applicationId, newStatus) => {
         try {
-            const applicationRef = doc(db, "Application", applicationId);
+            const collectionName = applicationType === "fellowship" ? "Application" : "internships";
+            const applicationRef = doc(db, collectionName, applicationId);
             await updateDoc(applicationRef, {
                 status: newStatus
             });
@@ -122,6 +127,22 @@ const ApplicationReviewPage = () => {
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                        {/* Application Type Tabs */}
+                        <div className="flex bg-slate-100 p-1 rounded-2xl">
+                            <button
+                                onClick={() => setApplicationType("fellowship")}
+                                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${applicationType === "fellowship" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                            >
+                                Research Fellowship
+                            </button>
+                            <button
+                                onClick={() => setApplicationType("intern")}
+                                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${applicationType === "intern" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                            >
+                                Research Intern
+                            </button>
+                        </div>
+
                         {/* Status Filter */}
                         <div className="flex items-center bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl p-1.5 shadow-lg shadow-slate-200/50">
                             {["applications", "shortlisted"].map((status) => (
@@ -252,6 +273,12 @@ const ApplicationReviewPage = () => {
                                                     <span className="px-4 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm border border-white/30">
                                                         Submitted {formatDate(selectedApplication.submittedAt)}
                                                     </span>
+                                                    {selectedApplication.research?.policyAgreed && (
+                                                        <span className="px-4 py-1.5 bg-emerald-500/20 backdrop-blur-sm rounded-full text-emerald-300 text-sm border border-emerald-500/30 flex items-center gap-1">
+                                                            <CheckCircle size={14} />
+                                                            Policy Agreed
+                                                        </span>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -406,7 +433,7 @@ const ApplicationReviewPage = () => {
                                                             <div className="bg-gradient-to-b from-slate-50 to-white p-4 rounded-xl border border-slate-200 text-center hover:border-indigo-300 transition-all duration-300">
                                                                 <p className="text-xs font-bold text-slate-400 uppercase mb-2">{sem}</p>
                                                                 <p className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent">
-                                                                    {gpa || "-"}
+                                                                    {gpa || "N/A"}
                                                                 </p>
                                                             </div>
                                                             {gpa && parseFloat(gpa) >= 8.5 && (

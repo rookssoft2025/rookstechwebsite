@@ -31,7 +31,12 @@ export default function CareerHero() {
               CAREERS
             </motion.h1>
           </div>
-
+          <div className="flex flex-col items-center justify-center text-white my-10 p-6 rounded-2xl w-[90%] md:w-auto mx-auto text-center bg-[#112240]/30 backdrop-blur-sm">
+            <h1 className="text-[28px] md:text-[40px] font-bold leading-tight">Let’s Build the Future Together</h1>
+            <a href="/careers/apply" className="mt-6 px-8 py-3 bg-[#64ffda] text-[#0a192f] font-bold rounded-full hover:bg-[#52dcb8] transition-all transform hover:-translate-y-1 shadow-lg shadow-[#64ffda]/20">
+              Apply Now
+            </a>
+          </div>
           <div className="flex items-center justify-around flex-col md:flex-row md:space-x-6 px-4">
             <motion.p
               className="mt-8 font-semibold text-center text-[20px] md:text-[36px] leading-snug max-w-4xl relative z-10"
@@ -39,14 +44,14 @@ export default function CareerHero() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9 }}
             >
-             WE’RE BUILDING DIGITAL SOLUTIONS THAT SHAPE THE FUTURE — AND WE’D LOVE YOU TO BE PART OF IT
+              WE’RE BUILDING DIGITAL SOLUTIONS THAT SHAPE THE FUTURE — AND WE’D LOVE YOU TO BE PART OF IT
             </motion.p>
             {/* <div className="mt-10 sm:mt-0 relative">
               <FloatingElement className="">
                  <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-[40%] blur-lg animate-pulse"></div>
                 <img src={gearImg1} alt="gear" className="w-[250px] md:w-[300px]" />
               </FloatingElement> */}
-              <CareersAnimation/>
+            <CareersAnimation />
             {/* </div> */}
           </div>
         </div>
