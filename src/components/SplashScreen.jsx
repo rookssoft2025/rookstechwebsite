@@ -18,6 +18,7 @@ const SplashScreen = ({ duration = 1500, children }) => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
+    
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
@@ -117,7 +118,7 @@ const SplashScreen = ({ duration = 1500, children }) => {
       {children}
       {!done && (
         <div
-          className={`fixed inset-0 bg-gray-900 flex flex-col items-center justify-center z-50 overflow-hidden transition-opacity duration-1000 ${
+          className={`fixed inset-0 bg-gray-900 flex flex-col items-center justify-center z-[9999] overflow-hidden transition-opacity duration-1000 ${
             fadeOut ? "opacity-0" : "opacity-100"
           }`}
         >

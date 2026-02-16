@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
+  base: "./", // ✅ FIX for Hostinger / sub-path hosting
   plugins: [
     react(),
     tailwindcss({
@@ -10,9 +11,9 @@ export default defineConfig({
         theme: {
           extend: {
             fontFamily: {
-              goodtimes: ["Good Times", "sans-serif"], // ✅ custom font
+              goodtimes: ["Good Times", "sans-serif"],
             },
-            // ✅ transforms + perspective
+            // 3D Transforms
             transform: {
               "preserve-3d": "preserve-3d",
               "rotate-y-180": "rotateY(180deg)",
@@ -21,7 +22,7 @@ export default defineConfig({
               none: "none",
               1000: "1000px",
             },
-            // ✅ keyframes
+            // Keyframes
             keyframes: {
               fadeInLeft: {
                 "0%": { opacity: "0", transform: "translateX(-50px)" },
@@ -32,8 +33,8 @@ export default defineConfig({
                 "100%": { opacity: "1", transform: "translateX(0)" },
               },
               moveStars: {
-                "0%": { "background-position": "0 0" },
-                "100%": { "background-position": "500px 500px" },
+                "0%": { backgroundPosition: "0 0" },
+                "100%": { backgroundPosition: "500px 500px" },
               },
               pulseStar: {
                 "0%": { opacity: "0.2", transform: "scale(0.8)" },
@@ -45,7 +46,6 @@ export default defineConfig({
                 "50%": { transform: "translateY(-10px)" },
               },
             },
-            // ✅ animations
             animation: {
               fadeInLeft: "fadeInLeft 0.5s ease-out forwards",
               fadeInRight: "fadeInRight 0.5s ease-out forwards",
