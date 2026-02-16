@@ -19,6 +19,7 @@ export default function CandidateRegistration() {
     number: "",
     stream: "",
     semester: "",
+    otherStream: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -101,6 +102,18 @@ export default function CandidateRegistration() {
           newErrors.stream = "Please select your stream";
         } else {
           delete newErrors.stream;
+          // If stream is NOT 'Other', clear otherStream error
+          if (value !== 'Other') {
+            delete newErrors.otherStream;
+          }
+        }
+        break;
+
+      case 'otherStream':
+        if (formData.stream === 'Other' && !value.trim()) {
+          newErrors.otherStream = "Please specify your degree";
+        } else {
+          delete newErrors.otherStream;
         }
         break;
 
@@ -145,6 +158,9 @@ export default function CandidateRegistration() {
 
     if (!formData.stream) {
       newErrors.stream = "Please select your stream";
+      isValid = false;
+    } else if (formData.stream === 'Other' && !formData.otherStream.trim()) {
+      newErrors.otherStream = "Please specify your degree";
       isValid = false;
     }
 
@@ -359,7 +375,7 @@ export default function CandidateRegistration() {
                     <div className="relative">
                       <label className="block text-slate-300 text-sm font-bold mb-2 ml-1 flex items-center gap-2">
                         <span>Engineering Stream</span>
-                        {touched.stream && !errors.stream && <span className="text-green-500 text-xs">✓</span>}
+                        {touched.stream && !errors.stream && (formData.stream !== 'Other' || (touched.otherStream && !errors.otherStream)) && <span className="text-green-500 text-xs">✓</span>}
                       </label>
                       <div className="relative">
                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 z-10">
@@ -379,7 +395,7 @@ export default function CandidateRegistration() {
                           <option value="EEE" className="bg-[#0a192f]">Electrical & Electronics (EEE)</option>
                           <option value="Mech" className="bg-[#0a192f]">Mechanical Engineering</option>
                           <option value="Civil" className="bg-[#0a192f]">Civil Engineering</option>
-                          <option value="Other" className="bg-[#0a192f]">Other Available Streams</option>
+                          <option value="Other" className="bg-[#0a192f]">Other (Please specify)</option>
                         </select>
                         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500">▼</span>
                       </div>
@@ -390,6 +406,36 @@ export default function CandidateRegistration() {
                         </p>
                       )}
                     </div>
+
+                    {/* Other Stream Input field */}
+                    {formData.stream === 'Other' && (
+                      <div className={`relative transition-all duration-500 ${formData.stream === 'Other' ? 'opacity-100' : 'opacity-0'}`}>
+                        <label className="block text-slate-300 text-sm font-bold mb-2 ml-1 flex items-center gap-2">
+                          <span>Please specify Degree</span>
+                          {touched.otherStream && !errors.otherStream && <span className="text-green-500 text-xs">✓</span>}
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            🎓
+                          </span>
+                          <input
+                            type="text"
+                            name="otherStream"
+                            value={formData.otherStream}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            placeholder="e.g. B.Tech Biotech"
+                            className={`w-full bg-white/5 border ${errors.otherStream ? 'border-red-500' : touched.otherStream && !errors.otherStream ? 'border-green-500' : 'border-white/10'} focus:border-[#64ffda] rounded-xl pl-12 pr-4 py-4 text-white placeholder-slate-600 outline-none transition-all hover:bg-white/10`}
+                          />
+                        </div>
+                        {errors.otherStream && (
+                          <p className="text-red-500 text-xs mt-1 ml-1 flex items-center gap-1">
+                            <span>⚠️</span>
+                            {errors.otherStream}
+                          </p>
+                        )}
+                      </div>
+                    )}
 
                     {/* Semester Field */}
                     <div className="relative">
@@ -650,7 +696,7 @@ export default function CandidateRegistration() {
                 </p>
                 <p className="flex justify-between">
                   <span className="text-slate-400">Stream:</span>
-                  <span className="text-white font-medium">{formData.stream}</span>
+                  <span className="text-white font-medium">{formData.stream === 'Other' ? formData.otherStream : formData.stream}</span>
                 </p>
                 <p className="flex justify-between">
                   <span className="text-slate-400">Semester:</span>
