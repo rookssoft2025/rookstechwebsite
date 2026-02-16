@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect, createContext } from "react";
 import Home from "./pages/home/Home";
 import Services from "./pages/services/Service";
@@ -22,16 +22,21 @@ import ReportsPage from "./pages/login/components/Reports/ReportsPage";
 import ArchivePage from "./pages/login/components/Archive/ArchivePage";
 import ApplicationReviewPage from "./pages/login/components/ApplicationReview/ApplicationReviewPage";
 import EnergySavingTracker from "./components/EnergySavingTracker";
+import CandidateRegistration from "./pages/careers/assesment/CandidateRegistration.jsx";
+import AssessmentPage from "./pages/careers/assesment/AssessmentPage.jsx";
 
 export const SplashContext = createContext();
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 2500);
     return () => clearTimeout(timer);
   }, []);
+
+  const isAssessmentPage = location.pathname === "/careers/assessment-test";
 
   return (
     <SplashContext.Provider value={{ showSplash, setShowSplash }}>
@@ -47,6 +52,8 @@ function App() {
         <Route path="/work" element={<Work />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/careers/apply" element={<JobApplication />} />
+        <Route path="/careers/assessment" element={<CandidateRegistration />} />
+        <Route path="/careers/assessment-test" element={<AssessmentPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/proposal" element={<ProposalPage />} />
@@ -58,8 +65,12 @@ function App() {
         <Route path="/dashboard/archive-page" element={< ArchivePage />} />
         <Route path="/dashboard/application-review" element={< ApplicationReviewPage />} />
       </Routes>
-      <EnergySavingTracker />
-      <ScrollToTopButton />
+      {!isAssessmentPage && (
+        <>
+          <EnergySavingTracker />
+          <ScrollToTopButton />
+        </>
+      )}
     </SplashContext.Provider>
   );
 }

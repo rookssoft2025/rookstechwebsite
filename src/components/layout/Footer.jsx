@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Mail, Phone, MapPin, ArrowUpRight, MessageCircle, Clock, Send } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 export default function Footer() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -365,6 +367,7 @@ export default function Footer() {
         <p className="text-slate-400 text-sm">
           Copyright © 2023 Rooks and Brooks Technologies Pvt. Ltd - All Rights Reserved.
         </p>
+        <p onClick={() => navigate("/privacypolicy")} className="text-slate-400 text-sm cursor-pointer">Privacy policy</p>
       </div>
     </div>
   );
