@@ -22,6 +22,7 @@ import ReportsPage from "./pages/login/components/Reports/ReportsPage";
 import ArchivePage from "./pages/login/components/Archive/ArchivePage";
 import ApplicationReviewPage from "./pages/login/components/ApplicationReview/ApplicationReviewPage";
 import EnergySavingTracker from "./components/EnergySavingTracker";
+import CandidateRegistration from "./pages/careers/assesment/CandidateRegistration.Jsx";
 
 export const SplashContext = createContext();
 
@@ -47,6 +48,7 @@ function App() {
         <Route path="/work" element={<Work />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/careers/apply" element={<JobApplication />} />
+        <Route path="/careers/assessment" element={<CandidateRegistration />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/proposal" element={<ProposalPage />} />

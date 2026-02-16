@@ -4,12 +4,15 @@ import gearImg1 from "../../assets/careers/3Dcareer.svg";
 import ServiceCards from "./AnimatedCard";
 import FloatingElement from "../../uiComponents/FloatImg";
 import CareersAnimation from "../../uiComponents/animations/Careers";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function CareerHero() {
   const fadeUp = {
     hidden: { opacity: 0, y: 40, scale: 0.95 },
     visible: { opacity: 1, y: 0, scale: 1 },
   };
+  const navigate = useNavigate();
 
   return (
     <>
@@ -69,7 +72,9 @@ export default function CareerHero() {
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-2">Start Journey</h3>
                     <p className="text-slate-400 text-base mb-8 px-4">Evaluate your skills in <br />under 90 minutes</p>
-                    <button className="w-full px-12 py-5 bg-[#64ffda] text-[#0a192f] font-black rounded-2xl hover:bg-[#52dcb8] transition-all transform hover:scale-[1.05] active:scale-95 shadow-2xl shadow-[#64ffda]/20">
+                    <button
+                     onClick={() => navigate('/careers/assessment')}
+                     className="w-full px-12 py-5 bg-[#64ffda] text-[#0a192f] font-black rounded-2xl hover:bg-[#52dcb8] transition-all transform hover:scale-[1.05] active:scale-95 shadow-2xl shadow-[#64ffda]/20">
                       BEGIN ASSESSMENT
                     </button>
                   </div>
