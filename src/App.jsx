@@ -21,6 +21,7 @@ import MamReviewPage from "./pages/login/components/MamReview/MamReviewPage";
 import ReportsPage from "./pages/login/components/Reports/ReportsPage";
 import ArchivePage from "./pages/login/components/Archive/ArchivePage";
 import ApplicationReviewPage from "./pages/login/components/ApplicationReview/ApplicationReviewPage";
+import EnergySavingTracker from "./components/EnergySavingTracker";
 
 export const SplashContext = createContext();
 
@@ -57,6 +58,7 @@ function App() {
         <Route path="/dashboard/archive-page" element={< ArchivePage />} />
         <Route path="/dashboard/application-review" element={< ApplicationReviewPage />} />
       </Routes>
+      <EnergySavingTracker />
       <ScrollToTopButton />
     </SplashContext.Provider>
   );
