@@ -25,6 +25,7 @@ import AssessmentDetailsView from "./pages/login/components/AssessmentDetails/As
 import EnergySavingTracker from "./components/EnergySavingTracker";
 import CandidateRegistration from "./pages/careers/assesment/CandidateRegistration.jsx";
 import AssessmentPage from "./pages/careers/assesment/AssessmentPage.jsx";
+import AssessmentLogin from "./pages/careers/assesment/AssessmentLogin.jsx";
 
 export const SplashContext = createContext();
 
@@ -53,7 +54,8 @@ function App() {
         <Route path="/work" element={<Work />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/careers/apply" element={<JobApplication />} />
-        <Route path="/careers/assessment" element={<CandidateRegistration />} />
+        <Route path="/careers/assessment" element={<AssessmentLogin />} />
+        <Route path="/careers/assessment/register" element={<CandidateRegistration />} />
         <Route path="/careers/assessment-test" element={<AssessmentPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />

@@ -1151,7 +1151,7 @@ export default function AssessmentPage() {
                             </p>
 
                             <button
-                                onClick={() => navigate("/")}
+                                onClick={() => navigate("/", { replace: true })}
                                 className="w-full py-6 bg-gradient-to-r from-[#64ffda] to-blue-500 text-[#0a192f] font-extrabold rounded-2xl hover:opacity-90 transition-all shadow-xl shadow-[#64ffda]/20 uppercase tracking-widest text-lg"
                             >
                                 Back to Home

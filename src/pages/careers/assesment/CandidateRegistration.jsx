@@ -247,7 +247,7 @@ export default function CandidateRegistration() {
 
   const handleCloseSuccess = () => {
     setShowSuccessModal(false);
-    navigate("/careers/assessment-test", { state: { candidateId } });
+    navigate("/careers/assessment-test", { state: { candidateId }, replace: true });
   };
 
   const formatPhoneNumber = (value) => {
