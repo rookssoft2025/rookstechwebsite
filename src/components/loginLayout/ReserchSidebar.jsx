@@ -100,6 +100,16 @@ const ReserchSidebar = ({
       bgColor: "bg-pink-50",
       borderColor: "border-pink-200",
     },
+    {
+      id: "assessment",
+      label: "Assessment Details",
+      icon: FileText,
+      description: "View assessment details",
+      route: "/dashboard/assessment-details",
+      color: "text-teal-600",
+      bgColor: "bg-teal-50",
+      borderColor: "border-teal-200",
+    },
   ];
 
   const getSectionContent = (sectionId) => {
@@ -174,13 +184,14 @@ const ReserchSidebar = ({
                   navigate(item.route);
                 }
               }}
-              className={`w-full flex items-center space-x-4 px-5 py-4 rounded-xl transition-all duration-300 group text-left relative overflow-hidden ${activeTab === item.id
-                ? `bg-gradient-to-r ${item.color.replace(
-                  "text-",
-                  "from-"
-                )} to-opacity-10 shadow-lg border border-slate-600 text-white`
-                : "text-slate-300 hover:text-white hover:bg-slate-700/50 border border-transparent"
-                }`}
+              className={`w-full flex items-center space-x-4 px-5 py-4 rounded-xl transition-all duration-300 group text-left relative overflow-hidden ${
+                activeTab === item.id
+                  ? `bg-gradient-to-r ${item.color.replace(
+                      "text-",
+                      "from-",
+                    )} to-opacity-10 shadow-lg border border-slate-600 text-white`
+                  : "text-slate-300 hover:text-white hover:bg-slate-700/50 border border-transparent"
+              }`}
               whileHover={{
                 scale: 1.02,
                 transition: { duration: 0.2 },
@@ -197,10 +208,11 @@ const ReserchSidebar = ({
               )}
 
               <div
-                className={`p-3 rounded-lg transition-all duration-300 flex-shrink-0 ${activeTab === item.id
-                  ? `bg-white/10 ${item.color}`
-                  : "bg-slate-700 text-slate-400 group-hover:bg-slate-600 group-hover:text-slate-300"
-                  }`}
+                className={`p-3 rounded-lg transition-all duration-300 flex-shrink-0 ${
+                  activeTab === item.id
+                    ? `bg-white/10 ${item.color}`
+                    : "bg-slate-700 text-slate-400 group-hover:bg-slate-600 group-hover:text-slate-300"
+                }`}
               >
                 <item.icon size={20} />
               </div>
@@ -209,8 +221,9 @@ const ReserchSidebar = ({
                   {item.label}
                 </span>
                 <span
-                  className={`text-xs block mt-1 truncate ${activeTab === item.id ? "text-indigo-200" : "text-slate-400"
-                    }`}
+                  className={`text-xs block mt-1 truncate ${
+                    activeTab === item.id ? "text-indigo-200" : "text-slate-400"
+                  }`}
                 >
                   {item.description}
                 </span>
@@ -226,22 +239,35 @@ const ReserchSidebar = ({
           ))}
         </nav>
 
-        {/* Footer/User section */}
+        {/* Footer: energy card + small links */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-auto pt-6 border-t border-slate-700"
+          className="mt-auto pt-6"
         >
-          <div className="flex items-center space-x-3 p-4 rounded-xl bg-gradient-to-r from-indigo-900/40 to-blue-900/40 border border-indigo-700/50 backdrop-blur-sm">
-            <div className="w-11 h-11 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
-              <Users size={18} className="text-white" />
+          <div className="px-4 pb-4">
+            <div className="bg-emerald-600 text-white rounded-lg p-3 flex items-center justify-between shadow-md hover:shadow-lg transition-shadow">
+              <div>
+                <p className="text-xs opacity-90">Energy Saved</p>
+                <p className="font-semibold text-lg">1979.50 Wh</p>
+              </div>
+              <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5 text-white"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M13 2v8h8" />
+                </svg>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white">Research Team</p>
-              <p className="text-xs text-indigo-200">Active now</p>
+
+            <div className="mt-4 flex items-center justify-between text-xs text-slate-400">
+              <div>v1.0.0</div>
+              <div className="opacity-80">Rooks & Brooks</div>
             </div>
-            <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-emerald-300 animate-pulse flex-shrink-0"></div>
           </div>
         </motion.div>
       </div>

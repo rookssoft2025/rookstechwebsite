@@ -21,6 +21,7 @@ import MamReviewPage from "./pages/login/components/MamReview/MamReviewPage";
 import ReportsPage from "./pages/login/components/Reports/ReportsPage";
 import ArchivePage from "./pages/login/components/Archive/ArchivePage";
 import ApplicationReviewPage from "./pages/login/components/ApplicationReview/ApplicationReviewPage";
+import AssessmentDetailsView from "./pages/login/components/AssessmentDetails/AssessmentDetailsView";
 import EnergySavingTracker from "./components/EnergySavingTracker";
 
 export const SplashContext = createContext();
@@ -50,13 +51,23 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/proposal" element={<ProposalPage />} />
-        <Route path="/dashboard/paper-writing-page" element={<PaperWritingPage />} />
+        <Route
+          path="/dashboard/paper-writing-page"
+          element={<PaperWritingPage />}
+        />
         <Route path="/dashboard/coding-page" element={<CodingPage />} />
-        <Route path="/dashboard/journal-page" element={< JournalPage />} />
-        <Route path="/dashboard/mam-review-page" element={< MamReviewPage />} />
-        <Route path="/dashboard/reports-page" element={< ReportsPage />} />
-        <Route path="/dashboard/archive-page" element={< ArchivePage />} />
-        <Route path="/dashboard/application-review" element={< ApplicationReviewPage />} />
+        <Route path="/dashboard/journal-page" element={<JournalPage />} />
+        <Route path="/dashboard/mam-review-page" element={<MamReviewPage />} />
+        <Route path="/dashboard/reports-page" element={<ReportsPage />} />
+        <Route path="/dashboard/archive-page" element={<ArchivePage />} />
+        <Route
+          path="/dashboard/application-review"
+          element={<ApplicationReviewPage />}
+        />
+        <Route
+          path="/dashboard/assessment-details"
+          element={<AssessmentDetailsView />}
+        />
       </Routes>
       <EnergySavingTracker />
       <ScrollToTopButton />
