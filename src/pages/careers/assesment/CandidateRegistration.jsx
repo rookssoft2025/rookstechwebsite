@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../../components/layout/Navbar";
-import Footer from "../../../components/layout/Footer";
+import { db } from "../../../firebase";
+import { collection, setDoc, doc, serverTimestamp } from "firebase/firestore";
 
 export default function CandidateRegistration() {
   const navigate = useNavigate();
@@ -12,6 +12,8 @@ export default function CandidateRegistration() {
   const [rulesAccepted, setRulesAccepted] = useState(false);
   const [modalStep, setModalStep] = useState(1);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [candidateId, setCandidateId] = useState(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -210,20 +212,42 @@ export default function CandidateRegistration() {
     setModalStep(2);
   };
 
-  const handleFinalAccept = () => {
-    setRulesAccepted(true);
-    setShowRulesModal(false);
-    setShowSuccessModal(true);
+  const handleFinalAccept = async () => {
+    try {
+      setIsSubmitting(true);
+      setRulesAccepted(true);
 
-    console.log("Form submitted with rules acceptance:", {
-      ...formData,
-      acceptedAt: new Date().toISOString()
-    });
+      const docData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.number,
+        stream: formData.stream === 'Other' ? formData.otherStream : formData.stream,
+        semester: formData.semester,
+        registeredAt: serverTimestamp(),
+        status: "registered",
+        score: 0,
+        answers: {}
+      };
+
+      const customId = `${formData.name.trim().replace(/\s+/g, '_')}_${formData.number}`;
+      await setDoc(doc(db, "interview", customId), docData);
+      setCandidateId(customId);
+
+      setShowRulesModal(false);
+      setShowSuccessModal(true);
+
+      console.log("Candidate registered with ID:", customId);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      alert("Registration failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCloseSuccess = () => {
     setShowSuccessModal(false);
-    navigate("/careers/assessment-test");
+    navigate("/careers/assessment-test", { state: { candidateId } });
   };
 
   const formatPhoneNumber = (value) => {
@@ -645,13 +669,13 @@ export default function CandidateRegistration() {
                     </button>
                     <button
                       onClick={handleFinalAccept}
-                      disabled={!rulesAccepted}
-                      className={`flex-1 px-6 py-3 rounded-xl font-bold transition-all ${rulesAccepted
+                      disabled={!rulesAccepted || isSubmitting}
+                      className={`flex-1 px-6 py-3 rounded-xl font-bold transition-all ${rulesAccepted && !isSubmitting
                         ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600'
                         : 'bg-white/10 text-white/50 cursor-not-allowed'
                         }`}
                     >
-                      Confirm & Start
+                      {isSubmitting ? 'Registering...' : 'Confirm & Start'}
                     </button>
                   </>
                 )}

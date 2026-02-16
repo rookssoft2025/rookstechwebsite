@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { db } from "../../../firebase";
+import { doc, updateDoc } from "firebase/firestore";
 
 const SECTIONS = [
     { id: 1, title: "Quantitative Aptitude & Analytical Ability Test", questionsCount: 10 },
@@ -392,6 +394,8 @@ const shuffleArray = (array) => {
 
 export default function AssessmentPage() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const candidateId = location.state?.candidateId;
     const [activeSection, setActiveSection] = useState(1);
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [timeLeft, setTimeLeft] = useState(90 * 60);
@@ -453,6 +457,26 @@ export default function AssessmentPage() {
                     } else if (newCount >= 2) {
                         setShowDisqualifiedModal(true);
                         setShowWarningModal(false);
+
+                        // Save progress on disqualification
+                        if (candidateId) {
+                            try {
+                                const { totalScore, sectionScores, detailedAnswers } = calculateDetailedResults(answers);
+                                const candidateRef = doc(db, "interview", candidateId);
+                                updateDoc(candidateRef, {
+                                    status: "disqualified",
+                                    isDisqualified: true,
+                                    disqualifiedReason: "Tab switching limit exceeded",
+                                    disqualifiedAt: new Date().toISOString(),
+                                    answers: answers,
+                                    detailedSummary: detailedAnswers,
+                                    score: totalScore,
+                                    sectionScores: sectionScores
+                                });
+                            } catch (error) {
+                                console.error("Error syncing disqualification data:", error);
+                            }
+                        }
                     }
                     return newCount;
                 });
@@ -491,16 +515,88 @@ export default function AssessmentPage() {
     const currentQuestions = shuffledData[activeSection];
     const currentQuestion = currentQuestions[currentQuestionIdx];
     const answerKey = `${activeSection}-${currentQuestion.id}`;
+    const calculateDetailedResults = (currentAnswers) => {
+        let totalScore = 0;
+        const sectionScores = {};
+        const detailedAnswers = {};
 
-    const handleOptionSelect = (option) => {
-        setAnswers({ ...answers, [answerKey]: option });
+        // Calculate score for each section (1-6)
+        Object.keys(ASSESSMENT_DATA).forEach((sIdStr) => {
+            const sId = parseInt(sIdStr);
+            const questions = ASSESSMENT_DATA[sId];
+            let sectionScore = 0;
+
+            questions.forEach(q => {
+                const key = `${sId}-${q.id}`;
+                const userAnswer = currentAnswers[key];
+
+                // Only process if the user has answered this question
+                if (userAnswer !== undefined) {
+                    let isCorrect = false;
+                    let correctAnswer = "N/A";
+
+                    if (sId <= 5) {
+                        // MCQ Logic
+                        isCorrect = userAnswer === q.answer;
+                        correctAnswer = q.answer;
+
+                        if (isCorrect) {
+                            sectionScore += 1;
+                            totalScore += 1;
+                        }
+                    } else {
+                        // Subjective Logic (Section 6)
+                        // No auto-grading based on string match for subjective
+                        isCorrect = null; // Mark as pending review
+                        correctAnswer = "Subjective Review Required";
+                    }
+
+                    // Update detailedAnswers map
+                    detailedAnswers[key] = {
+                        questionId: q.id,
+                        sectionId: sId,
+                        questionText: q.question,
+                        selectedAnswer: userAnswer,
+                        correctAnswer: correctAnswer,
+                        isCorrect: isCorrect,
+                        type: q.type || "mcq"
+                    };
+                }
+            });
+            sectionScores[sId] = sectionScore;
+        });
+
+        return { totalScore, sectionScores, detailedAnswers };
     };
 
-    const handleFinalSubmit = (auto = false) => {
+    const handleOptionSelect = (option) => {
+        const newAnswers = { ...answers, [answerKey]: option };
+        setAnswers(newAnswers);
+    };
+
+    const handleFinalSubmit = async (auto = false) => {
         if (auto) {
+            // Auto-submit logic
+            if (candidateId) {
+                try {
+                    const { totalScore, sectionScores, detailedAnswers } = calculateDetailedResults(answers);
+                    const candidateRef = doc(db, "interview", candidateId);
+                    await updateDoc(candidateRef, {
+                        status: "timeout_submitted",
+                        isDisqualified: true,
+                        disqualifiedReason: "Time limit exceeded", // Adding reason for timeout as well for clarity
+                        submittedAt: new Date().toISOString(),
+                        answers: answers,
+                        detailedSummary: detailedAnswers,
+                        score: totalScore,
+                        sectionScores: sectionScores
+                    });
+                } catch (error) {
+                    console.error("Error in timeout submission sync:", error);
+                }
+            }
             // Clear security persistence
             localStorage.removeItem("assessment_tabSwitches");
-            // Auto-submit logic
             console.log("Auto-submitting assessment due to timeout:", answers);
             setShowTimeoutModal(true);
         } else {
@@ -508,7 +604,25 @@ export default function AssessmentPage() {
         }
     };
 
-    const executeSubmit = () => {
+    const executeSubmit = async () => {
+        // Final update with status for manual submission
+        if (candidateId) {
+            try {
+                const { totalScore, sectionScores, detailedAnswers } = calculateDetailedResults(answers);
+                const candidateRef = doc(db, "interview", candidateId);
+                await updateDoc(candidateRef, {
+                    status: "submitted",
+                    submittedAt: new Date().toISOString(),
+                    answers: answers,
+                    detailedSummary: detailedAnswers,
+                    score: totalScore,
+                    sectionScores: sectionScores
+                });
+                console.log("Final submission synced to Firestore");
+            } catch (error) {
+                console.error("Error in manual submission sync:", error);
+            }
+        }
         // Clear security persistence
         localStorage.removeItem("assessment_tabSwitches");
         console.log("Manual assessment submission:", answers);
