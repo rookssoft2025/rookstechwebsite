@@ -42,7 +42,7 @@ import { db } from "../../../../firebase";
 import img1 from "../../assets/santhiya.jpg";
 import img2 from "../../assets/ashika.jpg";
 import img3 from "../../assets/ashmi.jpg";
-import img4 from "../../assets/abi.jpg";
+// import img4 from "../../assets/abi.jpg";
 // import img5 from "../../assets/canute.jpg";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../../firebase";
@@ -50,10 +50,10 @@ import { auth } from "../../../../firebase";
 // SearchableDropdown Component (Light Theme)
 const SearchableDropdown = ({ value, onChange, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [options, setOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -62,29 +62,32 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
         setOptions([]);
         return;
       }
-      
+
       setIsLoading(true);
       try {
         const q = query(
-          collection(db, 'researchProposals'),
-          where('status', '!=', 'completed')
+          collection(db, "researchProposals"),
+          where("status", "!=", "completed"),
         );
-        
+
         const snapshot = await getDocs(q);
         const titles = [];
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
           const data = doc.data();
-          if (data.title && data.title.toLowerCase().startsWith(searchTerm.toLowerCase())) {
+          if (
+            data.title &&
+            data.title.toLowerCase().startsWith(searchTerm.toLowerCase())
+          ) {
             titles.push({
               id: doc.id,
               title: data.title,
-              status: data.status || 'unknown'
+              status: data.status || "unknown",
             });
           }
         });
         setOptions(titles);
       } catch (error) {
-        console.error('Error fetching research proposals:', error);
+        console.error("Error fetching research proposals:", error);
       } finally {
         setIsLoading(false);
       }
@@ -100,8 +103,8 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
   }, [searchTerm, isOpen]);
 
   const filteredOptions = useMemo(() => {
-    return options.filter(option =>
-      option.title.toLowerCase().includes(searchTerm.toLowerCase())
+    return options.filter((option) =>
+      option.title.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [options, searchTerm]);
 
@@ -109,22 +112,22 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
-        setSearchTerm('');
+        setSearchTerm("");
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleSelect = (title) => {
     onChange(title);
     setIsOpen(false);
-    setSearchTerm('');
+    setSearchTerm("");
   };
 
   const handleClear = () => {
-    onChange('');
-    setSearchTerm('');
+    onChange("");
+    setSearchTerm("");
   };
 
   return (
@@ -178,14 +181,18 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
               />
             </div>
           </div>
-          
+
           <div className="py-1">
             {isLoading ? (
-              <div className="px-4 py-3 text-center text-gray-600">Loading paper titles...</div>
+              <div className="px-4 py-3 text-center text-gray-600">
+                Loading paper titles...
+              </div>
             ) : (
               <>
                 <div className="px-4 py-2 text-xs text-gray-600 border-b border-gray-200">
-                  {filteredOptions.length} paper{filteredOptions.length !== 1 ? 's' : ''} found (excluding completed papers)
+                  {filteredOptions.length} paper
+                  {filteredOptions.length !== 1 ? "s" : ""} found (excluding
+                  completed papers)
                 </div>
                 {filteredOptions.map((option) => (
                   <button
@@ -195,15 +202,23 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
                     className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors flex items-center justify-between"
                   >
                     <div className="flex-1 min-w-0">
-                      <div className="text-gray-800 truncate">{option.title}</div>
+                      <div className="text-gray-800 truncate">
+                        {option.title}
+                      </div>
                     </div>
-                    <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ml-2 ${
-                      option.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 
-                      option.status === 'reviewing' ? 'bg-amber-100 text-amber-700' :
-                      option.status === 'started' ? 'bg-blue-100 text-blue-700' :
-                      option.status === 'on-hold' ? 'bg-red-100 text-red-700' :
-                      'bg-gray-100 text-gray-700'
-                    }`}>
+                    <span
+                      className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ml-2 ${
+                        option.status === "completed"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : option.status === "reviewing"
+                            ? "bg-amber-100 text-amber-700"
+                            : option.status === "started"
+                              ? "bg-blue-100 text-blue-700"
+                              : option.status === "on-hold"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-gray-100 text-gray-700"
+                      }`}
+                    >
                       {option.status}
                     </span>
                   </button>
@@ -214,19 +229,22 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
         </div>
       )}
 
-      {isOpen && !isLoading && searchTerm.length > 0 && filteredOptions.length === 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg p-4">
-          <div className="text-center">
-            <FileText className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-            <div className="text-gray-600">
-              No research papers found starting with "{searchTerm}"
-            </div>
-            <div className="text-gray-500 text-xs mt-1">
-              Try a different search term
+      {isOpen &&
+        !isLoading &&
+        searchTerm.length > 0 &&
+        filteredOptions.length === 0 && (
+          <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg p-4">
+            <div className="text-center">
+              <FileText className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+              <div className="text-gray-600">
+                No research papers found starting with "{searchTerm}"
+              </div>
+              <div className="text-gray-500 text-xs mt-1">
+                Try a different search term
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };
@@ -252,9 +270,21 @@ const PaperWritingPage = () => {
   };
 
   const teamMembers = [
-    { id: 2, name: "Ashika", role: "Senior Writer", image: img2, isLead: false },
+    {
+      id: 2,
+      name: "Ashika",
+      role: "Senior Writer",
+      image: img2,
+      isLead: false,
+    },
     { id: 3, name: "Ashmi", role: "Writer", image: img3, isLead: false },
-    { id: 4, name: "Abirame Susee", role: "Writer", image: img4, isLead: false },
+    // {
+    //   id: 4,
+    //   name: "Abirame Susee",
+    //   role: "Writer",
+    //   image: img4,
+    //   isLead: false,
+    // },
     // { id: 5, name: "Canute", role: "Writer", image: img5, isLead: false },
   ];
 
@@ -268,7 +298,7 @@ const PaperWritingPage = () => {
   // Refs for date inputs
   const startDateRef = useRef(null);
   const deadlineRef = useRef(null);
-  
+
   const [newPaper, setNewPaper] = useState({
     title: "",
     takenBy: "",
@@ -306,54 +336,64 @@ const PaperWritingPage = () => {
 
   // Status options (Light Theme)
   const statusOptions = [
-    { 
-      value: "Started", 
-      label: "Started", 
-      color: "text-blue-600", 
+    {
+      value: "Started",
+      label: "Started",
+      color: "text-blue-600",
       bg: "bg-blue-50",
       border: "border-blue-200",
-      icon: Clock, 
-      count: 0 
+      icon: Clock,
+      count: 0,
     },
-    { 
-      value: "Reviewing", 
-      label: "Reviewing", 
-      color: "text-amber-600", 
+    {
+      value: "Reviewing",
+      label: "Reviewing",
+      color: "text-amber-600",
       bg: "bg-amber-50",
       border: "border-amber-200",
-      icon: Eye, 
-      count: 0 
+      icon: Eye,
+      count: 0,
     },
-    { 
-      value: "Completed", 
-      label: "Completed", 
-      color: "text-emerald-600", 
+    {
+      value: "Completed",
+      label: "Completed",
+      color: "text-emerald-600",
       bg: "bg-emerald-50",
       border: "border-emerald-200",
-      icon: CheckCircle, 
-      count: 0 
+      icon: CheckCircle,
+      count: 0,
     },
-    { 
-      value: "On Hold", 
-      label: "On Hold", 
-      color: "text-red-600", 
+    {
+      value: "On Hold",
+      label: "On Hold",
+      color: "text-red-600",
       bg: "bg-red-50",
       border: "border-red-200",
-      icon: AlertCircle, 
-      count: 0 
+      icon: AlertCircle,
+      count: 0,
     },
   ];
 
-  // Filter papers based on selected filter
+  // Filter papers based on selected filter and sort by deadline newest first
   const filteredPapers = useMemo(() => {
-    if (statusFilter === null) return papers;
-    return papers.filter((paper) => paper.status === statusFilter);
+    let list;
+    if (statusFilter === null) {
+      list = papers;
+    } else {
+      list = papers.filter((paper) => paper.status === statusFilter);
+    }
+
+    return [...list].sort((a, b) => {
+      const da = a.deadline ? new Date(a.deadline) : new Date(0);
+      const db = b.deadline ? new Date(b.deadline) : new Date(0);
+      return db - da; // descending
+    });
   }, [papers, statusFilter]);
 
   // Calculate pagination data
   const totalItems = filteredPapers.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  
+
   // Reset to first page when filter changes
   useEffect(() => {
     setCurrentPage(1);
@@ -370,7 +410,7 @@ const PaperWritingPage = () => {
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
-    
+
     if (totalPages <= maxVisiblePages) {
       for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
@@ -380,25 +420,25 @@ const PaperWritingPage = () => {
         for (let i = 1; i <= 4; i++) {
           pageNumbers.push(i);
         }
-        pageNumbers.push('...');
+        pageNumbers.push("...");
         pageNumbers.push(totalPages);
       } else if (currentPage >= totalPages - 2) {
         pageNumbers.push(1);
-        pageNumbers.push('...');
+        pageNumbers.push("...");
         for (let i = totalPages - 3; i <= totalPages; i++) {
           pageNumbers.push(i);
         }
       } else {
         pageNumbers.push(1);
-        pageNumbers.push('...');
+        pageNumbers.push("...");
         for (let i = currentPage - 1; i <= currentPage + 1; i++) {
           pageNumbers.push(i);
         }
-        pageNumbers.push('...');
+        pageNumbers.push("...");
         pageNumbers.push(totalPages);
       }
     }
-    
+
     return pageNumbers;
   };
 
@@ -416,11 +456,11 @@ const PaperWritingPage = () => {
   // Get due status considering paper status (Light Theme)
   const getDueStatus = (deadline, paperStatus) => {
     if (!deadline) return null;
-    
+
     if (paperStatus !== "Started") {
       return null;
     }
-    
+
     const today = new Date();
     const deadlineDate = new Date(deadline);
     const diffTime = deadlineDate - today;
@@ -486,13 +526,14 @@ const PaperWritingPage = () => {
         await updatePaperWriting(paperToSubmit);
         setPapers((prev) =>
           prev.map((p) =>
-            p.id === paperToSubmit.id ? { ...p, ...paperToSubmit } : p
-          )
+            p.id === paperToSubmit.id ? { ...p, ...paperToSubmit } : p,
+          ),
         );
       } else {
-        const nextSerialNo = papers.length > 0
-          ? Math.max(...papers.map((p) => p.serialNo || 0)) + 1
-          : 1;
+        const nextSerialNo =
+          papers.length > 0
+            ? Math.max(...papers.map((p) => p.serialNo || 0)) + 1
+            : 1;
         const paperToSubmit = { serialNo: nextSerialNo, ...newPaper };
         const created = await addPaperWriting(paperToSubmit);
         setPapers((prev) => [
@@ -580,12 +621,12 @@ const PaperWritingPage = () => {
     if (!confirmLogout) return;
 
     setIsLoggingOut(true);
-    
+
     try {
       await signOut(auth);
-      localStorage.removeItem('rememberedEmail');
-      localStorage.removeItem('rememberMe');
-      sessionStorage.removeItem('isLoggedIn');
+      localStorage.removeItem("rememberedEmail");
+      localStorage.removeItem("rememberMe");
+      sessionStorage.removeItem("isLoggedIn");
       console.log("Logout successful");
       navigate("/login");
     } catch (error) {
@@ -618,9 +659,11 @@ const PaperWritingPage = () => {
   ];
 
   // Transform current page papers data for DataTable
-  const tableData = currentItems.map((paper) => {
-    const globalIndex = (currentPage - 1) * itemsPerPage + paper.serialNo;
-    const paperStatusOption = statusOptions.find((s) => s.value === paper.status) || statusOptions[0];
+  const tableData = currentItems.map((paper, index) => {
+    // serial number based on display order (pagination + index)
+    const globalIndex = (currentPage - 1) * itemsPerPage + index + 1;
+    const paperStatusOption =
+      statusOptions.find((s) => s.value === paper.status) || statusOptions[0];
     const PaperStatusIcon = paperStatusOption.icon;
     const paperStatusColor = paperStatusOption.color;
     const paperStatusBg = paperStatusOption.bg;
@@ -634,7 +677,10 @@ const PaperWritingPage = () => {
         const dueStatus = getDueStatus(paperData.deadline, paperData.status);
 
         return (
-          <tr key={paperData.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+          <tr
+            key={paperData.id}
+            className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+          >
             <td className="py-4 px-4 text-center">
               <div className="text-indigo-600 font-bold text-lg">
                 {globalIndex}
@@ -659,7 +705,8 @@ const PaperWritingPage = () => {
                   src={
                     paperData.takenBy === leadResearcher.name
                       ? leadResearcher.image
-                      : teamMembers.find((m) => m.name === paperData.takenBy)?.image ||
+                      : teamMembers.find((m) => m.name === paperData.takenBy)
+                          ?.image ||
                         "https://api.dicebear.com/7.x/avataaars/svg?seed=default"
                   }
                   alt={paperData.takenBy}
@@ -691,8 +738,12 @@ const PaperWritingPage = () => {
               </div>
             </td>
             <td className="py-4 px-4">
-              <div className={`inline-flex items-center px-3 py-1 rounded-full ${paperStatusBg} border ${paperStatusBorder}`}>
-                <PaperStatusIcon className={`w-4 h-4 mr-2 ${paperStatusColor}`} />
+              <div
+                className={`inline-flex items-center px-3 py-1 rounded-full ${paperStatusBg} border ${paperStatusBorder}`}
+              >
+                <PaperStatusIcon
+                  className={`w-4 h-4 mr-2 ${paperStatusColor}`}
+                />
                 <span className={`text-sm font-medium ${paperStatusColor}`}>
                   {paperData.status}
                 </span>
@@ -754,7 +805,10 @@ const PaperWritingPage = () => {
                 </div>
                 <div
                   className={`p-4 rounded-lg border ${(() => {
-                    const dueStatus = getDueStatus(paper.deadline, paper.status);
+                    const dueStatus = getDueStatus(
+                      paper.deadline,
+                      paper.status,
+                    );
                     return dueStatus
                       ? `${dueStatus.bg} ${dueStatus.borderColor}`
                       : "bg-white border-gray-200";
@@ -767,14 +821,20 @@ const PaperWritingPage = () => {
                   <div className="text-xl font-bold text-gray-800">
                     {formatDate(paper.deadline)}
                   </div>
-                  {paper.status === "Started" && (() => {
-                    const dueStatus = getDueStatus(paper.deadline, paper.status);
-                    return dueStatus ? (
-                      <div className={`text-sm mt-1 font-medium ${dueStatus.color}`}>
-                        {dueStatus.label}
-                      </div>
-                    ) : null;
-                  })()}
+                  {paper.status === "Started" &&
+                    (() => {
+                      const dueStatus = getDueStatus(
+                        paper.deadline,
+                        paper.status,
+                      );
+                      return dueStatus ? (
+                        <div
+                          className={`text-sm mt-1 font-medium ${dueStatus.color}`}
+                        >
+                          {dueStatus.label}
+                        </div>
+                      ) : null;
+                    })()}
                 </div>
               </div>
             </div>
@@ -795,10 +855,11 @@ const PaperWritingPage = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
-            Research Paper Writing 
+            Research Paper Writing
           </h1>
           <p className="text-gray-600 mt-2">
-            Manage your research papers, track progress, and collaborate with team members
+            Manage your research papers, track progress, and collaborate with
+            team members
           </p>
         </div>
 
@@ -807,7 +868,9 @@ const PaperWritingPage = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
               <Users className="w-6 h-6 text-indigo-600 mr-3" />
-              <h2 className="text-xl font-semibold text-gray-800">Writing Team</h2>
+              <h2 className="text-xl font-semibold text-gray-800">
+                Writing Team
+              </h2>
             </div>
             <span className="text-indigo-500/70 text-sm font-medium">
               {1 + teamMembers.length} Members
@@ -834,13 +897,15 @@ const PaperWritingPage = () => {
                     Lead
                   </span>
                 </div>
-                <p className="text-amber-600 text-sm">
-                  {leadResearcher.role}
-                </p>
+                <p className="text-amber-600 text-sm">{leadResearcher.role}</p>
               </div>
               <div className="text-right">
                 <div className="text-gray-800 font-semibold">
-                  {papers.filter((p) => p.takenBy === leadResearcher.name).length} Papers
+                  {
+                    papers.filter((p) => p.takenBy === leadResearcher.name)
+                      .length
+                  }{" "}
+                  Papers
                 </div>
               </div>
             </div>
@@ -848,7 +913,9 @@ const PaperWritingPage = () => {
 
           {/* Team Members Section */}
           <div>
-            <h3 className="text-lg font-medium text-gray-800 mb-3">Team Members</h3>
+            <h3 className="text-lg font-medium text-gray-800 mb-3">
+              Team Members
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {teamMembers.map((member) => (
                 <div
@@ -881,10 +948,16 @@ const PaperWritingPage = () => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
               <Filter className="w-5 h-5 text-indigo-600 mr-2" />
-              <h3 className="text-lg font-semibold text-gray-800">Filter by Status</h3>
+              <h3 className="text-lg font-semibold text-gray-800">
+                Filter by Status
+              </h3>
             </div>
             <div className="text-sm text-gray-600 font-medium">
-              Showing {statusFilter === null ? papers.length : papers.filter((p) => p.status === statusFilter).length} of {papers.length} papers
+              Showing{" "}
+              {statusFilter === null
+                ? papers.length
+                : papers.filter((p) => p.status === statusFilter).length}{" "}
+              of {papers.length} papers
             </div>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -896,13 +969,21 @@ const PaperWritingPage = () => {
                   : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
               }`}
             >
-              <Filter className={`w-5 h-5 mr-3 ${statusFilter === null ? "text-gray-700" : "text-gray-500"}`} />
-              <span className={`font-medium ${statusFilter === null ? "text-gray-800" : "text-gray-600"}`}>
+              <Filter
+                className={`w-5 h-5 mr-3 ${statusFilter === null ? "text-gray-700" : "text-gray-500"}`}
+              />
+              <span
+                className={`font-medium ${statusFilter === null ? "text-gray-800" : "text-gray-600"}`}
+              >
                 All Papers
               </span>
-              <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                statusFilter === null ? "bg-gray-200 text-gray-800" : "bg-gray-100 text-gray-600"
-              }`}>
+              <span
+                className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
+                  statusFilter === null
+                    ? "bg-gray-200 text-gray-800"
+                    : "bg-gray-100 text-gray-600"
+                }`}
+              >
                 {papers.length}
               </span>
             </button>
@@ -910,7 +991,9 @@ const PaperWritingPage = () => {
             {statusOptions.map((option) => {
               const Icon = option.icon;
               const isActive = statusFilter === option.value;
-              const count = papers.filter((p) => p.status === option.value).length;
+              const count = papers.filter(
+                (p) => p.status === option.value,
+              ).length;
 
               return (
                 <button
@@ -922,13 +1005,21 @@ const PaperWritingPage = () => {
                       : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                   }`}
                 >
-                  <Icon className={`w-5 h-5 mr-3 ${isActive ? option.color : "text-gray-500"}`} />
-                  <span className={`font-medium ${isActive ? option.color : "text-gray-600"}`}>
+                  <Icon
+                    className={`w-5 h-5 mr-3 ${isActive ? option.color : "text-gray-500"}`}
+                  />
+                  <span
+                    className={`font-medium ${isActive ? option.color : "text-gray-600"}`}
+                  >
                     {option.label}
                   </span>
-                  <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                    isActive ? "bg-gray-200 text-gray-800" : "bg-gray-100 text-gray-600"
-                  }`}>
+                  <span
+                    className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
+                      isActive
+                        ? "bg-gray-200 text-gray-800"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
                     {count}
                   </span>
                 </button>
@@ -942,7 +1033,9 @@ const PaperWritingPage = () => {
           <div>
             <h2 className="text-2xl font-bold text-gray-800">Active Papers</h2>
             <p className="text-gray-600 text-sm mt-1">
-              {statusFilter === null ? "Showing all papers" : `Showing ${statusFilter} papers only`}
+              {statusFilter === null
+                ? "Showing all papers"
+                : `Showing ${statusFilter} papers only`}
             </p>
           </div>
           <button
@@ -982,7 +1075,9 @@ const PaperWritingPage = () => {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   {/* Items per page selector */}
                   <div className="flex items-center gap-3">
-                    <span className="text-gray-700 text-sm font-medium">Items per page:</span>
+                    <span className="text-gray-700 text-sm font-medium">
+                      Items per page:
+                    </span>
                     <select
                       value={itemsPerPage}
                       onChange={(e) => {
@@ -991,13 +1086,23 @@ const PaperWritingPage = () => {
                       }}
                       className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-800 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
                     >
-                      <option value={5} className="bg-white">5</option>
-                      <option value={10} className="bg-white">10</option>
-                      <option value={20} className="bg-white">20</option>
-                      <option value={50} className="bg-white">50</option>
+                      <option value={5} className="bg-white">
+                        5
+                      </option>
+                      <option value={10} className="bg-white">
+                        10
+                      </option>
+                      <option value={20} className="bg-white">
+                        20
+                      </option>
+                      <option value={50} className="bg-white">
+                        50
+                      </option>
                     </select>
                     <span className="text-gray-600 text-sm">
-                      Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} papers
+                      Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                      {Math.min(currentPage * itemsPerPage, totalItems)} of{" "}
+                      {totalItems} papers
                     </span>
                   </div>
 
@@ -1023,9 +1128,12 @@ const PaperWritingPage = () => {
 
                     {/* Page numbers */}
                     <div className="flex gap-1 mx-2">
-                      {getPageNumbers().map((pageNum, index) => (
-                        pageNum === '...' ? (
-                          <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-500">
+                      {getPageNumbers().map((pageNum, index) =>
+                        pageNum === "..." ? (
+                          <span
+                            key={`ellipsis-${index}`}
+                            className="px-3 py-2 text-gray-500"
+                          >
                             ...
                           </span>
                         ) : (
@@ -1034,14 +1142,14 @@ const PaperWritingPage = () => {
                             onClick={() => goToPage(pageNum)}
                             className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
                               currentPage === pageNum
-                                ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-md shadow-indigo-500/20'
-                                : 'bg-white border border-gray-300 text-gray-700 hover:border-indigo-400 hover:bg-gray-50'
+                                ? "bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-md shadow-indigo-500/20"
+                                : "bg-white border border-gray-300 text-gray-700 hover:border-indigo-400 hover:bg-gray-50"
                             }`}
                           >
                             {pageNum}
                           </button>
-                        )
-                      ))}
+                        ),
+                      )}
                     </div>
 
                     {/* Next page button */}
@@ -1067,7 +1175,8 @@ const PaperWritingPage = () => {
                 {/* Page info */}
                 <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-200">
                   <span className="text-sm text-gray-600 font-medium">
-                    Page {currentPage} of {totalPages} • {totalItems} total papers
+                    Page {currentPage} of {totalPages} • {totalItems} total
+                    papers
                   </span>
                 </div>
               </div>
@@ -1076,7 +1185,9 @@ const PaperWritingPage = () => {
         ) : (
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center border border-gray-200 shadow-sm">
             <Filter className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">No papers found</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              No papers found
+            </h3>
             <p className="text-gray-600 mb-6">
               {statusFilter === null
                 ? "No papers have been added yet. Click 'New Paper' to get started."
@@ -1117,16 +1228,22 @@ const PaperWritingPage = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-indigo-700 mb-2">Paper Title</label>
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
+                        Paper Title
+                      </label>
                       <SearchableDropdown
                         value={newPaper.title}
-                        onChange={(value) => setNewPaper(prev => ({ ...prev, title: value }))}
+                        onChange={(value) =>
+                          setNewPaper((prev) => ({ ...prev, title: value }))
+                        }
                         placeholder="Search research paper titles..."
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-indigo-700 mb-2">Taken By</label>
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
+                        Taken By
+                      </label>
                       <select
                         id="takenBy"
                         value={newPaper.takenBy}
@@ -1136,18 +1253,24 @@ const PaperWritingPage = () => {
                       >
                         <option value="">Select researcher</option>
                         <optgroup label="Team lead">
-                          <option value={leadResearcher.name}>{leadResearcher.name} (Lead)</option>
+                          <option value={leadResearcher.name}>
+                            {leadResearcher.name} (Lead)
+                          </option>
                         </optgroup>
                         <optgroup label="Team Members">
                           {teamMembers.map((member) => (
-                            <option key={member.id} value={member.name}>{member.name} ({member.role})</option>
+                            <option key={member.id} value={member.name}>
+                              {member.name} ({member.role})
+                            </option>
                           ))}
                         </optgroup>
                       </select>
                     </div>
 
                     <div className="relative">
-                      <label className="block text-sm font-medium text-indigo-700 mb-2">Start Date</label>
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
+                        Start Date
+                      </label>
                       <div className="relative">
                         <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-indigo-600 pointer-events-none" />
                         <input
@@ -1158,7 +1281,9 @@ const PaperWritingPage = () => {
                           onChange={handleInputChange}
                           onFocus={() => startDateRef.current?.showPicker?.()}
                           onClick={() => startDateRef.current?.showPicker?.()}
-                          onTouchStart={() => startDateRef.current?.showPicker?.()}
+                          onTouchStart={() =>
+                            startDateRef.current?.showPicker?.()
+                          }
                           required
                           className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all appearance-none"
                         />
@@ -1166,7 +1291,9 @@ const PaperWritingPage = () => {
                     </div>
 
                     <div className="relative">
-                      <label className="block text-sm font-medium text-indigo-700 mb-2">Deadline</label>
+                      <label className="block text-sm font-medium text-indigo-700 mb-2">
+                        Deadline
+                      </label>
                       <div className="relative">
                         <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-600 pointer-events-none" />
                         <input
@@ -1177,7 +1304,9 @@ const PaperWritingPage = () => {
                           onChange={handleInputChange}
                           onFocus={() => deadlineRef.current?.showPicker?.()}
                           onClick={() => deadlineRef.current?.showPicker?.()}
-                          onTouchStart={() => deadlineRef.current?.showPicker?.()}
+                          onTouchStart={() =>
+                            deadlineRef.current?.showPicker?.()
+                          }
                           className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all appearance-none"
                         />
                       </div>
@@ -1185,7 +1314,9 @@ const PaperWritingPage = () => {
                   </div>
 
                   <div className="mt-6">
-                    <label className="block text-sm font-medium text-indigo-700 mb-2">Status</label>
+                    <label className="block text-sm font-medium text-indigo-700 mb-2">
+                      Status
+                    </label>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                       {statusOptions.map((option) => {
                         const Icon = option.icon;
@@ -1193,15 +1324,24 @@ const PaperWritingPage = () => {
                           <button
                             key={option.value}
                             type="button"
-                            onClick={() => setNewPaper((prev) => ({ ...prev, status: option.value }))}
+                            onClick={() =>
+                              setNewPaper((prev) => ({
+                                ...prev,
+                                status: option.value,
+                              }))
+                            }
                             className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
                               newPaper.status === option.value
                                 ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
                                 : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                             }`}
                           >
-                            <Icon className={`w-5 h-5 mb-1 ${newPaper.status === option.value ? option.color : "text-gray-500"}`} />
-                            <span className={`text-xs font-medium ${newPaper.status === option.value ? option.color : "text-gray-600"}`}>
+                            <Icon
+                              className={`w-5 h-5 mb-1 ${newPaper.status === option.value ? option.color : "text-gray-500"}`}
+                            />
+                            <span
+                              className={`text-xs font-medium ${newPaper.status === option.value ? option.color : "text-gray-600"}`}
+                            >
                               {option.label}
                             </span>
                           </button>
@@ -1211,7 +1351,9 @@ const PaperWritingPage = () => {
                   </div>
 
                   <div className="mt-6">
-                    <label className="block text-sm font-medium text-indigo-700 mb-2">Paper Details</label>
+                    <label className="block text-sm font-medium text-indigo-700 mb-2">
+                      Paper Details
+                    </label>
                     <textarea
                       id="details"
                       value={newPaper.details}
@@ -1237,9 +1379,25 @@ const PaperWritingPage = () => {
                     >
                       {isSaving ? (
                         <span className="flex items-center">
-                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          <svg
+                            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
                           </svg>
                           Saving...
                         </span>

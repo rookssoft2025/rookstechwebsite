@@ -36,8 +36,7 @@ import imgAkash from "../../assets/akash.png";
 import imgSanthiya from "../../assets/santhiya.jpg";
 import imgAshika from "../../assets/ashika.jpg";
 import imgAshmi from "../../assets/ashmi.jpg";
-import imgAbi from "../../assets/abi.jpg";
-// import imgCanute from "../../assets/canute.jpg";
+
 import imgShajini from "../../assets/shajini.jpg";
 
 const MamReviewPage = () => {
@@ -310,32 +309,7 @@ const MamReviewPage = () => {
       activeProjects: 0,
       completedProjects: 0,
     },
-    {
-      id: 8,
-      name: "Abirame Susee",
-      role: "Writer",
-      email: "abi@research.com",
-      phone: "N/A",
-      department: "Writing",
-      avatarColor: "bg-teal-500",
-      image: imgAbi,
-      totalProjects: 0,
-      activeProjects: 0,
-      completedProjects: 0,
-    },
-    // {
-    //   id: 9,
-    //   name: "Canute",
-    //   role: "Writer",
-    //   email: "canute@research.com",
-    //   phone: "N/A",
-    //   department: "Writing",
-    //   avatarColor: "bg-cyan-500",
-    //   image: imgCanute,
-    //   totalProjects: 0,
-    //   activeProjects: 0,
-    //   completedProjects: 0,
-    // },
+
     {
       id: 10,
       name: "Shajini",

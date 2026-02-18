@@ -15,6 +15,8 @@ const ReserchLayout = ({
   // Sidebar width adjusted for fullscreen side display
   const sidebarWidth = sidebarOpen ? "w-full sm:w-84" : "w-0";
   const sidebarMargin = sidebarOpen ? "sm:ml-76" : "sm:ml-0";
+  // when sidebar is open on small screens we will want to lock scrolling on main content
+  const mainOverflow = sidebarOpen ? "overflow-hidden" : "overflow-auto";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
@@ -31,9 +33,17 @@ const ReserchLayout = ({
         />
       </aside>
 
+      {/* overlay for small screens when sidebar is open */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-20 sm:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Right content (header + scrollable children) */}
       <div
-        className={`${sidebarMargin} flex flex-col min-h-screen transition-all duration-300 ease-in-out`}
+        className={`${sidebarMargin} flex flex-col min-h-screen transition-all duration-300 ease-in-out ${mainOverflow}`}
       >
         {/* Header stays visible (sticky) */}
         <header className="sticky top-0 z-20 shadow-sm">
@@ -46,7 +56,7 @@ const ReserchLayout = ({
         </header>
 
         {/* Scrollable main area */}
-        <main className="flex-1 overflow-auto p-6 bg-gradient-to-b from-white to-gray-50/50">
+        <main className="flex-1 p-4 sm:p-6 bg-gradient-to-b from-white to-gray-50/50">
           <div className="max-w-7xl mx-auto">{children}</div>
         </main>
 

@@ -60,7 +60,7 @@ const ProposalPage = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  
+
   // Modal + form states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
@@ -166,23 +166,32 @@ const ProposalPage = () => {
       setStatusOptions(updatedOptions);
     } else {
       setStatusOptions(
-        initialStatusOptions.map((option) => ({ ...option, count: 0 }))
+        initialStatusOptions.map((option) => ({ ...option, count: 0 })),
       );
     }
   }, [proposals]);
 
-  // Filter proposals based on selected filter
+  // Filter proposals based on selected filter and sort by end date
   const filteredProposals = useMemo(() => {
+    let list;
     if (statusFilter === "all") {
-      return proposals;
+      list = proposals;
+    } else {
+      list = proposals.filter((proposal) => proposal.status === statusFilter);
     }
-    return proposals.filter((proposal) => proposal.status === statusFilter);
+
+    // sort by end date (newest first)
+    return [...list].sort((a, b) => {
+      const da = a.endDate ? new Date(a.endDate) : new Date(0);
+      const db = b.endDate ? new Date(b.endDate) : new Date(0);
+      return db - da; // descending
+    });
   }, [proposals, statusFilter]);
 
   // Calculate pagination data
   const totalItems = filteredProposals.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  
+
   // Reset to first page when filter changes
   useEffect(() => {
     setCurrentPage(1);
@@ -199,7 +208,7 @@ const ProposalPage = () => {
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
-    
+
     if (totalPages <= maxVisiblePages) {
       // Show all pages if total pages is less than or equal to maxVisiblePages
       for (let i = 1; i <= totalPages; i++) {
@@ -212,27 +221,27 @@ const ProposalPage = () => {
         for (let i = 1; i <= 4; i++) {
           pageNumbers.push(i);
         }
-        pageNumbers.push('...');
+        pageNumbers.push("...");
         pageNumbers.push(totalPages);
       } else if (currentPage >= totalPages - 2) {
         // Near the end
         pageNumbers.push(1);
-        pageNumbers.push('...');
+        pageNumbers.push("...");
         for (let i = totalPages - 3; i <= totalPages; i++) {
           pageNumbers.push(i);
         }
       } else {
         // In the middle
         pageNumbers.push(1);
-        pageNumbers.push('...');
+        pageNumbers.push("...");
         for (let i = currentPage - 1; i <= currentPage + 1; i++) {
           pageNumbers.push(i);
         }
-        pageNumbers.push('...');
+        pageNumbers.push("...");
         pageNumbers.push(totalPages);
       }
     }
-    
+
     return pageNumbers;
   };
 
@@ -278,42 +287,42 @@ const ProposalPage = () => {
   // Calculate how many days it took to complete
   const calculateCompletionTiming = (startDate, completedDate) => {
     if (!startDate || !completedDate) return "";
-    
+
     const start = new Date(startDate);
     const completed = new Date(completedDate);
-    
+
     const diffTime = completed - start;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     return `${diffDays} days`;
   };
 
   // Check if completion was overdue
   const checkIfOverdue = (endDate, completedDate) => {
     if (!endDate || !completedDate) return false;
-    
+
     const deadline = new Date(endDate);
     const completed = new Date(completedDate);
-    
+
     deadline.setHours(0, 0, 0, 0);
     completed.setHours(0, 0, 0, 0);
-    
+
     return completed > deadline;
   };
 
   // Calculate how many days overdue or early
   const calculateOverdueDays = (endDate, completedDate) => {
     if (!endDate || !completedDate) return 0;
-    
+
     const deadline = new Date(endDate);
     const completed = new Date(completedDate);
-    
+
     deadline.setHours(0, 0, 0, 0);
     completed.setHours(0, 0, 0, 0);
-    
+
     const diffTime = completed - deadline;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     return diffDays;
   };
 
@@ -325,12 +334,12 @@ const ProposalPage = () => {
     if (!confirmLogout) return;
 
     setIsLoggingOut(true);
-    
+
     try {
       await signOut(auth);
-      localStorage.removeItem('rememberedEmail');
-      localStorage.removeItem('rememberMe');
-      sessionStorage.removeItem('isLoggedIn');
+      localStorage.removeItem("rememberedEmail");
+      localStorage.removeItem("rememberMe");
+      sessionStorage.removeItem("isLoggedIn");
       console.log("Logout successful");
       navigate("/login");
     } catch (error) {
@@ -391,16 +400,23 @@ const ProposalPage = () => {
 
     const originalProposal = proposals.find((p) => p.id === editingId);
     let updatedData = { ...newPaper, id: editingId };
-    
-    if (originalProposal?.status !== "Completed" && newPaper.status === "Completed") {
-      updatedData.completedDate = new Date().toISOString().split('T')[0];
-    }
-    else if (originalProposal?.status === "Completed" && newPaper.status !== "Completed") {
+
+    if (
+      originalProposal?.status !== "Completed" &&
+      newPaper.status === "Completed"
+    ) {
+      updatedData.completedDate = new Date().toISOString().split("T")[0];
+    } else if (
+      originalProposal?.status === "Completed" &&
+      newPaper.status !== "Completed"
+    ) {
       updatedData.completedDate = "";
     }
 
     await updateProposal(updatedData);
-    setProposals((prev) => prev.map((p) => (p.id === editingId ? updatedData : p)));
+    setProposals((prev) =>
+      prev.map((p) => (p.id === editingId ? updatedData : p)),
+    );
 
     setEditMode(false);
     setEditingId(null);
@@ -472,7 +488,9 @@ const ProposalPage = () => {
 
           {/* Team Leader Card */}
           <div className="mb-6">
-            <h3 className="text-lg font-medium text-gray-800 mb-3">Team Leader</h3>
+            <h3 className="text-lg font-medium text-gray-800 mb-3">
+              Team Leader
+            </h3>
             <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 transition-all duration-300">
               <img
                 src={teamLeader.image}
@@ -492,7 +510,11 @@ const ProposalPage = () => {
               </div>
               <div className="text-right">
                 <div className="text-gray-800 font-semibold">
-                  {proposals.filter((p) => p.takenBy === teamLeader.name).length} Papers
+                  {
+                    proposals.filter((p) => p.takenBy === teamLeader.name)
+                      .length
+                  }{" "}
+                  Papers
                 </div>
                 <div className="text-amber-600 text-xs font-medium">Leader</div>
               </div>
@@ -501,7 +523,9 @@ const ProposalPage = () => {
 
           {/* Team Members Section */}
           <div>
-            <h3 className="text-lg font-medium text-gray-800 mb-3">Team Members</h3>
+            <h3 className="text-lg font-medium text-gray-800 mb-3">
+              Team Members
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {teamMembers.map((member) => (
                 <div
@@ -519,7 +543,10 @@ const ProposalPage = () => {
                   </div>
                   <div className="text-right">
                     <div className="text-gray-800 font-semibold text-sm">
-                      {proposals.filter((p) => p.takenBy === member.name).length}
+                      {
+                        proposals.filter((p) => p.takenBy === member.name)
+                          .length
+                      }
                     </div>
                     <div className="text-gray-500 text-xs">Papers</div>
                   </div>
@@ -534,7 +561,9 @@ const ProposalPage = () => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
               <Filter className="w-5 h-5 text-indigo-600 mr-2" />
-              <h3 className="text-lg font-semibold text-gray-800">Filter by Status</h3>
+              <h3 className="text-lg font-semibold text-gray-800">
+                Filter by Status
+              </h3>
             </div>
             <div className="text-sm text-gray-600 font-medium">
               Showing {filteredProposals.length} of {proposals.length} proposals
@@ -554,13 +583,19 @@ const ProposalPage = () => {
                       : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                   }`}
                 >
-                  <Icon className={`w-5 h-5 mr-3 ${isActive ? option.color : "text-gray-500"}`} />
-                  <span className={`font-medium ${isActive ? option.color : "text-gray-700"}`}>
+                  <Icon
+                    className={`w-5 h-5 mr-3 ${isActive ? option.color : "text-gray-500"}`}
+                  />
+                  <span
+                    className={`font-medium ${isActive ? option.color : "text-gray-700"}`}
+                  >
                     {option.label}
                   </span>
                   <span
                     className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                      isActive ? "bg-gray-100 text-gray-800" : "bg-gray-100 text-gray-600"
+                      isActive
+                        ? "bg-gray-100 text-gray-800"
+                        : "bg-gray-100 text-gray-600"
                     }`}
                   >
                     {option.count}
@@ -606,11 +641,19 @@ const ProposalPage = () => {
           ]}
           data={currentItems.map((proposal, index) => {
             const globalIndex = (currentPage - 1) * itemsPerPage + index + 1;
-            const statusInfo = statusOptions.find((s) => s.value === proposal.status);
+            const statusInfo = statusOptions.find(
+              (s) => s.value === proposal.status,
+            );
             const StatusIcon = statusInfo?.icon;
             const deadlineStatus = checkDeadlineStatus(proposal.endDate);
-            const isOverdue = checkIfOverdue(proposal.endDate, proposal.completedDate);
-            const overdueDays = calculateOverdueDays(proposal.endDate, proposal.completedDate);
+            const isOverdue = checkIfOverdue(
+              proposal.endDate,
+              proposal.completedDate,
+            );
+            const overdueDays = calculateOverdueDays(
+              proposal.endDate,
+              proposal.completedDate,
+            );
 
             return {
               ...proposal,
@@ -620,10 +663,14 @@ const ProposalPage = () => {
                   className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors"
                 >
                   <td className="p-3 text-center">
-                    <div className="text-gray-800 font-semibold">{globalIndex}</div>
+                    <div className="text-gray-800 font-semibold">
+                      {globalIndex}
+                    </div>
                   </td>
 
-                  <td className="p-3 text-gray-800 font-medium">{item.title}</td>
+                  <td className="p-3 text-gray-800 font-medium">
+                    {item.title}
+                  </td>
 
                   <td className="p-3 text-gray-700">{item.takenBy}</td>
 
@@ -643,7 +690,9 @@ const ProposalPage = () => {
                         {isOverdue ? (
                           <>
                             <AlertOctagon className="w-4 h-4 text-red-500 mb-1" />
-                            <span className="text-xs text-red-600 font-medium">Overdue</span>
+                            <span className="text-xs text-red-600 font-medium">
+                              Overdue
+                            </span>
                             <span className="text-xs text-red-500">
                               {overdueDays} days late
                             </span>
@@ -651,7 +700,9 @@ const ProposalPage = () => {
                         ) : (
                           <>
                             <CheckCheck className="w-4 h-4 text-emerald-500 mb-1" />
-                            <span className="text-xs text-emerald-600 font-medium">On Time</span>
+                            <span className="text-xs text-emerald-600 font-medium">
+                              On Time
+                            </span>
                           </>
                         )}
                       </div>
@@ -662,10 +713,10 @@ const ProposalPage = () => {
                             deadlineStatus.status === "overdue"
                               ? "bg-red-500 animate-pulse"
                               : deadlineStatus.status === "today"
-                              ? "bg-red-500"
-                              : deadlineStatus.status === "approaching"
-                              ? "bg-amber-500"
-                              : "bg-emerald-500"
+                                ? "bg-red-500"
+                                : deadlineStatus.status === "approaching"
+                                  ? "bg-amber-500"
+                                  : "bg-emerald-500"
                           }`}
                         />
                         <span
@@ -673,10 +724,10 @@ const ProposalPage = () => {
                             deadlineStatus.status === "overdue"
                               ? "text-red-600"
                               : deadlineStatus.status === "today"
-                              ? "text-red-600"
-                              : deadlineStatus.status === "approaching"
-                              ? "text-amber-600"
-                              : "text-emerald-600"
+                                ? "text-red-600"
+                                : deadlineStatus.status === "approaching"
+                                  ? "text-amber-600"
+                                  : "text-emerald-600"
                           }`}
                         >
                           {deadlineStatus.text}
@@ -689,8 +740,12 @@ const ProposalPage = () => {
                     <div
                       className={`px-3 py-1.5 rounded-full ${statusInfo?.bg} border ${statusInfo?.border} inline-flex items-center`}
                     >
-                      <StatusIcon className={`w-4 h-4 mr-2 ${statusInfo?.color}`} />
-                      <span className={`${statusInfo?.color} font-medium`}>{item.status}</span>
+                      <StatusIcon
+                        className={`w-4 h-4 mr-2 ${statusInfo?.color}`}
+                      />
+                      <span className={`${statusInfo?.color} font-medium`}>
+                        {item.status}
+                      </span>
                     </div>
                   </td>
 
@@ -729,13 +784,23 @@ const ProposalPage = () => {
               expandContent: (
                 <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
                   <div className="flex justify-between items-start mb-4">
-                    <h4 className="text-lg font-semibold text-gray-800">Paper Details</h4>
+                    <h4 className="text-lg font-semibold text-gray-800">
+                      Paper Details
+                    </h4>
                     {proposal.status === "Completed" ? (
-                      <div className={`px-3 py-1.5 rounded-full ${isOverdue ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}`}>
+                      <div
+                        className={`px-3 py-1.5 rounded-full ${isOverdue ? "bg-red-100 text-red-700 border border-red-200" : "bg-emerald-100 text-emerald-700 border border-emerald-200"}`}
+                      >
                         <div className="flex items-center">
-                          {isOverdue ? <AlertOctagon className="w-4 h-4 mr-2" /> : <CheckCircle className="w-4 h-4 mr-2" />}
+                          {isOverdue ? (
+                            <AlertOctagon className="w-4 h-4 mr-2" />
+                          ) : (
+                            <CheckCircle className="w-4 h-4 mr-2" />
+                          )}
                           <span className="text-sm font-medium">
-                            {isOverdue ? `Completed ${overdueDays} days overdue` : 'Completed on time'}
+                            {isOverdue
+                              ? `Completed ${overdueDays} days overdue`
+                              : "Completed on time"}
                           </span>
                         </div>
                       </div>
@@ -745,15 +810,17 @@ const ProposalPage = () => {
                           deadlineStatus.status === "overdue"
                             ? "bg-red-100 text-red-700 border border-red-200"
                             : deadlineStatus.status === "today"
-                            ? "bg-red-100 text-red-700 border border-red-200"
-                            : deadlineStatus.status === "approaching"
-                            ? "bg-amber-100 text-amber-700 border border-amber-200"
-                            : "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                              ? "bg-red-100 text-red-700 border border-red-200"
+                              : deadlineStatus.status === "approaching"
+                                ? "bg-amber-100 text-amber-700 border border-amber-200"
+                                : "bg-emerald-100 text-emerald-700 border border-emerald-200"
                         }`}
                       >
                         <div className="flex items-center">
                           <AlertTriangle className="w-4 h-4 mr-2" />
-                          <span className="text-sm font-medium">{deadlineStatus.text}</span>
+                          <span className="text-sm font-medium">
+                            {deadlineStatus.text}
+                          </span>
                         </div>
                       </div>
                     ) : null}
@@ -763,36 +830,62 @@ const ProposalPage = () => {
                     <div className="bg-white p-3 rounded-lg border border-gray-200">
                       <div className="flex items-center mb-1">
                         <Calendar className="w-4 h-4 text-indigo-600 mr-2" />
-                        <span className="text-indigo-600 font-medium">Start Date:</span>
+                        <span className="text-indigo-600 font-medium">
+                          Start Date:
+                        </span>
                       </div>
-                      <div className="text-gray-700 ml-6 font-medium">{formatDate(proposal.startDate)}</div>
+                      <div className="text-gray-700 ml-6 font-medium">
+                        {formatDate(proposal.startDate)}
+                      </div>
                     </div>
-                    
+
                     <div className="bg-white p-3 rounded-lg border border-gray-200">
                       <div className="flex items-center mb-1">
                         <CalendarDays className="w-4 h-4 text-indigo-600 mr-2" />
-                        <span className="text-indigo-600 font-medium">Due Date:</span>
+                        <span className="text-indigo-600 font-medium">
+                          Due Date:
+                        </span>
                       </div>
-                      <div className="text-gray-700 ml-6 font-medium">{formatDate(proposal.endDate)}</div>
+                      <div className="text-gray-700 ml-6 font-medium">
+                        {formatDate(proposal.endDate)}
+                      </div>
                     </div>
 
                     {proposal.status === "Completed" ? (
-                      <div className={`p-3 rounded-lg border ${isOverdue ? 'bg-red-50 border-red-200' : 'bg-emerald-50 border-emerald-200'}`}>
+                      <div
+                        className={`p-3 rounded-lg border ${isOverdue ? "bg-red-50 border-red-200" : "bg-emerald-50 border-emerald-200"}`}
+                      >
                         <div className="flex items-center mb-1">
-                          <CheckCircle className={`w-4 h-4 mr-2 ${isOverdue ? 'text-red-600' : 'text-emerald-600'}`} />
-                          <span className={`font-medium ${isOverdue ? 'text-red-600' : 'text-emerald-600'}`}>
+                          <CheckCircle
+                            className={`w-4 h-4 mr-2 ${isOverdue ? "text-red-600" : "text-emerald-600"}`}
+                          />
+                          <span
+                            className={`font-medium ${isOverdue ? "text-red-600" : "text-emerald-600"}`}
+                          >
                             Completion Date:
                           </span>
                         </div>
-                        <div className={`ml-6 font-medium ${isOverdue ? 'text-red-700' : 'text-emerald-700'}`}>
+                        <div
+                          className={`ml-6 font-medium ${isOverdue ? "text-red-700" : "text-emerald-700"}`}
+                        >
                           {formatDate(proposal.completedDate)}
                         </div>
                         {proposal.completedDate && (
-                          <div className={`text-xs mt-2 ml-6 ${isOverdue ? 'text-red-600' : 'text-emerald-600'}`}>
+                          <div
+                            className={`text-xs mt-2 ml-6 ${isOverdue ? "text-red-600" : "text-emerald-600"}`}
+                          >
                             {isOverdue ? (
-                              <span className="font-medium">Overdue by {overdueDays} days</span>
+                              <span className="font-medium">
+                                Overdue by {overdueDays} days
+                              </span>
                             ) : (
-                              <span className="font-medium">Completed in {calculateCompletionTiming(proposal.startDate, proposal.completedDate)}</span>
+                              <span className="font-medium">
+                                Completed in{" "}
+                                {calculateCompletionTiming(
+                                  proposal.startDate,
+                                  proposal.completedDate,
+                                )}
+                              </span>
                             )}
                           </div>
                         )}
@@ -801,9 +894,13 @@ const ProposalPage = () => {
                       <div className="bg-white p-3 rounded-lg border border-gray-200">
                         <div className="flex items-center mb-1">
                           <Clock className="w-4 h-4 text-gray-500 mr-2" />
-                          <span className="text-gray-600 font-medium">Completion:</span>
+                          <span className="text-gray-600 font-medium">
+                            Completion:
+                          </span>
                         </div>
-                        <div className="text-gray-500 ml-6 italic font-medium">Pending</div>
+                        <div className="text-gray-500 ml-6 italic font-medium">
+                          Pending
+                        </div>
                       </div>
                     )}
                   </div>
@@ -821,7 +918,9 @@ const ProposalPage = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               {/* Items per page selector */}
               <div className="flex items-center gap-3">
-                <span className="text-gray-700 text-sm font-medium">Items per page:</span>
+                <span className="text-gray-700 text-sm font-medium">
+                  Items per page:
+                </span>
                 <select
                   value={itemsPerPage}
                   onChange={(e) => {
@@ -830,13 +929,23 @@ const ProposalPage = () => {
                   }}
                   className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-800 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
                 >
-                  <option value={5} className="bg-white">5</option>
-                  <option value={10} className="bg-white">10</option>
-                  <option value={20} className="bg-white">20</option>
-                  <option value={50} className="bg-white">50</option>
+                  <option value={5} className="bg-white">
+                    5
+                  </option>
+                  <option value={10} className="bg-white">
+                    10
+                  </option>
+                  <option value={20} className="bg-white">
+                    20
+                  </option>
+                  <option value={50} className="bg-white">
+                    50
+                  </option>
                 </select>
                 <span className="text-gray-600 text-sm">
-                  Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} proposals
+                  Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                  {Math.min(currentPage * itemsPerPage, totalItems)} of{" "}
+                  {totalItems} proposals
                 </span>
               </div>
 
@@ -862,9 +971,12 @@ const ProposalPage = () => {
 
                 {/* Page numbers */}
                 <div className="flex gap-1 mx-2">
-                  {getPageNumbers().map((pageNum, index) => (
-                    pageNum === '...' ? (
-                      <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-500">
+                  {getPageNumbers().map((pageNum, index) =>
+                    pageNum === "..." ? (
+                      <span
+                        key={`ellipsis-${index}`}
+                        className="px-3 py-2 text-gray-500"
+                      >
                         ...
                       </span>
                     ) : (
@@ -873,14 +985,14 @@ const ProposalPage = () => {
                         onClick={() => goToPage(pageNum)}
                         className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
                           currentPage === pageNum
-                            ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-md shadow-indigo-500/20'
-                            : 'bg-white border border-gray-300 text-gray-700 hover:border-indigo-400 hover:bg-gray-50'
+                            ? "bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-md shadow-indigo-500/20"
+                            : "bg-white border border-gray-300 text-gray-700 hover:border-indigo-400 hover:bg-gray-50"
                         }`}
                       >
                         {pageNum}
                       </button>
-                    )
-                  ))}
+                    ),
+                  )}
                 </div>
 
                 {/* Next page button */}
@@ -906,7 +1018,8 @@ const ProposalPage = () => {
             {/* Page info */}
             <div className="flex items-center justify-center mt-4 pt-4 border-t border-gray-200">
               <span className="text-sm text-gray-600 font-medium">
-                Page {currentPage} of {totalPages} • {totalItems} total proposals
+                Page {currentPage} of {totalPages} • {totalItems} total
+                proposals
               </span>
             </div>
           </div>
@@ -916,7 +1029,9 @@ const ProposalPage = () => {
         {filteredProposals.length === 0 && (
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center border border-gray-200 shadow-sm">
             <Filter className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">No proposals found</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              No proposals found
+            </h3>
             <p className="text-gray-600 mb-6">
               {statusFilter === "all"
                 ? "No proposals have been added yet. Click 'Add New Paper' to get started."
@@ -949,7 +1064,9 @@ const ProposalPage = () => {
                     </div>
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900">
-                        {editMode ? "Edit Research Paper" : "Add New Research Paper"}
+                        {editMode
+                          ? "Edit Research Paper"
+                          : "Add New Research Paper"}
                       </h3>
                       <p className="text-gray-600 mt-1">
                         {editMode
@@ -1009,13 +1126,20 @@ const ProposalPage = () => {
                             Select researcher
                           </option>
                           <optgroup label="Team lead" className="bg-white">
-                            <option value={teamLeader.name} className="bg-white">
+                            <option
+                              value={teamLeader.name}
+                              className="bg-white"
+                            >
                               {teamLeader.name} (Lead)
                             </option>
                           </optgroup>
                           <optgroup label="Team Members" className="bg-white">
                             {teamMembers.map((m) => (
-                              <option key={m.id} value={m.name} className="bg-white">
+                              <option
+                                key={m.id}
+                                value={m.name}
+                                className="bg-white"
+                              >
                                 {m.name} ({m.role})
                               </option>
                             ))}
@@ -1062,22 +1186,28 @@ const ProposalPage = () => {
                         />
                         <CalendarDays className="absolute left-3 top-3.5 w-4 h-4 text-gray-500" />
                       </div>
-                      {newPaper.endDate && checkDeadlineStatus(newPaper.endDate) && (
-                        <div
-                          className={`mt-2 flex items-center text-sm px-3 py-2 rounded-lg ${
-                            checkDeadlineStatus(newPaper.endDate).status === "overdue"
-                              ? "bg-red-100 text-red-700 border border-red-200"
-                              : checkDeadlineStatus(newPaper.endDate).status === "today"
-                              ? "bg-red-100 text-red-700 border border-red-200"
-                              : checkDeadlineStatus(newPaper.endDate).status === "approaching"
-                              ? "bg-amber-100 text-amber-700 border border-amber-200"
-                              : "bg-emerald-100 text-emerald-700 border border-emerald-200"
-                          }`}
-                        >
-                          <AlertTriangle className="w-4 h-4 mr-2 flex-shrink-0" />
-                          <span>{checkDeadlineStatus(newPaper.endDate).text}</span>
-                        </div>
-                      )}
+                      {newPaper.endDate &&
+                        checkDeadlineStatus(newPaper.endDate) && (
+                          <div
+                            className={`mt-2 flex items-center text-sm px-3 py-2 rounded-lg ${
+                              checkDeadlineStatus(newPaper.endDate).status ===
+                              "overdue"
+                                ? "bg-red-100 text-red-700 border border-red-200"
+                                : checkDeadlineStatus(newPaper.endDate)
+                                      .status === "today"
+                                  ? "bg-red-100 text-red-700 border border-red-200"
+                                  : checkDeadlineStatus(newPaper.endDate)
+                                        .status === "approaching"
+                                    ? "bg-amber-100 text-amber-700 border border-amber-200"
+                                    : "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                            }`}
+                          >
+                            <AlertTriangle className="w-4 h-4 mr-2 flex-shrink-0" />
+                            <span>
+                              {checkDeadlineStatus(newPaper.endDate).text}
+                            </span>
+                          </div>
+                        )}
                     </div>
 
                     <div className="md:col-span-2 space-y-3">
@@ -1106,8 +1236,12 @@ const ProposalPage = () => {
                                     : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                                 }`}
                               >
-                                <Icon className={`w-5 h-5 mr-3 ${newPaper.status === option.value ? option.color : "text-gray-600"}`} />
-                                <span className={`font-medium ${newPaper.status === option.value ? option.color : "text-gray-700"}`}>
+                                <Icon
+                                  className={`w-5 h-5 mr-3 ${newPaper.status === option.value ? option.color : "text-gray-600"}`}
+                                />
+                                <span
+                                  className={`font-medium ${newPaper.status === option.value ? option.color : "text-gray-700"}`}
+                                >
                                   {option.label}
                                 </span>
                               </button>

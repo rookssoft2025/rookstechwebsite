@@ -17,8 +17,8 @@ const AssessmentLogin = () => {
         setIsLoading(true);
         setError("");
 
-        const VALID_USERNAME = "stellamarys";
-        const VALID_PASSWORD = "stella123";
+        const VALID_USERNAME = "rooksbrooks";
+        const VALID_PASSWORD = "rook123";
 
         setTimeout(() => {
             if (formData.username === VALID_USERNAME && formData.password === VALID_PASSWORD) {

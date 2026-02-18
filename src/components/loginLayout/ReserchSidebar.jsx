@@ -9,6 +9,7 @@ import {
   BarChart,
   ArchiveIcon,
   CheckCircle,
+  X,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -19,6 +20,7 @@ const ReserchSidebar = ({
   setActiveTab,
 }) => {
   const navigate = useNavigate();
+
   const navigationItems = [
     {
       id: "proposal",
@@ -27,8 +29,6 @@ const ReserchSidebar = ({
       description: "Create & manage research proposals",
       route: "/dashboard/proposal",
       color: "text-indigo-600",
-      bgColor: "bg-indigo-50",
-      borderColor: "border-indigo-200",
     },
     {
       id: "coding",
@@ -37,8 +37,6 @@ const ReserchSidebar = ({
       description: "Manage research code & algorithms",
       route: "/dashboard/coding-page",
       color: "text-emerald-600",
-      bgColor: "bg-emerald-50",
-      borderColor: "border-emerald-200",
     },
     {
       id: "writing",
@@ -47,8 +45,6 @@ const ReserchSidebar = ({
       description: "Write & edit research papers",
       route: "/dashboard/paper-writing-page",
       color: "text-amber-600",
-      bgColor: "bg-amber-50",
-      borderColor: "border-amber-200",
     },
     {
       id: "journal",
@@ -57,8 +53,6 @@ const ReserchSidebar = ({
       description: "Find suitable journals",
       route: "/dashboard/journal-page",
       color: "text-rose-600",
-      bgColor: "bg-rose-50",
-      borderColor: "border-rose-200",
     },
     {
       id: "main-review",
@@ -67,8 +61,6 @@ const ReserchSidebar = ({
       description: "Internal review process",
       route: "/dashboard/mam-review-page",
       color: "text-violet-600",
-      bgColor: "bg-violet-50",
-      borderColor: "border-violet-200",
     },
     {
       id: "overview",
@@ -77,8 +69,6 @@ const ReserchSidebar = ({
       description: "Dashboard & analytics",
       route: "/dashboard/reports-page",
       color: "text-cyan-600",
-      bgColor: "bg-cyan-50",
-      borderColor: "border-cyan-200",
     },
     {
       id: "archive",
@@ -87,8 +77,6 @@ const ReserchSidebar = ({
       description: "Completed & archived records",
       route: "/dashboard/archive-page",
       color: "text-slate-600",
-      bgColor: "bg-slate-50",
-      borderColor: "border-slate-200",
     },
     {
       id: "application-review",
@@ -97,8 +85,6 @@ const ReserchSidebar = ({
       description: "Review job applications",
       route: "/dashboard/application-review",
       color: "text-pink-600",
-      bgColor: "bg-pink-50",
-      borderColor: "border-pink-200",
     },
     {
       id: "assessment",
@@ -107,140 +93,139 @@ const ReserchSidebar = ({
       description: "View assessment details",
       route: "/dashboard/assessment-details",
       color: "text-teal-600",
-      bgColor: "bg-teal-50",
-      borderColor: "border-teal-200",
     },
   ];
-
-  const getSectionContent = (sectionId) => {
-    const contents = {
-      proposal: {
-        stats: { drafts: 5, submitted: 12, approved: 8 },
-        color: "from-indigo-400 to-indigo-500",
-      },
-      coding: {
-        stats: { repositories: 15, commits: 234, languages: 6 },
-        color: "from-emerald-400 to-emerald-500",
-      },
-      writing: {
-        stats: { drafts: 8, inProgress: 3, completed: 15 },
-        color: "from-amber-400 to-amber-500",
-      },
-      journal: {
-        stats: { saved: 12, submitted: 8, published: 5 },
-        color: "from-rose-400 to-rose-500",
-      },
-      "main-review": {
-        stats: { pending: 7, inReview: 4, completed: 23 },
-        color: "from-violet-400 to-violet-500",
-      },
-      overview: {
-        stats: { papers: 24, citations: 156, rating: 4.8 },
-        color: "from-cyan-400 to-cyan-500",
-      },
-    };
-    return contents[sectionId] || contents.overview;
-  };
-
-  const currentSection = getSectionContent(activeTab);
 
   return (
     <motion.div
       initial={{ x: -400 }}
       animate={{ x: sidebarOpen ? 0 : -400 }}
       transition={{ type: "spring", damping: 20, stiffness: 260 }}
-      className="fixed inset-y-0 left-0 w-full sm:w-84 h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 backdrop-blur-xl border-r border-slate-700 shadow-2xl z-50 overflow-hidden"
+      className="fixed inset-y-0 left-0 w-full sm:w-80 bg-slate-900 border-r border-slate-700 shadow-xl z-50 overflow-hidden"
     >
-      <div className="flex flex-col h-full p-6 sm:p-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="flex items-center space-x-3 mb-8"
-        >
-          <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
-            <BookOpen size={24} className="text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-white">Rooks & Brooks</h1>
-            <p className="text-indigo-200 text-sm">Research Platform</p>
-          </div>
-        </motion.div>
+      <div className="flex flex-col h-full p-4 sm:p-6">
+
+        {/* ================= HEADER ================= */}
+        <div className="relative flex items-center mb-8">
+
+          {/* Logo + Title */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="flex items-center space-x-3"
+          >
+            <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+              <BookOpen size={22} className="text-white" />
+            </div>
+
+            <div>
+              <h1 className="text-xl font-bold text-white">
+                Rooks & Brooks
+              </h1>
+              <p className="text-indigo-200 text-xs">
+                Research Platform
+              </p>
+            </div>
+          </motion.div>
+
+          {/* CLOSE BUTTON — visible on ALL devices */}
+          <motion.button
+            onClick={() => setSidebarOpen(false)}
+            className="absolute right-0 top-0 p-2 hover:bg-slate-700/50 rounded-lg transition"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <X size={22} className="text-white" />
+          </motion.button>
+
+        </div>
 
         {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent mb-6"></div>
+        <div className="h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent mb-6" />
 
-        <nav className="space-y-3 flex-1 overflow-y-auto scrollbar-hide">
+        {/* ================= NAVIGATION ================= */}
+        <nav className="space-y-2 flex-1 overflow-y-auto">
+
           {navigationItems.map((item, index) => (
             <motion.button
               key={item.id}
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.08 * index }}
+              transition={{ delay: 0.06 * index }}
               onClick={() => {
                 setActiveTab(item.id);
-                if (item.route) {
-                  navigate(item.route);
-                }
+                navigate(item.route);
               }}
-              className={`w-full flex items-center space-x-4 px-5 py-4 rounded-xl transition-all duration-300 group text-left relative overflow-hidden ${
+              className={`w-full flex items-center space-x-4 px-4 py-3 rounded-xl transition-all duration-300 text-left relative
+              
+              ${
                 activeTab === item.id
-                  ? `bg-gradient-to-r ${item.color.replace(
-                      "text-",
-                      "from-",
-                    )} to-opacity-10 shadow-lg border border-slate-600 text-white`
-                  : "text-slate-300 hover:text-white hover:bg-slate-700/50 border border-transparent"
-              }`}
-              whileHover={{
-                scale: 1.02,
-                transition: { duration: 0.2 },
-              }}
-              whileTap={{ scale: 0.98 }}
+                  ? "bg-slate-800 text-white"
+                  : "text-slate-300 hover:bg-slate-700 hover:text-white"
+              }
+              
+              `}
             >
               {/* Active indicator */}
               {activeTab === item.id && (
                 <motion.div
-                  initial={{ scaleY: 0 }}
-                  animate={{ scaleY: 1 }}
-                  className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-400 to-blue-500 rounded-r-full"
+                  layoutId="activeIndicator"
+                  className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 rounded-r-full"
                 />
               )}
 
+              {/* Icon */}
               <div
-                className={`p-3 rounded-lg transition-all duration-300 flex-shrink-0 ${
+                className={`p-2 rounded-lg
+                
+                ${
                   activeTab === item.id
-                    ? `bg-white/10 ${item.color}`
-                    : "bg-slate-700 text-slate-400 group-hover:bg-slate-600 group-hover:text-slate-300"
-                }`}
+                    ? "bg-white/20 text-white"
+                    : "bg-slate-700 text-slate-400"
+                }
+                
+                `}
               >
                 <item.icon size={20} />
               </div>
-              <div className="flex-1 min-w-0">
-                <span className="font-semibold block text-base tracking-wide">
+
+              {/* Text */}
+              <div className="flex-1">
+                <div className="font-semibold text-sm">
                   {item.label}
-                </span>
-                <span
-                  className={`text-xs block mt-1 truncate ${
-                    activeTab === item.id ? "text-indigo-200" : "text-slate-400"
-                  }`}
-                >
+                </div>
+
+                <div className="text-xs text-slate-400">
                   {item.description}
-                </span>
+                </div>
               </div>
+
+              {/* Active dot */}
               {activeTab === item.id && (
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="w-2.5 h-2.5 bg-gradient-to-r from-indigo-400 to-blue-500 rounded-full flex-shrink-0 ring-2 ring-white/20"
+                  className="w-2 h-2 bg-indigo-400 rounded-full"
                 />
               )}
+
             </motion.button>
           ))}
+
         </nav>
 
-        {/* Footer: energy card + small links */}
-        
+        {/* ================= FOOTER ================= */}
+        <div className="pt-4 border-t border-slate-700 text-center text-xs text-slate-400">
+          <a href="#" className="hover:text-white">
+            Privacy
+          </a>
+          <span className="mx-2">•</span>
+          <a href="#" className="hover:text-white">
+            Terms
+          </a>
+        </div>
+
       </div>
     </motion.div>
   );

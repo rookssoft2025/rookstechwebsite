@@ -6,39 +6,26 @@ import {
   Calendar,
   Mail,
   Phone,
-  BookOpen,
   ChevronRight,
   FileText,
   Building2,
   Hash,
   X,
   Search,
-  Award,
   TrendingUp,
   AlertCircle,
-  CheckCircle,
-  Clock,
-  User,
-  Filter,
   Download,
   Eye,
-  Star,
   BarChart3,
-  PieChart,
   Target,
   Sparkles,
   Brain,
   Code,
   PenTool,
   MessageSquare,
-  ChevronDown,
-  MoreVertical,
-  Users,
-  GraduationCap,
   Medal,
-  Zap,
   Shield,
-  TrendingDown
+  TrendingDown,
 } from "lucide-react";
 
 // Helper function to get initials
@@ -58,7 +45,7 @@ const sectionIcons = {
   "Computational Thinking": Code,
   "Python Programming": PenTool,
   "English Proficiency": MessageSquare,
-  "Narrative Round": Sparkles
+  "Narrative Round": Sparkles,
 };
 
 // Color mapping for sections
@@ -68,7 +55,7 @@ const sectionColors = {
   "Computational Thinking": "from-emerald-500 to-teal-400",
   "Python Programming": "from-orange-500 to-amber-400",
   "English Proficiency": "from-rose-500 to-pink-400",
-  "Narrative Round": "from-indigo-500 to-violet-400"
+  "Narrative Round": "from-indigo-500 to-violet-400",
 };
 
 const AssessmentDetailsPage = () => {
@@ -82,13 +69,16 @@ const AssessmentDetailsPage = () => {
     total: 0,
     qualified: 0,
     disqualified: 0,
-    averageScore: 0
+    averageScore: 0,
   });
 
   useEffect(() => {
-    const q = query(collection(db, "interview"), orderBy("registeredAt", "desc"));
+    const q = query(
+      collection(db, "interview"),
+      orderBy("registeredAt", "desc"),
+    );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const studentsData = querySnapshot.docs.map(doc => {
+      const studentsData = querySnapshot.docs.map((doc) => {
         const data = doc.data();
 
         // Convert sectionScores map to the array structure UI expects
@@ -96,14 +86,19 @@ const AssessmentDetailsPage = () => {
         const sections = [
           { name: "Quantitative Aptitude", score: sectionMap[1] || 0, max: 10 },
           { name: "Logical Reasoning", score: sectionMap[2] || 0, max: 10 },
-          { name: "Computational Thinking", score: sectionMap[3] || 0, max: 10 },
+          {
+            name: "Computational Thinking",
+            score: sectionMap[3] || 0,
+            max: 10,
+          },
           { name: "Python Programming", score: sectionMap[4] || 0, max: 10 },
           { name: "English Proficiency", score: sectionMap[5] || 0, max: 10 },
         ];
 
         const totalScore = sections.reduce((acc, s) => acc + s.score, 0);
         const maxTotal = sections.reduce((acc, s) => acc + s.max, 0);
-        const percentage = maxTotal > 0 ? Math.round((totalScore / maxTotal) * 100) : 0;
+        const percentage =
+          maxTotal > 0 ? Math.round((totalScore / maxTotal) * 100) : 0;
 
         return {
           id: doc.id,
@@ -120,22 +115,24 @@ const AssessmentDetailsPage = () => {
           score: totalScore,
           maxScore: maxTotal,
           percentage: percentage,
-          detailedSummary: data.detailedSummary || {}
+          detailedSummary: data.detailedSummary || {},
         };
       });
 
       setStudents(studentsData);
-      
+
       // Calculate stats
-      const qualified = studentsData.filter(s => !s.isDisqualified).length;
-      const disqualified = studentsData.filter(s => s.isDisqualified).length;
-      const avgScore = studentsData.reduce((acc, s) => acc + s.percentage, 0) / studentsData.length || 0;
-      
+      const qualified = studentsData.filter((s) => !s.isDisqualified).length;
+      const disqualified = studentsData.filter((s) => s.isDisqualified).length;
+      const avgScore =
+        studentsData.reduce((acc, s) => acc + s.percentage, 0) /
+          studentsData.length || 0;
+
       setStats({
         total: studentsData.length,
         qualified,
         disqualified,
-        averageScore: Math.round(avgScore)
+        averageScore: Math.round(avgScore),
       });
     });
 
@@ -145,14 +142,16 @@ const AssessmentDetailsPage = () => {
   const filteredAndSortedStudents = students
     .filter((student) => {
       // Search filter
-      const matchesSearch = 
+      const matchesSearch =
         student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         student.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         student.dept.toLowerCase().includes(searchTerm.toLowerCase());
-      
+
       // Status filter
-      if (filterStatus === "qualified") return matchesSearch && !student.isDisqualified;
-      if (filterStatus === "disqualified") return matchesSearch && student.isDisqualified;
+      if (filterStatus === "qualified")
+        return matchesSearch && !student.isDisqualified;
+      if (filterStatus === "disqualified")
+        return matchesSearch && student.isDisqualified;
       return matchesSearch;
     })
     .sort((a, b) => {
@@ -164,7 +163,8 @@ const AssessmentDetailsPage = () => {
 
   // Helper function to get performance color
   const getPerformanceColor = (percentage) => {
-    if (percentage >= 80) return "text-emerald-600 bg-emerald-50 border-emerald-200";
+    if (percentage >= 80)
+      return "text-emerald-600 bg-emerald-50 border-emerald-200";
     if (percentage >= 60) return "text-blue-600 bg-blue-50 border-blue-200";
     if (percentage >= 40) return "text-amber-600 bg-amber-50 border-amber-200";
     return "text-rose-600 bg-rose-50 border-rose-200";
@@ -172,10 +172,29 @@ const AssessmentDetailsPage = () => {
 
   // Helper function to get performance badge
   const getPerformanceBadge = (percentage) => {
-    if (percentage >= 80) return { text: "Excellent", icon: Medal, color: "text-emerald-600 bg-emerald-50" };
-    if (percentage >= 60) return { text: "Good", icon: TrendingUp, color: "text-blue-600 bg-blue-50" };
-    if (percentage >= 40) return { text: "Average", icon: BarChart3, color: "text-amber-600 bg-amber-50" };
-    return { text: "Needs Improvement", icon: TrendingDown, color: "text-rose-600 bg-rose-50" };
+    if (percentage >= 80)
+      return {
+        text: "Excellent",
+        icon: Medal,
+        color: "text-emerald-600 bg-emerald-50",
+      };
+    if (percentage >= 60)
+      return {
+        text: "Good",
+        icon: TrendingUp,
+        color: "text-blue-600 bg-blue-50",
+      };
+    if (percentage >= 40)
+      return {
+        text: "Average",
+        icon: BarChart3,
+        color: "text-amber-600 bg-amber-50",
+      };
+    return {
+      text: "Needs Improvement",
+      icon: TrendingDown,
+      color: "text-rose-600 bg-rose-50",
+    };
   };
 
   return (
@@ -196,7 +215,9 @@ const AssessmentDetailsPage = () => {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                   Assessments Dashboard
                 </h1>
-                <p className="text-sm text-slate-500 mt-1">Track and evaluate student performance</p>
+                <p className="text-sm text-slate-500 mt-1">
+                  Track and evaluate student performance
+                </p>
               </div>
             </div>
 
@@ -204,15 +225,21 @@ const AssessmentDetailsPage = () => {
             <div className="flex flex-wrap gap-4">
               <div className="bg-white rounded-xl px-4 py-2 shadow-sm border border-slate-200">
                 <p className="text-xs text-slate-500">Total Students</p>
-                <p className="text-2xl font-bold text-slate-800">{stats.total}</p>
+                <p className="text-2xl font-bold text-slate-800">
+                  {stats.total}
+                </p>
               </div>
               <div className="bg-white rounded-xl px-4 py-2 shadow-sm border border-slate-200">
                 <p className="text-xs text-slate-500">Qualified</p>
-                <p className="text-2xl font-bold text-emerald-600">{stats.qualified}</p>
+                <p className="text-2xl font-bold text-emerald-600">
+                  {stats.qualified}
+                </p>
               </div>
               <div className="bg-white rounded-xl px-4 py-2 shadow-sm border border-slate-200">
                 <p className="text-xs text-slate-500">Avg. Score</p>
-                <p className="text-2xl font-bold text-indigo-600">{stats.averageScore}%</p>
+                <p className="text-2xl font-bold text-indigo-600">
+                  {stats.averageScore}%
+                </p>
               </div>
             </div>
           </div>
@@ -220,7 +247,10 @@ const AssessmentDetailsPage = () => {
           {/* Filters and Search */}
           <div className="mt-6 flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search
+                size={18}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              />
               <input
                 type="text"
                 placeholder="Search by name, ID, or department..."
@@ -229,7 +259,7 @@ const AssessmentDetailsPage = () => {
                 className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
               />
             </div>
-            
+
             <div className="flex gap-3">
               <select
                 value={filterStatus}
@@ -240,7 +270,7 @@ const AssessmentDetailsPage = () => {
                 <option value="qualified">Qualified</option>
                 <option value="disqualified">Disqualified</option>
               </select>
-              
+
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
@@ -261,12 +291,12 @@ const AssessmentDetailsPage = () => {
           className="mb-4 flex items-center justify-between"
         >
           <p className="text-sm text-slate-500">
-            Showing <span className="font-medium text-slate-700">{filteredAndSortedStudents.length}</span> of {students.length} students
+            Showing{" "}
+            <span className="font-medium text-slate-700">
+              {filteredAndSortedStudents.length}
+            </span>{" "}
+            of {students.length} students
           </p>
-          <button className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
-            <Download size={16} />
-            Export Results
-          </button>
         </motion.div>
 
         {/* Student List */}
@@ -279,7 +309,9 @@ const AssessmentDetailsPage = () => {
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search size={24} className="text-slate-400" />
             </div>
-            <p className="text-lg font-medium text-slate-800 mb-1">No results found</p>
+            <p className="text-lg font-medium text-slate-800 mb-1">
+              No results found
+            </p>
             <p className="text-sm text-slate-500">
               No students matching "{searchTerm}"
             </p>
@@ -289,7 +321,7 @@ const AssessmentDetailsPage = () => {
             {filteredAndSortedStudents.map((student, idx) => {
               const performance = getPerformanceBadge(student.percentage);
               const PerformanceIcon = performance.icon;
-              
+
               return (
                 <motion.div
                   key={student.id}
@@ -297,9 +329,9 @@ const AssessmentDetailsPage = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.03 }}
                   className={`group bg-white rounded-xl border hover:shadow-lg transition-all duration-300 ${
-                    student.isDisqualified 
-                      ? 'border-red-200 hover:border-red-300 hover:shadow-red-100' 
-                      : 'border-slate-200 hover:border-indigo-200 hover:shadow-indigo-100'
+                    student.isDisqualified
+                      ? "border-red-200 hover:border-red-300 hover:shadow-red-100"
+                      : "border-slate-200 hover:border-indigo-200 hover:shadow-indigo-100"
                   }`}
                 >
                   <div className="p-5">
@@ -308,11 +340,13 @@ const AssessmentDetailsPage = () => {
                       {/* Student Info */}
                       <div className="flex items-center gap-4 flex-1">
                         <div className="relative">
-                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold ${
-                            student.isDisqualified
-                              ? 'bg-red-100 text-red-600'
-                              : 'bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-600'
-                          }`}>
+                          <div
+                            className={`w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold ${
+                              student.isDisqualified
+                                ? "bg-red-100 text-red-600"
+                                : "bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-600"
+                            }`}
+                          >
                             {getInitials(student.name)}
                           </div>
                           {student.isDisqualified && (
@@ -321,13 +355,20 @@ const AssessmentDetailsPage = () => {
                             </div>
                           )}
                         </div>
-                        
+
                         <div>
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold text-slate-800">{student.name}</h3>
+                            <h3 className="font-semibold text-slate-800">
+                              {student.name}
+                            </h3>
                             {!student.isDisqualified && (
-                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${performance.color}`}>
-                                <PerformanceIcon size={10} className="inline mr-1" />
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${performance.color}`}
+                              >
+                                <PerformanceIcon
+                                  size={10}
+                                  className="inline mr-1"
+                                />
                                 {performance.text}
                               </span>
                             )}
@@ -370,7 +411,13 @@ const AssessmentDetailsPage = () => {
                                   cx="28"
                                   cy="28"
                                   r="24"
-                                  stroke={student.percentage >= 80 ? "#10b981" : student.percentage >= 60 ? "#3b82f6" : "#f59e0b"}
+                                  stroke={
+                                    student.percentage >= 80
+                                      ? "#10b981"
+                                      : student.percentage >= 60
+                                        ? "#3b82f6"
+                                        : "#f59e0b"
+                                  }
                                   strokeWidth="3"
                                   fill="none"
                                   strokeLinecap="round"
@@ -381,14 +428,23 @@ const AssessmentDetailsPage = () => {
                               )}
                             </svg>
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <span className={`text-sm font-bold ${student.isDisqualified ? 'text-red-500' : 'text-slate-700'}`}>
-                                {student.isDisqualified ? '0' : student.percentage}%
+                              <span
+                                className={`text-sm font-bold ${student.isDisqualified ? "text-red-500" : "text-slate-700"}`}
+                              >
+                                {student.isDisqualified
+                                  ? "0"
+                                  : student.percentage}
+                                %
                               </span>
                             </div>
                           </div>
                           <div className="lg:hidden">
-                            <p className="text-xs text-slate-500">Total Score</p>
-                            <p className="text-sm font-semibold text-slate-700">{student.score}/{student.maxScore}</p>
+                            <p className="text-xs text-slate-500">
+                              Total Score
+                            </p>
+                            <p className="text-sm font-semibold text-slate-700">
+                              {student.score}/{student.maxScore}
+                            </p>
                           </div>
                         </div>
 
@@ -428,14 +484,21 @@ const AssessmentDetailsPage = () => {
                             className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors text-sm font-medium group"
                           >
                             <Eye size={16} />
-                            <span className="hidden sm:inline">View Details</span>
-                            <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+                            <span className="hidden sm:inline">
+                              View Details
+                            </span>
+                            <ChevronRight
+                              size={16}
+                              className="group-hover:translate-x-0.5 transition-transform"
+                            />
                           </button>
-                          
+
                           {student.isDisqualified && (
                             <div className="px-3 py-2 bg-red-50 text-red-600 rounded-lg border border-red-200 text-xs font-medium flex items-center gap-1">
                               <Shield size={14} />
-                              <span className="hidden sm:inline">Disqualified</span>
+                              <span className="hidden sm:inline">
+                                Disqualified
+                              </span>
                             </div>
                           )}
                         </div>
@@ -492,8 +555,12 @@ const StudentModal = ({ student, onClose }) => {
   const percentage = student.percentage;
 
   // Extract narrative response
-  const narrativeKey = Object.keys(student.detailedSummary || {}).find(k => k.startsWith('6-'));
-  const narrativeResponse = narrativeKey ? student.detailedSummary[narrativeKey] : null;
+  const narrativeKey = Object.keys(student.detailedSummary || {}).find((k) =>
+    k.startsWith("6-"),
+  );
+  const narrativeResponse = narrativeKey
+    ? student.detailedSummary[narrativeKey]
+    : null;
 
   // Get performance color
   const getPerformanceGradient = (percentage) => {
@@ -519,7 +586,9 @@ const StudentModal = ({ student, onClose }) => {
         className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl"
       >
         {/* Header with Gradient */}
-        <div className={`p-6 bg-gradient-to-r ${getPerformanceGradient(percentage)} rounded-t-2xl`}>
+        <div
+          className={`p-6 bg-gradient-to-r ${getPerformanceGradient(percentage)} rounded-t-2xl`}
+        >
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center border-2 border-white/30">
@@ -528,7 +597,9 @@ const StudentModal = ({ student, onClose }) => {
                 </span>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white mb-1">{student.name}</h2>
+                <h2 className="text-xl font-bold text-white mb-1">
+                  {student.name}
+                </h2>
                 <div className="flex items-center gap-3 text-white/80 text-sm">
                   <span className="flex items-center gap-1">
                     <Hash size={14} />
@@ -558,11 +629,15 @@ const StudentModal = ({ student, onClose }) => {
             </div>
             <div className="bg-white/10 backdrop-blur rounded-xl p-3">
               <p className="text-white/70 text-xs mb-1">Total Marks</p>
-              <p className="text-2xl font-bold text-white">{total}/{maxTotal}</p>
+              <p className="text-2xl font-bold text-white">
+                {total}/{maxTotal}
+              </p>
             </div>
             <div className="bg-white/10 backdrop-blur rounded-xl p-3">
               <p className="text-white/70 text-xs mb-1">Sections</p>
-              <p className="text-2xl font-bold text-white">{student.sections.length}</p>
+              <p className="text-2xl font-bold text-white">
+                {student.sections.length}
+              </p>
             </div>
           </div>
         </div>
@@ -576,8 +651,13 @@ const StudentModal = ({ student, onClose }) => {
                 <AlertCircle size={18} className="text-red-600" />
               </div>
               <div>
-                <p className="font-semibold text-red-800">Application Disqualified</p>
-                <p className="text-sm text-red-600 mt-1">{student.disqualifiedReason || "Candidate breached assessment guidelines."}</p>
+                <p className="font-semibold text-red-800">
+                  Application Disqualified
+                </p>
+                <p className="text-sm text-red-600 mt-1">
+                  {student.disqualifiedReason ||
+                    "Candidate breached assessment guidelines."}
+                </p>
               </div>
             </div>
           )}
@@ -590,7 +670,9 @@ const StudentModal = ({ student, onClose }) => {
               </div>
               <div>
                 <p className="text-xs text-slate-500 mb-1">Email Address</p>
-                <p className="text-sm font-medium text-slate-700">{student.mail}</p>
+                <p className="text-sm font-medium text-slate-700">
+                  {student.mail}
+                </p>
               </div>
             </div>
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
@@ -599,7 +681,9 @@ const StudentModal = ({ student, onClose }) => {
               </div>
               <div>
                 <p className="text-xs text-slate-500 mb-1">Phone Number</p>
-                <p className="text-sm font-medium text-slate-700">{student.number}</p>
+                <p className="text-sm font-medium text-slate-700">
+                  {student.number}
+                </p>
               </div>
             </div>
           </div>
@@ -614,15 +698,19 @@ const StudentModal = ({ student, onClose }) => {
               {student.sections.map((section, index) => {
                 const Icon = sectionIcons[section.name] || FileText;
                 const percentage = (section.score / section.max) * 100;
-                
+
                 return (
                   <div key={index} className="group">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <div className={`p-1.5 rounded-lg bg-gradient-to-r ${sectionColors[section.name] || 'from-slate-500 to-slate-400'}`}>
+                        <div
+                          className={`p-1.5 rounded-lg bg-gradient-to-r ${sectionColors[section.name] || "from-slate-500 to-slate-400"}`}
+                        >
                           <Icon size={14} className="text-white" />
                         </div>
-                        <span className="text-sm font-medium text-slate-700">{section.name}</span>
+                        <span className="text-sm font-medium text-slate-700">
+                          {section.name}
+                        </span>
                       </div>
                       <span className="text-sm font-bold text-indigo-600">
                         {section.score}/{section.max}
@@ -632,7 +720,7 @@ const StudentModal = ({ student, onClose }) => {
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${percentage}%` }}
-                        className={`h-full rounded-full bg-gradient-to-r ${sectionColors[section.name] || 'from-indigo-500 to-purple-500'}`}
+                        className={`h-full rounded-full bg-gradient-to-r ${sectionColors[section.name] || "from-indigo-500 to-purple-500"}`}
                       />
                     </div>
                   </div>
@@ -648,7 +736,9 @@ const StudentModal = ({ student, onClose }) => {
                 <div className="p-1.5 bg-purple-100 rounded-lg">
                   <MessageSquare size={16} className="text-purple-600" />
                 </div>
-                <h3 className="font-semibold text-purple-800">Narrative Response</h3>
+                <h3 className="font-semibold text-purple-800">
+                  Narrative Response
+                </h3>
               </div>
               <p className="text-sm text-slate-600 mb-3 italic">
                 "{narrativeResponse.questionText}"
@@ -660,20 +750,6 @@ const StudentModal = ({ student, onClose }) => {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-slate-200 flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
-          >
-            Close
-          </button>
-          <button className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2">
-            <Download size={16} />
-            Download Report
-          </button>
         </div>
       </motion.div>
     </motion.div>

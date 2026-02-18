@@ -413,7 +413,7 @@ export default function CandidateRegistration() {
                           className={`w-full bg-white/5 border ${errors.stream ? 'border-red-500' : touched.stream && !errors.stream ? 'border-green-500' : 'border-white/10'} focus:border-[#64ffda] rounded-xl pl-12 pr-4 py-4 text-white outline-none transition-all appearance-none hover:bg-white/10`}
                         >
                           <option value="" className="bg-[#0a192f] text-slate-400">Select Stream</option>
-                          <option value="CSC" className="bg-[#0a192f]">Computer Science & Engineering (CSC)</option>
+                          <option value="CSE" className="bg-[#0a192f]">Computer Science & Engineering (CSE)</option>
                           <option value="IT" className="bg-[#0a192f]">Information Technology (IT)</option>
                           <option value="ECE" className="bg-[#0a192f]">Electronics & Communication (ECE)</option>
                           <option value="EEE" className="bg-[#0a192f]">Electrical & Electronics (EEE)</option>
