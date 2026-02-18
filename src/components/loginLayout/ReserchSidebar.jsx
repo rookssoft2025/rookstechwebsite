@@ -149,7 +149,7 @@ const ReserchSidebar = ({
       initial={{ x: -400 }}
       animate={{ x: sidebarOpen ? 0 : -400 }}
       transition={{ type: "spring", damping: 20, stiffness: 260 }}
-      className="fixed inset-y-0 left-0 w-full sm:w-96 h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 backdrop-blur-xl border-r border-slate-700 shadow-2xl z-50 overflow-hidden"
+      className="fixed inset-y-0 left-0 w-full sm:w-84 h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 backdrop-blur-xl border-r border-slate-700 shadow-2xl z-50 overflow-hidden"
     >
       <div className="flex flex-col h-full p-6 sm:p-8">
         {/* Header */}
@@ -240,36 +240,7 @@ const ReserchSidebar = ({
         </nav>
 
         {/* Footer: energy card + small links */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-auto pt-6"
-        >
-          <div className="px-4 pb-4">
-            <div className="bg-emerald-600 text-white rounded-lg p-3 flex items-center justify-between shadow-md hover:shadow-lg transition-shadow">
-              <div>
-                <p className="text-xs opacity-90">Energy Saved</p>
-                <p className="font-semibold text-lg">1979.50 Wh</p>
-              </div>
-              <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-5 h-5 text-white"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M13 2v8h8" />
-                </svg>
-              </div>
-            </div>
-
-            <div className="mt-4 flex items-center justify-between text-xs text-slate-400">
-              <div>v1.0.0</div>
-              <div className="opacity-80">Rooks & Brooks</div>
-            </div>
-          </div>
-        </motion.div>
+        
       </div>
     </motion.div>
   );

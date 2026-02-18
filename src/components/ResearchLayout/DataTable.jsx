@@ -16,7 +16,7 @@ const DataTable = ({
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="py-4 px-6 text-left text-gray-300"
+                  className="p-3 text-left text-gray-300"
                   style={{ width: col.width || "auto" }}
                 >
                   {col.label}

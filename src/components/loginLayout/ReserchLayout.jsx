@@ -13,8 +13,8 @@ const ReserchLayout = ({
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Sidebar width adjusted for fullscreen side display
-  const sidebarWidth = sidebarOpen ? "w-full sm:w-96" : "w-0";
-  const sidebarMargin = sidebarOpen ? "sm:ml-96" : "sm:ml-0";
+  const sidebarWidth = sidebarOpen ? "w-full sm:w-84" : "w-0";
+  const sidebarMargin = sidebarOpen ? "sm:ml-76" : "sm:ml-0";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">

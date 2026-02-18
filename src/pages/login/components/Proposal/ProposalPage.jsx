@@ -619,15 +619,15 @@ const ProposalPage = () => {
                   onClick={() => onRowExpand(item.id)}
                   className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors"
                 >
-                  <td className="py-4 px-6 text-center">
+                  <td className="p-3 text-center">
                     <div className="text-gray-800 font-semibold">{globalIndex}</div>
                   </td>
 
-                  <td className="py-4 px-6 text-gray-800 font-medium">{item.title}</td>
+                  <td className="p-3 text-gray-800 font-medium">{item.title}</td>
 
-                  <td className="py-4 px-6 text-gray-700">{item.takenBy}</td>
+                  <td className="p-3 text-gray-700">{item.takenBy}</td>
 
-                  <td className="py-4 px-6 text-gray-700">
+                  <td className="p-3 text-gray-700">
                     <div className="flex flex-col">
                       <span>{formatDate(item.startDate)}</span>
                       <span className="text-sm text-gray-500">to</span>
@@ -685,7 +685,7 @@ const ProposalPage = () => {
                     ) : null}
                   </td>
 
-                  <td className="py-4 px-6">
+                  <td className="p-3">
                     <div
                       className={`px-3 py-1.5 rounded-full ${statusInfo?.bg} border ${statusInfo?.border} inline-flex items-center`}
                     >
@@ -694,7 +694,7 @@ const ProposalPage = () => {
                     </div>
                   </td>
 
-                  <td className="py-4 px-6 text-indigo-600">
+                  <td className="p-3 text-indigo-600">
                     {expandedRow === item.id ? (
                       <ChevronUp className="w-5 h-5" />
                     ) : (
@@ -702,7 +702,7 @@ const ProposalPage = () => {
                     )}
                   </td>
 
-                  <td className="py-4 px-6">
+                  <td className="p-3">
                     <div className="flex gap-3">
                       <button
                         onClick={(e) => {

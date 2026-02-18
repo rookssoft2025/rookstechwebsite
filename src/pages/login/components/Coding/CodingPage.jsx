@@ -61,11 +61,11 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
         setOptions([]);
         return;
       }
-      
+
       setIsLoading(true);
       try {
         const titles = await fetchResearchPaperTitles();
-        const filtered = titles.filter(title => 
+        const filtered = titles.filter(title =>
           title.title.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setOptions(filtered);
@@ -162,7 +162,7 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
               />
             </div>
           </div>
-          
+
           <div className="py-1">
             {isLoading ? (
               <div className="px-4 py-3 text-center text-gray-600">Loading titles...</div>
@@ -175,11 +175,10 @@ const SearchableDropdown = ({ value, onChange, placeholder }) => {
                   className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors flex items-center justify-between"
                 >
                   <span className="text-gray-800 truncate">{option.title}</span>
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    option.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 
-                    option.status === 'in-progress' ? 'bg-blue-100 text-blue-700' :
-                    'bg-amber-100 text-amber-700'
-                  }`}>
+                  <span className={`text-xs px-2 py-1 rounded-full ${option.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
+                      option.status === 'in-progress' ? 'bg-blue-100 text-blue-700' :
+                        'bg-amber-100 text-amber-700'
+                    }`}>
                     {option.status}
                   </span>
                 </button>
@@ -337,7 +336,7 @@ const CodingPage = () => {
     const deadlineDate = new Date(deadline);
     const diffTime = deadlineDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (taskStatus === "Completed") {
       return {
         status: "completed",
@@ -348,7 +347,7 @@ const CodingPage = () => {
         icon: CheckCircle,
       };
     }
-    
+
     if (diffDays < 0) {
       return {
         status: "overdue",
@@ -396,16 +395,22 @@ const CodingPage = () => {
 
   // Filter projects based on selected filter
   const filteredProjects = useMemo(() => {
-    if (statusFilter === null) {
-      return projects;
-    }
-    return projects.filter((project) => project.status === statusFilter);
+    const filtered = statusFilter === null
+      ? [...projects]
+      : projects.filter((project) => project.status === statusFilter);
+
+    // Sort by deadline descending (latest first)
+    return filtered.sort((a, b) => {
+      const dateA = a.deadline ? new Date(a.deadline).getTime() : 0;
+      const dateB = b.deadline ? new Date(b.deadline).getTime() : 0;
+      return dateB - dateA;
+    });
   }, [projects, statusFilter]);
 
   // Calculate pagination data
   const totalItems = filteredProjects.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  
+
   // Reset to first page when filter changes
   useEffect(() => {
     setCurrentPage(1);
@@ -422,7 +427,7 @@ const CodingPage = () => {
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
-    
+
     if (totalPages <= maxVisiblePages) {
       for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
@@ -450,7 +455,7 @@ const CodingPage = () => {
         pageNumbers.push(totalPages);
       }
     }
-    
+
     return pageNumbers;
   };
 
@@ -587,7 +592,7 @@ const CodingPage = () => {
     if (!confirmLogout) return;
 
     setIsLoggingOut(true);
-    
+
     try {
       await signOut(auth);
       localStorage.removeItem('rememberedEmail');
@@ -645,7 +650,7 @@ const CodingPage = () => {
         const projectStatusColor = projectStatusOption.color;
         const projectStatusBg = projectStatusOption.bg;
         const projectStatusBorder = projectStatusOption.border;
-        
+
         const dueStatus = getDueStatus(projectData.deadline, projectData.status);
         const DueStatusIcon = dueStatus ? getDueStatusIcon(dueStatus) : Calendar;
 
@@ -671,8 +676,8 @@ const CodingPage = () => {
                     projectData.takenBy === leadDeveloper.name
                       ? leadDeveloper.image
                       : teamMembers.find((m) => m.name === projectData.takenBy)
-                          ?.image ||
-                        "https://api.dicebear.com/7.x/avataaars/svg?seed=default"
+                        ?.image ||
+                      "https://api.dicebear.com/7.x/avataaars/svg?seed=default"
                   }
                   alt={projectData.takenBy}
                   className="w-8 h-8 rounded-full border-2 border-indigo-300 mr-3"
@@ -935,30 +940,26 @@ const CodingPage = () => {
             {/* Show All Button */}
             <button
               onClick={() => setStatusFilter(null)}
-              className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
-                statusFilter === null
+              className={`flex items-center px-4 py-3 rounded-xl border transition-all ${statusFilter === null
                   ? `bg-gray-100 border-indigo-400 shadow-md shadow-indigo-500/10`
                   : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
-              }`}
+                }`}
             >
               <Filter
-                className={`w-5 h-5 mr-3 ${
-                  statusFilter === null ? "text-gray-600" : "text-gray-500"
-                }`}
+                className={`w-5 h-5 mr-3 ${statusFilter === null ? "text-gray-600" : "text-gray-500"
+                  }`}
               />
               <span
-                className={`font-medium ${
-                  statusFilter === null ? "text-gray-700" : "text-gray-600"
-                }`}
+                className={`font-medium ${statusFilter === null ? "text-gray-700" : "text-gray-600"
+                  }`}
               >
                 All Projects
               </span>
               <span
-                className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                  statusFilter === null
+                className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${statusFilter === null
                     ? "bg-gray-200 text-gray-800"
                     : "bg-gray-100 text-gray-600"
-                }`}
+                  }`}
               >
                 {projects.length}
               </span>
@@ -975,30 +976,26 @@ const CodingPage = () => {
                 <button
                   key={option.value}
                   onClick={() => setStatusFilter(option.value)}
-                  className={`flex items-center px-4 py-3 rounded-xl border transition-all ${
-                    isActive
+                  className={`flex items-center px-4 py-3 rounded-xl border transition-all ${isActive
                       ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
                       : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   <Icon
-                    className={`w-5 h-5 mr-3 ${
-                      isActive ? option.color : "text-gray-500"
-                    }`}
+                    className={`w-5 h-5 mr-3 ${isActive ? option.color : "text-gray-500"
+                      }`}
                   />
                   <span
-                    className={`font-medium ${
-                      isActive ? option.color : "text-gray-600"
-                    }`}
+                    className={`font-medium ${isActive ? option.color : "text-gray-600"
+                      }`}
                   >
                     {option.label}
                   </span>
                   <span
-                    className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-                      isActive
+                    className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${isActive
                         ? "bg-gray-200 text-gray-800"
                         : "bg-gray-100 text-gray-600"
-                    }`}
+                      }`}
                   >
                     {count}
                   </span>
@@ -1106,11 +1103,10 @@ const CodingPage = () => {
                           <button
                             key={pageNum}
                             onClick={() => goToPage(pageNum)}
-                            className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
-                              currentPage === pageNum
+                            className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${currentPage === pageNum
                                 ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-md shadow-indigo-500/20'
                                 : 'bg-white border border-gray-300 text-gray-700 hover:border-indigo-400 hover:bg-gray-50'
-                            }`}
+                              }`}
                           >
                             {pageNum}
                           </button>
@@ -1154,8 +1150,8 @@ const CodingPage = () => {
               {isLoading ? "Loading projects..." : "No projects found"}
             </h3>
             <p className="text-gray-600 mb-6">
-              {isLoading 
-                ? "Fetching data from Firebase..." 
+              {isLoading
+                ? "Fetching data from Firebase..."
                 : "Start by adding your first coding project."}
             </p>
             {!isLoading && (
@@ -1332,25 +1328,22 @@ const CodingPage = () => {
                                   status: option.value,
                                 }))
                               }
-                              className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
-                                newProject.status === option.value
+                              className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${newProject.status === option.value
                                   ? `${option.bg} ${option.border} border-indigo-400 shadow-md shadow-indigo-500/10`
                                   : "bg-white border-gray-300 hover:border-gray-400 hover:bg-gray-50"
-                              }`}
+                                }`}
                             >
                               <Icon
-                                className={`w-5 h-5 mb-1 ${
-                                  newProject.status === option.value
+                                className={`w-5 h-5 mb-1 ${newProject.status === option.value
                                     ? option.color
                                     : "text-gray-500"
-                                }`}
+                                  }`}
                               />
                               <span
-                                className={`text-xs font-medium ${
-                                  newProject.status === option.value
+                                className={`text-xs font-medium ${newProject.status === option.value
                                     ? option.color
                                     : "text-gray-600"
-                                }`}
+                                  }`}
                               >
                                 {option.label}
                               </span>
