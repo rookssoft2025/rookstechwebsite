@@ -13,43 +13,43 @@ export default function Clients() {
 
     const clients = [
         {
-            name: "Dr.Srnivasan",
-            title: " SRINIVASA HOSPITALS",
+            name: "Dr. Srinivasan",
+            title: " Srinivasa Hospital",
             rating: "5.0",
             description:
                 "The CCTV and networking setup was completed smoothly without affecting our daily operations. The system is stable, and their support team is always responsive.",
         },
         {
-            name: "Dr.Susan William",
+            name: "Dr. Susan William",
             title: "William Hospital",
             rating: "5.0",
             description:
                 "We’ve seen a clear improvement in security and network performance after the upgrade. Everything was delivered on time and professionally managed.",
         },
         {
-            name: "Dr.Sunjay",
+            name: "Dr. Sunjay",
             title: "Kani Hospital",
             rating: "5.0",
             description:
                 "The surveillance coverage and server setup have made monitoring much easier for us. Reliable service and excellent support.",
         },
         {
-            name: "Dr.Gopalakrishnan",
+            name: "Dr. Gopalakrishnan",
             title: "GS Lifts",
             rating: "5.0",
             description:
                 "From installation to after-sales support, the team handled everything efficiently. We now feel confident about our IT infrastructure.",
         },
          {
-            name: "Mr. Mari Selvan.",
-            title: "G.R. Furniture",
+            name: "Mr. Mari Selvan",
+            title: "G. R. Furniture",
             rating: "5.0",
             description:
                 "The Web application has made it much easier to track production, inventory, and orders in real time. Our workflow is smoother, and communication between departments has improved a lot",
         },
         {
             name: "Mr. Vijay Kumar",
-            title: " Vijay Hardwares And Plywoods",
+            title: " Vijay Hardwares and Plywoods",
             rating: "5.0",
             description:
                 "The Charity Financial Management System has made tracking donations and expenses simple and transparent. It greatly improved our reporting accuracy and overall financial accountability.",
