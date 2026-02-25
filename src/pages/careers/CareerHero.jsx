@@ -5,7 +5,7 @@ import ServiceCards from "./AnimatedCard";
 import FloatingElement from "../../uiComponents/FloatImg";
 import CareersAnimation from "../../uiComponents/animations/Careers";
 import { useNavigate } from 'react-router-dom';
-
+import AnimatedButton from "../../uiComponents/AnimatedButton";
 
 export default function CareerHero() {
   const fadeUp = {
@@ -13,6 +13,9 @@ export default function CareerHero() {
     visible: { opacity: 1, y: 0, scale: 1 },
   };
   const navigate = useNavigate();
+  const scrollToBottom = () => {
+    navigate('/careers/apply');
+  };
 
   return (
     <>
@@ -39,9 +42,7 @@ export default function CareerHero() {
               <h1 className="text-[28px] sm:text-[34px] md:text-[44px] font-bold leading-tight text-white whitespace-nowrap">Let’s Build the Future Together</h1>
             </div>
 
-            <a href="/careers/apply" className="px-12 py-4 bg-[#64ffda] text-[#0a192f] font-extrabold rounded-full hover:bg-[#52dcb8] transition-all transform hover:-translate-y-1 shadow-xl shadow-[#64ffda]/20 text-lg">
-              Apply Now
-            </a>
+            <AnimatedButton label="Apply Now" onClick={scrollToBottom} />
           </div>
 
           {/* Assessment Test Section */}
@@ -72,11 +73,7 @@ export default function CareerHero() {
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-2">Start Journey</h3>
                     <p className="text-slate-400 text-base mb-8 px-4">Evaluate your skills in <br />under 90 minutes</p>
-                    <button
-                     onClick={() => navigate('/careers/assessment')}
-                     className="w-full px-12 py-5 bg-[#64ffda] text-[#0a192f] font-black rounded-2xl hover:bg-[#52dcb8] transition-all transform hover:scale-[1.05] active:scale-95 shadow-2xl shadow-[#64ffda]/20 cursor-pointer">
-                      BEGIN ASSESSMENT
-                    </button>
+                    <AnimatedButton label="BEGIN ASSESSMENT" onClick={() => navigate('/careers/assessment')} />
                   </div>
                 </div>
               </div>
@@ -84,7 +81,7 @@ export default function CareerHero() {
           </section>
           <div className="flex items-center justify-around flex-col md:flex-row md:space-x-6 px-4">
             <motion.p
-              className="mt-8 font-semibold text-center text-[20px] md:text-[36px] leading-snug max-w-4xl relative z-10"
+              className="mt-8 font-semibold text-center text-[18px] md:text-[36px] leading-snug max-w-5xl relative z-10"
               initial={{ opacity: 0, x: -80 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9 }}

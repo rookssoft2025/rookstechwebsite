@@ -152,7 +152,7 @@ export default function SolutionsInfo() {
         {caseStudies.map((study, idx) => (
           <div
             key={idx}
-            className="bg-[#0F2239] p-6 rounded-2xl shadow-lg hover:scale-105 transition-transform"
+            className="bg-[#0F2239] p-6 rounded-2xl shadow-lg hover:scale-97 transition-transform"
           >
             <h3 className="text-xl font-semibold text-white mb-3">{study.title}</h3>
             <p className="text-gray-300 text-sm">{study.desc}</p>
@@ -173,7 +173,7 @@ export default function SolutionsInfo() {
         {reasons.map((reason, idx) => (
           <div
             key={idx}
-            className="bg-[#0F2239] p-6 rounded-2xl shadow-lg hover:scale-105 transition-transform"
+            className="bg-[#0F2239] p-6 rounded-2xl shadow-lg hover:scale-97 transition-transform"
           >
             <h3 className="text-xl font-semibold text-white mb-2">{reason.title}</h3>
             <p className="text-gray-300 text-sm">{reason.desc}</p>

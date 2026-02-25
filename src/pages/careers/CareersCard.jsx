@@ -6,27 +6,27 @@ export default function CareersCard() {
     const info2 = [
         {
             id: "01",
-            title: "User-Focused Products",
+            title: "Growth Opportunities",
             description:
-                "We design and deliver digital products that are scalable, reliable, and built around user needs.",
+                "Learn, experiment, and grow with exciting projects.",
         },
         {
             id: "02",
-            title: "Design-Driven Strategy",
+            title: "Creative Freedom",
             description:
-                "By combining creativity with technology and strategy, we create solutions that drive measurable results.",
+                "Bring your ideas to life in a collaborative environment.",
         },
         {
             id: "03",
-            title: "Partnerships That Last",
+            title: "Supportive Team",
             description:
-                "We believe in building long-term relationships through trust, transparency, and collaboration.",
+                "Work with people who value trust and transparency.",
         },
         {
             id: "04",
-            title: "Future-Ready Innovation",
+            title: "Impactful Work",
             description:
-                "We continuously innovate to ensure our clients stay adaptive, competitive, and ahead of the curve.",
+                "Build products that matter to businesses and users.",
         },
     ];
     const fadeUp = {
@@ -46,8 +46,8 @@ export default function CareersCard() {
                 >     
                     <div className="text-white text-[30px] font-semibold order-1 sm:order-2">
                         <p>
-                            A clear vision, a strong mission, and values that guide everything
-                            we create
+                           WHY WORK WITH
+US ?
                         </p>
                     </div>
                     <div className="order-2 sm:order-1">

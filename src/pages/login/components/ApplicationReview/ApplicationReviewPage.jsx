@@ -12,6 +12,7 @@ import {
   BookOpen,
   Briefcase,
   ChevronRight,
+  ChevronLeft,
   GraduationCap,
   FlaskConical,
   FileText,
@@ -25,6 +26,8 @@ import {
   Cpu,
   Globe,
   Building2,
+  ChevronDown,
+  Filter,
 } from "lucide-react";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
 import { db } from "../../../../firebase";
@@ -45,6 +48,9 @@ const ApplicationReviewPage = () => {
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("applications");
   const [applicationType, setApplicationType] = useState("fellowship"); // 'fellowship' or 'intern'
+  const [genderFilter, setGenderFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
     setLoading(true);
@@ -73,6 +79,11 @@ const ApplicationReviewPage = () => {
     return () => unsubscribe();
   }, [applicationType]);
 
+  // Reset pagination when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterStatus, applicationType, genderFilter]);
+
   const filteredApplications = applications.filter((app) => {
     const matchesSearch =
       app.personal?.fullName
@@ -85,8 +96,19 @@ const ApplicationReviewPage = () => {
         ? app.status === "shortlisted"
         : app.status !== "shortlisted";
 
-    return matchesSearch && matchesFilter;
+    const matchesGender =
+      genderFilter === "all" || app.personal?.gender === genderFilter;
+
+    return matchesSearch && matchesFilter && matchesGender;
   });
+
+  // Pagination Logic
+  const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedApplications = filteredApplications.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE,
+  );
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
@@ -129,23 +151,24 @@ const ApplicationReviewPage = () => {
     <ReserchLayout activeTab={activeTab} setActiveTab={setActiveTab}>
       <div className="space-y-8 bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 min-h-screen p-6 lg:p-8">
         {/* Enhanced Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-2xl shadow-lg shadow-indigo-200">
-                <FileText className="text-white" size={24} />
-              </div>
-              <div>
-                <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 bg-clip-text text-transparent">
-                  Application Review
-                </h1>
-                <p className="text-slate-500 text-sm lg:text-base flex items-center gap-2 mt-1">
-                  <Sparkles size={16} className="text-indigo-500" />
-                  Review and manage research fellowship applications
-                </p>
-              </div>
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-2xl shadow-lg shadow-indigo-200">
+              <FileText className="text-white" size={24} />
+            </div>
+            <div>
+              <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 bg-clip-text text-transparent">
+                Application Review
+              </h1>
+              <p className="text-slate-500 text-sm lg:text-base flex items-center gap-2 mt-1">
+                <Sparkles size={16} className="text-indigo-500" />
+                Review and manage research fellowship applications
+              </p>
             </div>
           </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
             {/* Application Type Tabs */}
@@ -170,11 +193,10 @@ const ApplicationReviewPage = () => {
                 <button
                   key={status}
                   onClick={() => setFilterStatus(status)}
-                  className={`px-5 py-2.5 text-sm font-medium rounded-xl capitalize transition-all duration-200 ${
-                    filterStatus === status
-                      ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-200"
-                      : "text-slate-600 hover:bg-slate-100"
-                  }`}
+                  className={`px-5 py-2.5 text-sm font-medium rounded-xl capitalize transition-all duration-200 ${filterStatus === status
+                    ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-200"
+                    : "text-slate-600 hover:bg-slate-100"
+                    }`}
                 >
                   {status === "applications" ? "Applications" : "Shortlisted"}
                 </button>
@@ -182,18 +204,41 @@ const ApplicationReviewPage = () => {
             </div>
 
             {/* Search Bar */}
-            <div className="relative">
-              <Search
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                size={18}
-              />
-              <input
-                type="text"
-                placeholder="Search by name or email..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full sm:w-80 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-lg shadow-slate-200/50"
-              />
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <Search
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                  size={18}
+                />
+                <input
+                  type="text"
+                  placeholder="Search by name or email..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full sm:w-80 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-lg shadow-slate-200/50"
+                />
+              </div>
+
+              {/* Gender Filter Dropdown */}
+              <div className="relative group">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                  <Filter size={18} />
+                </div>
+                <select
+                  value={genderFilter}
+                  onChange={(e) => setGenderFilter(e.target.value)}
+                  className="appearance-none bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl pl-11 pr-10 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-lg shadow-slate-200/50 cursor-pointer text-sm font-medium"
+                >
+                  <option value="all">All Genders</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Others">Others</option>
+                </select>
+                <ChevronDown
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-indigo-500 transition-colors"
+                  size={18}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -244,17 +289,101 @@ const ApplicationReviewPage = () => {
             </p>
           </motion.div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {filteredApplications.map((app, index) => (
-              <ApplicationCard
-                key={app.id}
-                app={app}
-                index={index}
-                formatDate={formatDate}
-                getInitials={getInitials}
-                onSelect={setSelectedApplication}
-              />
-            ))}
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {paginatedApplications.map((app, index) => (
+                <ApplicationCard
+                  key={app.id}
+                  app={app}
+                  index={index}
+                  formatDate={formatDate}
+                  getInitials={getInitials}
+                  onSelect={setSelectedApplication}
+                />
+              ))}
+            </div>
+
+            {/* Enhanced Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex flex-col sm:flex-row items-center justify-center pt-8">
+                <div className="flex items-center gap-1 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                    className={`p-2 rounded-lg transition-all ${currentPage === 1
+                        ? "text-slate-300 cursor-not-allowed"
+                        : "text-slate-400 hover:bg-slate-50 hover:text-indigo-600"
+                      }`}
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  <div className="flex items-center">
+                    {(() => {
+                      const pages = [];
+                      const showEllipsis = totalPages > 7;
+
+                      if (!showEllipsis) {
+                        for (let i = 1; i <= totalPages; i++) pages.push(i);
+                      } else {
+                        if (currentPage <= 4) {
+                          for (let i = 1; i <= 5; i++) pages.push(i);
+                          pages.push("...");
+                          pages.push(totalPages);
+                        } else if (currentPage >= totalPages - 3) {
+                          pages.push(1);
+                          pages.push("...");
+                          for (let i = totalPages - 4; i <= totalPages; i++)
+                            pages.push(i);
+                        } else {
+                          pages.push(1);
+                          pages.push("...");
+                          for (let i = currentPage - 1; i <= currentPage + 1; i++)
+                            pages.push(i);
+                          pages.push("...");
+                          pages.push(totalPages);
+                        }
+                      }
+
+                      return pages.map((page, i) =>
+                        page === "..." ? (
+                          <span
+                            key={`ellipsis-${i}`}
+                            className="w-10 h-10 flex items-center justify-center text-slate-400 font-bold"
+                          >
+                            ...
+                          </span>
+                        ) : (
+                          <button
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                            className={`w-10 h-10 rounded-lg text-sm font-bold transition-all ${currentPage === page
+                                ? "bg-blue-500 text-white shadow-lg shadow-blue-200"
+                                : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+                              }`}
+                          >
+                            {page}
+                          </button>
+                        )
+                      );
+                    })()}
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                    disabled={currentPage === totalPages}
+                    className={`p-2 rounded-lg transition-all ${currentPage === totalPages
+                        ? "text-slate-300 cursor-not-allowed"
+                        : "text-slate-400 hover:bg-slate-50 hover:text-indigo-600"
+                      }`}
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -334,7 +463,7 @@ const ApplicationReviewPage = () => {
                       title="Personal Information"
                       gradient="from-blue-600 to-indigo-600"
                     >
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <EnhancedDetailItem
                           label="Full Name"
                           value={selectedApplication.personal?.fullName}
@@ -351,10 +480,16 @@ const ApplicationReviewPage = () => {
                           icon={Phone}
                         />
                         <EnhancedDetailItem
+                          label="Gender"
+                          value={selectedApplication.personal?.gender}
+                          icon={MapPin}
+                        />
+                        <EnhancedDetailItem
                           label="Location"
                           value={selectedApplication.personal?.location}
                           icon={MapPin}
                         />
+
                       </div>
                     </DetailSection>
 
@@ -662,13 +797,12 @@ const ApplicationCard = ({ app, index, formatDate, getInitials, onSelect }) => (
           </div>
           <div className="flex items-center gap-2">
             <span
-              className={`px-3 py-1.5 text-xs font-semibold rounded-full border ${
-                app.status === "shortlisted"
-                  ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                  : app.status === "reviewed"
-                    ? "bg-indigo-100 text-indigo-700 border-indigo-200"
-                    : "bg-amber-100 text-amber-700 border-amber-200"
-              }`}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-full border ${app.status === "shortlisted"
+                ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+                : app.status === "reviewed"
+                  ? "bg-indigo-100 text-indigo-700 border-indigo-200"
+                  : "bg-amber-100 text-amber-700 border-amber-200"
+                }`}
             >
               {app.status || "Pending Review"}
             </span>

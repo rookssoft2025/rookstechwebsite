@@ -52,9 +52,6 @@ export default function WorkHero() {
             {/* </div> */}
           </div>
         </div>
-        <div className="">
-          <WorkCards />
-        </div>
       </motion.div>
     </>
   );

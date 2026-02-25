@@ -15,30 +15,44 @@ export default function Clients() {
         {
             name: "Dr.Srnivasan",
             title: " SRINIVASA HOSPITALS",
-            rating: "4.5",
+            rating: "5.0",
             description:
-                "Their expertise in UI/UX design helped us launch an engaging platform that our customers love. The attention to detail was impressive",
+                "The CCTV and networking setup was completed smoothly without affecting our daily operations. The system is stable, and their support team is always responsive.",
         },
         {
             name: "Dr.Susan William",
             title: "William Hospital",
-            rating: "4.8",
+            rating: "5.0",
             description:
-                "A reliable tech partner who truly understands business needs. Their solutions help us scale with confidence.",
+                "We’ve seen a clear improvement in security and network performance after the upgrade. Everything was delivered on time and professionally managed.",
         },
         {
             name: "Dr.Sunjay",
             title: "Kani Hospital",
-            rating: "4.7",
+            rating: "5.0",
             description:
-                "We loved how professional and innovative the team was. Their creative solutions exceeded our expectations.",
+                "The surveillance coverage and server setup have made monitoring much easier for us. Reliable service and excellent support.",
         },
         {
             name: "Dr.Gopalakrishnan",
             title: "GS Lifts",
             rating: "5.0",
             description:
-                "Excellent collaboration and flawless execution. Highly recommend them for complex digital projects.",
+                "From installation to after-sales support, the team handled everything efficiently. We now feel confident about our IT infrastructure.",
+        },
+         {
+            name: "Mr. Mari Selvan.",
+            title: "G.R. Furniture",
+            rating: "5.0",
+            description:
+                "The Web application has made it much easier to track production, inventory, and orders in real time. Our workflow is smoother, and communication between departments has improved a lot",
+        },
+        {
+            name: "Mr. Vijay Kumar",
+            title: " Vijay Hardwares And Plywoods",
+            rating: "5.0",
+            description:
+                "The Charity Financial Management System has made tracking donations and expenses simple and transparent. It greatly improved our reporting accuracy and overall financial accountability.",
         },
     ];
     const carouselRef = useRef(null);

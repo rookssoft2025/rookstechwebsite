@@ -2,12 +2,13 @@ import React, { useState, useContext } from "react";
 import { ArrowUpRight, ArrowRight, Menu, X } from "lucide-react";
 import logoName from "../../assets/rbName.svg";
 import AnimatedButton from "../../uiComponents/AnimatedButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { SplashContext } from "../../App";
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
     const { setShowSplash } = useContext(SplashContext);
 
     const handleNavigate = (path, withSplash = false) => {
@@ -37,6 +38,8 @@ const Navbar = () => {
         });
     };
 
+    const isActive = (path) => location.pathname === path;
+
     return (
         <>
             <nav className="w-full bg-white/10 backdrop-blur-sm text-white px-4 sm:px-6 py-2 rounded-[24px] shadow-md border border-[#FFFFFF1A] flex justify-between items-center relative z-50">
@@ -53,7 +56,8 @@ const Navbar = () => {
                         <li
                             key={index}
                             onClick={() => handleNavigate(item.path)}
-                            className="cursor-pointer hover:text-[#0B3470] hover:[text-shadow:0_0_8px_white,0_0_16px_white] transition-all duration-300 whitespace-nowrap"
+                            style={isActive(item.path) ? { textShadow: "0 0 8px white, 0 0 16px white" } : {}}
+                            className="cursor-pointer hover:[text-shadow:0_0_8px_white,0_0_16px_white] transition-all duration-300 whitespace-nowrap"
                         >
                             {item.label}
                         </li>
@@ -71,13 +75,11 @@ const Navbar = () => {
                 </button>
             </nav>
             <div
-                className={`fixed inset-0  backdrop-blur-md z-40 transition-all duration-500 lg:hidden ${isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-                    }`}
+                className={`fixed inset-0 backdrop-blur-md z-40 transition-all duration-500 lg:hidden ${isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
                 onClick={() => setIsMobileMenuOpen(false)}
             />
             <div
-                className={`fixed top-0 right-0 h-full w-80 max-w-[85vw]  text-white z-50 transform transition-transform duration-500 ease-out lg:hidden ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-                    }`}
+                className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] text-white z-50 transform transition-transform duration-500 ease-out lg:hidden ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"}`}
             >
                 <div className="py-8 px-6 bg-white/10 backdrop-blur-md relative rounded-3xl mt-4">
                     <button
@@ -91,15 +93,18 @@ const Navbar = () => {
                             <li
                                 key={index}
                                 onClick={() => handleNavigate(item.path)}
-                                className="group cursor-pointer py-3 px-4 rounded-xl hover:bg-white/10 transition-all duration-300 border-l-4 border-transparent hover:border-white"
+                                className={`group cursor-pointer py-3 px-4 rounded-xl hover:bg-white/10 transition-all duration-300 border-l-4 ${isActive(item.path) ? "border-white bg-white/10" : "border-transparent"} hover:border-white`}
                             >
                                 <div className="flex items-center justify-between">
-                                    <span className="text-md font-medium group-hover:text-white/90 transition-colors">
+                                    <span
+                                        style={isActive(item.path) ? { textShadow: "0 0 8px white, 0 0 16px white" } : {}}
+                                        className="text-md font-medium group-hover:text-white/90 transition-colors"
+                                    >
                                         {item.label}
                                     </span>
                                     <ArrowRight
                                         size={18}
-                                        className="opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300"
+                                        className={`${isActive(item.path) ? "opacity-100 translate-x-1" : "opacity-0"} group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300`}
                                     />
                                 </div>
                             </li>
@@ -118,12 +123,8 @@ const Navbar = () => {
                         </button>
                     </div>
                     <div className="mt-16 pt-8 border-t border-white/20 text-center">
-                        <p className="text-white/60 text-sm">
-                            Ready to transform your business?
-                        </p>
-                        <p className="text-white/40 text-xs mt-2">
-                            Contact us today for a consultation
-                        </p>
+                        <p className="text-white/60 text-sm">Ready to transform your business?</p>
+                        <p className="text-white/40 text-xs mt-2">Contact us today for a consultation</p>
                     </div>
                 </div>
             </div>

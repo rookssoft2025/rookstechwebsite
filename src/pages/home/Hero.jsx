@@ -36,39 +36,37 @@ const GlassCard = ({ title, features, buttonLabel, onButtonClick, variant = "lef
   };
 
   const neonColor = getNeonColor();
-  
+
+
   return (
-    <motion.div 
-      className="glass-card relative p-6 rounded-2xl overflow-hidden border border-white/10"
-      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+    <motion.div
+      className="relative p-6 rounded-2xl overflow-hidden bg-[#0F2239] border border-[#FFFFFF1A] shadow-md cursor-pointer"
+      whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
     >
-      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r from-sky-500/10 to-blue-600/10 opacity-50`}></div>
-      <div className={`absolute -inset-1 rounded-2xl bg-sky-500/40 opacity-20 blur-lg transition-opacity duration-300`}></div>
-      
       <div className="relative z-10">
-        <h3 className={`text-xl font-bold mb-6 text-white flex items-center`}>
-          <span className={`inline-block w-3 h-3 rounded-full mr-3 bg-sky-500 shadow-lg shadow-sky-500/50`}></span>
+        <h3 className="text-xl font-bold mb-6 text-white flex items-center">
           {title}
         </h3>
-        
+
         <div className="space-y-4 mb-8">
           {features.map((feature, index) => (
             <div key={index} className="flex items-start">
-              <div className={`flex-shrink-0 w-2 h-2 rounded-full mt-2 mr-3 bg-sky-500`}></div>
+              <div className="flex-shrink-0 w-2 h-2 rounded-full mt-2 mr-3 bg-sky-500"></div>
               <span className="text-white/80 text-sm">{feature.text}</span>
             </div>
           ))}
         </div>
-        
+
         <button
           onClick={onButtonClick}
-          className={`group flex items-center text-sky-300 font-medium text-sm hover:text-sky-100 transition-colors duration-300`}
+          className="group flex items-center text-sky-300 font-medium text-sm hover:text-sky-100 transition-colors duration-300"
         >
           {buttonLabel}
         </button>
       </div>
     </motion.div>
   );
+
 };
 
 export default function Hero() {
@@ -191,8 +189,8 @@ export default function Hero() {
               variants={fadeInUp}
             >
               <p className=" text-xl md:text-2xl text-white/90 leading-relaxed">
-                Smart IT, Seamless Research, and Scalable Products Built for You.
-                From Web, Apps, and Cloud to Security, Research, and Product Innovation
+                Smart IT Solutions. Research-Driven. Built to Scale.
+                Delivering Web, App, Cloud, Security, and Product Innovation Services.
               </p>
             </motion.div>
             <motion.div
@@ -200,10 +198,10 @@ export default function Hero() {
               variants={fadeInUp}
             >
 
-              <button onClick={() => navigate("/services")} className="h-11.5 cursor-pointer px-6 py-1 rounded-full bg-white text-black hover:bg-[#0B3470] hover:text-white text-sm font-semibold transition-colors duration-300 whitespace-nowrap border border-transparent hover:border-white/20">
+              {/* <button onClick={() => navigate("/services")} className="h-11.5 cursor-pointer px-6 py-1 rounded-full bg-white text-black hover:bg-[#0B3470] hover:text-white text-sm font-semibold transition-colors duration-300 whitespace-nowrap border border-transparent hover:border-white/20">
                 Explore Our Services
-              </button>
-              <AnimatedButton label="Let's Work Together" onClick={() => navigate("/services")} />
+              </button> */}
+              <AnimatedButton label="Let's Work Together" onClick={() => navigate("/careers")} />
             </motion.div>
 
           </motion.div>
@@ -236,17 +234,17 @@ export default function Hero() {
           animate="visible"
           variants={staggerContainer}
         >
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center"
             variants={fadeInLeft}
           >
             <div className="lg:pr-10">
               <h3 className="text-2xl font-bold text-sky-300 mb-4">Innovative Development</h3>
               <p className="text-white/80 mb-6">
-                We create cutting-edge software solutions tailored to your business needs, 
+                We create cutting-edge software solutions tailored to your business needs,
                 from intuitive web and mobile applications to robust e-commerce platforms.
               </p>
-              <button 
+              <button
                 onClick={() => navigate("/solutions")}
                 className="flex items-center text-sky-300 font-medium group"
               >
@@ -262,17 +260,17 @@ export default function Hero() {
               />
             </div>
           </motion.div>
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center"
             variants={fadeInRight}
           >
             <div className="lg:order-2 lg:pl-10">
               <h3 className="text-2xl font-bold text-sky-300 mb-4">Infrastructure & Security</h3>
               <p className="text-white/80 mb-6">
-                Our comprehensive IT services ensure your systems are secure, scalable, 
+                Our comprehensive IT services ensure your systems are secure, scalable,
                 and optimized for performance in today's digital landscape.
               </p>
-              <button 
+              <button
                 onClick={() => navigate("/services")}
                 className="flex items-center text-sky-300 font-medium group"
               >
@@ -288,17 +286,17 @@ export default function Hero() {
               />
             </div>
           </motion.div>
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center"
             variants={fadeInLeft}
           >
             <div className="lg:pr-10">
               <h3 className="text-2xl font-bold text-sky-300 mb-4">Future Technologies</h3>
               <p className="text-white/80 mb-6">
-                Our R&D division explores emerging technologies to keep you at the forefront 
+                Our R&D division explores emerging technologies to keep you at the forefront
                 of innovation, from AI and blockchain to robotics and privacy solutions.
               </p>
-              <button 
+              <button
                 onClick={() => navigate("/research")}
                 className="flex items-center text-sky-300 font-medium group"
               >

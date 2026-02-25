@@ -36,7 +36,7 @@ export default function AnimatedButton({
 
       {/* Label */}
       <div
-        className={`text-white relative z-10 rounded-full px-4 py-2 h-12 flex items-center text-center transition 
+        className={`text-white relative z-10 rounded-full px-4 py-2 h-12 flex items-center text-center font-semibold transition 
           ${disabled ? "bg-gray-500" : "bg-[#0B3470]"}
         `}
       >

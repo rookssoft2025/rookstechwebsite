@@ -146,7 +146,7 @@ export default function FutureWork() {
               </h2>
             </div> 
 
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-300 max-w-3xl mx-auto mt-5">
               Our next-phase roadmap blends research and production to deliver responsible, realtime, and energy-efficient AI.
             </p>
           </div>

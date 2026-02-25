@@ -53,6 +53,7 @@ export default function JobApplication() {
         fullName: "",
         phone: "",
         email: "",
+        gender: "",
         location: "",
 
         // 10th Details
@@ -256,6 +257,7 @@ export default function JobApplication() {
             else if (!/^\d{10}$/.test(formData.phone)) errors.phone = "Enter a valid 10-digit number";
             if (!formData.email.trim()) errors.email = "Email is required";
             else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Enter a valid email address";
+            if (!formData.gender) errors.gender = "Gender is required";
             if (!formData.location.trim()) errors.location = "Location is required";
         }
 
@@ -338,6 +340,7 @@ export default function JobApplication() {
                     fullName: formData.fullName,
                     phone: formData.phone,
                     email: formData.email,
+                    gender: formData.gender,
                     location: formData.location
                 },
                 education: {
@@ -402,6 +405,7 @@ export default function JobApplication() {
             fullName: "",
             phone: "",
             email: "",
+            gender: "",
             location: "",
             tenthBoard: "",
             tenthSchool: "",
@@ -575,6 +579,7 @@ export default function JobApplication() {
                                                         formData.phone?.trim() &&
                                                         /^\d{10}$/.test(formData.phone) &&
                                                         formData.email?.trim() &&
+                                                        formData.gender &&
                                                         formData.location?.trim()
                                                     );
                                                 case "education":
@@ -705,6 +710,17 @@ export default function JobApplication() {
                                                     className={`w-full bg-[#0a192f] border ${validationErrors.email ? 'border-red-500' : 'border-[#233554]'} rounded-lg px-4 py-3 focus:outline-none focus:border-[#64ffda] transition-colors text-white`}
                                                     placeholder="john@example.com" />
                                                 {validationErrors.email && <p className="text-red-500 text-xs mt-1">{validationErrors.email}</p>}
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-gray-400">Gender <span className="text-red-400">*</span></label>
+                                                <select name="gender" value={formData.gender} onChange={handleInputChange}
+                                                    className={`w-full bg-[#0a192f] border ${validationErrors.gender ? 'border-red-500' : 'border-[#233554]'} rounded-lg px-4 py-3 focus:outline-none focus:border-[#64ffda] transition-colors text-white`}>
+                                                    <option value="">Select Gender</option>
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                    <option value="Others">Others</option>
+                                                </select>
+                                                {validationErrors.gender && <p className="text-red-500 text-xs mt-1">{validationErrors.gender}</p>}
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-sm font-medium text-gray-400">Location <span className="text-red-400">*</span></label>
@@ -1232,6 +1248,10 @@ export default function JobApplication() {
                                                     <div>
                                                         <span className="text-gray-400 block">Email</span>
                                                         <span className="text-white">{formData.email}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-400 block">Gender</span>
+                                                        <span className="text-white">{formData.gender}</span>
                                                     </div>
                                                     <div>
                                                         <span className="text-gray-400 block">Location</span>
