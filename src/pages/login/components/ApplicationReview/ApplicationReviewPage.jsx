@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
@@ -28,6 +29,7 @@ import {
   Building2,
   ChevronDown,
   Filter,
+  Users,
 } from "lucide-react";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
 import { db } from "../../../../firebase";
@@ -40,6 +42,41 @@ import {
   doc,
 } from "firebase/firestore";
 
+const LAST_VISIT_KEY = "applicationPageLastVisit";
+const VIEWED_KEY = "viewedApplicationIds";
+
+// Records the current time as "last visit" — called once on page load
+const recordLastVisit = () => {
+  // Only set if not already set (first ever visit sets the baseline)
+  if (!localStorage.getItem(LAST_VISIT_KEY)) {
+    localStorage.setItem(LAST_VISIT_KEY, new Date().toISOString());
+  }
+};
+
+// After recording, update to now so next visit has a fresh baseline
+const updateLastVisit = () => {
+  localStorage.setItem(LAST_VISIT_KEY, new Date().toISOString());
+};
+
+const getLastVisitTime = () => {
+  const val = localStorage.getItem(LAST_VISIT_KEY);
+  return val ? new Date(val) : null;
+};
+
+const getViewedIds = () => {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(VIEWED_KEY) || "[]"));
+  } catch {
+    return new Set();
+  }
+};
+
+const markAsViewed = (id) => {
+  const viewed = getViewedIds();
+  viewed.add(id);
+  localStorage.setItem(VIEWED_KEY, JSON.stringify([...viewed]));
+};
+
 const ApplicationReviewPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("application-review");
@@ -47,10 +84,22 @@ const ApplicationReviewPage = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("applications");
-  const [applicationType, setApplicationType] = useState("fellowship"); // 'fellowship' or 'intern'
+  const [applicationType, setApplicationType] = useState("fellowship");
   const [genderFilter, setGenderFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [viewedIds, setViewedIds] = useState(getViewedIds);
+  const [dateFilter, setDateFilter] = useState("all");
+  const [selectedDate, setSelectedDate] = useState(null);
+  const dateInputRef = useRef(null);
+  const [lastVisitTime] = useState(() => {
+    recordLastVisit();
+    return getLastVisitTime();
+  });
   const ITEMS_PER_PAGE = 10;
+
+  useEffect(() => {
+    return () => updateLastVisit();
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -75,34 +124,67 @@ const ApplicationReviewPage = () => {
         setLoading(false);
       },
     );
-
     return () => unsubscribe();
   }, [applicationType]);
 
-  // Reset pagination when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, filterStatus, applicationType, genderFilter]);
+  }, [searchTerm, filterStatus, applicationType, genderFilter, dateFilter, selectedDate]);
+
+  const handleViewApplication = (app) => {
+    markAsViewed(app.id);
+    setViewedIds((prev) => new Set([...prev, app.id]));
+    setSelectedApplication(app);
+  };
 
   const filteredApplications = applications.filter((app) => {
     const matchesSearch =
-      app.personal?.fullName
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
+      app.personal?.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.personal?.email?.toLowerCase().includes(searchTerm.toLowerCase());
-
     const matchesFilter =
       filterStatus === "shortlisted"
         ? app.status === "shortlisted"
         : app.status !== "shortlisted";
-
     const matchesGender =
       genderFilter === "all" || app.personal?.gender === genderFilter;
 
-    return matchesSearch && matchesFilter && matchesGender;
+    // Date filtering
+    const submittedAtDate = app.submittedAt ? new Date(app.submittedAt) : null;
+    const getDateRange = () => {
+      if (dateFilter === "all") return null;
+      const now = new Date();
+      const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      const dayMs = 24 * 60 * 60 * 1000;
+      let start, end;
+      if (dateFilter === "today") {
+        start = startOfDay(now);
+        end = new Date(start.getTime() + dayMs - 1);
+      } else if (dateFilter === "yesterday") {
+        start = startOfDay(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1));
+        end = new Date(start.getTime() + dayMs - 1);
+      } else if (dateFilter === "this-week") {
+        const startWeek = startOfDay(new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()));
+        start = startWeek;
+        end = new Date(start.getTime() + 7 * dayMs - 1);
+      } else if (dateFilter === "this-month") {
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime() - 1;
+        end = new Date(end);
+      } else if (dateFilter === "select") {
+        if (!selectedDate) return null;
+        start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+        end = new Date(start.getTime() + dayMs - 1);
+      }
+      return { start, end };
+    };
+
+    const range = getDateRange();
+    const matchesDate =
+      !range || (submittedAtDate && submittedAtDate >= range.start && submittedAtDate <= range.end);
+
+    return matchesSearch && matchesFilter && matchesGender && matchesDate;
   });
 
-  // Pagination Logic
   const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedApplications = filteredApplications.slice(
@@ -121,12 +203,7 @@ const ApplicationReviewPage = () => {
 
   const getInitials = (name) => {
     if (!name) return "NA";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
+    return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
   };
 
   const handleUpdateStatus = async (applicationId, newStatus) => {
@@ -134,10 +211,7 @@ const ApplicationReviewPage = () => {
       const collectionName =
         applicationType === "fellowship" ? "Application" : "internships";
       const applicationRef = doc(db, collectionName, applicationId);
-      await updateDoc(applicationRef, {
-        status: newStatus,
-      });
-      // Update local state if modal is open
+      await updateDoc(applicationRef, { status: newStatus });
       if (selectedApplication && selectedApplication.id === applicationId) {
         setSelectedApplication({ ...selectedApplication, status: newStatus });
       }
@@ -147,239 +221,350 @@ const ApplicationReviewPage = () => {
     }
   };
 
+  const openDatePicker = () => {
+    dateInputRef.current?.click();
+  };
+
+  const handleDateChange = (dateStr) => {
+    if (!dateStr) {
+      setSelectedDate(null);
+      setDateFilter("all");
+      return;
+    }
+    const d = new Date(dateStr + "T00:00:00");
+    setSelectedDate(d);
+    setDateFilter("select");
+  };
+
+  const clearSelectedDate = () => {
+    setSelectedDate(null);
+    setDateFilter("all");
+    if (dateInputRef.current) dateInputRef.current.value = "";
+  };
+
   return (
     <ReserchLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-      <div className="space-y-8 bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 min-h-screen p-6 lg:p-8">
-        {/* Enhanced Header */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-2xl shadow-lg shadow-indigo-200">
-              <FileText className="text-white" size={24} />
-            </div>
-            <div>
-              <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 bg-clip-text text-transparent">
-                Application Review
-              </h1>
-              <p className="text-slate-500 text-sm lg:text-base flex items-center gap-2 mt-1">
-                <Sparkles size={16} className="text-indigo-500" />
-                Review and manage research fellowship applications
-              </p>
-            </div>
+      <div className="space-y-6 bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 min-h-screen p-6 lg:p-8">
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-xl shadow-lg shadow-indigo-200">
+            <FileText className="text-white" size={20} />
+          </div>
+          <div>
+            <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 bg-clip-text text-transparent">
+              Application Review
+            </h1>
+            <p className="text-slate-500 text-xs flex items-center gap-1.5 mt-0.5">
+              <Sparkles size={13} className="text-indigo-500" />
+              Review and manage research fellowship applications
+            </p>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        {/* Filters Row */}
+        <div className="flex flex-col md:flex-row md:items-center gap-3 flex-wrap">
+          <div className="flex bg-slate-100 p-1 rounded-xl">
+            <button
+              onClick={() => setApplicationType("fellowship")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${applicationType === "fellowship" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+            >
+              Research Fellowship
+            </button>
+            <button
+              onClick={() => setApplicationType("intern")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${applicationType === "intern" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+            >
+              Research Intern
+            </button>
+          </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-            {/* Application Type Tabs */}
-            <div className="flex bg-slate-100 p-1 rounded-2xl">
+          <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
+            {["applications", "shortlisted"].map((status) => (
               <button
-                onClick={() => setApplicationType("fellowship")}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${applicationType === "fellowship" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                key={status}
+                onClick={() => setFilterStatus(status)}
+                className={`px-4 py-1.5 text-xs font-medium rounded-lg capitalize transition-all ${filterStatus === status
+                  ? "bg-indigo-600 text-white shadow-md"
+                  : "text-slate-600 hover:bg-slate-100"
+                  }`}
               >
-                Research Fellowship
+                {status === "applications" ? "Applications" : "Shortlisted"}
               </button>
-              <button
-                onClick={() => setApplicationType("intern")}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${applicationType === "intern" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
-              >
-                Research Intern
-              </button>
-            </div>
+            ))}
+          </div>
 
-            {/* Status Filter */}
-            <div className="flex items-center bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl p-1.5 shadow-lg shadow-slate-200/50">
-              {["applications", "shortlisted"].map((status) => (
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+            <input
+              type="text"
+              placeholder="Search by name or email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-64 bg-white border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-sm"
+            />
+          </div>
+
+          <div className="relative">
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+            <select
+              value={genderFilter}
+              onChange={(e) => setGenderFilter(e.target.value)}
+              className="appearance-none bg-white border border-slate-200 rounded-xl pl-8 pr-8 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-sm cursor-pointer"
+            >
+              <option value="all">All Genders</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Others">Others</option>
+            </select>
+            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="flex bg-white border border-slate-200 rounded-xl p-1 shadow-sm text-xs">
+              {[
+                { key: 'all', label: 'All' },
+                { key: 'today', label: 'Today' },
+                { key: 'yesterday', label: 'Yesterday' },
+                { key: 'this-week', label: 'This Week' },
+                { key: 'this-month', label: 'This Month' },
+              ].map((opt) => (
                 <button
-                  key={status}
-                  onClick={() => setFilterStatus(status)}
-                  className={`px-5 py-2.5 text-sm font-medium rounded-xl capitalize transition-all duration-200 ${filterStatus === status
-                    ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-200"
-                    : "text-slate-600 hover:bg-slate-100"
-                    }`}
+                  key={opt.key}
+                  onClick={() => {
+                    if (opt.key === 'all') {
+                      clearSelectedDate();
+                    } else {
+                      setDateFilter(opt.key);
+                      setSelectedDate(null);
+                    }
+                  }}
+                  className={`px-2 py-1 rounded-md ${dateFilter === opt.key ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-50'}`}
                 >
-                  {status === "applications" ? "Applications" : "Shortlisted"}
+                  {opt.label}
                 </button>
               ))}
+              <button
+                onClick={openDatePicker}
+                className={`px-3 py-1 rounded-md ml-1 ${dateFilter === 'select' ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-50'}`}
+              >
+                Select Date
+              </button>
             </div>
 
-            {/* Search Bar */}
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <Search
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                  size={18}
-                />
-                <input
-                  type="text"
-                  placeholder="Search by name or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full sm:w-80 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-lg shadow-slate-200/50"
-                />
+            {dateFilter === 'select' && selectedDate && (
+              <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 shadow-sm text-xs">
+                <span className="text-slate-600">{formatDate(selectedDate)}</span>
+                <button onClick={clearSelectedDate} className="p-1 text-slate-400 hover:text-slate-600">
+                  <X size={14} />
+                </button>
               </div>
-
-              {/* Gender Filter Dropdown */}
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <Filter size={18} />
-                </div>
-                <select
-                  value={genderFilter}
-                  onChange={(e) => setGenderFilter(e.target.value)}
-                  className="appearance-none bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl pl-11 pr-10 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-lg shadow-slate-200/50 cursor-pointer text-sm font-medium"
-                >
-                  <option value="all">All Genders</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Others">Others</option>
-                </select>
-                <ChevronDown
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-hover:text-indigo-500 transition-colors"
-                  size={18}
-                />
-              </div>
-            </div>
+            )}
+            <input ref={dateInputRef} type="date" className="hidden" onChange={(e) => handleDateChange(e.target.value)} />
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <StatCard
-            icon={Users}
-            label="Total Applications"
-            value={applications.length}
-            color="from-blue-600 to-blue-700"
-          />
-          <StatCard
-            icon={Star}
-            label="Shortlisted Candidates"
-            value={
-              applications.filter((a) => a.status === "shortlisted").length
-            }
-            color="from-violet-500 to-violet-600"
-          />
+        {/* Stats */}
+        <div className="grid grid-cols-2 gap-4">
+          <StatCard icon={Users} label="Total Applications" value={applications.length} color="from-blue-600 to-blue-700" />
+          <StatCard icon={Star} label="Shortlisted" value={applications.filter((a) => a.status === "shortlisted").length} color="from-violet-500 to-violet-600" />
         </div>
 
-        {/* Applications Grid */}
+        {/* Table */}
         {loading ? (
-          <div className="flex justify-center py-32">
-            <div className="relative">
-              <div className="animate-spin rounded-full h-16 w-16 border-4 border-slate-200 border-t-indigo-600"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="h-8 w-8 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-full animate-pulse"></div>
-              </div>
-            </div>
+          <div className="flex justify-center py-20">
+            <div className="animate-spin rounded-full h-10 w-10 border-4 border-slate-200 border-t-indigo-600"></div>
           </div>
         ) : filteredApplications.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-32 bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200 shadow-xl"
-          >
-            <div className="relative inline-block">
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 to-indigo-700/20 rounded-full blur-3xl"></div>
-              <FileText className="relative text-slate-400 mb-6" size={64} />
-            </div>
-            <p className="text-slate-600 text-xl font-medium">
-              No applications found
-            </p>
-            <p className="text-slate-500 mt-2">
-              Try adjusting your search or filter criteria
-            </p>
-          </motion.div>
+          <div className="text-center py-20 bg-white rounded-2xl border border-slate-200">
+            <FileText className="text-slate-300 mx-auto mb-3" size={48} />
+            <p className="text-slate-500 font-medium">No applications found</p>
+            <p className="text-slate-400 text-sm mt-1">Try adjusting your search or filter criteria</p>
+          </div>
         ) : (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {paginatedApplications.map((app, index) => (
-                <ApplicationCard
-                  key={app.id}
-                  app={app}
-                  index={index}
-                  formatDate={formatDate}
-                  getInitials={getInitials}
-                  onSelect={setSelectedApplication}
-                />
-              ))}
+          <div className="space-y-4">
+            {/* Table Header */}
+            <div className="bg-slate-700 rounded-xl px-5 py-3 grid grid-cols-12 gap-3 text-xs font-semibold text-slate-200 uppercase tracking-wider">
+              <div className="col-span-1">#</div>
+              <div className="col-span-3">Applicant</div>
+              <div className="col-span-2">Contact</div>
+              <div className="col-span-2">Education</div>
+              <div className="col-span-1">Gender</div>
+              <div className="col-span-1">Submitted</div>
+              <div className="col-span-1">Status</div>
+              <div className="col-span-1 text-right">Action</div>
             </div>
 
-            {/* Enhanced Pagination Controls */}
+            {/* Table Rows */}
+            <div className="space-y-2">
+              {paginatedApplications.map((app, index) => {
+                const submittedAt = app.submittedAt ? new Date(app.submittedAt) : null;
+                const isNewByTime = lastVisitTime && submittedAt && submittedAt > lastVisitTime;
+                const isNew = isNewByTime && !viewedIds.has(app.id);
+                const serialNumber = startIndex + index + 1;
+
+                return (
+                  <motion.div
+                    key={app.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.03 }}
+                    className={`bg-white border rounded-xl px-5 py-3.5 grid grid-cols-12 gap-3 items-center hover:shadow-md transition-all duration-200 group ${
+                      isNew
+                        ? "border-indigo-300 shadow-sm shadow-indigo-100"
+                        : "border-slate-200 hover:border-indigo-300 hover:shadow-indigo-100/50"
+                    }`}
+                  >
+                    {/* Index with NEW badge */}
+                    <div className="col-span-1 flex items-center gap-1.5">
+                      <span className="text-xs text-slate-400 font-medium">{serialNumber}</span>
+                      {isNew && (
+                        <motion.span
+                          initial={{ scale: 0.7, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-indigo-600 text-white leading-none shadow-sm shadow-indigo-300 uppercase tracking-wide"
+                        >
+                          New
+                        </motion.span>
+                      )}
+                    </div>
+
+                    {/* Applicant */}
+                    <div className="col-span-3 flex items-center gap-3 min-w-0">
+                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-sm ${
+                        isNew
+                          ? "bg-gradient-to-br from-indigo-500 to-indigo-700 ring-2 ring-indigo-300"
+                          : "bg-gradient-to-br from-indigo-500 to-indigo-700"
+                      }`}>
+                        {getInitials(app.personal?.fullName)}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-slate-800 truncate">
+                          {app.personal?.fullName || "N/A"}
+                        </p>
+                        <p className="text-xs text-slate-400 truncate">
+                          ID: {app.id.slice(-6)}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Contact */}
+                    <div className="col-span-2 min-w-0">
+                      <p className="text-xs text-slate-600 truncate flex items-center gap-1">
+                        <Mail size={11} className="text-indigo-400 flex-shrink-0" />
+                        {app.personal?.email || "N/A"}
+                      </p>
+                      <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
+                        <Phone size={11} className="text-slate-400 flex-shrink-0" />
+                        {app.personal?.phone || "N/A"}
+                      </p>
+                    </div>
+
+                    {/* Education */}
+                    <div className="col-span-2 min-w-0">
+                      <p className="text-xs font-medium text-slate-700 truncate">
+                        {app.education?.current?.course || "N/A"}
+                      </p>
+                      <p className="text-xs text-slate-400 truncate mt-0.5 flex items-center gap-1">
+                        <Building2 size={10} className="flex-shrink-0" />
+                        {app.education?.current?.college || "N/A"}
+                      </p>
+                    </div>
+
+                    {/* Gender */}
+                    <div className="col-span-1">
+                      <span className="text-xs text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">
+                        {app.personal?.gender || "N/A"}
+                      </span>
+                    </div>
+
+                    {/* Submitted Date */}
+                    <div className="col-span-1">
+                      <p className="text-xs text-slate-500 flex items-center gap-1">
+                        <Calendar size={11} className="text-amber-400 flex-shrink-0" />
+                        {formatDate(app.submittedAt)}
+                      </p>
+                    </div>
+
+                    {/* Status */}
+                    <div className="col-span-1">
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full border ${
+                        app.status === "shortlisted"
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : app.status === "reviewed"
+                            ? "bg-indigo-50 text-indigo-700 border-indigo-200"
+                            : "bg-amber-50 text-amber-700 border-amber-200"
+                      }`}>
+                        {app.status === "shortlisted" && <CheckCircle size={10} />}
+                        {app.status || "Pending"}
+                      </span>
+                    </div>
+
+                    {/* Action */}
+                    <div className="col-span-1 flex justify-end">
+                      <button
+                        onClick={() => handleViewApplication(app)}
+                        className={`px-2.5 py-1.5 text-white text-xs font-medium rounded-lg transition-all flex items-center gap-1 shadow-sm ${
+                          isNew
+                            ? "bg-indigo-700 hover:bg-indigo-800 shadow-indigo-300"
+                            : "bg-indigo-600 hover:bg-indigo-700 group-hover:shadow-indigo-200"
+                        }`}
+                      >
+                        View
+                        <ChevronRight size={12} />
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex flex-col sm:flex-row items-center justify-center pt-8">
-                <div className="flex items-center gap-1 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+              <div className="flex items-center justify-center pt-4">
+                <div className="flex items-center gap-1 bg-white p-1.5 rounded-xl shadow-sm border border-slate-100">
                   <button
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                     disabled={currentPage === 1}
-                    className={`p-2 rounded-lg transition-all ${currentPage === 1
-                        ? "text-slate-300 cursor-not-allowed"
-                        : "text-slate-400 hover:bg-slate-50 hover:text-indigo-600"
-                      }`}
+                    className={`p-1.5 rounded-lg transition-all ${currentPage === 1 ? "text-slate-300 cursor-not-allowed" : "text-slate-400 hover:bg-slate-50 hover:text-indigo-600"}`}
                   >
-                    <ChevronLeft size={20} />
+                    <ChevronLeft size={16} />
                   </button>
-
-                  <div className="flex items-center">
-                    {(() => {
-                      const pages = [];
-                      const showEllipsis = totalPages > 7;
-
-                      if (!showEllipsis) {
-                        for (let i = 1; i <= totalPages; i++) pages.push(i);
-                      } else {
-                        if (currentPage <= 4) {
-                          for (let i = 1; i <= 5; i++) pages.push(i);
-                          pages.push("...");
-                          pages.push(totalPages);
-                        } else if (currentPage >= totalPages - 3) {
-                          pages.push(1);
-                          pages.push("...");
-                          for (let i = totalPages - 4; i <= totalPages; i++)
-                            pages.push(i);
-                        } else {
-                          pages.push(1);
-                          pages.push("...");
-                          for (let i = currentPage - 1; i <= currentPage + 1; i++)
-                            pages.push(i);
-                          pages.push("...");
-                          pages.push(totalPages);
-                        }
-                      }
-
-                      return pages.map((page, i) =>
-                        page === "..." ? (
-                          <span
-                            key={`ellipsis-${i}`}
-                            className="w-10 h-10 flex items-center justify-center text-slate-400 font-bold"
-                          >
-                            ...
-                          </span>
-                        ) : (
-                          <button
-                            key={page}
-                            onClick={() => setCurrentPage(page)}
-                            className={`w-10 h-10 rounded-lg text-sm font-bold transition-all ${currentPage === page
-                                ? "bg-blue-500 text-white shadow-lg shadow-blue-200"
-                                : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
-                              }`}
-                          >
-                            {page}
-                          </button>
-                        )
-                      );
-                    })()}
-                  </div>
-
-                  <button
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  {(() => {
+                    const pages = [];
+                    if (totalPages <= 7) {
+                      for (let i = 1; i <= totalPages; i++) pages.push(i);
+                    } else if (currentPage <= 4) {
+                      for (let i = 1; i <= 5; i++) pages.push(i);
+                      pages.push("...");
+                      pages.push(totalPages);
+                    } else if (currentPage >= totalPages - 3) {
+                      pages.push(1); pages.push("...");
+                      for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
+                    } else {
+                      pages.push(1); pages.push("...");
+                      for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+                      pages.push("..."); pages.push(totalPages);
                     }
+                    return pages.map((page, i) =>
+                      page === "..." ? (
+                        <span key={`e-${i}`} className="w-8 h-8 flex items-center justify-center text-slate-400 text-sm">…</span>
+                      ) : (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${currentPage === page ? "bg-indigo-600 text-white shadow-md" : "text-slate-500 hover:bg-slate-50"}`}
+                        >
+                          {page}
+                        </button>
+                      )
+                    );
+                  })()}
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                     disabled={currentPage === totalPages}
-                    className={`p-2 rounded-lg transition-all ${currentPage === totalPages
-                        ? "text-slate-300 cursor-not-allowed"
-                        : "text-slate-400 hover:bg-slate-50 hover:text-indigo-600"
-                      }`}
+                    className={`p-1.5 rounded-lg transition-all ${currentPage === totalPages ? "text-slate-300 cursor-not-allowed" : "text-slate-400 hover:bg-slate-50 hover:text-indigo-600"}`}
                   >
-                    <ChevronRight size={20} />
+                    <ChevronRight size={16} />
                   </button>
                 </div>
               </div>
@@ -388,7 +573,7 @@ const ApplicationReviewPage = () => {
         )}
       </div>
 
-      {/* Enhanced Application Detail Modal */}
+      {/* Detail Modal */}
       <AnimatePresence>
         {selectedApplication && (
           <>
@@ -406,331 +591,131 @@ const ApplicationReviewPage = () => {
               transition={{ type: "spring", duration: 0.3 }}
               className="fixed inset-0 flex items-center justify-center z-[70] p-4 pointer-events-none"
             >
-              <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden pointer-events-auto flex flex-col border border-white/20">
-                {/* Modal Header with Gradient */}
-                <div className="relative p-8 border-b border-slate-200/80 bg-gradient-to-r from-indigo-600 via-indigo-700 to-indigo-800">
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-400 via-indigo-300 to-indigo-400"></div>
-                  <div className="flex items-start justify-between relative z-10">
-                    <div className="flex items-center gap-6">
-                      <div className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center text-white border border-white/30 shadow-2xl">
-                        <span className="text-2xl font-bold">
+              <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden pointer-events-auto flex flex-col border border-white/20">
+                {/* Modal Header */}
+                <div className="relative p-3 border-b border-slate-200/80 bg-gradient-to-r from-indigo-600 via-indigo-700 to-indigo-800">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 bg-white/20 backdrop-blur-xl rounded-xl flex items-center justify-center text-white border border-white/30 shadow-lg">
+                        <span className="text-lg font-bold">
                           {getInitials(selectedApplication.personal?.fullName)}
                         </span>
                       </div>
                       <div>
-                        <h2 className="text-3xl font-bold text-white mb-2">
+                        <h2 className="text-xl font-bold text-white">
                           {selectedApplication.personal?.fullName}
                         </h2>
-                        <div className="flex items-center gap-3 text-indigo-100">
-                          <Mail size={16} />
-                          <span>{selectedApplication.personal?.email}</span>
-                          <span className="w-1 h-1 rounded-full bg-indigo-300"></span>
-                          <Phone size={16} />
-                          <span>{selectedApplication.personal?.phone}</span>
-                        </div>
-                        <div className="mt-3 flex gap-2">
-                          <span className="px-4 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm border border-white/30">
-                            Application ID: {selectedApplication.id.slice(-8)}
+                        <div className="mt-2 flex gap-1.5 flex-wrap">
+                          <span className="px-2.5 py-1 bg-white/20 rounded-full text-white text-xs border border-white/30">
+                            ID: {selectedApplication.id.slice(-8)}
                           </span>
-                          <span className="px-4 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm border border-white/30">
-                            Submitted{" "}
+                          <span className="px-2.5 py-1 bg-white/20 rounded-full text-white text-xs border border-white/30">
                             {formatDate(selectedApplication.submittedAt)}
                           </span>
                           {selectedApplication.research?.policyAgreed && (
-                            <span className="px-4 py-1.5 bg-emerald-500/20 backdrop-blur-sm rounded-full text-emerald-300 text-sm border border-emerald-500/30 flex items-center gap-1">
-                              <CheckCircle size={14} />
-                              Policy Agreed
+                            <span className="px-2.5 py-1 bg-emerald-500/20 rounded-full text-emerald-300 text-xs border border-emerald-500/30 flex items-center gap-1">
+                              <CheckCircle size={11} /> Policy Agreed
                             </span>
                           )}
                         </div>
                       </div>
                     </div>
-                    <button
-                      onClick={() => setSelectedApplication(null)}
-                      className="p-3 hover:bg-white/20 rounded-xl transition-colors text-white"
-                    >
-                      <X size={24} />
+                    <button onClick={() => setSelectedApplication(null)} className="p-2 hover:bg-white/20 rounded-lg transition-colors text-white">
+                      <X size={20} />
                     </button>
                   </div>
                 </div>
 
-                {/* Modal Content with Enhanced Sections */}
-                <div className="flex-1 overflow-y-auto p-8 bg-gradient-to-br from-slate-50 to-white">
-                  <div className="space-y-8">
-                    {/* Personal Details - Enhanced */}
-                    <DetailSection
-                      icon={User}
-                      title="Personal Information"
-                      gradient="from-blue-600 to-indigo-600"
-                    >
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <EnhancedDetailItem
-                          label="Full Name"
-                          value={selectedApplication.personal?.fullName}
-                          icon={User}
-                        />
-                        <EnhancedDetailItem
-                          label="Email Address"
-                          value={selectedApplication.personal?.email}
-                          icon={Mail}
-                        />
-                        <EnhancedDetailItem
-                          label="Phone Number"
-                          value={selectedApplication.personal?.phone}
-                          icon={Phone}
-                        />
-                        <EnhancedDetailItem
-                          label="Gender"
-                          value={selectedApplication.personal?.gender}
-                          icon={MapPin}
-                        />
-                        <EnhancedDetailItem
-                          label="Location"
-                          value={selectedApplication.personal?.location}
-                          icon={MapPin}
-                        />
+                {/* Modal Content */}
+                <div className="flex-1 overflow-y-auto p-6 bg-slate-50">
+                  <div className="space-y-5">
+                    <SectionTable title="Personal Information" icon={User} gradient="from-blue-600 to-indigo-600">
+                      <TableRow label="Full Name" value={selectedApplication.personal?.fullName} />
+                      <TableRow label="Email" value={selectedApplication.personal?.email} />
+                      <TableRow label="Phone" value={selectedApplication.personal?.phone} />
+                      <TableRow label="Gender" value={selectedApplication.personal?.gender} />
+                      <TableRow label="Location" value={selectedApplication.personal?.location} />
+                    </SectionTable>
 
-                      </div>
-                    </DetailSection>
+                    <SectionTable title="Current Education" icon={GraduationCap} gradient="from-emerald-600 to-teal-600">
+                      <TableRow label="Institution" value={selectedApplication.education?.current?.college} />
+                      <TableRow label="University" value={selectedApplication.education?.current?.university} />
+                      <TableRow label="Program" value={selectedApplication.education?.current?.course} />
+                      <TableRow label="Department" value={selectedApplication.education?.current?.department} />
+                      <TableRow label="Year of Passing" value={selectedApplication.education?.current?.yearOfPassing} />
+                    </SectionTable>
 
-                    {/* Education - Enhanced with Visual Elements */}
-                    <DetailSection
-                      icon={GraduationCap}
-                      title="Educational Background"
-                      gradient="from-emerald-600 to-teal-600"
-                    >
-                      <div className="space-y-6">
-                        {/* Current Education */}
-                        <div className="bg-gradient-to-br from-white to-slate-50/80 rounded-2xl p-6 border border-slate-200 shadow-lg">
-                          <div className="flex items-center gap-3 mb-6">
-                            <div className="p-2.5 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-xl shadow-lg shadow-indigo-200">
-                              <GraduationCap size={18} className="text-white" />
-                            </div>
-                            <h4 className="text-lg font-semibold text-slate-800">
-                              Current Education
-                            </h4>
-                          </div>
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <EnhancedDetailItem
-                              label="Institution"
-                              value={
-                                selectedApplication.education?.current?.college
-                              }
-                              icon={Building2}
-                            />
-                            <EnhancedDetailItem
-                              label="Program"
-                              value={
-                                selectedApplication.education?.current?.course
-                              }
-                              icon={BookOpen}
-                            />
-                            <EnhancedDetailItem
-                              label="Department"
-                              value={
-                                selectedApplication.education?.current
-                                  ?.department
-                              }
-                              icon={Layers}
-                            />
-                            <EnhancedDetailItem
-                              label="University"
-                              value={
-                                selectedApplication.education?.current
-                                  ?.university
-                              }
-                              icon={Globe}
-                            />
-                            <EnhancedDetailItem
-                              label="Year of Passing"
-                              value={
-                                selectedApplication.education?.current
-                                  ?.yearOfPassing
-                              }
-                              icon={Calendar}
-                            />
-                          </div>
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <SectionTable title="Secondary (10th)" icon={BookOpen} gradient="from-sky-600 to-cyan-600">
+                        <TableRow label="School" value={selectedApplication.education?.tenth?.school} />
+                        <TableRow label="Board" value={selectedApplication.education?.tenth?.board} />
+                        <TableRow label="Percentage/CGPA" value={selectedApplication.education?.tenth?.percentage} />
+                        <TableRow label="Subjects" value={selectedApplication.education?.tenth?.subjects} />
+                        <TableRow label="Year" value={selectedApplication.education?.tenth?.year} />
+                      </SectionTable>
+                      <SectionTable title="Higher Secondary (12th)" icon={BookOpen} gradient="from-violet-600 to-purple-600">
+                        <TableRow label="School" value={selectedApplication.education?.twelfth?.school} />
+                        <TableRow label="Board" value={selectedApplication.education?.twelfth?.board} />
+                        <TableRow label="Stream" value={selectedApplication.education?.twelfth?.stream} />
+                        <TableRow label="Percentage/CGPA" value={selectedApplication.education?.twelfth?.percentage} />
+                        <TableRow label="Year" value={selectedApplication.education?.twelfth?.year} />
+                      </SectionTable>
+                    </div>
 
-                        {/* Secondary Education Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <EducationCard
-                            title="Secondary Education (10th)"
-                            school={
-                              selectedApplication.education?.tenth?.school
-                            }
-                            board={selectedApplication.education?.tenth?.board}
-                            percentage={
-                              selectedApplication.education?.tenth?.percentage
-                            }
-                            subjects={
-                              selectedApplication.education?.tenth?.subjects
-                            }
-                            year={selectedApplication.education?.tenth?.year}
-                          />
-                          <EducationCard
-                            title="Higher Secondary (12th)"
-                            school={
-                              selectedApplication.education?.twelfth?.school
-                            }
-                            board={
-                              selectedApplication.education?.twelfth?.board
-                            }
-                            percentage={
-                              selectedApplication.education?.twelfth?.percentage
-                            }
-                            subjects={
-                              selectedApplication.education?.twelfth?.subjects
-                            }
-                            year={selectedApplication.education?.twelfth?.year}
-                            stream={
-                              selectedApplication.education?.twelfth?.stream
-                            }
-                          />
-                        </div>
-                      </div>
-                    </DetailSection>
-
-                    {/* Academics - Enhanced with Progress Visualization */}
-                    <DetailSection
-                      icon={Award}
-                      title="Academic Performance"
-                      gradient="from-amber-600 to-orange-600"
-                    >
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        <div className="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-2xl border border-indigo-100 shadow-lg">
-                          <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2.5 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-xl">
-                              <TrendingUp size={18} className="text-white" />
-                            </div>
-                            <span className="text-sm font-medium text-slate-600">
-                              Overall CGPA
-                            </span>
-                          </div>
-                          <p className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-800 bg-clip-text text-transparent">
-                            {selectedApplication.academics?.cgpa || "N/A"}
-                          </p>
-                        </div>
-                        <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-2xl border border-slate-200 shadow-lg">
-                          <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2.5 bg-gradient-to-br from-slate-600 to-slate-700 rounded-xl">
-                              <Clock size={18} className="text-white" />
-                            </div>
-                            <span className="text-sm font-medium text-slate-600">
-                              Current Backlogs
-                            </span>
-                          </div>
-                          <p className="text-4xl font-bold text-slate-700">
-                            {selectedApplication.academics?.backlogs || "0"}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg">
-                        <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-6 flex items-center gap-2">
-                          <Layers size={16} />
-                          Semester-wise Performance
-                        </h4>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-4">
-                          {Object.entries(
-                            selectedApplication.academics?.semesterGPAs || {},
-                          ).map(([sem, gpa]) => (
-                            <div key={sem} className="relative group">
-                              <div className="bg-gradient-to-b from-slate-50 to-white p-4 rounded-xl border border-slate-200 text-center hover:border-indigo-300 transition-all duration-300">
-                                <p className="text-xs font-bold text-slate-400 uppercase mb-2">
-                                  {sem}
-                                </p>
-                                <p className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent">
-                                  {gpa || "N/A"}
-                                </p>
-                              </div>
-                              {gpa && parseFloat(gpa) >= 8.5 && (
-                                <div className="absolute -top-2 -right-2">
-                                  <div className="relative">
-                                    <Star
-                                      size={16}
-                                      className="text-yellow-500 fill-yellow-500"
-                                    />
-                                    <div className="absolute inset-0 bg-yellow-500 rounded-full blur-sm animate-pulse"></div>
-                                  </div>
+                    <SectionTable title="Academic Performance" icon={Award} gradient="from-amber-600 to-orange-600">
+                      <TableRow label="Overall CGPA" value={selectedApplication.academics?.cgpa} highlight />
+                      <TableRow label="Current Backlogs" value={selectedApplication.academics?.backlogs || "0"} />
+                      {selectedApplication.academics?.semesterGPAs && (
+                        <tr>
+                          <td className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase bg-slate-50 w-40 border-b border-slate-100">Semester GPAs</td>
+                          <td className="px-4 py-3 border-b border-slate-100">
+                            <div className="flex flex-wrap gap-2">
+                              {Object.entries(selectedApplication.academics.semesterGPAs).map(([sem, gpa]) => (
+                                <div key={sem} className="text-center bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-1.5">
+                                  <p className="text-xs text-slate-500 font-medium">{sem}</p>
+                                  <p className="text-sm font-bold text-indigo-700">{gpa || "N/A"}</p>
                                 </div>
-                              )}
+                              ))}
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    </DetailSection>
+                          </td>
+                        </tr>
+                      )}
+                    </SectionTable>
 
-                    {/* Experience & Research - Enhanced */}
-                    <DetailSection
-                      icon={FlaskConical}
-                      title="Research & Professional Experience"
-                      gradient="from-violet-600 to-purple-600"
-                    >
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <EnhancedExperienceCard
-                          title="Research Interests"
-                          items={selectedApplication.research?.interests}
-                          icon={Target}
-                          color="violet"
-                        />
-                        <EnhancedExperienceCard
-                          title="Technical Skills"
-                          items={selectedApplication.experience?.skills}
-                          icon={Cpu}
-                          color="purple"
-                        />
-                        <EnhancedBlock
-                          label="Internships"
-                          value={selectedApplication.experience?.internships}
-                          icon={Briefcase}
-                        />
-                        <EnhancedBlock
-                          label="Projects"
-                          value={selectedApplication.experience?.projects}
-                          icon={BookOpen}
-                        />
-                        <EnhancedBlock
-                          label="Publications"
-                          value={selectedApplication.experience?.publications}
-                          icon={FileText}
-                        />
-                        <EnhancedBlock
-                          label="Certifications"
-                          value={selectedApplication.experience?.certifications}
-                          icon={Award}
-                        />
-                        <EnhancedBlock
-                          label="Hobbies & Interests"
-                          value={selectedApplication.research?.hobbies}
-                          icon={Sparkles}
-                          className="lg:col-span-2"
-                        />
-                      </div>
-                    </DetailSection>
+                    <SectionTable title="Research & Experience" icon={FlaskConical} gradient="from-rose-600 to-pink-600">
+                      <TableRow label="Research Interests" value={selectedApplication.research?.interests?.join(", ")} />
+                      <TableRow label="Technical Skills" value={selectedApplication.experience?.skills?.join(", ")} />
+                      <TableRow label="Internships" value={selectedApplication.experience?.internships} />
+                      <TableRow label="Projects" value={selectedApplication.experience?.projects} />
+                      <TableRow label="Publications" value={selectedApplication.experience?.publications} />
+                      <TableRow label="Certifications" value={selectedApplication.experience?.certifications} />
+                      <TableRow label="Hobbies" value={selectedApplication.research?.hobbies} />
+                    </SectionTable>
                   </div>
                 </div>
 
-                {/* Modal Footer with Only Shortlist Action */}
-                <div className="p-6 border-t border-slate-200 bg-white/80 backdrop-blur-xl flex justify-center">
-                  {selectedApplication.status !== "shortlisted" && (
+                {/* Modal Footer */}
+                <div className="px-6 py-4 border-t border-slate-200 bg-white flex justify-end gap-3">
+                  <button
+                    onClick={() => setSelectedApplication(null)}
+                    className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-all border border-slate-200"
+                  >
+                    Close
+                  </button>
+                  {selectedApplication.status !== "shortlisted" ? (
                     <button
                       onClick={() => {
-                        handleUpdateStatus(
-                          selectedApplication.id,
-                          "shortlisted",
-                        );
-                        setSelectedApplication(null); // Close modal after shortlisting as requested by "move" logic
+                        handleUpdateStatus(selectedApplication.id, "shortlisted");
+                        setSelectedApplication(null);
                       }}
-                      className="px-12 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold rounded-2xl transition-all shadow-xl shadow-emerald-200 flex items-center gap-3 scale-110"
+                      className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-emerald-200 flex items-center gap-2"
                     >
-                      <Star size={20} fill="currentColor" />
+                      <Star size={15} fill="currentColor" />
                       Shortlist Candidate
                     </button>
-                  )}
-                  {selectedApplication.status === "shortlisted" && (
-                    <div className="flex items-center gap-2 text-emerald-600 font-bold bg-emerald-50 px-8 py-4 rounded-2xl border border-emerald-100">
-                      <CheckCircle size={24} />
+                  ) : (
+                    <div className="flex items-center gap-2 text-emerald-600 font-semibold bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-100 text-sm">
+                      <CheckCircle size={16} />
                       Already Shortlisted
                     </div>
                   )}
@@ -744,207 +729,46 @@ const ApplicationReviewPage = () => {
   );
 };
 
-// Enhanced Sub-components
+// Sub-components
 const StatCard = ({ icon: Icon, label, value, color }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
+    initial={{ opacity: 0, y: 16 }}
     animate={{ opacity: 1, y: 0 }}
-    className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300"
+    className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all"
   >
     <div className="flex items-center justify-between">
       <div>
-        <p className="text-slate-500 text-sm mb-1">{label}</p>
-        <p className="text-2xl lg:text-3xl font-bold text-slate-800">{value}</p>
+        <p className="text-slate-500 text-xs mb-1">{label}</p>
+        <p className="text-2xl font-bold text-slate-800">{value}</p>
       </div>
-      <div className={`p-4 bg-gradient-to-br ${color} rounded-2xl shadow-lg`}>
-        <Icon size={24} className="text-white" />
-      </div>
-    </div>
-  </motion.div>
-);
-
-const ApplicationCard = ({ app, index, formatDate, getInitials, onSelect }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: index * 0.05 }}
-    className="group bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl p-6 hover:shadow-2xl hover:shadow-indigo-200/30 hover:border-indigo-300 transition-all duration-300"
-  >
-    <div className="flex items-start gap-5">
-      <div className="relative">
-        <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
-          {getInitials(app.personal?.fullName)}
-        </div>
-        <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full"></div>
-      </div>
-
-      <div className="flex-1">
-        <div className="flex items-start justify-between mb-3">
-          <div>
-            <h3 className="text-xl font-bold text-slate-800 mb-1">
-              {app.personal?.fullName}
-            </h3>
-            <div className="flex flex-wrap gap-3 text-sm">
-              <span className="flex items-center gap-1.5 text-slate-500">
-                <Mail size={14} className="text-indigo-500" />
-                {app.personal?.email}
-              </span>
-              <span className="flex items-center gap-1.5 text-slate-500">
-                <Calendar size={14} className="text-amber-500" />
-                {formatDate(app.submittedAt)}
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span
-              className={`px-3 py-1.5 text-xs font-semibold rounded-full border ${app.status === "shortlisted"
-                ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                : app.status === "reviewed"
-                  ? "bg-indigo-100 text-indigo-700 border-indigo-200"
-                  : "bg-amber-100 text-amber-700 border-amber-200"
-                }`}
-            >
-              {app.status || "Pending Review"}
-            </span>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center gap-4 text-sm text-slate-500">
-            <span className="flex items-center gap-1.5">
-              <GraduationCap size={14} className="text-emerald-500" />
-              {app.education?.current?.course || "N/A"}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <MapPin size={14} className="text-rose-500" />
-              {app.personal?.location}
-            </span>
-          </div>
-          <button
-            onClick={() => onSelect(app)}
-            className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-medium rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-indigo-200"
-          >
-            View Profile
-            <ChevronRight size={16} />
-          </button>
-        </div>
-      </div>
-    </div>
-  </motion.div>
-);
-
-const DetailSection = ({ icon: Icon, title, gradient, children }) => (
-  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 shadow-lg">
-    <div className="flex items-center gap-3 mb-6">
-      <div
-        className={`p-2.5 bg-gradient-to-br ${gradient} rounded-xl shadow-lg`}
-      >
+      <div className={`p-3 bg-gradient-to-br ${color} rounded-xl shadow-md`}>
         <Icon size={20} className="text-white" />
       </div>
-      <h3 className="text-xl font-bold text-slate-800">{title}</h3>
     </div>
-    {children}
+  </motion.div>
+);
+
+const SectionTable = ({ title, icon: Icon, gradient, children }) => (
+  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className={`flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r ${gradient}`}>
+      <Icon size={16} className="text-white" />
+      <h3 className="text-sm font-semibold text-white">{title}</h3>
+    </div>
+    <table className="w-full">
+      <tbody>{children}</tbody>
+    </table>
   </div>
 );
 
-const EnhancedDetailItem = ({ label, value, icon: Icon }) => (
-  <div className="bg-gradient-to-br from-slate-50 to-white p-4 rounded-xl border border-slate-200 hover:border-indigo-300 transition-all duration-300">
-    <div className="flex items-center gap-2 mb-2">
-      {Icon && <Icon size={14} className="text-indigo-500" />}
-      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-        {label}
-      </p>
-    </div>
-    <p className="font-medium text-slate-800">{value || "N/A"}</p>
-  </div>
+const TableRow = ({ label, value, highlight }) => (
+  <tr className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-colors">
+    <td className="px-4 py-2.5 text-xs font-semibold text-slate-500 uppercase tracking-wide bg-slate-50/80 w-44 border-r border-slate-100">
+      {label}
+    </td>
+    <td className={`px-4 py-2.5 text-sm ${highlight ? "font-bold text-indigo-700" : "text-slate-700"}`}>
+      {value || <span className="text-slate-400 italic text-xs">Not provided</span>}
+    </td>
+  </tr>
 );
-
-const EducationCard = ({
-  title,
-  school,
-  board,
-  percentage,
-  subjects,
-  year,
-  stream,
-}) => (
-  <div className="bg-gradient-to-br from-white to-slate-50/80 rounded-2xl p-6 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300">
-    <h4 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-      <div className="w-2 h-2 rounded-full bg-indigo-600"></div>
-      {title}
-    </h4>
-    <div className="space-y-4">
-      {stream && (
-        <EnhancedDetailItem label="Stream" value={stream} icon={BookOpen} />
-      )}
-      <EnhancedDetailItem
-        label="School/Institute"
-        value={school}
-        icon={Building2}
-      />
-      <EnhancedDetailItem label="Board" value={board} icon={Globe} />
-      <EnhancedDetailItem
-        label="Percentage/CGPA"
-        value={percentage}
-        icon={TrendingUp}
-      />
-      <EnhancedDetailItem label="Subjects" value={subjects} icon={Layers} />
-      <EnhancedDetailItem
-        label="Year of Passing"
-        value={year}
-        icon={Calendar}
-      />
-    </div>
-  </div>
-);
-
-const EnhancedExperienceCard = ({ title, items, icon: Icon, color }) => (
-  <div className="bg-gradient-to-br from-white to-slate-50/80 rounded-2xl p-6 border border-slate-200 shadow-lg">
-    <div className="flex items-center gap-3 mb-4">
-      <div
-        className={`p-2.5 bg-gradient-to-br from-${color}-600 to-${color}-700 rounded-xl shadow-lg`}
-      >
-        <Icon size={18} className="text-white" />
-      </div>
-      <h4 className="text-lg font-semibold text-slate-800">{title}</h4>
-    </div>
-    <div className="flex flex-wrap gap-2">
-      {items?.length > 0 ? (
-        items.map((item, i) => (
-          <span
-            key={i}
-            className="px-4 py-2 bg-gradient-to-r from-indigo-50 to-indigo-100 text-indigo-700 text-sm font-medium rounded-xl border border-indigo-200 flex items-center gap-2"
-          >
-            <Sparkles size={14} className="text-indigo-500" />
-            {item}
-          </span>
-        ))
-      ) : (
-        <p className="text-slate-400 text-sm">No information provided</p>
-      )}
-    </div>
-  </div>
-);
-
-const EnhancedBlock = ({ label, value, icon: Icon, className = "" }) => (
-  <div
-    className={`bg-gradient-to-br from-white to-slate-50/80 rounded-2xl p-6 border border-slate-200 shadow-lg ${className}`}
-  >
-    <div className="flex items-center gap-3 mb-3">
-      <div className="p-2 bg-gradient-to-br from-slate-600 to-slate-700 rounded-xl">
-        <Icon size={16} className="text-white" />
-      </div>
-      <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
-        {label}
-      </p>
-    </div>
-    <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-line">
-      {value || "No information provided."}
-    </p>
-  </div>
-);
-
-// Missing icon import
-import { Users } from "lucide-react";
 
 export default ApplicationReviewPage;
