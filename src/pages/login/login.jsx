@@ -9,29 +9,14 @@ const Login = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
-        password: '',
-        rememberMe: false
+        password: ''
     });
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [success, setSuccess] = useState('');
-    const [showForgotPassword, setShowForgotPassword] = useState(false);
-    const [resetEmail, setResetEmail] = useState('');
 
-    // Load saved email on component mount
     useEffect(() => {
-        const savedEmail = localStorage.getItem('rememberedEmail');
-        const rememberMe = localStorage.getItem('rememberMe') === 'true';
-        
-        if (savedEmail && rememberMe) {
-            setFormData(prev => ({
-                ...prev,
-                email: savedEmail,
-                rememberMe: true
-            }));
-        }
-
         // Check if user is already logged in
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -42,20 +27,6 @@ const Login = () => {
 
         return () => unsubscribe();
     }, [navigate]);
-
-    // Handle remember me change
-    const handleRememberMeChange = (checked) => {
-        setFormData(prev => ({
-            ...prev,
-            rememberMe: checked
-        }));
-
-        if (!checked) {
-            // Clear saved email if user unchecks remember me
-            localStorage.removeItem('rememberedEmail');
-            localStorage.setItem('rememberMe', 'false');
-        }
-    };
 
     // Star background animation with continuous movement
     const StarBackground = () => {
@@ -111,7 +82,7 @@ const Login = () => {
                         }}
                     />
                 ))}
-                
+
                 {/* Animated shooting stars */}
                 {[...Array(5)].map((_, i) => (
                     <motion.div
@@ -157,7 +128,7 @@ const Login = () => {
                         ease: "easeInOut",
                     }}
                 />
-                
+
                 <motion.div
                     className="absolute right-20 top-1/3 w-8 h-8 rounded-full bg-blue-400/20 blur-sm"
                     animate={{
@@ -171,7 +142,7 @@ const Login = () => {
                         ease: "easeInOut",
                     }}
                 />
-                
+
                 <motion.div
                     className="absolute left-1/4 bottom-1/4 w-6 h-6 rounded-full bg-blue-400/20 blur-sm"
                     animate={{
@@ -224,7 +195,7 @@ const Login = () => {
     const NebulaEffect = () => {
         return (
             <div className="absolute inset-0">
-                <motion.div 
+                <motion.div
                     className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-blue-900/10 to-transparent"
                     animate={{
                         opacity: [0.05, 0.2, 0.05, 0.15, 0.05],
@@ -236,8 +207,8 @@ const Login = () => {
                         ease: "easeInOut",
                     }}
                 />
-                
-                <motion.div 
+
+                <motion.div
                     className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-t from-blue-900/10 to-transparent"
                     animate={{
                         opacity: [0.1, 0.25, 0.1, 0.2, 0.1],
@@ -251,7 +222,7 @@ const Login = () => {
                     }}
                 />
 
-                <motion.div 
+                <motion.div
                     className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-gradient-to-br from-pink-900/5 to-transparent"
                     animate={{
                         opacity: [0.03, 0.12, 0.03, 0.08, 0.03],
@@ -272,7 +243,7 @@ const Login = () => {
     // Updated validation for email/password
     const validateForm = () => {
         const newErrors = {};
-        
+
         if (!formData.email.trim()) {
             newErrors.email = 'Email is required';
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -306,7 +277,7 @@ const Login = () => {
     // Updated login handler with Firebase and Remember Me
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) return;
 
         setIsLoading(true);
@@ -316,32 +287,21 @@ const Login = () => {
         try {
             // Firebase authentication
             await signInWithEmailAndPassword(auth, formData.email, formData.password);
-            
+
             setSuccess('Login successful! Redirecting...');
-            
-            // Handle remember me
-            if (formData.rememberMe) {
-                // Save email to localStorage
-                localStorage.setItem('rememberedEmail', formData.email);
-                localStorage.setItem('rememberMe', 'true');
-            } else {
-                // Clear saved data if not remembering
-                localStorage.removeItem('rememberedEmail');
-                localStorage.setItem('rememberMe', 'false');
-            }
-            
+
             // Optionally save session data (not recommended for sensitive data)
             sessionStorage.setItem('isLoggedIn', 'true');
-            
+
             // Redirect to dashboard
             setTimeout(() => {
                 navigate('/dashboard/proposal');
             }, 1500);
-            
+
         } catch (error) {
             console.error('Login error:', error);
             let errorMessage = 'Login failed. Please check your credentials.';
-            
+
             // Firebase error handling
             switch (error.code) {
                 case 'auth/user-not-found':
@@ -361,59 +321,20 @@ const Login = () => {
                     errorMessage = 'Network error. Please check your connection.';
                     break;
             }
-            
+
             setErrors({ submit: errorMessage });
         } finally {
             setIsLoading(false);
         }
     };
 
-    // Handle forgot password
-    const handleForgotPassword = async () => {
-        if (!resetEmail || !/\S+@\S+\.\S+/.test(resetEmail)) {
-            setErrors({ reset: 'Please enter a valid email address' });
-            return;
-        }
-
-        setIsLoading(true);
-        setErrors({});
-
-        try {
-            await sendPasswordResetEmail(auth, resetEmail);
-            setSuccess('Password reset email sent! Check your inbox.');
-            setTimeout(() => {
-                setShowForgotPassword(false);
-                setResetEmail('');
-                setSuccess('');
-            }, 3000);
-        } catch (error) {
-            console.error('Password reset error:', error);
-            let errorMessage = 'Failed to send reset email. Please try again.';
-            
-            switch (error.code) {
-                case 'auth/user-not-found':
-                    errorMessage = 'No account found with this email.';
-                    break;
-                case 'auth/invalid-email':
-                    errorMessage = 'Invalid email address.';
-                    break;
-                case 'auth/too-many-requests':
-                    errorMessage = 'Too many attempts. Please try again later.';
-                    break;
-            }
-            
-            setErrors({ reset: errorMessage });
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black-900 to-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
             <StarBackground />
             <FloatingElements />
             <NebulaEffect />
-            
+
             <div className="absolute inset-0 bg-gradient-to-br from-blue-900/5 via-transparent to-blue-900/5"></div>
 
             <div className="max-w-md w-full relative z-10">
@@ -436,25 +357,25 @@ const Login = () => {
                     className="bg-black/40 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/10 shadow-blue-500/10 relative overflow-hidden"
                 >
                     <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/20 to-blue-600/20 rounded-3xl blur-sm opacity-50"></div>
-                    
+
                     <div className="relative">
                         {/* Header */}
                         <div className="text-center mb-8">
-                            <motion.h1 
+                            <motion.h1
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.2 }}
                                 className="text-3xl font-bold mb-2 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
                             >
-                                {showForgotPassword ? 'Reset Password' : 'Welcome Back'}
+                                Welcome Back
                             </motion.h1>
-                            <motion.p 
+                            <motion.p
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.3 }}
                                 className="text-white/60"
                             >
-                                {showForgotPassword ? 'Enter your email to reset password' : 'Sign in to your account to continue'}
+                                Sign in to your account to continue
                             </motion.p>
                         </div>
 
@@ -488,213 +409,110 @@ const Login = () => {
                             )}
                         </AnimatePresence>
 
-                        {/* Forgot Password Form */}
-                        {showForgotPassword ? (
-                            <div className="space-y-6">
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                >
-                                    <label className="block text-white/80 text-sm font-medium mb-2">
-                                        Email Address
-                                    </label>
-                                    <div className="relative">
-                                        <Mail 
-                                            size={20} 
-                                            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" 
-                                        />
-                                        <input
-                                            type="email"
-                                            value={resetEmail}
-                                            onChange={(e) => setResetEmail(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-3 bg-white/5 border backdrop-blur-sm border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300"
-                                            placeholder="Enter your email"
-                                            disabled={isLoading}
-                                        />
-                                    </div>
-                                    {errors.reset && (
-                                        <motion.p
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            className="text-red-400 text-sm mt-2 flex items-center"
-                                        >
-                                            <AlertCircle size={16} className="mr-1" />
-                                            {errors.reset}
-                                        </motion.p>
-                                    )}
-                                </motion.div>
-
-                                <div className="flex space-x-3">
-                                    <motion.button
-                                        type="button"
-                                        onClick={() => {
-                                            setShowForgotPassword(false);
-                                            setResetEmail('');
-                                            setErrors({});
-                                        }}
+                        {/* Login Form */}
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.4 }}
+                            >
+                                <label className="block text-white/80 text-sm font-medium mb-2">
+                                    Email Address
+                                </label>
+                                <div className="relative">
+                                    <Mail
+                                        size={20}
+                                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40"
+                                    />
+                                    <input
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={(e) => handleInputChange('email', e.target.value)}
+                                        className={`w-full pl-10 pr-4 py-3 bg-white/5 border backdrop-blur-sm ${errors.email ? 'border-red-500/50' : 'border-white/10'
+                                            } rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300`}
+                                        placeholder="Enter your email"
                                         disabled={isLoading}
-                                        className="flex-1 bg-white/5 hover:bg-white/10 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 border border-white/10"
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                    >
-                                        Back to Login
-                                    </motion.button>
-                                    
-                                    <motion.button
-                                        onClick={handleForgotPassword}
-                                        disabled={isLoading}
-                                        className="flex-1 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center relative overflow-hidden group"
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                    >
-                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                                        
-                                        {isLoading ? (
-                                            <>
-                                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
-                                                Sending...
-                                            </>
-                                        ) : (
-                                            'Send Reset Email'
-                                        )}
-                                    </motion.button>
+                                    />
                                 </div>
-                            </div>
-                        ) : (
-                            /* Login Form */
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.4 }}
-                                >
-                                    <label className="block text-white/80 text-sm font-medium mb-2">
-                                        Email Address
-                                    </label>
-                                    <div className="relative">
-                                        <Mail 
-                                            size={20} 
-                                            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" 
-                                        />
-                                        <input
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={(e) => handleInputChange('email', e.target.value)}
-                                            className={`w-full pl-10 pr-4 py-3 bg-white/5 border backdrop-blur-sm ${
-                                                errors.email ? 'border-red-500/50' : 'border-white/10'
+                                {errors.email && (
+                                    <motion.p
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="text-red-400 text-sm mt-2 flex items-center"
+                                    >
+                                        <AlertCircle size={16} className="mr-1" />
+                                        {errors.email}
+                                    </motion.p>
+                                )}
+                            </motion.div>
+
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.5 }}
+                            >
+                                <label className="block text-white/80 text-sm font-medium mb-2">
+                                    Password
+                                </label>
+                                <div className="relative">
+                                    <Lock
+                                        size={20}
+                                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40"
+                                    />
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        value={formData.password}
+                                        onChange={(e) => handleInputChange('password', e.target.value)}
+                                        className={`w-full pl-10 pr-12 py-3 bg-white/5 border backdrop-blur-sm ${errors.password ? 'border-red-500/50' : 'border-white/10'
                                             } rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300`}
-                                            placeholder="Enter your email"
-                                            disabled={isLoading}
-                                        />
-                                    </div>
-                                    {errors.email && (
-                                        <motion.p
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            className="text-red-400 text-sm mt-2 flex items-center"
-                                        >
-                                            <AlertCircle size={16} className="mr-1" />
-                                            {errors.email}
-                                        </motion.p>
-                                    )}
-                                </motion.div>
+                                        placeholder="Enter your password"
+                                        disabled={isLoading}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40 hover:text-white transition-colors duration-300"
+                                        disabled={isLoading}
+                                    >
+                                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
+                                </div>
 
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.5 }}
-                                >
-                                    <div className="flex justify-between items-center mb-2">
-                                        <label className="block text-white/80 text-sm font-medium">
-                                            Password
-                                        </label>
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowForgotPassword(true)}
-                                            className="text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300"
-                                            disabled={isLoading}
-                                        >
-                                            Forgot password?
-                                        </button>
-                                    </div>
-                                    <div className="relative">
-                                        <Lock 
-                                            size={20} 
-                                            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" 
-                                        />
-                                        <input
-                                            type={showPassword ? "text" : "password"}
-                                            value={formData.password}
-                                            onChange={(e) => handleInputChange('password', e.target.value)}
-                                            className={`w-full pl-10 pr-12 py-3 bg-white/5 border backdrop-blur-sm ${
-                                                errors.password ? 'border-red-500/50' : 'border-white/10'
-                                            } rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300`}
-                                            placeholder="Enter your password"
-                                            disabled={isLoading}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40 hover:text-white transition-colors duration-300"
-                                            disabled={isLoading}
-                                        >
-                                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                                        </button>
-                                    </div>
+                                {errors.password && (
+                                    <motion.p
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="text-red-400 text-sm mt-2 flex items-center"
+                                    >
+                                        <AlertCircle size={16} className="mr-1" />
+                                        {errors.password}
+                                    </motion.p>
+                                )}
+                            </motion.div>
 
-                                    {errors.password && (
-                                        <motion.p
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            className="text-red-400 text-sm mt-2 flex items-center"
-                                        >
-                                            <AlertCircle size={16} className="mr-1" />
-                                            {errors.password}
-                                        </motion.p>
-                                    )}
-                                </motion.div>
+                            <motion.button
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.7 }}
+                                type="submit"
+                                disabled={isLoading}
+                                className="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center relative overflow-hidden group"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
 
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.6 }}
-                                    className="flex items-center justify-between"
-                                >
-                                    <label className="flex items-center text-white/60 text-sm cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={formData.rememberMe}
-                                            onChange={(e) => handleRememberMeChange(e.target.checked)}
-                                            className="w-4 h-4 rounded border-white/20 bg-white/5 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 focus:ring-2 backdrop-blur-sm"
-                                            disabled={isLoading}
-                                        />
-                                        <span className="ml-2">Remember me</span>
-                                    </label>
-                                </motion.div>
+                                {isLoading ? (
+                                    <>
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
+                                        Signing in...
+                                    </>
+                                ) : (
+                                    'Sign In'
+                                )}
+                            </motion.button>
+                        </form>
 
-                                <motion.button
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.7 }}
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center relative overflow-hidden group"
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                                    
-                                    {isLoading ? (
-                                        <>
-                                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
-                                            Signing in...
-                                        </>
-                                    ) : (
-                                        'Sign In'
-                                    )}
-                                </motion.button>
-                            </form>
-                        )}
                     </div>
                 </motion.div>
             </div>

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
 import AssessmentDetailsPage from "./AssessmentDetailsPage";
+import { auth } from "../../../../firebase";
+import { signOut } from "firebase/auth";
 
 const AssessmentDetailsView = () => {
   const navigate = useNavigate();
@@ -10,9 +12,18 @@ const AssessmentDetailsView = () => {
 
   const handleLogout = async () => {
     setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    navigate("/login");
-    setIsLoading(false);
+    try {
+      await signOut(auth);
+      localStorage.removeItem('rememberedEmail');
+      localStorage.removeItem('rememberMe');
+      sessionStorage.removeItem('isLoggedIn');
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Failed to logout. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

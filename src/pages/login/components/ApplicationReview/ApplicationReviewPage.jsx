@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
@@ -32,7 +33,7 @@ import {
   Users,
 } from "lucide-react";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
-import { db } from "../../../../firebase";
+import { db, auth } from "../../../../firebase";
 import {
   collection,
   onSnapshot,
@@ -41,6 +42,7 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
+import { signOut } from "firebase/auth";
 
 const LAST_VISIT_KEY = "applicationPageLastVisit";
 const VIEWED_KEY = "viewedApplicationIds";
@@ -78,11 +80,13 @@ const markAsViewed = (id) => {
 };
 
 const ApplicationReviewPage = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("application-review");
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [filterStatus, setFilterStatus] = useState("applications");
   const [applicationType, setApplicationType] = useState("fellowship");
   const [genderFilter, setGenderFilter] = useState("all");
@@ -222,7 +226,11 @@ const ApplicationReviewPage = () => {
   };
 
   const openDatePicker = () => {
-    dateInputRef.current?.click();
+    if (dateInputRef.current?.showPicker) {
+      dateInputRef.current.showPicker();
+    } else {
+      dateInputRef.current?.click();
+    }
   };
 
   const handleDateChange = (dateStr) => {
@@ -241,9 +249,23 @@ const ApplicationReviewPage = () => {
     setDateFilter("all");
     if (dateInputRef.current) dateInputRef.current.value = "";
   };
-
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await signOut(auth);
+      localStorage.removeItem('rememberedEmail');
+      localStorage.removeItem('rememberMe');
+      sessionStorage.removeItem('isLoggedIn');
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Failed to logout. Please try again.");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
   return (
-    <ReserchLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+    <ReserchLayout activeTab={activeTab} setActiveTab={setActiveTab} onLogout={handleLogout} isLoading={isLoggingOut}>
       <div className="space-y-6 bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 min-h-screen p-6 lg:p-8">
         {/* Header */}
         <div className="flex items-center gap-3">
@@ -345,9 +367,10 @@ const ApplicationReviewPage = () => {
               ))}
               <button
                 onClick={openDatePicker}
-                className={`px-3 py-1 rounded-md ml-1 ${dateFilter === 'select' ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-50'}`}
+                className={`px-3 py-1 rounded-md ml-1 font-medium transition-all flex items-center gap-2 ${dateFilter === 'select' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'}`}
               >
-                Select Date
+                <Calendar size={13} />
+                {selectedDate ? formatDate(selectedDate) : 'Select Date'}
               </button>
             </div>
 
@@ -359,7 +382,12 @@ const ApplicationReviewPage = () => {
                 </button>
               </div>
             )}
-            <input ref={dateInputRef} type="date" className="hidden" onChange={(e) => handleDateChange(e.target.value)} />
+            <input
+              ref={dateInputRef}
+              type="date"
+              className="absolute opacity-0 pointer-events-none w-0 h-0"
+              onChange={(e) => handleDateChange(e.target.value)}
+            />
           </div>
         </div>
 
@@ -408,11 +436,10 @@ const ApplicationReviewPage = () => {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.03 }}
-                    className={`bg-white border rounded-xl px-5 py-3.5 grid grid-cols-12 gap-3 items-center hover:shadow-md transition-all duration-200 group ${
-                      isNew
-                        ? "border-indigo-300 shadow-sm shadow-indigo-100"
-                        : "border-slate-200 hover:border-indigo-300 hover:shadow-indigo-100/50"
-                    }`}
+                    className={`bg-white border rounded-xl px-5 py-3.5 grid grid-cols-12 gap-3 items-center hover:shadow-md transition-all duration-200 group ${isNew
+                      ? "border-indigo-300 shadow-sm shadow-indigo-100"
+                      : "border-slate-200 hover:border-indigo-300 hover:shadow-indigo-100/50"
+                      }`}
                   >
                     {/* Index with NEW badge */}
                     <div className="col-span-1 flex items-center gap-1.5">
@@ -430,11 +457,10 @@ const ApplicationReviewPage = () => {
 
                     {/* Applicant */}
                     <div className="col-span-3 flex items-center gap-3 min-w-0">
-                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-sm ${
-                        isNew
-                          ? "bg-gradient-to-br from-indigo-500 to-indigo-700 ring-2 ring-indigo-300"
-                          : "bg-gradient-to-br from-indigo-500 to-indigo-700"
-                      }`}>
+                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-sm ${isNew
+                        ? "bg-gradient-to-br from-indigo-500 to-indigo-700 ring-2 ring-indigo-300"
+                        : "bg-gradient-to-br from-indigo-500 to-indigo-700"
+                        }`}>
                         {getInitials(app.personal?.fullName)}
                       </div>
                       <div className="min-w-0">
@@ -487,13 +513,12 @@ const ApplicationReviewPage = () => {
 
                     {/* Status */}
                     <div className="col-span-1">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full border ${
-                        app.status === "shortlisted"
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                          : app.status === "reviewed"
-                            ? "bg-indigo-50 text-indigo-700 border-indigo-200"
-                            : "bg-amber-50 text-amber-700 border-amber-200"
-                      }`}>
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full border ${app.status === "shortlisted"
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : app.status === "reviewed"
+                          ? "bg-indigo-50 text-indigo-700 border-indigo-200"
+                          : "bg-amber-50 text-amber-700 border-amber-200"
+                        }`}>
                         {app.status === "shortlisted" && <CheckCircle size={10} />}
                         {app.status || "Pending"}
                       </span>
@@ -503,11 +528,10 @@ const ApplicationReviewPage = () => {
                     <div className="col-span-1 flex justify-end">
                       <button
                         onClick={() => handleViewApplication(app)}
-                        className={`px-2.5 py-1.5 text-white text-xs font-medium rounded-lg transition-all flex items-center gap-1 shadow-sm ${
-                          isNew
-                            ? "bg-indigo-700 hover:bg-indigo-800 shadow-indigo-300"
-                            : "bg-indigo-600 hover:bg-indigo-700 group-hover:shadow-indigo-200"
-                        }`}
+                        className={`px-2.5 py-1.5 text-white text-xs font-medium rounded-lg transition-all flex items-center gap-1 shadow-sm ${isNew
+                          ? "bg-indigo-700 hover:bg-indigo-800 shadow-indigo-300"
+                          : "bg-indigo-600 hover:bg-indigo-700 group-hover:shadow-indigo-200"
+                          }`}
                       >
                         View
                         <ChevronRight size={12} />
