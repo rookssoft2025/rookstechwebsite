@@ -1,10 +1,9 @@
-import React from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import jothiVideo from "../../assets/videos/jothi.mp4";
 import parkInsight from "../../assets/videos/parkInsight.mp4";
 import rooks from "../../assets/videos/rooks.mp4";
-import { div } from "framer-motion/client";
-import jothiImg from  "../../assets/work/jothi.jpg";
+import jothiImg from "../../assets/work/jothi.jpg";
 import constructionImg from "../../assets/work/construction.jpg";
 import FunitureImg from "../../assets/work/furImg.jpg";
 import ServiceImg from "../../assets/work/serImg.jpg";
@@ -13,94 +12,206 @@ import hmsimg from "../../assets/work/hmsImg.jpg";
 
 export default function WorkCards() {
     const workCards = [
-    {
-    title: "Jothi",
-    description:
-        "Designed and developed jothidecor.in, a website for Jothi Rajalekshmi curtains and furnishing shop, offering a wide range of elegant curtains, fabrics, and home decor solutions.",
-    video: jothiVideo,
-    img:jothiImg,
-},
-{
-    title: "Construction",
-    description:
-        "We developed Rooks CST, a mobile application for construction site management, helping teams streamline tasks, track progress, and manage resources efficiently.",
-    video: rooks,
-    img:constructionImg,
-},
-    {
-    title: "Servnex - Service Management Application",
-    description:
-        "Servnex is a mobile application designed to track and manage computer hardware, biometric devices, and other technical service operations. It helps monitor service requests, technician assignments, repair status, maintenance history, and customer records, ensuring efficient service delivery and real-time tracking..",
-    video: jothiVideo,
-    img:ServiceImg,
-},
-{
-    title: "Factory Management System",
-    description:
-        "Factory Management System is a software solution designed to monitor and manage all manufacturing processes within a factory. For a furniture manufacturing unit, it tracks raw materials, production stages, labor, inventory, orders, and dispatch, ensuring efficient workflow, cost control, and streamlined operations from start to finish..",
-    video: rooks,
-    img:FunitureImg,
-},
-    {
-    title: "Charity Financial Management System",
-    description:
-        "Charity Financial Management System is a software solution that helps nonprofit organizations track donations, income, and expenses efficiently. It ensures financial transparency, proper fund utilization, accurate reporting, and compliance with regulatory requirements.",
-    video: jothiVideo,
-    img:charityImg,
-},
-{
-    title: "Hospital Management System",
-    description:
-        "Hospital Management System is a software solution designed to manage and streamline hospital operations such as patient registration, appointments, billing, medical records, and staff management. It improves efficiency, ensures accurate data handling, and enhances overall patient care and administrative control..",
-    video: rooks,
-    img:hmsimg,
-},
+        {
+            title: "Jothi Decor",
+            category: "E-commerce Website",
+            description:
+                "Designed and developed jothidecor.in, a website for Jothi Rajalekshmi curtains and furnishing shop, offering a wide range of elegant curtains, fabrics, and home decor solutions.",
+            video: jothiVideo,
+            link: "https://jothidecor.in",
+            img: jothiImg,
+            tags: ["React", "Landing Page", "UI/UX"]
+        },
+        {
+            title: "Rooks CST",
+            category: "Construction Management App",
+            description:
+                "We developed Rooks CST, a mobile application for construction site management, helping teams streamline tasks, track progress, and manage resources efficiently.",
+            video: rooks,
+            link: "/work/rooks-cst",
+            img: constructionImg,
+            tags: ["Mobile App", "Construction", "Project Management"]
+        },
+        {
+            title: "ServNex",
+            category: "Service Management Platform",
+            description:
+                "Servnex is a mobile application designed to track and manage computer hardware, biometric devices, and other technical service operations. It helps monitor service requests, technician assignments, repair status, maintenance history, and customer records, ensuring efficient service delivery and real-time tracking.",
+            video: jothiVideo,
+            link: "#",
+            img: ServiceImg,
+            tags: ["Service Management", "Mobile App", "IoT"]
+        },
+        {
+            title: "Factory Management System",
+            category: "Manufacturing Solution",
+            description:
+                "Factory Management System is a software solution designed to monitor and manage all manufacturing processes within a factory. For a furniture manufacturing unit, it tracks raw materials, production stages, labor, inventory, orders, and dispatch, ensuring efficient workflow, cost control, and streamlined operations from start to finish.",
+            video: rooks,
+            link: "#",
+            img: FunitureImg,
+            tags: ["Manufacturing", "ERP", "Inventory"]
+        },
+        {
+            title: "Charity Financial Management",
+            category: "Non-Profit Solution",
+            description:
+                "Charity Financial Management System is a software solution that helps nonprofit organizations track donations, income, and expenses efficiently. It ensures financial transparency, proper fund utilization, accurate reporting, and compliance with regulatory requirements.",
+            video: jothiVideo,
+            link: "#",
+            img: charityImg,
+            tags: ["Financial", "Non-Profit", "Compliance"]
+        },
+        {
+            title: "Hospital Management System",
+            category: "Healthcare Platform",
+            description:
+                "Hospital Management System is a software solution designed to manage and streamline hospital operations such as patient registration, appointments, billing, medical records, and staff management. It improves efficiency, ensures accurate data handling, and enhances overall patient care and administrative control.",
+            video: rooks,
+            link: "#",
+            img: hmsimg,
+            tags: ["Healthcare", "Management", "Patient Care"]
+        },
     ];
 
     const fadeUp = {
-        hidden: { opacity: 0, y: 40, scale: 0.95 },
-        visible: { opacity: 1, y: 0, scale: 1 },
+        hidden: { opacity: 0, y: 40 },
+        visible: { opacity: 1, y: 0 },
+    };
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.3,
+            },
+        },
     };
 
     return (
-        <div className="">
-            <div className="">
-                <h1 className="text-center font-semibold text-white text-[46px]">Latest Projects</h1>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 mx-auto">
-                {workCards.map((card, index) => (
-                    <motion.div
-                        key={index}
-                        variants={fadeUp}
-                        initial="hidden"
-                        whileInView="visible"
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        viewport={{ once: true }}
-                        className="rounded-2xl overflow-hidden shadow-lg bg-[#0F2239] text-white"
-                    >
-                        {/* <video
-                            src={card.video}
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            className="w-full object-cover"
-                        /> */}
-                        {/* <img src={card.img} alt=""  className="w-full object-cover"/> */}
-                        <img
-  src={card.img}
-  alt={card.title}
-  className="w-full h-64 object-cover"
-/>
-                        <div className="p-4">
-                            <h3 className="text-lg font-semibold">{card.title}</h3>
-                            <p className="text-sm text-gray-300 mt-1">{card.description}</p>
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
-        </div>
+        <section className="py-10 px-4 md:px-6 lg:px-4">
+            {/* Header Section */}
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="max-w-7xl mx-auto text-center mb-16"
+            >
+                <span className="inline-block px-4 py-2 rounded-full bg-blue-500/10 text-blue-400 text-sm font-semibold tracking-wider mb-4">
+                    OUR PORTFOLIO
+                </span>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+                    Latest <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Projects</span>
+                </h1>
+                <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                    Discover our innovative solutions that help businesses transform and grow in the digital age
+                </p>
+            </motion.div>
 
+            {/* Projects Grid */}
+            <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+                className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+                {workCards.map((card, index) => {
+                    const cardProps = {
+                        href: card.link,
+                        target: card.link !== "#" ? "_blank" : undefined,
+                        rel: card.link !== "#" ? "noopener noreferrer" : undefined
+                    };
+
+                    return (
+                        <motion.a
+                            key={index}
+                            {...cardProps}
+                            variants={fadeUp}
+                            transition={{ duration: 0.6, ease: "easeOut" }}
+                            className="group relative bg-gray-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-700/50 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 block"
+                        >
+                            {/* Image Container */}
+                            <div className="relative overflow-hidden h-56">
+                                <img
+                                    src={card.img}
+                                    alt={card.title}
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                />
+                                {/* Overlay Gradient */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
+
+                                {/* Category Badge */}
+                                <span className="absolute top-4 left-4 px-3 py-1 bg-blue-500/90 backdrop-blur-sm text-white text-xs font-semibold rounded-full">
+                                    {card.category}
+                                </span>
+
+                                {/* Hover Overlay with Icons */}
+                                <div className="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                                    <span className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 px-6 py-2 bg-white text-gray-900 rounded-full font-semibold text-sm hover:bg-blue-500 hover:text-white">
+                                        View Project
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-6">
+                                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors duration-300">
+                                    {card.title}
+                                </h3>
+                                <p className="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3">
+                                    {card.description}
+                                </p>
+
+                                {/* Tags */}
+                                <div className="flex flex-wrap gap-2 mb-4">
+                                    {card.tags.map((tag, tagIndex) => (
+                                        <span
+                                            key={tagIndex}
+                                            className="px-3 py-1 bg-gray-700/50 text-gray-300 text-xs rounded-full border border-gray-600/50"
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+
+                                {/* Action Link */}
+                                <div className="flex items-center text-blue-400 text-sm font-semibold group-hover:text-blue-300 transition-colors duration-300">
+                                    <span>Learn More</span>
+                                    <svg
+                                        className="w-4 h-4 ml-2 transform group-hover:translate-x-2 transition-transform duration-300"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M9 5l7 7-7 7"
+                                        />
+                                    </svg>
+                                </div>
+                            </div>
+                        </motion.a>
+                    );
+                })}
+            </motion.div>
+
+            {/* View All Button */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                viewport={{ once: true }}
+                className="text-center mt-16"
+            >
+                {/* <button className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-full hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                    View All Projects
+                </button> */}
+            </motion.div>
+        </section>
     );
 }
-
