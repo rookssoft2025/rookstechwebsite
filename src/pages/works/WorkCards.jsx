@@ -48,7 +48,7 @@ export default function WorkCards() {
             description:
                 "Factory Management System is a software solution designed to monitor and manage all manufacturing processes within a factory. For a furniture manufacturing unit, it tracks raw materials, production stages, labor, inventory, orders, and dispatch, ensuring efficient workflow, cost control, and streamlined operations from start to finish.",
             video: rooks,
-            link: "#",
+            link: "/work/fms",
             img: FunitureImg,
             tags: ["Manufacturing", "ERP", "Inventory"]
         },
