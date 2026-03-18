@@ -58,7 +58,7 @@ export default function WorkCards() {
             description:
                 "Charity Financial Management System is a software solution that helps nonprofit organizations track donations, income, and expenses efficiently. It ensures financial transparency, proper fund utilization, accurate reporting, and compliance with regulatory requirements.",
             video: jothiVideo,
-            link: "#",
+            link: "/work/charity-financial",
             img: charityImg,
             tags: ["Financial", "Non-Profit", "Compliance"]
         },
@@ -119,20 +119,10 @@ export default function WorkCards() {
                 className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
                 {workCards.map((card, index) => {
-                    const cardProps = {
-                        href: card.link,
-                        target: card.link !== "#" ? "_blank" : undefined,
-                        rel: card.link !== "#" ? "noopener noreferrer" : undefined
-                    };
+                    const isExternal = card.link.startsWith("http");
 
-                    return (
-                        <motion.a
-                            key={index}
-                            {...cardProps}
-                            variants={fadeUp}
-                            transition={{ duration: 0.6, ease: "easeOut" }}
-                            className="group relative bg-gray-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-700/50 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 block"
-                        >
+                    const CardContent = (
+                        <>
                             {/* Image Container */}
                             <div className="relative overflow-hidden h-56">
                                 <img
@@ -195,7 +185,36 @@ export default function WorkCards() {
                                     </svg>
                                 </div>
                             </div>
-                        </motion.a>
+                        </>
+                    );
+
+                    const cardClassName = "group relative bg-gray-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-700/50 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 block";
+
+                    return (
+                        <motion.div
+                            key={index}
+                            variants={fadeUp}
+                            transition={{ duration: 0.6, ease: "easeOut" }}
+                            className={cardClassName}
+                        >
+                            {isExternal ? (
+                                <a
+                                    href={card.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block h-full"
+                                >
+                                    {CardContent}
+                                </a>
+                            ) : (
+                                <Link
+                                    to={card.link}
+                                    className="block h-full"
+                                >
+                                    {CardContent}
+                                </Link>
+                            )}
+                        </motion.div>
                     );
                 })}
             </motion.div>

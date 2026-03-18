@@ -26,8 +26,9 @@ import EnergySavingTracker from "./components/EnergySavingTracker";
 import AssessmentPage from "./pages/careers/assesment/AssessmentPage.jsx";
 import AssessmentLogin from "./pages/careers/assesment/AssessmentLogin.jsx";
 import RooksCstLanding from "./pages/works/RooksCstLanding.jsx";
-import CandidateRegistration from "./pages/careers/assesment/CandidateRegistration.Jsx";
+import RookscharityLanding from "./pages/works/RookscharityLanding.jsx";
 import FmsLanding from "./pages/works/FmsLanding.jsx";
+import CandidateRegistration from "./pages/careers/assesment/CandidateRegistration.jsx";
 
 export const SplashContext = createContext();
 
@@ -56,6 +57,7 @@ function App() {
         <Route path="/work" element={<Work />} />
         <Route path="/work/rooks-cst" element={<RooksCstLanding />} />
         <Route path="/work/fms" element={<FmsLanding />} />
+        <Route path="/work/charity-financial" element={<RookscharityLanding />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/careers/apply" element={<JobApplication />} />
         <Route path="/careers/assessment" element={<AssessmentLogin />} />

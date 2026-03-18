@@ -98,7 +98,7 @@ export default function Clients() {
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
-                <style jsx>{`
+                <style>{`
           div::-webkit-scrollbar {
             display: none; /* Safari and Chrome */
           }

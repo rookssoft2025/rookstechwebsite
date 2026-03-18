@@ -62,7 +62,7 @@ US ?
                         msOverflowStyle: "none",
                     }}
                 >
-                    <style jsx>{`
+                    <style>{`
             div::-webkit-scrollbar {
               display: none;
             }

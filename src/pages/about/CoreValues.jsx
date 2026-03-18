@@ -91,7 +91,7 @@ export default function CoreValues() {
                         msOverflowStyle: "none",
                     }}
                 >
-                    <style jsx>{`
+                    <style>{`
             div::-webkit-scrollbar {
               display: none;
             }
