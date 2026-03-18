@@ -68,7 +68,7 @@ export default function WorkCards() {
             description:
                 "Hospital Management System is a software solution designed to manage and streamline hospital operations such as patient registration, appointments, billing, medical records, and staff management. It improves efficiency, ensures accurate data handling, and enhances overall patient care and administrative control.",
             video: rooks,
-            link: "#",
+            link: "/work/rooks-hms",
             img: hmsimg,
             tags: ["Healthcare", "Management", "Patient Care"]
         },

@@ -26,6 +26,7 @@ import EnergySavingTracker from "./components/EnergySavingTracker";
 import AssessmentPage from "./pages/careers/assesment/AssessmentPage.jsx";
 import AssessmentLogin from "./pages/careers/assesment/AssessmentLogin.jsx";
 import RooksCstLanding from "./pages/works/RooksCstLanding.jsx";
+import RooksHmsLanding from "./pages/works/RooksHmsLanding.jsx";
 import RookscharityLanding from "./pages/works/RookscharityLanding.jsx";
 import FmsLanding from "./pages/works/FmsLanding.jsx";
 import CandidateRegistration from "./pages/careers/assesment/CandidateRegistration.jsx";
@@ -56,8 +57,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/work" element={<Work />} />
         <Route path="/work/rooks-cst" element={<RooksCstLanding />} />
-        <Route path="/work/fms" element={<FmsLanding />} />
-        <Route path="/work/charity-financial" element={<RookscharityLanding />} />
+        <Route path="/work/rooks-hms" element={<RooksHmsLanding />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/careers/apply" element={<JobApplication />} />
         <Route path="/careers/assessment" element={<AssessmentLogin />} />
