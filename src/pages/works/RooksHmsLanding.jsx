@@ -7,6 +7,8 @@ import {
   useSpring,
   AnimatePresence,
 } from "framer-motion";
+import { db } from "../../firebase";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import {
   Cpu,
   ArrowRight,
@@ -44,6 +46,7 @@ import {
   Heart,
 } from "lucide-react";
 import hmsImg from "../../assets/work/hmsImg.jpg";
+import phoneImage from "../../assets/work/red_antique_telephone_1773891893640.png";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -70,10 +73,9 @@ const stagger = {
 };
 
 /* ─── Navbar ────────────────────────────────────────────────────────────────── */
-const Navbar = () => {
+const Navbar = ({ onOpenModal }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -82,23 +84,19 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    {
-      label: "Features",
-      dropdown: [
-        { label: "Patient Management", icon: <Users className="w-4 h-4" /> },
-        {
-          label: "Billing & Finance",
-          icon: <DollarSign className="w-4 h-4" />,
-        },
-        { label: "Pharmacy", icon: <Pill className="w-4 h-4" /> },
-        { label: "Analytics", icon: <FileBarChart className="w-4 h-4" /> },
-      ],
-    },
-    { label: "Solutions" },
-    { label: "Pricing" },
-    { label: "Resources" },
-    { label: "About" },
+    { label: "Features", sectionId: "features" },
+    { label: "Solutions", sectionId: "solutions" },
+    { label: "Resources", sectionId: "resources" },
+    { label: "About", sectionId: "about" },
   ];
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      setMobileOpen(false);
+    }
+  };
 
   return (
     <>
@@ -112,7 +110,7 @@ const Navbar = () => {
             : "bg-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-12">
+        <div className="w-full px-5 md:px-8 lg:px-12">
           <div className="flex items-center justify-between h-[70px]">
             {/* Logo */}
             <motion.div
@@ -143,66 +141,21 @@ const Navbar = () => {
             {/* Desktop links */}
             <div className="hidden lg:flex items-center gap-1">
               {navLinks.map((link, i) => (
-                <div
+                <motion.button
                   key={i}
-                  className="relative"
-                  onMouseEnter={() => link.dropdown && setActiveDropdown(i)}
-                  onMouseLeave={() => setActiveDropdown(null)}
+                  onClick={() => scrollToSection(link.sectionId)}
+                  whileHover={{ color: "#fff" }}
+                  className="flex items-center gap-1 px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/[0.04]"
                 >
-                  <motion.button
-                    whileHover={{ color: "#fff" }}
-                    className="flex items-center gap-1 px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/[0.04]"
-                  >
-                    {link.label}
-                    {link.dropdown && (
-                      <motion.span
-                        animate={{ rotate: activeDropdown === i ? 180 : 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <ChevronDown className="w-3.5 h-3.5" />
-                      </motion.span>
-                    )}
-                  </motion.button>
-
-                  {/* Dropdown */}
-                  <AnimatePresence>
-                    {link.dropdown && activeDropdown === i && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 8, scale: 0.97 }}
-                        transition={{ duration: 0.2, ease: EASE }}
-                        className="absolute top-full left-0 mt-1 w-56 bg-[#0a1628]/95 backdrop-blur-xl border border-white/[0.08] rounded-xl shadow-2xl shadow-black/40 overflow-hidden"
-                      >
-                        {link.dropdown.map((item, j) => (
-                          <motion.button
-                            key={j}
-                            whileHover={{
-                              backgroundColor: "rgba(11,52,112,0.3)",
-                              x: 4,
-                            }}
-                            className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-400 hover:text-white transition-colors text-left"
-                          >
-                            <span className="text-[#4ec9ff]">{item.icon}</span>
-                            {item.label}
-                          </motion.button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                  {link.label}
+                </motion.button>
               ))}
             </div>
 
             {/* Desktop CTA */}
             <div className="hidden lg:flex items-center gap-3">
               <motion.button
-                whileHover={{ color: "#fff" }}
-                className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
-              >
-                Sign In
-              </motion.button>
-              <motion.button
+                onClick={onOpenModal}
                 whileHover={{
                   scale: 1.04,
                   boxShadow: "0 0 24px 4px rgba(11,52,112,0.5)",
@@ -245,24 +198,22 @@ const Navbar = () => {
             transition={{ duration: 0.3, ease: EASE }}
             className="fixed inset-x-0 top-[70px] z-40 bg-[#060f1e]/98 backdrop-blur-2xl border-b border-white/[0.06] shadow-2xl lg:hidden"
           >
-            <div className="max-w-7xl mx-auto px-5 py-6 space-y-1">
+            <div className="w-full px-5 py-6 space-y-1">
               {navLinks.map((link, i) => (
                 <motion.button
                   key={i}
+                  onClick={() => scrollToSection(link.sectionId)}
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.06, duration: 0.4 }}
                   className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all text-sm font-medium"
                 >
                   {link.label}
-                  {link.dropdown && <ChevronDown className="w-4 h-4" />}
                 </motion.button>
               ))}
               <div className="pt-4 border-t border-white/[0.06] flex flex-col gap-3">
-                <button className="px-4 py-3 text-sm text-gray-400 hover:text-white text-left transition-colors">
-                  Sign In
-                </button>
                 <button
+                  onClick={onOpenModal}
                   className="px-4 py-3 rounded-xl text-sm font-semibold text-white text-center"
                   style={{
                     background:
@@ -377,6 +328,16 @@ const Footer = () => {
 
 /* ─── Main component ────────────────────────────────────────────────────────── */
 const RooksHmsLanding = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -393,6 +354,31 @@ const RooksHmsLanding = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const docName = `Rookshms_${formData.name.replace(/\s+/g, "_")}`;
+      await setDoc(doc(db, "Client Enquiry", docName), {
+        ...formData,
+        source: "Rooks HMS Landing",
+        application: "Rooks HMS",
+        timestamp: serverTimestamp(),
+      });
+      setSubmitSuccess(true);
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setSubmitSuccess(false);
+        setFormData({ name: "", email: "", phone: "", message: "" });
+      }, 3000);
+    } catch (error) {
+      console.error("Error saving Enquiry: ", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const features = [
     {
@@ -537,7 +523,7 @@ const RooksHmsLanding = () => {
       </div>
 
       {/* ══ NAVBAR ══════════════════════════════════════════════════════════ */}
-      <Navbar />
+      <Navbar onOpenModal={() => setIsModalOpen(true)} />
 
       {/* ══ HERO ════════════════════════════════════════════════════════════ */}
       <section
@@ -617,6 +603,7 @@ const RooksHmsLanding = () => {
               className="flex flex-wrap gap-3.5 pt-1"
             >
               <motion.button
+                onClick={() => setIsModalOpen(true)}
                 whileHover={{
                   scale: 1.04,
                   boxShadow: "0 0 32px 4px rgba(11,52,112,0.55)",
@@ -630,7 +617,7 @@ const RooksHmsLanding = () => {
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 <span className="relative flex items-center gap-2">
-                  Schedule Demo
+                  Contact Us
                   <motion.span
                     className="inline-block"
                     animate={{ x: [0, 3, 0] }}
@@ -639,24 +626,6 @@ const RooksHmsLanding = () => {
                     <ArrowRight className="w-4 h-4" />
                   </motion.span>
                 </span>
-              </motion.button>
-
-              <motion.button
-                whileHover={{
-                  scale: 1.04,
-                  borderColor: "rgba(78,201,255,0.4)",
-                  boxShadow: "0 0 20px 2px rgba(78,201,255,0.1)",
-                }}
-                whileTap={{ scale: 0.97 }}
-                className="px-8 py-3.5 rounded-xl font-semibold text-sm flex items-center gap-2.5 border border-white/10 bg-white/[0.04] backdrop-blur-sm hover:bg-white/[0.07] transition-all duration-300"
-              >
-                <motion.span
-                  whileHover={{ scale: 1.2 }}
-                  className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center"
-                >
-                  <Play className="w-3 h-3 fill-current" />
-                </motion.span>
-                Watch Demo
               </motion.button>
             </motion.div>
 
@@ -752,7 +721,7 @@ const RooksHmsLanding = () => {
       </section>
 
       {/* ══ FEATURES ════════════════════════════════════════════════════════ */}
-      <section className="relative py-28 px-5 md:px-8 lg:px-12 z-10">
+      <section id="features" className="relative py-28 px-5 md:px-8 lg:px-12 z-10 scroll-mt-[70px]">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -836,7 +805,7 @@ const RooksHmsLanding = () => {
       </section>
 
       {/* ══ ABOUT ════════════════════════════════════════════════════════════ */}
-      <section className="relative py-28 px-5 md:px-8 lg:px-12 z-10">
+      <section id="solutions" className="relative py-28 px-5 md:px-8 lg:px-12 z-10 scroll-mt-[70px]">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, x: -36 }}
@@ -882,24 +851,7 @@ const RooksHmsLanding = () => {
                 </motion.div>
               ))}
             </div>
-            <motion.button
-              whileHover={{
-                scale: 1.04,
-                boxShadow: "0 0 28px 4px rgba(11,52,112,0.5)",
-              }}
-              whileTap={{ scale: 0.97 }}
-              className="relative group mt-4 px-8 py-3.5 rounded-xl font-semibold text-sm flex items-center gap-2 overflow-hidden"
-              style={{
-                background:
-                  "linear-gradient(135deg, #0B3470 0%, #1e4a8a 60%, #2563eb 100%)",
-              }}
-            >
-              <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-              <span className="relative flex items-center gap-2">
-                Learn More About Our Platform
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </motion.button>
+           
           </motion.div>
 
           <motion.div
@@ -955,7 +907,7 @@ const RooksHmsLanding = () => {
       </section>
 
       {/* ══ PROCESS ═════════════════════════════════════════════════════════ */}
-      <section className="relative py-28 px-5 md:px-8 lg:px-12 z-10">
+      <section id="resources" className="relative py-28 px-5 md:px-8 lg:px-12 z-10 scroll-mt-[70px]">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -1025,7 +977,7 @@ const RooksHmsLanding = () => {
       </section>
 
       {/* ══ REPORTS & ANALYTICS ═════════════════════════════════════════════ */}
-      <section className="relative py-28 px-5 md:px-8 lg:px-12 z-10">
+      <section id="about" className="relative py-28 px-5 md:px-8 lg:px-12 z-10 scroll-mt-[70px]">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -1083,18 +1035,7 @@ const RooksHmsLanding = () => {
                   </span>
                 </motion.div>
               ))}
-              <motion.button
-                whileHover={{
-                  scale: 1.04,
-                  borderColor: "rgba(78,201,255,0.4)",
-                  boxShadow: "0 0 20px 2px rgba(78,201,255,0.1)",
-                }}
-                whileTap={{ scale: 0.97 }}
-                className="mt-6 px-8 py-3.5 rounded-xl font-semibold text-sm flex items-center gap-2 border border-white/10 bg-white/[0.04] backdrop-blur-sm hover:bg-white/[0.07] transition-all duration-300 group"
-              >
-                View Sample Reports
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </motion.button>
+              
             </motion.div>
 
             <motion.div
@@ -1232,6 +1173,7 @@ const RooksHmsLanding = () => {
                   className="flex flex-wrap justify-center gap-4"
                 >
                   <motion.button
+                    onClick={() => setIsModalOpen(true)}
                     whileHover={{
                       scale: 1.06,
                       boxShadow: "0 0 36px 6px rgba(255,255,255,0.25)",
@@ -1240,17 +1182,7 @@ const RooksHmsLanding = () => {
                     className="relative group px-10 py-4 bg-white text-[#0B3470] rounded-xl font-bold text-base shadow-lg overflow-hidden"
                   >
                     <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#4ec9ff]/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-600" />
-                    <span className="relative">Start Free Trial</span>
-                  </motion.button>
-                  <motion.button
-                    whileHover={{
-                      scale: 1.06,
-                      backgroundColor: "rgba(255,255,255,0.1)",
-                    }}
-                    whileTap={{ scale: 0.97 }}
-                    className="px-10 py-4 border-2 border-white/60 rounded-xl font-bold text-base hover:border-white transition-all duration-300"
-                  >
-                    Contact Sales
+                    <span className="relative">Contact Us</span>
                   </motion.button>
                 </motion.div>
                 <motion.div
@@ -1294,6 +1226,194 @@ const RooksHmsLanding = () => {
 
       {/* ══ FOOTER ══════════════════════════════════════════════════════════ */}
       <Footer />
+
+      {/* ══ CONTACT MODAL ════════════════════════════════════════════════════ */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-black/40"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl relative flex flex-col md:flex-row min-h-[500px]"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="absolute top-4 right-4 z-20 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              {/* Left Side: Image/Branding */}
+              <div className="md:w-1/2 bg-gray-50 flex flex-col items-center justify-center p-12 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50/30 pointer-events-none" />
+                <motion.img
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  src={phoneImage}
+                  alt="Support"
+                  className="w-full h-auto max-w-[280px] relative z-10 object-contain mix-blend-multiply opacity-80"
+                />
+                <div className="mt-8 text-center relative z-10">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <div className="w-2 h-2 rounded-full bg-[#0B3470] animate-pulse" />
+                    <span className="text-[#0B3470] font-bold uppercase tracking-widest text-xs">
+                      Customer Service
+                    </span>
+                  </div>
+                  <p className="text-gray-400 text-sm max-w-[200px]">
+                    Our expert team is here to help you streamline your hospital
+                    management.
+                  </p>
+                </div>
+                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-50" />
+              </div>
+
+              {/* Right Side: Form */}
+              <div className="md:w-1/2 p-8 md:p-12 bg-white flex flex-col justify-center">
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {submitSuccess ? (
+                    <div className="text-center space-y-4">
+                      <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600">
+                        <CheckCircle2 className="w-10 h-10" />
+                      </div>
+                      <h3 className="text-3xl font-bold text-[#0B3470]">
+                        Thank You!
+                      </h3>
+                      <p className="text-gray-500 text-lg">
+                        Your enquiry has been received. We'll get back to you
+                        soon.
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <h3 className="text-4xl font-bold text-[#0B3470] mb-2">
+                        Need support?
+                      </h3>
+                      <p className="text-gray-500 mb-8">
+                        Contact us if you need further assistance.
+                      </p>
+
+                      <form
+                        className="space-y-4"
+                        onSubmit={handleFormSubmit}
+                      >
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Name and surname
+                          </label>
+                          <input
+                            required
+                            type="text"
+                            value={formData.name}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                name: e.target.value,
+                              })
+                            }
+                            className="w-full px-4 py-3 bg-blue-50/50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-800"
+                            placeholder="Enter your name"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Email
+                            </label>
+                            <input
+                              required
+                              type="email"
+                              value={formData.email}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  email: e.target.value,
+                                })
+                              }
+                              className="w-full px-4 py-3 bg-blue-50/50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-800"
+                              placeholder="mail@example.com"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Phone number
+                            </label>
+                            <input
+                              required
+                              type="tel"
+                              value={formData.phone}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  phone: e.target.value,
+                                })
+                              }
+                              className="w-full px-4 py-3 bg-blue-50/50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-800"
+                              placeholder="+1 (234) 567-890"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Please enter the details of your request.
+                          </label>
+                          <textarea
+                            required
+                            rows="4"
+                            value={formData.message}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                message: e.target.value,
+                              })
+                            }
+                            className="w-full px-4 py-3 bg-blue-50/50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-800 resize-none"
+                            placeholder="How can we help you?"
+                          />
+                        </div>
+
+                        <motion.button
+                          disabled={isSubmitting}
+                          whileHover={{
+                            scale: 1.02,
+                            backgroundColor: "#1e4a8a",
+                          }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full py-4 bg-[#0B3470] text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-colors uppercase tracking-widest text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                              Submitting...
+                            </>
+                          ) : (
+                            "Submit"
+                          )}
+                        </motion.button>
+                      </form>
+                    </>
+                  )}
+                </motion.div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
