@@ -29,6 +29,7 @@ import RooksCstLanding from "./pages/works/RooksCstLanding.jsx";
 import RooksHmsLanding from "./pages/works/RooksHmsLanding.jsx";
 import RookscharityLanding from "./pages/works/RookscharityLanding.jsx";
 import FmsLanding from "./pages/works/FmsLanding.jsx";
+import RooksservnexLanding from "./pages/works/RooksservnexLanding.jsx";
 import CandidateRegistration from "./pages/careers/assesment/CandidateRegistration.jsx";
 
 export const SplashContext = createContext();
@@ -58,6 +59,9 @@ function App() {
         <Route path="/work" element={<Work />} />
         <Route path="/work/rooks-cst" element={<RooksCstLanding />} />
         <Route path="/work/rooks-hms" element={<RooksHmsLanding />} />
+        <Route path="/work/fms" element={<FmsLanding />} />
+        <Route path="/work/charity-financial" element={<RookscharityLanding />} />
+        <Route path="/work/servnex" element={<RooksservnexLanding />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/careers/apply" element={<JobApplication />} />
         <Route path="/careers/assessment" element={<AssessmentLogin />} />

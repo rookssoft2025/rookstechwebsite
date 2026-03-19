@@ -38,7 +38,7 @@ export default function WorkCards() {
             description:
                 "Servnex is a mobile application designed to track and manage computer hardware, biometric devices, and other technical service operations. It helps monitor service requests, technician assignments, repair status, maintenance history, and customer records, ensuring efficient service delivery and real-time tracking.",
             video: jothiVideo,
-            link: "#",
+            link: "/work/servnex",
             img: ServiceImg,
             tags: ["Service Management", "Mobile App", "IoT"]
         },

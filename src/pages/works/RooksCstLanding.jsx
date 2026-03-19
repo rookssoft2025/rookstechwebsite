@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
+import { db } from "../../firebase";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import cstImg from "../../assets/work/cst.png";
 import {
     Cpu,
@@ -21,10 +23,23 @@ import {
     Zap,
     Globe,
     Layers,
-    Menu
+    Menu,
+    X,
+    Phone
 } from "lucide-react";
 
+import phoneImage from "../../assets/work/red_antique_telephone_1773891893640.png";
+
 const RooksCstLanding = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        message: ""
+    });
     const { scrollYProgress } = useScroll();
     const y1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
     const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [1, 0.8, 0.8, 0.4]);
@@ -70,6 +85,31 @@ const RooksCstLanding = () => {
             duration: 3,
             repeat: Infinity,
             ease: "easeInOut"
+        }
+    };
+
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            const docName = `Rookscst_${formData.name.replace(/\s+/g, '_')}`;
+            await setDoc(doc(db, "Client Enquiry", docName), {
+                ...formData,
+                source: "Rooks CST Landing",
+                "application": "Rooks CST Mobile App",
+                timestamp: serverTimestamp()
+            });
+            setSubmitSuccess(true);
+            setTimeout(() => {
+                setIsModalOpen(false);
+                setSubmitSuccess(false);
+                setFormData({ name: "", email: "", phone: "", message: "" });
+            }, 3000);
+        } catch (error) {
+            console.error("Error saving Enquiry: ", error);
+            alert("Something went wrong. Please try again.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -133,6 +173,7 @@ const RooksCstLanding = () => {
 
                         <motion.div variants={fadeInUp} className="flex gap-4 flex-wrap">
                             <motion.button
+                                onClick={() => setIsModalOpen(true)}
                                 whileHover={{ scale: 1.05, boxShadow: "0 20px 25px -5px rgba(11, 52, 112, 0.5)" }}
                                 whileTap={{ scale: 0.95 }}
                                 className="group px-8 py-4 bg-gradient-to-r from-[#0B3470] to-[#1a4a8a] rounded-xl flex items-center gap-2 font-semibold relative overflow-hidden"
@@ -148,6 +189,7 @@ const RooksCstLanding = () => {
                             </motion.button>
 
                             <motion.button
+                                onClick={() => setIsModalOpen(true)}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 className="group px-8 py-4 bg-white/5 backdrop-blur-sm rounded-xl flex items-center gap-2 border border-white/10 hover:border-white/20 transition-all"
@@ -516,11 +558,12 @@ const RooksCstLanding = () => {
 
                             <div className="flex justify-center gap-4 flex-wrap">
                                 <motion.button
+                                    onClick={() => setIsModalOpen(true)}
                                     whileHover={{ scale: 1.05, boxShadow: "0 20px 25px -5px rgba(0,0,0,0.2)" }}
                                     whileTap={{ scale: 0.95 }}
                                     className="group px-10 py-4 bg-white text-[#0B3470] rounded-xl font-bold text-lg relative overflow-hidden"
                                 >
-                                    <span className="relative z-10">Get a Quote</span>
+                                    <span className="relative z-10">Contact Us</span>
                                     <motion.div
                                         className="absolute inset-0 bg-gray-100"
                                         initial={{ x: "100%" }}
@@ -529,13 +572,14 @@ const RooksCstLanding = () => {
                                     />
                                 </motion.button>
 
-                                <motion.button
+                                {/* <motion.button
+                                    onClick={() => setIsModalOpen(true)}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     className="group px-10 py-4 border-2 border-white rounded-xl font-bold text-lg hover:bg-white hover:text-[#0B3470] transition-all"
                                 >
                                     Book Demo
-                                </motion.button>
+                                </motion.button> */}
                             </div>
 
                             {/* Trust badges */}
@@ -563,10 +607,156 @@ const RooksCstLanding = () => {
                     <div className="flex gap-6">
                         <a href="#" className="hover:text-blue-400 transition-colors">Privacy</a>
                         <a href="#" className="hover:text-blue-400 transition-colors">Terms</a>
-                        <a href="#" className="hover:text-blue-400 transition-colors">Contact</a>
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="hover:text-blue-400 transition-colors"
+                        >
+                            Contact
+                        </button>
                     </div>
                 </div>
             </footer>
+
+            {/* ================= MODAL ================= */}
+            <AnimatePresence>
+                {isModalOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-black/40"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                            className="bg-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl relative flex flex-col md:flex-row min-h-[500px]"
+                        >
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="absolute top-4 right-4 z-20 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+
+                            {/* Left Side: Image/Branding */}
+                            <div className="md:w-1/2 bg-gray-50 flex flex-col items-center justify-center p-12 relative overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50/30 pointer-events-none" />
+                                <motion.img
+                                    initial={{ x: -20, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    transition={{ delay: 0.2 }}
+                                    src={phoneImage}
+                                    alt="Support"
+                                    className="w-full h-auto max-w-[280px] relative z-10 object-contain mix-blend-multiply opacity-80"
+                                />
+                                <div className="mt-8 text-center relative z-10">
+                                    <div className="flex items-center justify-center gap-2 mb-2">
+                                        <div className="w-2 h-2 rounded-full bg-[#0B3470] animate-pulse" />
+                                        <span className="text-[#0B3470] font-bold uppercase tracking-widest text-xs">Customer Service</span>
+                                    </div>
+                                    <p className="text-gray-400 text-sm max-w-[200px]">Our expert team is here to help you revolutionize your site management.</p>
+                                </div>
+                                {/* Decorative circle */}
+                                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-50" />
+                            </div>
+
+                            {/* Right Side: Form */}
+                            <div className="md:w-1/2 p-8 md:p-12 bg-white flex flex-col justify-center">
+                                <motion.div
+                                    initial={{ y: 20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ delay: 0.3 }}
+                                >
+                                    {submitSuccess ? (
+                                        <div className="text-center space-y-4">
+                                            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600">
+                                                <CheckCircle2 className="w-10 h-10" />
+                                            </div>
+                                            <h3 className="text-3xl font-bold text-[#0B3470]">Thank You!</h3>
+                                            <p className="text-gray-500 text-lg">Your enquiry has been received. We'll get back to you soon.</p>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <h3 className="text-4xl font-bold text-[#0B3470] mb-2">Need support?</h3>
+                                            <p className="text-gray-500 mb-8">Contact us if you need further assistance.</p>
+
+                                            <form className="space-y-4" onSubmit={handleFormSubmit}>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Name and surname</label>
+                                                    <input
+                                                        required
+                                                        type="text"
+                                                        value={formData.name}
+                                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                                        className="w-full px-4 py-3 bg-blue-50/50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-800"
+                                                        placeholder="Enter your name"
+                                                    />
+                                                </div>
+
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                                        <input
+                                                            required
+                                                            type="email"
+                                                            value={formData.email}
+                                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                            className="w-full px-4 py-3 bg-blue-50/50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-800"
+                                                            placeholder="mail@example.com"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone number</label>
+                                                        <input
+                                                            required
+                                                            type="tel"
+                                                            value={formData.phone}
+                                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                                            className="w-full px-4 py-3 bg-blue-50/50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-800"
+                                                            placeholder="+1 (234) 567-890"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Please enter the details of your request.</label>
+                                                    <textarea
+                                                        required
+                                                        rows="4"
+                                                        value={formData.message}
+                                                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                                                        className="w-full px-4 py-3 bg-blue-50/50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-800 resize-none"
+                                                        placeholder="How can we help you?"
+                                                    />
+                                                </div>
+
+                                                <motion.button
+                                                    disabled={isSubmitting}
+                                                    whileHover={{ scale: 1.02, backgroundColor: "#1e4a8a" }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                    className="w-full py-4 bg-[#0B3470] text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-colors uppercase tracking-widest text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                                >
+                                                    {isSubmitting ? (
+                                                        <>
+                                                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                            Submitting...
+                                                        </>
+                                                    ) : (
+                                                        "Submit"
+                                                    )}
+                                                </motion.button>
+                                            </form>
+                                        </>
+                                    )}
+                                </motion.div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
