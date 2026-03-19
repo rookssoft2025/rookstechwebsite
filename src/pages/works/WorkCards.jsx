@@ -9,7 +9,7 @@ import FunitureImg from "../../assets/work/furImg.jpg";
 import ServiceImg from "../../assets/work/serImg.jpg";
 import charityImg from "../../assets/work/charity.jpg";
 import hmsimg from "../../assets/work/hmsImg.jpg";
-
+import tmsimg from "../../assets/work/tsm.jpg"
 export default function WorkCards() {
     const workCards = [
         {
@@ -72,6 +72,16 @@ export default function WorkCards() {
             img: hmsimg,
             tags: ["Healthcare", "Management", "Patient Care"]
         },
+        {
+            title: "Task Management Application",
+            category: "Productivity Platform",
+            description:
+                "Task Management Application is a software solution designed to organize and manage daily activities such as personal tasks, study plans, and teamwork assignments. In this system, an admin can create workspaces and assign tasks to multiple members. Each workspace allows collaboration, tracking progress, and ensuring timely task completion, improving productivity, coordination, and overall task management efficiency.",
+            video: rooks,
+            link: "/work/task-management",
+            img: tmsimg,
+            tags: ["Productivity", "Task Management", "Collaboration"]
+        }
     ];
 
     const fadeUp = {
@@ -116,7 +126,7 @@ export default function WorkCards() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
-                className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                className="max-w-7xl mx-auto flex flex-wrap justify-center gap-8"
             >
                 {workCards.map((card, index) => {
                     const isExternal = card.link.startsWith("http");
@@ -147,7 +157,7 @@ export default function WorkCards() {
                             </div>
 
                             {/* Content */}
-                            <div className="p-6">
+                            <div className="p-6 flex flex-col items-center text-center">
                                 <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors duration-300">
                                     {card.title}
                                 </h3>
@@ -156,7 +166,7 @@ export default function WorkCards() {
                                 </p>
 
                                 {/* Tags */}
-                                <div className="flex flex-wrap gap-2 mb-4">
+                                <div className="flex flex-wrap justify-center gap-2 mb-4">
                                     {card.tags.map((tag, tagIndex) => (
                                         <span
                                             key={tagIndex}
@@ -168,7 +178,7 @@ export default function WorkCards() {
                                 </div>
 
                                 {/* Action Link */}
-                                <div className="flex items-center text-blue-400 text-sm font-semibold group-hover:text-blue-300 transition-colors duration-300">
+                                <div className="flex items-center justify-center text-blue-400 text-sm font-semibold group-hover:text-blue-300 transition-colors duration-300">
                                     <span>Learn More</span>
                                     <svg
                                         className="w-4 h-4 ml-2 transform group-hover:translate-x-2 transition-transform duration-300"
@@ -188,7 +198,7 @@ export default function WorkCards() {
                         </>
                     );
 
-                    const cardClassName = "group relative bg-gray-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-700/50 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 block";
+                    const cardClassName = "group relative bg-gray-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-700/50 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 block w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)]";
 
                     return (
                         <motion.div

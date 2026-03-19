@@ -28,6 +28,7 @@ import AssessmentPage from "./pages/careers/assesment/AssessmentPage.jsx";
 import AssessmentLogin from "./pages/careers/assesment/AssessmentLogin.jsx";
 import RooksCstLanding from "./pages/works/RooksCstLanding.jsx";
 import RookscharityLanding from "./pages/works/RookscharityLanding.jsx";
+import TaskManagementLanding from "./pages/works/TaskManagementLanding.jsx";
 
 export const SplashContext = createContext();
 
@@ -56,6 +57,7 @@ function App() {
         <Route path="/work" element={<Work />} />
         <Route path="/work/rooks-cst" element={<RooksCstLanding />} />
         <Route path="/work/charity-financial" element={<RookscharityLanding />} />
+        <Route path="/work/task-management" element={<TaskManagementLanding />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/careers/apply" element={<JobApplication />} />
         <Route path="/careers/assessment" element={<AssessmentLogin />} />
