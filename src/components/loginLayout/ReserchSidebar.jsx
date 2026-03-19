@@ -10,6 +10,7 @@ import {
   ArchiveIcon,
   CheckCircle,
   X,
+  Mail,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -94,6 +95,14 @@ const ReserchSidebar = ({
       route: "/dashboard/assessment-details",
       color: "text-teal-600",
     },
+    {
+      id: "client-enquiry",
+      label: "Client Enquiry",
+      icon: Mail,
+      description: "View website enquiries",
+      route: "/dashboard/client-enquiry",
+      color: "text-[#0b3470]",
+    },
   ];
 
   return (
@@ -159,11 +168,10 @@ const ReserchSidebar = ({
               }}
               className={`w-full flex items-center space-x-4 px-4 py-3 rounded-xl transition-all duration-300 text-left relative
               
-              ${
-                activeTab === item.id
+              ${activeTab === item.id
                   ? "bg-slate-800 text-white"
                   : "text-slate-300 hover:bg-slate-700 hover:text-white"
-              }
+                }
               
               `}
             >
@@ -179,11 +187,10 @@ const ReserchSidebar = ({
               <div
                 className={`p-2 rounded-lg
                 
-                ${
-                  activeTab === item.id
+                ${activeTab === item.id
                     ? "bg-white/20 text-white"
                     : "bg-slate-700 text-slate-400"
-                }
+                  }
                 
                 `}
               >

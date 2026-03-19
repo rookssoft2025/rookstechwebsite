@@ -44,9 +44,10 @@ import {
   MapPin,
   ExternalLink,
   Heart,
+  SendHorizontal,
 } from "lucide-react";
 import hmsImg from "../../assets/work/hmsImg.jpg";
-import phoneImage from "../../assets/work/red_antique_telephone_1773891893640.png";
+import hospitalImage from "../../assets/work/hospital_hms_support_1773896875537.png";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -104,11 +105,10 @@ const Navbar = ({ onOpenModal }) => {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, ease: EASE }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-[#060f1e]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_4px_40px_rgba(11,52,112,0.3)]"
-            : "bg-transparent"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
+          ? "bg-[#060f1e]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_4px_40px_rgba(11,52,112,0.3)]"
+          : "bg-transparent"
+          }`}
       >
         <div className="w-full px-5 md:px-8 lg:px-12">
           <div className="flex items-center justify-between h-[70px]">
@@ -359,11 +359,11 @@ const RooksHmsLanding = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const docName = `Rookshms_${formData.name.replace(/\s+/g, "_")}`;
+      const docName = `Hms_${formData.name.replace(/\s+/g, "_")}_${Date.now()}`;
       await setDoc(doc(db, "Client Enquiry", docName), {
         ...formData,
         source: "Rooks HMS Landing",
-        application: "Rooks HMS",
+        application: "Rooks HMS (Hospital Management System)",
         timestamp: serverTimestamp(),
       });
       setSubmitSuccess(true);
@@ -851,7 +851,7 @@ const RooksHmsLanding = () => {
                 </motion.div>
               ))}
             </div>
-           
+
           </motion.div>
 
           <motion.div
@@ -1035,7 +1035,7 @@ const RooksHmsLanding = () => {
                   </span>
                 </motion.div>
               ))}
-              
+
             </motion.div>
 
             <motion.div
@@ -1234,175 +1234,139 @@ const RooksHmsLanding = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-black/40"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-md bg-black/70"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setIsModalOpen(false);
+            }}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              initial={{ scale: 0.9, opacity: 0, y: 30 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl relative flex flex-col md:flex-row min-h-[500px]"
+              exit={{ scale: 0.9, opacity: 0, y: 30 }}
+              transition={{ type: "spring", damping: 30, stiffness: 400 }}
+              className="bg-[#0f141c] w-full max-w-4xl rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(11,52,112,0.15)] relative flex flex-col md:flex-row min-h-[550px] border border-white/5"
             >
               {/* Close Button */}
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="absolute top-4 right-4 z-20 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors"
+                className="absolute top-5 right-5 z-20 p-2.5 rounded-full bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all"
               >
                 <X className="w-6 h-6" />
               </button>
 
-              {/* Left Side: Image/Branding */}
-              <div className="md:w-1/2 bg-gray-50 flex flex-col items-center justify-center p-12 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50/30 pointer-events-none" />
+              {/* Left Side: Illustration Area */}
+              <div className="md:w-1/2 bg-[#161b26] flex flex-col items-center justify-center p-12 relative overflow-hidden border-r border-white/5">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(78,201,255,0.1),transparent)]" />
                 <motion.img
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
+                  initial={{ scale: 0.85, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.2 }}
-                  src={phoneImage}
-                  alt="Support"
-                  className="w-full h-auto max-w-[280px] relative z-10 object-contain mix-blend-multiply opacity-80"
+                  src={hospitalImage}
+                  alt="HMS Healthcare Support"
+                  className="w-full h-auto max-w-[320px] relative z-10 object-contain rounded-2xl shadow-2xl"
                 />
-                <div className="mt-8 text-center relative z-10">
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <div className="w-2 h-2 rounded-full bg-[#0B3470] animate-pulse" />
-                    <span className="text-[#0B3470] font-bold uppercase tracking-widest text-xs">
-                      Customer Service
-                    </span>
+                <div className="mt-10 text-center relative z-10 w-full">
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#4ec9ff] animate-pulse" />
+                    <span className="text-[#4ec9ff] font-bold uppercase tracking-widest text-[10px]">Medical Command Center</span>
                   </div>
-                  <p className="text-gray-400 text-sm max-w-[200px]">
-                    Our expert team is here to help you streamline your hospital
-                    management.
-                  </p>
+                  <h4 className="heading-font text-xl text-white mb-2">Empowering Digital Healthcare</h4>
+                  <p className="text-white/40 text-xs italic text-center mx-auto max-w-[200px]">"Streamlining clinic and hospital operations with intelligent automation."</p>
                 </div>
-                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-50" />
+                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-[#0B3470]/5 rounded-full blur-3xl" />
+                <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl" />
               </div>
 
-              {/* Right Side: Form */}
-              <div className="md:w-1/2 p-8 md:p-12 bg-white flex flex-col justify-center">
+              {/* Right Side: Form Content */}
+              <div className="md:w-1/2 p-10 md:p-14 bg-[#0f141c] flex flex-col justify-center">
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.3 }}
                 >
                   {submitSuccess ? (
-                    <div className="text-center space-y-4">
-                      <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600">
+                    <div className="text-center py-10">
+                      <div className="w-20 h-20 bg-[#0B3470]/10 rounded-full flex items-center justify-center mx-auto text-[#4ec9ff] border border-[#4ec9ff]/20 mb-8">
                         <CheckCircle2 className="w-10 h-10" />
                       </div>
-                      <h3 className="text-3xl font-bold text-[#0B3470]">
-                        Thank You!
-                      </h3>
-                      <p className="text-gray-500 text-lg">
-                        Your enquiry has been received. We'll get back to you
-                        soon.
-                      </p>
+                      <h3 className="heading-font text-3xl font-bold text-white mb-4">Enquiry Received</h3>
+                      <p className="text-white/40 text-sm">Our healthcare transformation specialist will contact you shortly to discuss your institution's needs.</p>
                     </div>
                   ) : (
                     <>
-                      <h3 className="text-4xl font-bold text-[#0B3470] mb-2">
-                        Need support?
-                      </h3>
-                      <p className="text-gray-500 mb-8">
-                        Contact us if you need further assistance.
-                      </p>
+                      <div className="flex items-center gap-2 mb-2">
+                        <HeartPulse className="w-5 h-5 text-[#4ec9ff]" />
+                        <span className="text-[#4ec9ff] font-bold text-xs tracking-widest uppercase">HMS Support</span>
+                      </div>
+                      <h3 className="heading-font text-4xl font-bold text-white mb-3">Partner with Us</h3>
+                      <p className="text-white/40 mb-8 text-sm">Please fill out the form below and we'll help digitize your healthcare facility.</p>
 
-                      <form
-                        className="space-y-4"
-                        onSubmit={handleFormSubmit}
-                      >
+                      <form onSubmit={handleFormSubmit} className="space-y-5">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Name and surname
-                          </label>
+                          <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">Full Name</label>
                           <input
                             required
                             type="text"
+                            placeholder="Dr. Rajesh Patel"
                             value={formData.name}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                name: e.target.value,
-                              })
-                            }
-                            className="w-full px-4 py-3 bg-blue-50/50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-800"
-                            placeholder="Enter your name"
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#4ec9ff]/50 focus:ring-1 focus:ring-[#4ec9ff]/50 transition-all outline-none text-white placeholder:text-white/10"
                           />
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Email
-                            </label>
+                            <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">Email Address</label>
                             <input
                               required
                               type="email"
+                              placeholder="admin@hospital.com"
                               value={formData.email}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  email: e.target.value,
-                                })
-                              }
-                              className="w-full px-4 py-3 bg-blue-50/50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-800"
-                              placeholder="mail@example.com"
+                              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                              className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#4ec9ff]/50 focus:ring-1 focus:ring-[#4ec9ff]/50 transition-all outline-none text-white placeholder:text-white/10"
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Phone number
-                            </label>
+                            <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">Phone Number</label>
                             <input
                               required
                               type="tel"
+                              placeholder="+91 98765 43210"
                               value={formData.phone}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  phone: e.target.value,
-                                })
-                              }
-                              className="w-full px-4 py-3 bg-blue-50/50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-800"
-                              placeholder="+1 (234) 567-890"
+                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                              className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#4ec9ff]/50 focus:ring-1 focus:ring-[#4ec9ff]/50 transition-all outline-none text-white placeholder:text-white/10"
                             />
                           </div>
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Please enter the details of your request.
-                          </label>
+                          <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">Message</label>
                           <textarea
                             required
-                            rows="4"
+                            rows="3"
+                            placeholder="Tell us about your facility (e.g., number of beds, specialty, key requirements)..."
                             value={formData.message}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                message: e.target.value,
-                              })
-                            }
-                            className="w-full px-4 py-3 bg-blue-50/50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-800 resize-none"
-                            placeholder="How can we help you?"
+                            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                            className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#4ec9ff]/50 focus:ring-1 focus:ring-[#4ec9ff]/50 transition-all outline-none text-white resize-none placeholder:text-white/10"
                           />
                         </div>
 
                         <motion.button
                           disabled={isSubmitting}
-                          whileHover={{
-                            scale: 1.02,
-                            backgroundColor: "#1e4a8a",
-                          }}
+                          whileHover={{ scale: 1.02, boxShadow: "0 10px 30px -10px rgba(11,52,112,0.5)" }}
                           whileTap={{ scale: 0.98 }}
-                          className="w-full py-4 bg-[#0B3470] text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-colors uppercase tracking-widest text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                          className="w-full py-4 bg-gradient-to-r from-[#0B3470] to-[#2563eb] text-white font-bold rounded-xl transition-all uppercase tracking-widest text-xs disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
                         >
                           {isSubmitting ? (
                             <>
-                              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                              Submitting...
+                              <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                              Processing...
                             </>
                           ) : (
-                            "Submit"
+                            <>
+                              <SendHorizontal className="w-4 h-4" />
+                              Submit
+                            </>
                           )}
                         </motion.button>
                       </form>

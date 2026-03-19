@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
+import { db } from "../../firebase";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import {
   Heart,
   ArrowRight,
@@ -21,13 +23,27 @@ import {
   Sparkles,
   ChevronDown,
   Zap,
+  X,
+  SendHorizontal,
 } from "lucide-react";
+
+import charityImage from "../../assets/work/charity_support_visual_1773897282767.png";
 
 const RookscharityLandingAlt = () => {
   const { scrollYProgress } = useScroll();
   const heroRef = useRef(null);
   const isHeroInView = useInView(heroRef, { once: true });
   const [activeStep, setActiveStep] = useState(0);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: ""
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -36,6 +52,31 @@ const RookscharityLandingAlt = () => {
     }, 2000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const docName = `Charity_${formData.name.replace(/\s+/g, '_')}_${Date.now()}`;
+      await setDoc(doc(db, "Client Enquiry", docName), {
+        ...formData,
+        application: "Rooks Charity Management System",
+        source: "Charity Landing",
+        timestamp: serverTimestamp()
+      });
+      setSubmitSuccess(true);
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setSubmitSuccess(false);
+        setFormData({ name: "", email: "", phone: "", message: "" });
+      }, 3000);
+    } catch (error) {
+      console.error("Error saving Enquiry: ", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
@@ -150,6 +191,7 @@ const RookscharityLandingAlt = () => {
                 className="flex items-center gap-6 flex-wrap"
               >
                 <motion.button
+                  onClick={() => setIsModalOpen(true)}
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   className="group flex items-center gap-3 px-8 py-4 bg-[#4ec9ff] text-[#071324] font-black text-sm uppercase tracking-wider rounded-none relative overflow-hidden"
@@ -878,7 +920,10 @@ const RookscharityLandingAlt = () => {
               </p>
 
               <div className="flex gap-4 flex-wrap">
-                <button className="flex gap-4 flex-wrap items-center px-8 py-4 border border-white/20 font-bold text-sm uppercase tracking-wider hover:border-[#4ec9ff] hover:text-[#4ec9ff] transition-all">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="flex gap-4 flex-wrap items-center px-8 py-4 border border-white/20 font-bold text-sm uppercase tracking-wider hover:border-[#4ec9ff] hover:text-[#4ec9ff] transition-all"
+                >
                   Contact Us
                   <ArrowRight className="relative z-10 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -961,6 +1006,158 @@ const RookscharityLandingAlt = () => {
           </div>
         </div>
       </footer>
+
+      {/* ================= CONTACT MODAL ================= */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-md bg-black/70"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setIsModalOpen(false);
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 30 }}
+              transition={{ type: "spring", damping: 30, stiffness: 400 }}
+              className="bg-[#0f141c] w-full max-w-4xl rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(78,201,255,0.15)] relative flex flex-col md:flex-row min-h-[550px] border border-white/5"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="absolute top-5 right-5 z-20 p-2.5 rounded-full bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              {/* Left Side: Illustration Area */}
+              <div className="md:w-1/2 bg-[#161b26] flex flex-col items-center justify-center p-12 relative overflow-hidden border-r border-white/5">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(78,201,255,0.1),transparent)]" />
+                <motion.img
+                  initial={{ scale: 0.85, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  src={charityImage}
+                  alt="Charity Support"
+                  className="w-full h-auto max-w-[320px] relative z-10 object-contain rounded-2xl shadow-2xl"
+                />
+                <div className="mt-10 text-center relative z-10 w-full">
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#4ec9ff] animate-pulse" />
+                    <span className="text-[#4ec9ff] font-bold uppercase tracking-widest text-[10px]">Giving & Seva Hub</span>
+                  </div>
+                  <h4 className="heading-font text-xl text-white mb-2">Empowering Your Mission</h4>
+                  <p className="text-white/40 text-xs italic text-center mx-auto max-w-[200px]">"Digitizing trust and transparency for the Krishna Bhagtha Seva Trust."</p>
+                </div>
+                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-[#0B3470]/5 rounded-full blur-3xl" />
+                <div className="absolute -top-20 -right-20 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl" />
+              </div>
+
+              {/* Right Side: Form Content */}
+              <div className="md:w-1/2 p-10 md:p-14 bg-[#0f141c] flex flex-col justify-center">
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {submitSuccess ? (
+                    <div className="text-center py-10">
+                      <div className="w-20 h-20 bg-[#0B3470]/10 rounded-full flex items-center justify-center mx-auto text-[#4ec9ff] border border-[#4ec9ff]/20 mb-8">
+                        <CheckCircle2 className="w-10 h-10" />
+                      </div>
+                      <h3 className="heading-font text-3xl font-bold text-white mb-4">Request Sent</h3>
+                      <p className="text-white/40 text-sm">Your enquiry has been received. Our trust management expert will contact you shortly.</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Heart className="w-5 h-5 text-[#4ec9ff]" />
+                        <span className="text-[#4ec9ff] font-bold text-xs tracking-widest uppercase">Trust Support</span>
+                      </div>
+                      <h3 className="heading-font text-4xl font-bold text-white mb-3">Get in Touch</h3>
+                      <p className="text-white/40 mb-8 text-sm">Complete the form below to reach out to our trust administration team.</p>
+
+                      <form onSubmit={handleFormSubmit} className="space-y-5">
+                        <div>
+                          <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">Full Name</label>
+                          <input
+                            required
+                            type="text"
+                            placeholder="Anil Sharma"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#4ec9ff]/50 focus:ring-1 focus:ring-[#4ec9ff]/50 transition-all outline-none text-white placeholder:text-white/10"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                          <div>
+                            <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">Email Address</label>
+                            <input
+                              required
+                              type="email"
+                              placeholder="anil@example.com"
+                              value={formData.email}
+                              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                              className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#4ec9ff]/50 focus:ring-1 focus:ring-[#4ec9ff]/50 transition-all outline-none text-white placeholder:text-white/10"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">Phone Number</label>
+                            <input
+                              required
+                              type="tel"
+                              placeholder="+91 98765 43210"
+                              value={formData.phone}
+                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                              className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#4ec9ff]/50 focus:ring-1 focus:ring-[#4ec9ff]/50 transition-all outline-none text-white placeholder:text-white/10"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">Message</label>
+                          <textarea
+                            required
+                            rows="3"
+                            placeholder="Tell us how we can help Krishna Bhagtha Seva Trust..."
+                            value={formData.message}
+                            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                            className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#4ec9ff]/50 focus:ring-1 focus:ring-[#4ec9ff]/50 transition-all outline-none text-white resize-none placeholder:text-white/10"
+                          />
+                        </div>
+
+                        <motion.button
+                          disabled={isSubmitting}
+                          whileHover={{ scale: 1.02, boxShadow: "0 10px 30px -10px rgba(78,201,255,0.4)" }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full py-4 bg-[#4ec9ff] text-[#071324] font-black rounded-xl transition-all uppercase tracking-widest text-xs disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-[#071324]/20 border-t-[#071324] rounded-full animate-spin" />
+                              Sending...
+                            </>
+                          ) : (
+                            <>
+                              <SendHorizontal className="w-4 h-4" />
+                              Submit
+                            </>
+                          )}
+                        </motion.button>
+                      </form>
+                    </>
+                  )}
+                </motion.div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

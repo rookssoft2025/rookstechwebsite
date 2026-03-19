@@ -22,6 +22,7 @@ import ReportsPage from "./pages/login/components/Reports/ReportsPage";
 import ArchivePage from "./pages/login/components/Archive/ArchivePage";
 import ApplicationReviewPage from "./pages/login/components/ApplicationReview/ApplicationReviewPage";
 import AssessmentDetailsView from "./pages/login/components/AssessmentDetails/AssessmentDetailsView";
+import ClientEnquiryPage from "./pages/login/components/ClientEnquiry/ClientEnquiryPage";
 import EnergySavingTracker from "./components/EnergySavingTracker";
 import AssessmentPage from "./pages/careers/assesment/AssessmentPage.jsx";
 import AssessmentLogin from "./pages/careers/assesment/AssessmentLogin.jsx";
@@ -86,6 +87,10 @@ function App() {
         <Route
           path="/dashboard/assessment-details"
           element={<AssessmentDetailsView />}
+        />
+        <Route
+          path="/dashboard/client-enquiry"
+          element={<ClientEnquiryPage />}
         />
       </Routes>
       {!isAssessmentPage && (

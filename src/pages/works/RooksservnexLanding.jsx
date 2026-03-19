@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
+import { db } from "../../firebase";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import {
     Cloud,
     ArrowRight,
@@ -37,9 +39,20 @@ import {
     HardDrive
 } from "lucide-react";
 
+import cloudImage from "../../assets/work/cloud_support_servnex_1773896047966.png";
+
 const RooksservnexLanding = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeFeature, setActiveFeature] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        message: ""
+    });
     const { scrollYProgress } = useScroll();
     const y1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
     const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [1, 0.8, 0.8, 0.4]);
@@ -85,6 +98,31 @@ const RooksservnexLanding = () => {
             duration: 3,
             repeat: Infinity,
             ease: "easeInOut"
+        }
+    };
+
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            const docName = `Servnex_${formData.name.replace(/\s+/g, '_')}_${Date.now()}`;
+            await setDoc(doc(db, "Client Enquiry", docName), {
+                ...formData,
+                application: "Rooks Servnex",
+                source: "Servnex Landing",
+                timestamp: serverTimestamp()
+            });
+            setSubmitSuccess(true);
+            setTimeout(() => {
+                setIsModalOpen(false);
+                setSubmitSuccess(false);
+                setFormData({ name: "", email: "", phone: "", message: "" });
+            }, 3000);
+        } catch (error) {
+            console.error("Error saving Enquiry: ", error);
+            alert("Something went wrong. Please try again.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -136,37 +174,6 @@ const RooksservnexLanding = () => {
             color: "from-[#2d5a9b] to-[#4a6a9a]",
             stats: "Real-time Data",
             gradient: "bg-gradient-to-br from-cyan-500/20 to-blue-500/20"
-        }
-    ];
-
-    const stats = [
-        { label: "Active Users", value: "10K+", icon: Users, change: "+156%", positive: true },
-        { label: "API Calls", value: "1.2B", icon: Code, change: "+89%", positive: true },
-        { label: "Uptime SLA", value: "99.9%", icon: Clock, change: "99.9%", positive: true },
-        { label: "Countries", value: "45+", icon: Globe, change: "+12", positive: true }
-    ];
-
-    const testimonials = [
-        {
-            name: "Sarah Johnson",
-            role: "CTO at TechFlow",
-            content: "Servnex transformed how we deliver SaaS solutions. The multi-tenant architecture is flawless and the white-labeling capabilities are unmatched.",
-            rating: 5,
-            avatar: "SJ"
-        },
-        {
-            name: "Michael Chen",
-            role: "Product Lead at InnovateLabs",
-            content: "The RBAC system is incredibly granular and secure. We've scaled from 10 to 1000+ clients without any infrastructure headaches.",
-            rating: 5,
-            avatar: "MC"
-        },
-        {
-            name: "Emma Williams",
-            role: "CEO at DigitalFirst",
-            content: "Best decision we made. The API-first approach and webhook system integrated perfectly with our existing stack.",
-            rating: 5,
-            avatar: "EW"
         }
     ];
 
@@ -253,28 +260,14 @@ const RooksservnexLanding = () => {
                                 Deploy multi-tenant subscription services with enterprise-grade security, complete customization, and seamless integration. Built for companies that need to scale fast.
                             </motion.p>
 
-                            {/* Stats Row */}
-                            {/* <motion.div variants={fadeInUp} className="flex gap-8 mb-8">
-                                {stats.slice(0, 2).map((stat, i) => (
-                                    <div key={i} className="flex items-center gap-3">
-                                        <div className="p-2 bg-white/5 rounded-lg">
-                                            <stat.icon className="w-5 h-5 text-[#6dd5ff]" />
-                                        </div>
-                                        <div>
-                                            <div className="text-2xl font-bold">{stat.value}</div>
-                                            <div className="text-sm text-gray-400">{stat.label}</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </motion.div> */}
-
-                            <motion.div variants={fadeInUp} className="flex gap-4 flex-wrap">
+                            <motion.div variants={fadeInUp} className="flex justify-center gap-4">
                                 <motion.button
+                                    onClick={() => setIsModalOpen(true)}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     className="group relative px-8 py-4 bg-gradient-to-r from-[#2d5a9b] to-[#5e72e4] rounded-xl flex items-center gap-2 font-semibold overflow-hidden"
                                 >
-                                    <span className="relative z-10">Start Free Trial</span>
+                                    <span className="relative z-10">Contact Us</span>
                                     <ArrowRight className="relative z-10 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                     <motion.div
                                         className="absolute inset-0 bg-gradient-to-r from-[#5e72e4] to-[#2d5a9b]"
@@ -282,15 +275,6 @@ const RooksservnexLanding = () => {
                                         whileHover={{ x: 0 }}
                                         transition={{ duration: 0.3 }}
                                     />
-                                </motion.button>
-
-                                <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="group px-8 py-4 bg-white/5 backdrop-blur-sm rounded-xl flex items-center gap-2 border border-white/10 hover:border-white/20 transition-all"
-                                >
-                                    <Play className="w-4 h-4 group-hover:text-[#6dd5ff] transition-colors" />
-                                    <span>Watch Demo</span>
                                 </motion.button>
                             </motion.div>
                         </motion.div>
@@ -326,35 +310,15 @@ const RooksservnexLanding = () => {
                                         </div>
                                     </div>
 
-                                    {/* Enhanced Metrics Grid */}
-                                    <div className="grid grid-cols-3 gap-4 mb-6">
-                                        {[
-                                            { label: "Active Users", value: "2,847", change: "+12.5%", icon: Users },
-                                            { label: "Conversion", value: "94.8%", change: "+2.1%", icon: TrendingUp }
-                                        ].map((metric, i) => {
-                                            const Icon = metric.icon;
-                                            return (
-                                                <div key={i} className="bg-gradient-to-br from-white/5 to-white/[0.02] rounded-xl p-4 border border-white/5">
-                                                    <div className="flex items-center justify-between mb-2">
-                                                        <Icon className="w-4 h-4 text-gray-400" />
-                                                        <span className="text-xs text-green-400">{metric.change}</span>
-                                                    </div>
-                                                    <div className="text-xl font-bold">{metric.value}</div>
-                                                    <div className="text-xs text-gray-400">{metric.label}</div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-
                                     {/* Chart Area */}
                                     <div className="bg-gradient-to-br from-white/5 to-white/[0.02] rounded-xl p-4 mb-6">
                                         <div className="flex justify-between items-center mb-4">
                                             <div className="text-sm font-medium">Performance Overview</div>
-                                            <select className="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs">
+                                            {/* <select className="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs">
                                                 <option>Last 7 days</option>
                                                 <option>Last 30 days</option>
                                                 <option>Last 90 days</option>
-                                            </select>
+                                            </select> */}
                                         </div>
                                         <div className="h-24 flex items-end justify-between gap-1">
                                             {[35, 45, 55, 65, 75, 85, 70, 60, 50, 40, 45, 55].map((height, i) => (
@@ -684,15 +648,6 @@ const RooksservnexLanding = () => {
                                 </motion.div>
                             ))}
                         </div>
-
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="group px-8 py-4 bg-gradient-to-r from-[#2d5a9b] to-[#5e72e4] rounded-xl font-semibold flex items-center gap-2"
-                        >
-                            Explore Our Platform
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </motion.button>
                     </motion.div>
 
                     <motion.div
@@ -767,25 +722,18 @@ const RooksservnexLanding = () => {
 
                             <div className="flex justify-center gap-4 flex-wrap">
                                 <motion.button
+                                    onClick={() => setIsModalOpen(true)}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     className="group px-10 py-4 bg-white text-[#2d5a9b] rounded-xl font-bold text-lg relative overflow-hidden"
                                 >
-                                    <span className="relative z-10">Get Started Free</span>
+                                    <span className="relative z-10">Contact Us</span>
                                     <motion.div
                                         className="absolute inset-0 bg-gray-100"
                                         initial={{ x: "100%" }}
                                         whileHover={{ x: 0 }}
                                         transition={{ duration: 0.3 }}
                                     />
-                                </motion.button>
-
-                                <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="group px-10 py-4 border-2 border-white rounded-xl font-bold text-lg hover:bg-white hover:text-[#2d5a9b] transition-all"
-                                >
-                                    Schedule Demo
                                 </motion.button>
                             </div>
 
@@ -805,6 +753,157 @@ const RooksservnexLanding = () => {
                     </motion.div>
                 </div>
             </section>
+
+            {/* ================= CONTACT MODAL ================= */}
+            <AnimatePresence>
+                {isModalOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-black/60"
+                        onClick={(e) => {
+                            if (e.target === e.currentTarget) setIsModalOpen(false);
+                        }}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                            className="bg-[#0f1419] w-full max-w-4xl rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(45,90,155,0.3)] relative flex flex-col md:flex-row min-h-[500px] border border-white/10"
+                        >
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 transition-colors"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+
+                            {/* Left Side: Branding/Visual */}
+                            <div className="md:w-1/2 bg-[#1a1f2e] flex flex-col items-center justify-center p-12 relative overflow-hidden border-r border-white/10">
+                                <div className="absolute inset-0 bg-gradient-to-br from-[#2d5a9b]/20 to-transparent pointer-events-none" />
+                                <motion.img
+                                    initial={{ scale: 0.8, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    transition={{ delay: 0.2 }}
+                                    src={cloudImage}
+                                    alt="Servnex Cloud"
+                                    className="w-full h-auto max-w-[300px] relative z-10 object-contain rounded-2xl shadow-2xl"
+                                />
+                                <div className="mt-8 text-center relative z-10 w-full">
+                                    <div className="flex items-center justify-center gap-2 mb-3">
+                                        <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                                        <span className="text-cyan-400 font-bold uppercase tracking-widest text-[10px]">Enterprise Cloud Node</span>
+                                    </div>
+                                    <p className="text-gray-400 text-sm max-w-[240px] mx-auto italic">"Unlocking global scalability with white-label simplicity."</p>
+                                </div>
+                                {/* Decorative elements */}
+                                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl" />
+                                <div className="absolute -top-20 -right-20 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl" />
+                            </div>
+
+                            {/* Right Side: Form */}
+                            <div className="md:w-1/2 p-8 md:p-12 bg-[#0f1419] flex flex-col justify-center">
+                                <motion.div
+                                    initial={{ y: 20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ delay: 0.3 }}
+                                >
+                                    {submitSuccess ? (
+                                        <div className="text-center space-y-6">
+                                            <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto text-green-400 border border-green-500/20">
+                                                <CheckCircle2 className="w-10 h-10" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-3xl font-bold text-white mb-2">Request Received</h3>
+                                                <p className="text-gray-400">Our enterprise solutions team will reach out to you within 24 hours.</p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <Cloud className="w-5 h-5 text-[#2d5a9b]" />
+                                                <span className="text-[#2d5a9b] font-bold text-sm tracking-widest uppercase">Servnex Support</span>
+                                            </div>
+                                            <h3 className="text-4xl font-bold text-white mb-2">Get in touch</h3>
+                                            <p className="text-gray-400 mb-8">Ready to scale? Let's discuss your white-label SaaS needs.</p>
+
+                                            <form className="space-y-4" onSubmit={handleFormSubmit}>
+                                                <div>
+                                                    <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Full Name</label>
+                                                    <input
+                                                        required
+                                                        type="text"
+                                                        placeholder="Enter your full name"
+                                                        value={formData.name}
+                                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:bg-white/10 focus:border-[#2d5a9b] focus:ring-1 focus:ring-[#2d5a9b] transition-all outline-none text-white placeholder:text-gray-600"
+                                                    />
+                                                </div>
+
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Email Address</label>
+                                                        <input
+                                                            required
+                                                            type="email"
+                                                            placeholder="mail@enterprise.com"
+                                                            value={formData.email}
+                                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:bg-white/10 focus:border-[#2d5a9b] focus:ring-1 focus:ring-[#2d5a9b] transition-all outline-none text-white placeholder:text-gray-600"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Phone Number</label>
+                                                        <input
+                                                            required
+                                                            type="tel"
+                                                            placeholder="+1 (555) 000-0000"
+                                                            value={formData.phone}
+                                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:bg-white/10 focus:border-[#2d5a9b] focus:ring-1 focus:ring-[#2d5a9b] transition-all outline-none text-white placeholder:text-gray-600"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Message</label>
+                                                    <textarea
+                                                        required
+                                                        rows="3"
+                                                        placeholder="Tell us about your project or business needs..."
+                                                        value={formData.message}
+                                                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:bg-white/10 focus:border-[#2d5a9b] focus:ring-1 focus:ring-[#2d5a9b] transition-all outline-none text-white resize-none placeholder:text-gray-600"
+                                                    />
+                                                </div>
+
+                                                <motion.button
+                                                    disabled={isSubmitting}
+                                                    whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(45,90,155,0.4)" }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                    className="w-full py-4 bg-gradient-to-r from-[#2d5a9b] to-[#5e72e4] text-white font-bold rounded-xl transition-all uppercase tracking-widest text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
+                                                >
+                                                    {isSubmitting ? (
+                                                        <>
+                                                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                            Processing...
+                                                        </>
+                                                    ) : (
+                                                        "Submit Request"
+                                                    )}
+                                                </motion.button>
+                                            </form>
+                                        </>
+                                    )}
+                                </motion.div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
