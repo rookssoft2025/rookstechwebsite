@@ -53,8 +53,7 @@ export default function Footer() {
     }
   };
 
-  const handleLocationClick = () => {
-    const location = 'First Floor, 17, Jawahar St, Ramavarmapuram, Nagercoil, Tamil Nadu 629001';
+  const handleLocationClick = (location) => {
     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
     window.open(mapsUrl, '_blank');
   };
@@ -163,15 +162,29 @@ export default function Footer() {
             </div>
 
             <div 
-              onClick={handleLocationClick}
+              onClick={() => handleLocationClick('First Floor, 17, Jawahar St, Ramavarmapuram, Nagercoil, Tamil Nadu 629001')}
               className="flex items-center p-4 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 group cursor-pointer"
             >
               <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center mr-4 group-hover:bg-amber-500/20 transition-colors">
                 <MapPin className="w-5 h-5 text-amber-400" />
               </div>
               <div className="flex-grow">
-                <p className="text-sm text-slate-300">Our Location</p>
+                <p className="text-sm text-slate-300">Location 1</p>
                 <p className="text-white font-medium">Ramavarmapuram, Nagercoil</p>
+              </div>
+              <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-amber-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+            </div>
+
+            <div 
+              onClick={() => handleLocationClick('Industrial Estate P.O, Thiruvananthapuram, Kerala')}
+              className="flex items-center p-4 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 group cursor-pointer"
+            >
+              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center mr-4 group-hover:bg-amber-500/20 transition-colors">
+                <MapPin className="w-5 h-5 text-amber-400" />
+              </div>
+              <div className="flex-grow">
+                <p className="text-sm text-slate-300">Location 2</p>
+                <p className="text-white font-medium">Industrial Estate P.O, Thiruvananthapuram</p>
               </div>
               <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-amber-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
             </div>
