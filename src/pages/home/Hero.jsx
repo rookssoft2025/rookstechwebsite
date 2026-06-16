@@ -205,7 +205,7 @@ export default function Hero() {
             </motion.div>
 
           </motion.div>
-          <motion.div
+          {/* <motion.div
             className="hidden lg:block flex-1 max-w-md xl:max-w-lg"
             variants={fadeInRight}
           >
@@ -217,9 +217,11 @@ export default function Hero() {
                 alt="Holographic technology visualization"
               />
             </div>
-          </motion.div>
+          </motion.div> */}
         </motion.div>
       </div>
+
+      {/* our services  */}
       <div className="relative z-10 mt-20 px-4 max-w-7xl mx-auto">
         <div className="flex items-center justify-center text-white mb-10">
           <p className="text-2xl md:text-[36px] font-goodtimes">Our Services</p>
