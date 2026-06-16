@@ -713,40 +713,61 @@ const RooksservnexLanding = () => {
                         </div>
 
                         <div className="relative z-10">
-                            <h2 className="text-5xl font-bold mb-4">
-                                Ready to Transform Your Business?
+                            {/* Original Logo */}
+                            <div className="flex items-center justify-center gap-3 mb-8">
+                                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
+                                    <Cloud className="w-5 h-5 text-white" />
+                                </div>
+                                <span className="font-bold text-xl text-white">
+                                    Servnex
+                                </span>
+                            </div>
+
+                            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                                Experience the Future of Management
                             </h2>
                             <p className="mb-8 text-xl text-white/90">
-                                Start your free 14-day trial today. No credit card required.
+                                Our app is now available on the Google Play Store.
                             </p>
 
-                            <div className="flex justify-center gap-4 flex-wrap">
-                                <motion.button
-                                    onClick={() => setIsModalOpen(true)}
+                            <div className="flex flex-col items-center gap-6">
+                                <motion.a
+                                    href="https://play.google.com/store/apps/details?id=com.rooks.subscription&pcampaignid=web_share"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="group px-10 py-4 bg-white text-[#2d5a9b] rounded-xl font-bold text-lg relative overflow-hidden"
+                                    className="group px-10 py-4 bg-white text-[#2d5a9b] rounded-xl font-bold text-lg flex items-center gap-3 shadow-xl transition-all"
                                 >
-                                    <span className="relative z-10">Contact Us</span>
-                                    <motion.div
-                                        className="absolute inset-0 bg-gray-100"
-                                        initial={{ x: "100%" }}
-                                        whileHover={{ x: 0 }}
-                                        transition={{ duration: 0.3 }}
-                                    />
-                                </motion.button>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px">
+                                        <path fill="#4caf50" d="M10,4.5c-0.2,0.2-0.4,0.6-0.4,1.1v36.8c0,0.5,0.2,0.9,0.4,1.1l0.1,0.1L30.2,24l-20.1-20.1L10,4.5z" />
+                                        <path fill="#ffeb3b" d="M36.2,30l-6-6l-6,6l0.1,0.1l7.1,4.1C33.2,35.3,34.9,35.3,36.2,30.7L36.2,30z" />
+                                        <path fill="#f44336" d="M10.1,43.4c0.1,0.1,0.3,0.1,0.5,0.1c0.7,0,1.4-0.2,1.9-0.5l23.7-13.6L30.2,24L10.1,43.4z" />
+                                        <path fill="#2196f3" d="M10.1,4.6l20.1,20.1l6-6L12.5,5.1C11.9,4.8,11.2,4.6,10.6,4.6C10.4,4.6,10.2,4.6,10.1,4.6z" />
+                                    </svg>
+                                    <span>Get it on Google Play</span>
+                                </motion.a>
+
+                                <a
+                                    href="https://sites.google.com/view/rooks-white-label-app/home"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-white/70 hover:text-white text-sm underline underline-offset-4 transition-colors"
+                                >
+                                    Privacy Policy
+                                </a>
                             </div>
 
                             {/* Trust badges */}
-                            <div className="mt-8 flex justify-center gap-6 text-white/80 text-sm flex-wrap">
+                            <div className="mt-12 flex justify-center gap-8 text-white/80 text-sm flex-wrap border-t border-white/10 pt-8">
                                 <span className="flex items-center gap-2">
-                                    <Shield className="w-4 h-4" /> Enterprise Security
+                                    <Shield className="w-4 h-4" /> Secure & Encrypted
                                 </span>
                                 <span className="flex items-center gap-2">
-                                    <TrendingUp className="w-4 h-4" /> 500+ Customers
+                                    <TrendingUp className="w-4 h-4" /> Optimized Performance
                                 </span>
                                 <span className="flex items-center gap-2">
-                                    <Award className="w-4 h-4" /> Industry Leading
+                                    <Award className="w-4 h-4" /> Enterprise Grade
                                 </span>
                             </div>
                         </div>
