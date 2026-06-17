@@ -69,8 +69,8 @@ const BENEFITS = [
 
 const FAQs = [
     {
-        question: "Can I use ROOKS To Do on mobile devices?",
-        answer: "Yes. ROOKS To Do is optimized for mobile, tablet, and desktop platforms."
+        question: "Can I use Rooks To Do on mobile devices?",
+        answer: "Yes. Rooks To Do is optimized for mobile, tablet, and desktop platforms."
     },
     {
         question: "Can multiple team members work together?",
@@ -82,7 +82,7 @@ const FAQs = [
     },
     {
         question: "Is my data secure?",
-        answer: "Yes. ROOKS To Do uses secure authentication and cloud-based infrastructure to protect your information."
+        answer: "Yes. Rooks To Do uses secure authentication and cloud-based infrastructure to protect your information."
     }
 ];
 
@@ -110,8 +110,8 @@ const TaskManagementLanding = () => {
             const docName = `RooksToDo_${formData.name.replace(/\s+/g, '_')}_${Date.now()}`;
             await setDoc(doc(db, "Client Enquiry", docName), {
                 ...formData,
-                application: "ROOKS To Do",
-                source: "ROOKS To Do Landing",
+                application: "Rooks To Do",
+                source: "Rooks To Do Landing",
                 timestamp: serverTimestamp()
             });
             setSubmitSuccess(true);
@@ -194,16 +194,16 @@ const TaskManagementLanding = () => {
                                 Achieve More.
                             </h1>
                             <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                                ROOKS To Do is an all-in-one task and workspace management platform designed to help individuals and teams plan, track, and complete work efficiently. Stay organized, meet deadlines, and boost productivity with powerful collaboration tools.
+                                Rooks To Do is an all-in-one task and workspace management platform designed to help individuals and teams plan, track, and complete work efficiently. Stay organized, meet deadlines, and boost productivity with powerful collaboration tools.
                             </p>
                             <div className="flex flex-wrap gap-4 mb-8">
                                 <PrimaryButton onClick={() => setIsModalOpen(true)}>
                                     Get Started Free
                                     <ArrowRight size={18} />
                                 </PrimaryButton>
-                                <SecondaryButton onClick={() => setIsModalOpen(true)}>
+                                {/* <SecondaryButton onClick={() => setIsModalOpen(true)}>
                                     Book a Demo
-                                </SecondaryButton>
+                                </SecondaryButton> */}
                             </div>
                             <div className="flex flex-wrap gap-6 text-sm text-gray-400">
                                 {[
@@ -225,7 +225,7 @@ const TaskManagementLanding = () => {
                             className="relative"
                         >
                             <div className="relative bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-3xl p-2 backdrop-blur-xl">
-                                <img src={tmsimg} alt="ROOKS To Do Dashboard" className="rounded-2xl w-full h-auto" />
+                                <img src={tmsimg} alt="Rooks To Do Dashboard" className="rounded-2xl w-full h-auto" />
                             </div>
                             <motion.div
                                 animate={{ y: [0, -10, 0] }}
@@ -256,11 +256,11 @@ const TaskManagementLanding = () => {
                             <h2 className="text-4xl md:text-5xl font-bold mb-6">
                                 Why Choose{" "}
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                                    ROOKS To Do
+                                    Rooks To Do
                                 </span>
                             </h2>
                             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                                ROOKS To Do simplifies task management and team collaboration, enabling businesses and professionals to stay focused, organized, and productive.
+                                Rooks To Do simplifies task management and team collaboration, enabling businesses and professionals to stay focused, organized, and productive.
                             </p>
                         </div>
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -370,7 +370,7 @@ const TaskManagementLanding = () => {
                                 How It Works
                             </Chip>
                             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                                How ROOKS To Do Works
+                                How Rooks To Do Works
                             </h2>
                         </div>
                         <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -526,7 +526,7 @@ const TaskManagementLanding = () => {
                                 Testimonials
                             </Chip>
                             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                                Why Teams Love ROOKS To Do
+                                Why Teams Love Rooks To Do
                             </h2>
                         </div>
                         <div className="grid md:grid-cols-2 gap-6">
@@ -637,16 +637,16 @@ const TaskManagementLanding = () => {
                             </div>
 
                             <div className="relative z-10">
-                                {/* ROOKS To Do Logo */}
+                                {/* Rooks To Do Logo */}
                                 <div className="flex items-center justify-center gap-3 mb-8">
                                     <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
                                         <img
                                             src={rookstodoLogo}
-                                            alt="ROOKS To Do"
+                                            alt="Rooks To Do"
                                             className="h-12 w-auto object-contain"
                                         />
                                     </div>
-                                    <span className="font-bold text-xl text-white">ROOKS To Do</span>
+                                    <span className="font-bold text-xl text-white">Rooks To Do</span>
                                 </div>
 
                                 <h2 className="text-4xl md:text-5xl font-bold mb-4">

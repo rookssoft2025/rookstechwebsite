@@ -25,7 +25,7 @@
     "id": 3,
     "title": "Rooks To Do",
     "category": "Productivity Platform",
-    "type": "web",
+    "type": "mobile",
     "description": "Rooks To Do is a software solution designed to organize and manage daily activities such as personal tasks, study plans, and teamwork assignments. In this system, an admin can create workspaces and assign tasks to multiple members. Each workspace allows collaboration, tracking progress, and ensuring timely task completion, improving productivity, coordination, and overall task management efficiency.",
     "video": "rooks",
     "link": "/work/task-management",
