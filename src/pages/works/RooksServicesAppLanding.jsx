@@ -1,13 +1,48 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useInView,
+  AnimatePresence,
+} from "framer-motion";
 import { db } from "../../firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import {
-  CheckSquare, ArrowRight, Play, Users, BarChart3,
-  Clock, Zap, Shield, ChevronDown, Layers, Target, Activity,
-  PlusCircle, ArrowUpRight, Check, X, SendHorizontal, Mail, Phone, MessageCircle,
-  Bell, Briefcase, Globe, Lock, Star, Calendar, Smartphone,
-  TrendingUp, Award, Server, Wrench, Barcode, Printer, CreditCard
+  CheckSquare,
+  ArrowRight,
+  Play,
+  Users,
+  BarChart3,
+  Clock,
+  Zap,
+  Shield,
+  ChevronDown,
+  Layers,
+  Target,
+  Activity,
+  PlusCircle,
+  ArrowUpRight,
+  Check,
+  X,
+  SendHorizontal,
+  Mail,
+  Phone,
+  MessageCircle,
+  Bell,
+  Briefcase,
+  Globe,
+  Lock,
+  Star,
+  Calendar,
+  Smartphone,
+  TrendingUp,
+  Award,
+  Server,
+  Wrench,
+  Barcode,
+  Printer,
+  CreditCard,
 } from "lucide-react";
 import ROOKSServicesNavbar from "../../components/layout/ROOKSServicesNavbar";
 import ROOKSServicesFooter from "../../components/layout/ROOKSServicesFooter";
@@ -24,70 +59,126 @@ const FEATURES = [
     color: "#0B3470",
     title: "Multi-User Role System",
     desc: "Three distinct user types: Customer, Admin, and Engineer with tailored experiences for each.",
-    subFeatures: ["Customer - Normal & AMC", "Admin - Full Control", "Engineer - Service Management"]
+    subFeatures: [
+      "Customer - Normal & AMC",
+      "Admin - Full Control",
+      "Engineer - Service Management",
+    ],
   },
   {
     icon: <Wrench size={24} />,
     color: "#10B981",
     title: "Ticket Management",
     desc: "Create, track, and assign service/delivery tickets with real-time updates.",
-    subFeatures: ["Ticket Creation", "Status Tracking", "Engineer Assignment"]
+    subFeatures: ["Ticket Creation", "Status Tracking", "Engineer Assignment"],
   },
   {
     icon: <Barcode size={24} />,
     color: "#8B5CF6",
     title: "Barcode Integration",
     desc: "Scan and identify barcodes for quick device management and tracking.",
-    subFeatures: ["Barcode Scanner", "Barcode Identifier", "Device Identification"]
+    subFeatures: [
+      "Barcode Scanner",
+      "Barcode Identifier",
+      "Device Identification",
+    ],
   },
   {
     icon: <Printer size={24} />,
     color: "#F59E0B",
     title: "Reports & Documentation",
     desc: "Generate and print comprehensive reports for customers and engineers.",
-    subFeatures: ["PDF Generation", "Report Printing", "Customer & Engineer Reports"]
-  }
+    subFeatures: [
+      "PDF Generation",
+      "Report Printing",
+      "Customer & Engineer Reports",
+    ],
+  },
 ];
 
 const STEPS = [
-  { num: "01", title: "Get Started", desc: "Download the app and choose your user role: Customer, Admin, or Engineer." },
-  { num: "02", title: "Login/Sign Up", desc: "Secure login with phone number and OTP verification." },
-  { num: "03", title: "Create & Manage Tickets", desc: "Create service tickets, assign to engineers, or track your service requests." },
-  { num: "04", title: "Complete Service", desc: "Engineers update status, upload images, and mark tickets as complete." }
+  {
+    num: "01",
+    title: "Get Started",
+    desc: "Download the app and choose your user role: Customer, Admin, or Engineer.",
+  },
+  {
+    num: "02",
+    title: "Login/Sign Up",
+    desc: "Secure login with phone number and OTP verification.",
+  },
+  {
+    num: "03",
+    title: "Create & Manage Tickets",
+    desc: "Create service tickets, assign to engineers, or track your service requests.",
+  },
+  {
+    num: "04",
+    title: "Complete Service",
+    desc: "Engineers update status, upload images, and mark tickets as complete.",
+  },
 ];
 
 const DESIGNED_FOR = [
-  { title: "Service Customers", desc: "Request and track services effortlessly." },
-  { title: "AMC Customers", desc: "Annual Maintenance Contract holders with dedicated support." },
-  { title: "Service Managers", desc: "Full control over operations and staff." },
-  { title: "Service Engineers", desc: "Manage assigned tickets and provide updates on the go." },
-  { title: "Businesses", desc: "Scale your service operations efficiently." }
+  {
+    title: "Service Customers",
+    desc: "Request and track services effortlessly.",
+  },
+  {
+    title: "AMC Customers",
+    desc: "Annual Maintenance Contract holders with dedicated support.",
+  },
+  {
+    title: "Service Managers",
+    desc: "Full control over operations and staff.",
+  },
+  {
+    title: "Service Engineers",
+    desc: "Manage assigned tickets and provide updates on the go.",
+  },
+  { title: "Businesses", desc: "Scale your service operations efficiently." },
 ];
 
 const BENEFITS = [
-  { title: "Real-Time Updates", desc: "Instant notifications and live ticket status." },
-  { title: "Multi-Platform Support", desc: "Available on Android, iOS, Web, Windows, Linux, macOS." },
-  { title: "Professional Reports", desc: "Generate detailed reports in PDF format." },
-  { title: "Secure & Reliable", desc: "Firebase-powered backend with enterprise-grade security." }
+  {
+    title: "Real-Time Updates",
+    desc: "Instant notifications and live ticket status.",
+  },
+  {
+    title: "Multi-Platform Support",
+    desc: "Available on Android, iOS, Web, Windows, Linux, macOS.",
+  },
+  {
+    title: "Professional Reports",
+    desc: "Generate detailed reports in PDF format.",
+  },
+  {
+    title: "Secure & Reliable",
+    desc: "Firebase-powered backend with enterprise-grade security.",
+  },
 ];
 
 const FAQs = [
   {
     question: "What platforms is Rooks Services App available on?",
-    answer: "Rooks Services App is a multi-platform solution available on Android, iOS, Web, Windows, Linux, and macOS."
+    answer:
+      "Rooks Services App is a multi-platform solution available on Android, iOS, Web, Windows, Linux, and macOS.",
   },
   {
     question: "What user roles are supported?",
-    answer: "The app supports three main roles: Customers (Normal & AMC), Admins, and Service Engineers."
+    answer:
+      "The app supports three main roles: Customers (Normal & AMC), Admins, and Service Engineers.",
   },
   {
     question: "Does it support barcode scanning?",
-    answer: "Yes! The app includes a barcode scanner and identifier for quick device management."
+    answer:
+      "Yes! The app includes a barcode scanner and identifier for quick device management.",
   },
   {
     question: "How is the data stored?",
-    answer: "All data is securely stored in Firebase Cloud Firestore, with Firebase Storage for images and files."
-  }
+    answer:
+      "All data is securely stored in Firebase Cloud Firestore, with Firebase Storage for images and files.",
+  },
 ];
 
 const RooksServicesAppLanding = () => {
@@ -103,7 +194,7 @@ const RooksServicesAppLanding = () => {
     name: "",
     email: "",
     phone: "",
-    message: ""
+    message: "",
   });
   const [openFAQ, setOpenFAQ] = useState(null);
 
@@ -111,12 +202,12 @@ const RooksServicesAppLanding = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const docName = `RooksServicesApp_${formData.name.replace(/\s+/g, '_')}_${Date.now()}`;
+      const docName = `RooksServicesApp_${formData.name.replace(/\s+/g, "_")}_${Date.now()}`;
       await setDoc(doc(db, "Client Enquiry", docName), {
         ...formData,
         application: "Rooks Services App",
         source: "Rooks Services App Landing",
-        timestamp: serverTimestamp()
+        timestamp: serverTimestamp(),
       });
       setSubmitSuccess(true);
       setTimeout(() => {
@@ -134,12 +225,17 @@ const RooksServicesAppLanding = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const id = setInterval(() => setActiveStep(p => (p + 1) % STEPS.length), 4000);
+    const id = setInterval(
+      () => setActiveStep((p) => (p + 1) % STEPS.length),
+      4000,
+    );
     return () => clearInterval(id);
   }, []);
 
   const Chip = ({ children, className = "" }) => (
-    <span className={`inline-flex items-center gap-x-2 bg-[#0B3470]/10 border border-[#0B3470]/20 text-[#0B3470] text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full ${className}`}>
+    <span
+      className={`inline-flex items-center gap-x-2 bg-[#0B3470]/10 border border-[#0B3470]/20 text-[#0B3470] text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full ${className}`}
+    >
       {children}
     </span>
   );
@@ -176,7 +272,11 @@ const RooksServicesAppLanding = () => {
         <ROOKSServicesNavbar onCTAClick={() => setIsModalOpen(true)} />
 
         {/* Hero Section */}
-        <section id="hero" ref={heroRef} className="relative min-h-screen flex items-center pt-32 pb-20 px-4 sm:px-6">
+        <section
+          id="hero"
+          ref={heroRef}
+          className="relative min-h-screen flex items-center pt-32 pb-20 px-4 sm:px-6"
+        >
           <div className="absolute inset-0 z-0 overflow-hidden">
             <div className="absolute top-[-100px] left-[-100px] w-96 h-96 bg-[#0B3470]/10 rounded-full blur-3xl"></div>
             <div className="absolute bottom-[-100px] right-[-100px] w-96 h-96 bg-[#1a5a9a]/10 rounded-full blur-3xl"></div>
@@ -198,22 +298,30 @@ const RooksServicesAppLanding = () => {
                 </span>
               </h1>
               <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                A comprehensive multi-platform service management solution built with Flutter and Firebase. Perfect for service businesses of all sizes.
+                A comprehensive multi-platform service management solution built
+                with Flutter and Firebase. Perfect for service businesses of all
+                sizes.
               </p>
               <div className="flex flex-wrap gap-4 mb-8">
                 <PrimaryButton onClick={() => setIsModalOpen(true)}>
                   Get Started Free
                   <ArrowRight size={18} />
                 </PrimaryButton>
-                <SecondaryButton onClick={() => setIsModalOpen(true)}>
-                  Book a Demo
-                </SecondaryButton>
+                {/* <SecondaryButton onClick={() => setIsModalOpen(true)}>
+                    Book a Demo
+                  </SecondaryButton> */}
               </div>
               <div className="flex flex-wrap gap-6 text-sm text-gray-400">
                 {[
-                  { icon: <Smartphone size={16} />, label: "Multi-Platform Support" },
+                  {
+                    icon: <Smartphone size={16} />,
+                    label: "Multi-Platform Support",
+                  },
                   { icon: <Users size={16} />, label: "3 User Roles" },
-                  { icon: <Bell size={16} />, label: "Real-Time Notifications" }
+                  {
+                    icon: <Bell size={16} />,
+                    label: "Real-Time Notifications",
+                  },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <div className="text-[#0B3470]">{item.icon}</div>
@@ -229,11 +337,19 @@ const RooksServicesAppLanding = () => {
               className="relative"
             >
               <div className="relative bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-3xl p-2 backdrop-blur-xl">
-                <img src={tmsimg} alt="Rooks Services App Dashboard" className="rounded-2xl w-full h-auto" />
+                <img
+                  src={tmsimg}
+                  alt="Rooks Services App Dashboard"
+                  className="rounded-2xl w-full h-auto"
+                />
               </div>
               <motion.div
                 animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
                 className="absolute -top-8 -right-8 bg-[#0a1a3a] border border-[#0B3470]/30 rounded-2xl p-4 shadow-xl backdrop-blur-xl"
               >
                 <div className="flex items-center gap-3">
@@ -254,9 +370,7 @@ const RooksServicesAppLanding = () => {
         <section className="py-24 bg-gradient-to-b from-transparent to-white/[0.02] px-4 sm:px-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <Chip className="mb-4 mx-auto">
-                Why Choose Us
-              </Chip>
+              <Chip className="mb-4 mx-auto">Why Choose Us</Chip>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 Why Choose{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0B3470] to-[#1a5a9a]">
@@ -264,15 +378,32 @@ const RooksServicesAppLanding = () => {
                 </span>
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Powerful features designed to simplify service management, enhance collaboration, and boost productivity.
+                Powerful features designed to simplify service management,
+                enhance collaboration, and boost productivity.
               </p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { icon: <Server size={28} />, title: "Firebase Backend", color: "#0B3470" },
-                { icon: <Users size={28} />, title: "Multi-Role System", color: "#10B981" },
-                { icon: <Bell size={28} />, title: "Push Notifications", color: "#8B5CF6" },
-                { icon: <Lock size={28} />, title: "Secure & Reliable", color: "#F59E0B" }
+                {
+                  icon: <Server size={28} />,
+                  title: "Firebase Backend",
+                  color: "#0B3470",
+                },
+                {
+                  icon: <Users size={28} />,
+                  title: "Multi-Role System",
+                  color: "#10B981",
+                },
+                {
+                  icon: <Bell size={28} />,
+                  title: "Push Notifications",
+                  color: "#8B5CF6",
+                },
+                {
+                  icon: <Lock size={28} />,
+                  title: "Secure & Reliable",
+                  color: "#F59E0B",
+                },
               ].map((benefit, i) => (
                 <motion.div
                   key={i}
@@ -282,10 +413,15 @@ const RooksServicesAppLanding = () => {
                   transition={{ delay: i * 0.1 }}
                   className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-[#0B3470]/30 transition-all duration-300"
                 >
-                  <div style={{ background: `${benefit.color}20` }} className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4">
+                  <div
+                    style={{ background: `${benefit.color}20` }}
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
+                  >
                     <div style={{ color: benefit.color }}>{benefit.icon}</div>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
+                  <h3 className="text-xl font-semibold mb-2">
+                    {benefit.title}
+                  </h3>
                 </motion.div>
               ))}
             </div>
@@ -296,9 +432,7 @@ const RooksServicesAppLanding = () => {
         <section id="features" className="py-24 px-4 sm:px-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <Chip className="mb-4 mx-auto">
-                Features
-              </Chip>
+              <Chip className="mb-4 mx-auto">Features</Chip>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 Powerful Features
               </h2>
@@ -313,15 +447,24 @@ const RooksServicesAppLanding = () => {
                   transition={{ delay: i * 0.1 }}
                   className="bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-3xl p-8 hover:bg-white/10 hover:border-[#0B3470]/30 transition-all duration-300"
                 >
-                  <div style={{ background: `${feature.color}20` }} className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border border-white/10">
+                  <div
+                    style={{ background: `${feature.color}20` }}
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border border-white/10"
+                  >
                     <div style={{ color: feature.color }}>{feature.icon}</div>
                   </div>
                   <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
                   <p className="text-gray-300 mb-6">{feature.desc}</p>
                   <div className="space-y-2">
                     {feature.subFeatures.map((subFeature, j) => (
-                      <div key={j} className="flex items-center gap-2 text-gray-300 text-sm">
-                        <Check size={14} className="text-[#0B3470] flex-shrink-0" />
+                      <div
+                        key={j}
+                        className="flex items-center gap-2 text-gray-300 text-sm"
+                      >
+                        <Check
+                          size={14}
+                          className="text-[#0B3470] flex-shrink-0"
+                        />
                         {subFeature}
                       </div>
                     ))}
@@ -333,12 +476,13 @@ const RooksServicesAppLanding = () => {
         </section>
 
         {/* How It Works */}
-        <section id="how-it-works" className="py-24 bg-gradient-to-b from-white/[0.02] to-transparent px-4 sm:px-6">
+        <section
+          id="how-it-works"
+          className="py-24 bg-gradient-to-b from-white/[0.02] to-transparent px-4 sm:px-6"
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <Chip className="mb-4 mx-auto">
-                How It Works
-              </Chip>
+              <Chip className="mb-4 mx-auto">How It Works</Chip>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 How Rooks Services App Works
               </h2>
@@ -382,8 +526,12 @@ const RooksServicesAppLanding = () => {
                   <div className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#0B3470] to-[#1a5a9a] mb-6">
                     {STEPS[activeStep].num}
                   </div>
-                  <h3 className="text-3xl font-bold mb-4">{STEPS[activeStep].title}</h3>
-                  <p className="text-xl text-gray-200">{STEPS[activeStep].desc}</p>
+                  <h3 className="text-3xl font-bold mb-4">
+                    {STEPS[activeStep].title}
+                  </h3>
+                  <p className="text-xl text-gray-200">
+                    {STEPS[activeStep].desc}
+                  </p>
                 </div>
               </motion.div>
             </div>
@@ -394,9 +542,7 @@ const RooksServicesAppLanding = () => {
         <section id="designed-for" className="py-24 px-4 sm:px-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <Chip className="mb-4 mx-auto">
-                Designed For
-              </Chip>
+              <Chip className="mb-4 mx-auto">Designed For</Chip>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 Designed For Everyone
               </h2>
@@ -420,12 +566,13 @@ const RooksServicesAppLanding = () => {
         </section>
 
         {/* Benefits That Drive Results */}
-        <section id="benefits" className="py-24 bg-gradient-to-b from-transparent to-white/[0.02] px-4 sm:px-6">
+        <section
+          id="benefits"
+          className="py-24 bg-gradient-to-b from-transparent to-white/[0.02] px-4 sm:px-6"
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <Chip className="mb-4 mx-auto">
-                Benefits
-              </Chip>
+              <Chip className="mb-4 mx-auto">Benefits</Chip>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 Benefits That Drive Results
               </h2>
@@ -452,21 +599,32 @@ const RooksServicesAppLanding = () => {
         <section className="py-24 px-4 sm:px-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <Chip className="mb-4 mx-auto">
-                Technology Stack
-              </Chip>
+              <Chip className="mb-4 mx-auto">Technology Stack</Chip>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 Built With Modern Technology
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Leveraging the best tools to deliver a fast, reliable, and beautiful service management experience.
+                Leveraging the best tools to deliver a fast, reliable, and
+                beautiful service management experience.
               </p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { icon: <Smartphone size={28} />, title: "Flutter", desc: "Cross-platform UI framework" },
-                { icon: <Server size={28} />, title: "Firebase", desc: "Backend-as-a-Service (Auth, Firestore, Storage, Messaging)" },
-                { icon: <Globe size={28} />, title: "Multi-Platform", desc: "Android, iOS, Web, Windows, Linux, macOS" }
+                {
+                  icon: <Smartphone size={28} />,
+                  title: "Flutter",
+                  desc: "Cross-platform UI framework",
+                },
+                {
+                  icon: <Server size={28} />,
+                  title: "Firebase",
+                  desc: "Backend-as-a-Service (Auth, Firestore, Storage, Messaging)",
+                },
+                {
+                  icon: <Globe size={28} />,
+                  title: "Multi-Platform",
+                  desc: "Android, iOS, Web, Windows, Linux, macOS",
+                },
               ].map((item, i) => (
                 <motion.div
                   key={i}
@@ -491,9 +649,7 @@ const RooksServicesAppLanding = () => {
         <section className="py-24 bg-gradient-to-b from-white/[0.02] to-transparent px-4 sm:px-6">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <Chip className="mb-4 mx-auto">
-                Key Features
-              </Chip>
+              <Chip className="mb-4 mx-auto">Key Features</Chip>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 Key Features at a Glance
               </h2>
@@ -517,7 +673,7 @@ const RooksServicesAppLanding = () => {
                 "✅ Persistent login state",
                 "✅ Real-time Firestore updates",
                 "✅ Professional, responsive UI",
-                "✅ Multi-platform support"
+                "✅ Multi-platform support",
               ].map((feature, i) => (
                 <motion.div
                   key={i}
@@ -541,9 +697,7 @@ const RooksServicesAppLanding = () => {
         <section className="py-24 px-4 sm:px-6">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <Chip className="mb-4 mx-auto">
-                FAQ
-              </Chip>
+              <Chip className="mb-4 mx-auto">FAQ</Chip>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 Frequently Asked Questions
               </h2>
@@ -627,7 +781,9 @@ const RooksServicesAppLanding = () => {
                       className="h-12 w-auto object-contain"
                     />
                   </div>
-                  <span className="font-bold text-xl text-white">Rooks Services App</span>
+                  <span className="font-bold text-xl text-white">
+                    Rooks Services App
+                  </span>
                 </div>
 
                 <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -712,8 +868,13 @@ const RooksServicesAppLanding = () => {
               >
                 <div className="p-8 pb-0 flex justify-between items-start">
                   <div>
-                    <h3 className="text-3xl font-bold tracking-tight mb-2">Get in Touch</h3>
-                    <p className="text-gray-400 text-sm">Fill out the form below and our team will get back to you shortly.</p>
+                    <h3 className="text-3xl font-bold tracking-tight mb-2">
+                      Get in Touch
+                    </h3>
+                    <p className="text-gray-400 text-sm">
+                      Fill out the form below and our team will get back to you
+                      shortly.
+                    </p>
                   </div>
                   <button
                     onClick={() => setIsModalOpen(false)}
@@ -729,47 +890,64 @@ const RooksServicesAppLanding = () => {
                       animate={{ opacity: 1, y: 0 }}
                       className="p-4 rounded-2xl bg-green-500/10 border border-green-500/20 text-green-300"
                     >
-                      Thank you! Your message has been sent successfully. We'll get back to you soon.
+                      Thank you! Your message has been sent successfully. We'll
+                      get back to you soon.
                     </motion.div>
                   )}
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#0B3470] uppercase tracking-wider">Full Name</label>
+                    <label className="text-xs font-semibold text-[#0B3470] uppercase tracking-wider">
+                      Full Name
+                    </label>
                     <input
                       required
                       type="text"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
                       className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#0B3470]/50 focus:bg-white/10 transition-colors"
                       placeholder="Your full name"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#0B3470] uppercase tracking-wider">Email Address</label>
+                    <label className="text-xs font-semibold text-[#0B3470] uppercase tracking-wider">
+                      Email Address
+                    </label>
                     <input
                       required
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
                       className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#0B3470]/50 focus:bg-white/10 transition-colors"
                       placeholder="your@email.com"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#0B3470] uppercase tracking-wider">Phone Number</label>
+                    <label className="text-xs font-semibold text-[#0B3470] uppercase tracking-wider">
+                      Phone Number
+                    </label>
                     <input
                       required
                       type="tel"
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, phone: e.target.value })
+                      }
                       className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#0B3470]/50 focus:bg-white/10 transition-colors"
                       placeholder="+1 (555) 000-0000"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#0B3470] uppercase tracking-wider">Message</label>
+                    <label className="text-xs font-semibold text-[#0B3470] uppercase tracking-wider">
+                      Message
+                    </label>
                     <textarea
                       value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, message: e.target.value })
+                      }
                       rows={4}
                       className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#0B3470]/50 focus:bg-white/10 transition-colors resize-none"
                       placeholder="Tell us about your project..."

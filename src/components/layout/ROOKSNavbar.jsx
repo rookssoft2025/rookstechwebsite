@@ -70,11 +70,11 @@ const ROOKSNavbar = ({ onCTAClick }) => {
           >
             <img
               src={rookstodoLogo}
-              alt="ROOKS To Do"
+              alt="Rooks To Do"
               className="h-10 w-auto object-contain"
             />
              <span className="font-bold text-xl bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              ROOKS To Do
+              Rooks To Do
             </span>
           </motion.div>
 
