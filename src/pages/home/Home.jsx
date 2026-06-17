@@ -5,6 +5,9 @@ import Info from "./Info";
 import Clients from "./Clients";
 import Services from "./Services";
 import Footer from "../../components/layout/Footer";
+import AppShowcaseCarousel from "../../components/AppShowcase/AppShowcaseCarousel";
+import OurServices from "./OurServices";
+import { AppShowcaseProvider } from "../../context/AppShowcaseContext";
 
 export default function Home() {
   const [showNavbar, setShowNavbar] = useState(true);
@@ -31,7 +34,7 @@ export default function Home() {
   }, [lastScrollY]);
 
   return (
-    <div>
+    <AppShowcaseProvider>
       <div className="relative min-h-screen bg-[#071730] px-4 sm:px-6 lg:px-15 overflow-hidden">
         {/* Static Stars Layer */}
         <div
@@ -64,7 +67,7 @@ export default function Home() {
             `,
             backgroundRepeat: "repeat",
             backgroundSize: "250px 250px",
-            animation: "moveStarsRightToLeft 40s linear infinite"
+            animation: "moveStarsRightToLeft 40s linear infinite",
           }}
         ></div>
 
@@ -80,7 +83,7 @@ export default function Home() {
             `,
             backgroundRepeat: "repeat",
             backgroundSize: "300px 300px",
-            animation: "moveStarsTopToBottom 45s linear infinite"
+            animation: "moveStarsTopToBottom 45s linear infinite",
           }}
         ></div>
 
@@ -95,7 +98,7 @@ export default function Home() {
             `,
             backgroundRepeat: "repeat",
             backgroundSize: "350px 350px",
-            animation: "moveStarsDiagonal 75s linear infinite"
+            animation: "moveStarsDiagonal 75s linear infinite",
           }}
         ></div>
 
@@ -115,13 +118,34 @@ export default function Home() {
           }}
         >
           {/* Individual moving blinking stars */}
-          <div className="absolute top-[10%] left-[10%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarHorizontal" style={{ animationDelay: '0s' }}></div>
-          <div className="absolute top-[25%] left-[75%] w-0.5 h-0.5 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarVertical" style={{ animationDelay: '1.5s' }}></div>
-          <div className="absolute top-[40%] left-[30%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarDiagonal" style={{ animationDelay: '0.7s' }}></div>
-          <div className="absolute top-[60%] left-[60%] w-0.5 h-0.5 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarHorizontal" style={{ animationDelay: '2.2s' }}></div>
-          <div className="absolute top-[80%] left-[20%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarVertical" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute top-[15%] left-[50%] w-0.5 h-0.5 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarDiagonal" style={{ animationDelay: '0.5s' }}></div>
-          <div className="absolute top-[70%] left-[85%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarHorizontal" style={{ animationDelay: '1.8s' }}></div>
+          <div
+            className="absolute top-[10%] left-[10%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarHorizontal"
+            style={{ animationDelay: "0s" }}
+          ></div>
+          <div
+            className="absolute top-[25%] left-[75%] w-0.5 h-0.5 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarVertical"
+            style={{ animationDelay: "1.5s" }}
+          ></div>
+          <div
+            className="absolute top-[40%] left-[30%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarDiagonal"
+            style={{ animationDelay: "0.7s" }}
+          ></div>
+          <div
+            className="absolute top-[60%] left-[60%] w-0.5 h-0.5 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarHorizontal"
+            style={{ animationDelay: "2.2s" }}
+          ></div>
+          <div
+            className="absolute top-[80%] left-[20%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarVertical"
+            style={{ animationDelay: "1s" }}
+          ></div>
+          <div
+            className="absolute top-[15%] left-[50%] w-0.5 h-0.5 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarDiagonal"
+            style={{ animationDelay: "0.5s" }}
+          ></div>
+          <div
+            className="absolute top-[70%] left-[85%] w-1 h-1 bg-[#FFFFFF] rounded-full animate-pulseStar moveStarHorizontal"
+            style={{ animationDelay: "1.8s" }}
+          ></div>
         </div>
 
         {/* Navbar */}
@@ -138,8 +162,14 @@ export default function Home() {
         </div>
 
         {/* Content */}
-        <div className={`pt-[calc(50px+24px)]`}>
+        <div className={`pt-[calc(50px+2px)] min-h-screen`}>
           <Hero />
+        </div>
+        <div className="sm:px-10">
+          <AppShowcaseCarousel />
+        </div>
+        <div className="sm:px-10">
+          <OurServices />
         </div>
         <div className="sm:px-10">
           <Info />
@@ -150,8 +180,8 @@ export default function Home() {
         <div>
           <Clients />
         </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </AppShowcaseProvider>
   );
 }

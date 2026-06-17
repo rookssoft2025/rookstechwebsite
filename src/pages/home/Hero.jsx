@@ -1,14 +1,21 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import group1 from "../../assets/group1.svg";
 import group2 from "../../assets/group2.svg";
 import holo from "../../assets/holo.svg";
 import AnimatedButton from "../../uiComponents/AnimatedButton";
+import FloatingAppShowcase from "../../components/FloatingAppShowcase";
 import { useNavigate } from "react-router-dom";
 
 // New GlassCard component with neon effects
-const GlassCard = ({ title, features, buttonLabel, onButtonClick, variant = "left" }) => {
+const GlassCard = ({
+  title,
+  features,
+  buttonLabel,
+  onButtonClick,
+  variant = "left",
+}) => {
   const getGradient = () => {
     switch (title) {
       case "Software & Tech Solutions":
@@ -36,7 +43,6 @@ const GlassCard = ({ title, features, buttonLabel, onButtonClick, variant = "lef
   };
 
   const neonColor = getNeonColor();
-
 
   return (
     <motion.div
@@ -66,7 +72,6 @@ const GlassCard = ({ title, features, buttonLabel, onButtonClick, variant = "lef
       </div>
     </motion.div>
   );
-
 };
 
 export default function Hero() {
@@ -78,8 +83,8 @@ export default function Hero() {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
+        ease: [0.25, 0.46, 0.45, 0.94],
+      },
     },
   };
 
@@ -90,8 +95,8 @@ export default function Hero() {
       x: 0,
       transition: {
         duration: 1,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
+        ease: [0.25, 0.46, 0.45, 0.94],
+      },
     },
   };
 
@@ -102,8 +107,8 @@ export default function Hero() {
       x: 0,
       transition: {
         duration: 1,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
+        ease: [0.25, 0.46, 0.45, 0.94],
+      },
     },
   };
 
@@ -111,9 +116,9 @@ export default function Hero() {
     visible: {
       transition: {
         staggerChildren: 0.15,
-        delayChildren: 0.3
-      }
-    }
+        delayChildren: 0.3,
+      },
+    },
   };
 
   const techFeatures = [
@@ -156,10 +161,7 @@ export default function Hero() {
           animate="visible"
           variants={staggerContainer}
         >
-          <motion.div
-            className="flex-1 max-w-2xl"
-            variants={fadeInUp}
-          >
+          <motion.div className="flex-1 max-w-2xl" variants={fadeInUp}>
             <motion.div
               className="relative z-10 flex justify-center sm:justify-start items-center mt-5"
               variants={fadeInUp}
@@ -176,7 +178,10 @@ export default function Hero() {
               className="relative z-10 mt-8 text-center sm:text-left"
               variants={fadeInUp}
             >
-              <span style={{ fontFamily: "GoodTimes, sans-serif" }} className="font-goodtimes text-4xl  text-white leading-tight block">
+              <span
+                style={{ fontFamily: "GoodTimes, sans-serif" }}
+                className="font-goodtimes text-4xl  text-white leading-tight block"
+              >
                 Complete IT Solutions
               </span>
               <span className="font-goodtimes text-4xl text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500 leading-tight block mt-2">
@@ -184,40 +189,31 @@ export default function Hero() {
               </span>
             </motion.h1>
 
-            <motion.div
-              className="relative z-10 mt-6"
-              variants={fadeInUp}
-            >
+            <motion.div className="relative z-10 mt-6" variants={fadeInUp}>
               <p className=" text-xl md:text-2xl text-white/90 leading-relaxed">
-                Smart IT Solutions. Research-Driven. Built to Scale.
-                Delivering Web, App, Cloud, Security, and Product Innovation Services.
+                Smart IT Solutions. Research-Driven. Built to Scale. Delivering
+                Web, App, Cloud, Security, and Product Innovation Services.
               </p>
             </motion.div>
             <motion.div
               className="relative z-10 mt-12 flex flex-col sm:flex-row gap-4 items-center"
               variants={fadeInUp}
             >
-
               {/* <button onClick={() => navigate("/services")} className="h-11.5 cursor-pointer px-6 py-1 rounded-full bg-white text-black hover:bg-[#0B3470] hover:text-white text-sm font-semibold transition-colors duration-300 whitespace-nowrap border border-transparent hover:border-white/20">
                 Explore Our Services
               </button> */}
-              <AnimatedButton label="Let's Work Together" onClick={() => navigate("/careers")} />
+              <AnimatedButton
+                label="Let's Work Together"
+                onClick={() => navigate("/careers")}
+              />
             </motion.div>
-
           </motion.div>
-          {/* <motion.div
+          <motion.div
             className="hidden lg:block flex-1 max-w-md xl:max-w-lg"
             variants={fadeInRight}
           >
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-              <img
-                className=" relative z-10 animate-[spin_30s_linear_infinite]"
-                src={holo}
-                alt="Holographic technology visualization"
-              />
-            </div>
-          </motion.div> */}
+            <FloatingAppShowcase />
+          </motion.div>
         </motion.div>
       </div>
 
@@ -241,10 +237,13 @@ export default function Hero() {
             variants={fadeInLeft}
           >
             <div className="lg:pr-10">
-              <h3 className="text-2xl font-bold text-sky-300 mb-4">Innovative Development</h3>
+              <h3 className="text-2xl font-bold text-sky-300 mb-4">
+                Innovative Development
+              </h3>
               <p className="text-white/80 mb-6">
-                We create cutting-edge software solutions tailored to your business needs,
-                from intuitive web and mobile applications to robust e-commerce platforms.
+                We create cutting-edge software solutions tailored to your
+                business needs, from intuitive web and mobile applications to
+                robust e-commerce platforms.
               </p>
               <button
                 onClick={() => navigate("/solutions")}
@@ -267,10 +266,13 @@ export default function Hero() {
             variants={fadeInRight}
           >
             <div className="lg:order-2 lg:pl-10">
-              <h3 className="text-2xl font-bold text-sky-300 mb-4">Infrastructure & Security</h3>
+              <h3 className="text-2xl font-bold text-sky-300 mb-4">
+                Infrastructure & Security
+              </h3>
               <p className="text-white/80 mb-6">
-                Our comprehensive IT services ensure your systems are secure, scalable,
-                and optimized for performance in today's digital landscape.
+                Our comprehensive IT services ensure your systems are secure,
+                scalable, and optimized for performance in today's digital
+                landscape.
               </p>
               <button
                 onClick={() => navigate("/services")}
@@ -293,10 +295,13 @@ export default function Hero() {
             variants={fadeInLeft}
           >
             <div className="lg:pr-10">
-              <h3 className="text-2xl font-bold text-sky-300 mb-4">Future Technologies</h3>
+              <h3 className="text-2xl font-bold text-sky-300 mb-4">
+                Future Technologies
+              </h3>
               <p className="text-white/80 mb-6">
-                Our R&D division explores emerging technologies to keep you at the forefront
-                of innovation, from AI and blockchain to robotics and privacy solutions.
+                Our R&D division explores emerging technologies to keep you at
+                the forefront of innovation, from AI and blockchain to robotics
+                and privacy solutions.
               </p>
               <button
                 onClick={() => navigate("/research")}

@@ -1,0 +1,66 @@
+[
+  {
+    "id": 1,
+    "name": "Servnex",
+    "icon": "/mobile_apps_asstes/servnex.png",
+    "orbit": 0,
+    "angle": 0,
+    "description": "Servnex app for service management"
+  },
+  {
+    "id": 2,
+    "name": "Ebricks",
+    "icon": "/mobile_apps_asstes/ebricks.png",
+    "orbit": 0,
+    "angle": 180,
+    "description": "Ebricks app for construction projects"
+  },
+  {
+    "id": 3,
+    "name": "Votto",
+    "icon": "/mobile_apps_asstes/votto.png",
+    "orbit": 1,
+    "angle": 90,
+    "description": "Votto app for digital payments"
+  },
+  {
+    "id": 4,
+    "name": "Rooks Service",
+    "icon": "/mobile_apps_asstes/rookserviceapp (2).png",
+    "orbit": 1,
+    "angle": 270,
+    "description": "Rooks Service app for customer support"
+  },
+  {
+    "id": 5,
+    "name": "Rooks To Do",
+    "icon": "/mobile_apps_asstes/rookstodo.png",
+    "orbit": 2,
+    "angle": 45,
+    "description": "Rooks To Do app for task management"
+  },
+  {
+    "id": 6,
+    "name": "Ebricks",
+    "icon": "/mobile_apps_asstes/ebricks.svg",
+    "orbit": 2,
+    "angle": 225,
+    "description": "Ebricks app for construction projects"
+  },
+  {
+    "id": 7,
+    "name": "Rooks Todo",
+    "icon": "/mobile_apps_asstes/rookstodo.png",
+    "orbit": 3,
+    "angle": 135,
+    "description": "Rooks Todo app for task management"
+  },
+  {
+    "id": 8,
+    "name": "Servnex",
+    "icon": "/mobile_apps_asstes/servnex.png",
+    "orbit": 3,
+    "angle": 315,
+    "description": "Servnex app for service management"
+  }
+]

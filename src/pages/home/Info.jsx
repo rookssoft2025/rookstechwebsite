@@ -212,40 +212,37 @@ export default function Info() {
       <div className="flex justify-center mt-10">
         <div
           ref={cardRef}
-          className="bg-[#0F2239] rounded-2xl border border-[#FFFFFF1A] p-6 sm:p-10 shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer"
+          className="bg-[#0F2239] rounded-2xl border border-[#FFFFFF1A] shadow-md
+               transition-transform duration-300 hover:scale-105
+               cursor-pointer w-full max-w-6xl"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 text-center">
-            <div className="p-6 sm:p-10 border-b border-[#FFFFFF1A]">
-              <h1 className="text-4xl sm:text-5xl font-bold text-white">
-                <Counter end={2} duration={1000} start={triggered} />+ Years
+          <div className="grid grid-cols-2 md:grid-cols-4 text-center">
+            <div className="p-6 border-r border-[#FFFFFF1A]">
+              <h1 className="text-4xl font-bold text-white">
+                <Counter end={2} duration={1000} start={triggered} />+
               </h1>
-              <p className="text-gray-300 text-lg sm:text-xl mt-1">
-                Experience in IT
-              </p>
+              <p className="text-gray-300 mt-2">Years Experience</p>
             </div>
-            <div className="p-6 sm:p-10 border-b border-[#FFFFFF1A]">
-              <h1 className="text-4xl sm:text-5xl font-bold text-white">
+
+            <div className="p-6 border-r border-[#FFFFFF1A]">
+              <h1 className="text-4xl font-bold text-white">
                 <Counter end={75} duration={1000} start={triggered} />+
               </h1>
-              <p className="text-gray-300 text-lg sm:text-xl mt-1">
-                Clients Served
-              </p>
+              <p className="text-gray-300 mt-2">Clients Served</p>
             </div>
-            <div className="p-6 sm:p-10 border-b sm:border-b-0 border-[#FFFFFF1A]">
-              <h1 className="text-4xl sm:text-5xl font-bold text-white">
+
+            <div className="p-6 border-r border-[#FFFFFF1A]">
+              <h1 className="text-4xl font-bold text-white">
                 <Counter end={95} duration={1000} start={triggered} />%
               </h1>
-              <p className="text-gray-300 text-lg sm:text-xl mt-1">
-                Client Satisfaction
-              </p>
+              <p className="text-gray-300 mt-2">Client Satisfaction</p>
             </div>
-            <div className="p-6 sm:p-10">
-              <h1 className="text-4xl sm:text-5xl font-bold text-white">
+
+            <div className="p-6">
+              <h1 className="text-4xl font-bold text-white">
                 <Counter end={125} duration={1000} start={triggered} />+
               </h1>
-              <p className="text-gray-300 text-lg sm:text-xl mt-1">
-                Projects Delivered
-              </p>
+              <p className="text-gray-300 mt-2">Projects Delivered</p>
             </div>
           </div>
         </div>

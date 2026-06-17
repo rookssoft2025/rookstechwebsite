@@ -1,0 +1,91 @@
+[
+  {
+    "id": 1,
+    "title": "ServNex",
+    "category": "Service Management Platform",
+    "type": "mobile",
+    "description": "Servnex is a mobile application designed to track and manage computer hardware, biometric devices, and other technical service operations. It helps monitor service requests, technician assignments, repair status, maintenance history, and customer records, ensuring efficient service delivery and real-time tracking.",
+    "video": "jothi",
+    "link": "/work/servnex",
+    "img": "serImg.jpg",
+    "tags": ["Service Management", "Mobile App", "IoT"]
+  },
+  {
+    "id": 2,
+    "title": "eBricks",
+    "category": "Construction Management App",
+    "type": "mobile",
+    "description": "eBricks is an all-in-one construction management platform that helps businesses manage projects, teams, materials, finances, and clients from a single dashboard. Streamline operations, improve collaboration, and scale your construction business with real-time insights and white-label branding.",
+    "video": "rooks",
+    "link": "/work/rooks-cst",
+    "img": "construction.jpg",
+    "tags": ["Mobile App", "Construction", "Project Management"]
+  },
+  {
+    "id": 3,
+    "title": "Institute Management System",
+    "category": "Education Management Platform",
+    "type": "mobile",
+    "description": "We developed an Institute Management System that helps educational institutions streamline admissions, manage students and faculty, track attendance, handle finances, and oversee examinations efficiently from a single platform.",
+    "video": "ims",
+    "link": "/work/ims",
+    "img": "ims.jpg",
+    "tags": ["Mobile App", "Education", "Institute Management"]
+  },
+  {
+    "id": 4,
+    "title": "Jothi Decor",
+    "category": "E-commerce Website",
+    "type": "web",
+    "description": "Designed and developed jothidecor.in, a website for Jothi Rajalekshmi curtains and furnishing shop, offering a wide range of elegant curtains, fabrics, and home decor solutions.",
+    "video": "jothi",
+    "link": "https://jothidecor.in",
+    "img": "jothi.jpg",
+    "tags": ["React", "Landing Page", "UI/UX"]
+  },
+
+  {
+    "id": 5,
+    "title": "Factory Management System",
+    "category": "Manufacturing Solution",
+    "type": "web",
+    "description": "Factory Management System is a software solution designed to monitor and manage all manufacturing processes within a factory. For a furniture manufacturing unit, it tracks raw materials, production stages, labor, inventory, orders, and dispatch, ensuring efficient workflow, cost control, and streamlined operations from start to finish.",
+    "video": "rooks",
+    "link": "/work/fms",
+    "img": "furImg.jpg",
+    "tags": ["Manufacturing", "ERP", "Inventory"]
+  },
+  {
+    "id": 6,
+    "title": "Charity Financial Management",
+    "category": "Non-Profit Solution",
+    "type": "web",
+    "description": "Charity Financial Management System is a software solution that helps nonprofit organizations track donations, income, and expenses efficiently. It ensures financial transparency, proper fund utilization, accurate reporting, and compliance with regulatory requirements.",
+    "video": "jothi",
+    "link": "/work/charity-financial",
+    "img": "charity.jpg",
+    "tags": ["Financial", "Non-Profit", "Compliance"]
+  },
+  {
+    "id": 7,
+    "title": "Hospital Management System",
+    "category": "Healthcare Platform",
+    "type": "web",
+    "description": "Hospital Management System is a software solution designed to manage and streamline hospital operations such as patient registration, appointments, billing, medical records, and staff management. It improves efficiency, ensures accurate data handling, and enhances overall patient care and administrative control.",
+    "video": "rooks",
+    "link": "/work/rooks-hms",
+    "img": "hmsImg.jpg",
+    "tags": ["Healthcare", "Management", "Patient Care"]
+  },
+  {
+    "id": 8,
+    "title": "Task Management Application",
+    "category": "Productivity Platform",
+    "type": "web",
+    "description": "Task Management Application is a software solution designed to organize and manage daily activities such as personal tasks, study plans, and teamwork assignments. In this system, an admin can create workspaces and assign tasks to multiple members. Each workspace allows collaboration, tracking progress, and ensuring timely task completion, improving productivity, coordination, and overall task management efficiency.",
+    "video": "rooks",
+    "link": "/work/task-management",
+    "img": "tsm.jpg",
+    "tags": ["Productivity", "Task Management", "Collaboration"]
+  }
+]

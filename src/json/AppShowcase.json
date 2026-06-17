@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "Servnex",
+    "description": "Servnex is a SaaS-based white-label mobile app for managing service tickets, customer support, and engineer workflows with customizable branding and subscription plans.",
+    "technologies": ["Flutter", "Firebase", "Node.js", "Payment Gateway"],
+    "image": "/mobile_apps_asstes/servnex.png",
+    "link": "/works/servnex"
+  },
+  {
+    "id": 2,
+    "title": "Ebricks",
+    "description": "eBricks is a SaaS-based platform for managing construction and civil engineering projects, including sites, workforce, materials, approvals, expenses, and operations.",
+    "technologies": ["Flutter", "Firebase", "Node.js", "Payment Gateway"],
+    "image": "/mobile_apps_asstes/ebricks.png",
+    "link": "/works/ebricks"
+  },
+  {
+    "id": 3,
+    "title": "Votto Sanitaryware Management System",
+    "description": "A inventory management system that helps businesses track stock levels, forecast demand, and automate warehouse operations through real-time analytics and AI-driven insights.",
+    "technologies": ["Flutter", "Firebase"],
+    "image": "/mobile_apps_asstes/votto.png",
+    "link": "/works/vottoapp"
+  },
+  {
+    "id": 4,
+    "title": "Rooks Service App",
+    "description": "Rooks Services App is a user-friendly platform for requesting and managing home services, featuring an enhanced UI for a smoother and more comfortable customer experience.",
+    "technologies": ["Flutter", "Firebase", "Cloud Functions", "Node.js"],
+    "image": "/mobile_apps_asstes/rookserviceapp (2).png",
+    "link": "/works/rooksserviceapp"
+  },
+  {
+    "id": 5,
+    "title": "Rooks To Do",
+    "description": "Rooks To Do is a smart and simple task management app that helps users stay organized and improve productivity.",
+    "technologies": ["Flutter", "Firebase"],
+    "image": "/mobile_apps_asstes/rookstodo.png",
+    "link": "/works/rookstodo"
+  }
+]
