@@ -43,9 +43,9 @@
     "img": "ims.jpg",
     "tags": ["Mobile App", "Education", "Institute Management"]
   },
-  
+
   {
-    "id": 4,
+    "id": 5,
     "title": "Votto Sanitaryware Management System",
     "category": "Inventory Management App",
     "type": "mobile",
@@ -55,8 +55,19 @@
     "img": "votto.jpg",
     "tags": ["Mobile App", "Inventory", "Distribution", "Sales Management"]
   },
+   {
+    "id": 6,
+    "title": "Rooks Services App",
+    "category": "Service Management Platform",
+    "type": "mobile",
+    "description": "Rooks Services App is a comprehensive multi-platform service management solution built with Flutter and Firebase. It supports three user roles: Customer (Normal & AMC), Admin, and Engineer, with features like ticket management, barcode scanning, reports generation, and real-time updates.",
+    "video": "rooks",
+    "link": "/work/rooks-services-app",
+    "img": "RooksServiceApp.jpg",
+    "tags": ["Service Management", "Mobile App", "Flutter", "Firebase"]
+  },
   {
-    "id": 5,
+    "id": 7,
     "title": "Jothi Decor",
     "category": "E-commerce Website",
     "type": "web",
@@ -68,7 +79,7 @@
   },
 
   {
-    "id": 6,
+    "id": 8,
     "title": "Factory Management System",
     "category": "Manufacturing Solution",
     "type": "web",
@@ -79,7 +90,7 @@
     "tags": ["Manufacturing", "ERP", "Inventory"]
   },
   {
-    "id": 7,
+    "id": 9,
     "title": "Charity Financial Management",
     "category": "Non-Profit Solution",
     "type": "web",
@@ -90,7 +101,7 @@
     "tags": ["Financial", "Non-Profit", "Compliance"]
   },
   {
-    "id": 8,
+    "id": 10,
     "title": "Hospital Management System",
     "category": "Healthcare Platform",
     "type": "web",
@@ -99,18 +110,8 @@
     "link": "/work/rooks-hms",
     "img": "hmsImg.jpg",
     "tags": ["Healthcare", "Management", "Patient Care"]
-  },
-  {
-    "id": 9,
-    "title": "Rooks Services App",
-    "category": "Service Management Platform",
-    "type": "mobile",
-    "description": "Rooks Services App is a comprehensive multi-platform service management solution built with Flutter and Firebase. It supports three user roles: Customer (Normal & AMC), Admin, and Engineer, with features like ticket management, barcode scanning, reports generation, and real-time updates.",
-    "video": "rooks",
-    "link": "/work/rooks-services-app",
-    "img": "RooksServiceApp.jpg",
-    "tags": ["Service Management", "Mobile App", "Flutter", "Firebase"]
   }
-  
+
+
 
 ]
