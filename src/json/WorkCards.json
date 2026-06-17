@@ -34,6 +34,17 @@
   },
   {
     "id": 4,
+    "title": "Votto Sanitaryware Management System",
+    "category": "Inventory Management App",
+    "type": "mobile",
+    "description": "We developed Votto, a mobile application for sanitaryware inventory and distribution management, helping businesses streamline orders, track inventory, manage dealers, and monitor sales performance efficiently.",
+    "video": "votto",
+    "link": "/work/votto-sanitaryware-management-system",
+    "img": "votto.jpg",
+    "tags": ["Mobile App", "Inventory", "Distribution", "Sales Management"]
+  },
+  {
+    "id": 5,
     "title": "Jothi Decor",
     "category": "E-commerce Website",
     "type": "web",
@@ -45,7 +56,7 @@
   },
 
   {
-    "id": 5,
+    "id": 6,
     "title": "Factory Management System",
     "category": "Manufacturing Solution",
     "type": "web",
@@ -56,7 +67,7 @@
     "tags": ["Manufacturing", "ERP", "Inventory"]
   },
   {
-    "id": 6,
+    "id": 7,
     "title": "Charity Financial Management",
     "category": "Non-Profit Solution",
     "type": "web",
@@ -67,7 +78,7 @@
     "tags": ["Financial", "Non-Profit", "Compliance"]
   },
   {
-    "id": 7,
+    "id": 8,
     "title": "Hospital Management System",
     "category": "Healthcare Platform",
     "type": "web",
@@ -78,7 +89,7 @@
     "tags": ["Healthcare", "Management", "Patient Care"]
   },
   {
-    "id": 8,
+    "id": 9,
     "title": "Task Management Application",
     "category": "Productivity Platform",
     "type": "web",

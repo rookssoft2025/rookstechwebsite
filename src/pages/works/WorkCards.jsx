@@ -12,8 +12,7 @@ import charityImg from "../../assets/work/charity.jpg";
 import hmsimg from "../../assets/work/hmsImg.jpg";
 import tmsimg from "../../assets/work/tsm.jpg";
 import imsimg from "../../assets/work/ims.jpg";
-
-
+import vottoimg from "../../assets/work/votto.jpg";
 
 // Map image and video names to imported assets
 const assetMap = {
@@ -26,6 +25,7 @@ const assetMap = {
     "hmsImg.jpg": hmsimg,
     "tsm.jpg": tmsimg,
     "ims.jpg": imsimg,
+    "votto.jpg": vottoimg,
   },
   videos: {
     jothi: jothiVideo,

@@ -10,39 +10,46 @@ import {
 import { db } from "../../firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import {
-  Users,
-  BookOpen,
+  Building2,
+  ShoppingCart,
   UserCheck,
-  CalendarCheck,
-  CreditCard,
-  FileCheck,
-  Star,
-  X,
-  Menu,
+  MapPin,
+  FileText,
+  Users,
+  TrendingUp,
+  Zap,
+  Shield,
   ArrowRight,
   Sparkles,
-  Shield,
-  TrendingUp,
-  Award,
+  X,
+  Menu,
   CheckCircle2,
-  Mail,
-  Phone,
-  MapPin,
+  DollarSign,
+  Truck,
+  BarChart3,
+  CreditCard,
+  Award,
 } from "lucide-react";
 import phoneImage from "../../assets/work/red_antique_telephone_1773891893640.png";
-// import imsLogo from "../../assets/mobile_apps_asstes/ims-logo.svg"; // Update with actual logo path
+import vottoLogo from "../../assets/mobile_apps_asstes/votto.png";
+import vottoPageImage from "../../assets/mobile_apps_asstes/vottopage.png";
 
-// Color palette from Flutter app
+// Votto color palette from Flutter app
 const colors = {
-  primaryBlue: "#3B82F6",
-  background: "#000000",
-  cardBackground: "#111111",
-  inputBackground: "#1A1A1A",
-  border: "#2A2A2A",
+  primary: "#D97732",
+  primaryLight: "#E8984F",
+  primaryDark: "#B8611F",
+  backgroundDark: "#0A0E1A",
+  surfaceDark: "#111827",
+  cardDark: "#1A2035",
+  borderDark: "#2A3148",
   textPrimary: "#FFFFFF",
-  textSecondary: "#A1A1AA",
+  textSecondary: "#B0B0B0",
+  textTertiary: "#6B7280",
+  success: "#10B981",
   error: "#EF4444",
-  success: "#22C55E",
+  warning: "#F59E0B",
+  info: "#3B82F6",
 };
 
 const EASE = [0.22, 1, 0.36, 1];
@@ -71,7 +78,7 @@ const stagger = {
 };
 
 /* ─── Navbar ────────────────────────────────────────────────────────────────── */
-const ImsNavbar = ({ onOpenModal }) => {
+const VottoNavbar = ({ onOpenModal }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -84,7 +91,7 @@ const ImsNavbar = ({ onOpenModal }) => {
   const navLinks = [
     { label: "Home", sectionId: "home" },
     { label: "Features", sectionId: "features" },
-    { label: "Why Choose Us", sectionId: "why-choose" },
+    { label: "Roles", sectionId: "roles" },
     { label: "Contact", sectionId: "contact" },
   ];
 
@@ -104,7 +111,7 @@ const ImsNavbar = ({ onOpenModal }) => {
         transition={{ duration: 0.7, ease: EASE }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "bg-black/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_4px_40px_rgba(59,130,246,0.3)]"
+            ? "bg-[#0A0E1A]/95 backdrop-blur-2xl border-b border-[#2A3148] shadow-[0_4px_40px_rgba(217,119,50,0.25)]"
             : "bg-transparent"
         }`}
       >
@@ -116,16 +123,7 @@ const ImsNavbar = ({ onOpenModal }) => {
               className="flex items-center gap-2.5 cursor-pointer select-none"
               onClick={() => scrollToSection("home")}
             >
-              <div className="relative">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#3B82F6] to-[#2563eb] flex items-center justify-center shadow-lg shadow-[#3B82F6]/40">
-                  <BookOpen className="w-5 h-5 text-white" />
-                </div>
-              </div>
-              <div>
-                <span className="font-bold text-lg tracking-tight text-white">
-                  IMS
-                </span>
-              </div>
+              <img src={vottoLogo} alt="Votto" className="h-40 w-auto" />
             </motion.div>
 
             {/* Desktop links */}
@@ -135,7 +133,7 @@ const ImsNavbar = ({ onOpenModal }) => {
                   key={i}
                   onClick={() => scrollToSection(link.sectionId)}
                   whileHover={{ color: "#fff" }}
-                  className="flex items-center gap-1 px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/[0.04]"
+                  className="flex items-center gap-1 px-4 py-2 text-sm text-[#B0B0B0] hover:text-white transition-colors rounded-lg hover:bg-white/[0.04]"
                 >
                   {link.label}
                 </motion.button>
@@ -148,13 +146,13 @@ const ImsNavbar = ({ onOpenModal }) => {
                 onClick={onOpenModal}
                 whileHover={{
                   scale: 1.04,
-                  boxShadow: "0 0 24px 4px rgba(59,130,246,0.5)",
+                  boxShadow: "0 0 32px 4px rgba(217,119,50,0.55)",
                 }}
                 whileTap={{ scale: 0.97 }}
-                className="relative group px-5 py-2.5 rounded-lg font-semibold text-sm overflow-hidden"
+                className="relative group px-5 py-2.5 rounded-xl font-semibold text-sm overflow-hidden"
                 style={{
                   background:
-                    "linear-gradient(135deg, #3B82F6 0%, #2563eb 100%)",
+                    "linear-gradient(135deg, #D97732 0%, #E8984F 100%)",
                 }}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
@@ -166,7 +164,7 @@ const ImsNavbar = ({ onOpenModal }) => {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden p-2 rounded-lg border border-white/[0.08] bg-white/[0.04] text-gray-400 hover:text-white transition-colors"
+              className="lg:hidden p-2 rounded-lg border border-[#2A3148] bg-white/[0.04] text-[#B0B0B0] hover:text-white transition-colors"
             >
               {mobileOpen ? (
                 <X className="w-5 h-5" />
@@ -186,7 +184,7 @@ const ImsNavbar = ({ onOpenModal }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, ease: EASE }}
-            className="fixed inset-x-0 top-[70px] z-40 bg-black/98 backdrop-blur-2xl border-b border-white/[0.06] shadow-2xl lg:hidden"
+            className="fixed inset-x-0 top-[70px] z-40 bg-[#0A0E1A]/98 backdrop-blur-2xl border-b border-[#2A3148] shadow-2xl lg:hidden"
           >
             <div className="w-full px-4 sm:px-6 lg:px-8 py-6 space-y-1">
               {navLinks.map((link, i) => (
@@ -196,18 +194,18 @@ const ImsNavbar = ({ onOpenModal }) => {
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.06, duration: 0.4 }}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/[0.04] transition-all text-sm font-medium"
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-[#B0B0B0] hover:text-white hover:bg-white/[0.04] transition-all text-sm font-medium"
                 >
                   {link.label}
                 </motion.button>
               ))}
-              <div className="pt-4 border-t border-white/[0.06] flex flex-col gap-3">
+              <div className="pt-4 border-t border-[#2A3148] flex flex-col gap-3">
                 <button
                   onClick={onOpenModal}
                   className="px-4 py-3 rounded-xl text-sm font-semibold text-white text-center"
                   style={{
                     background:
-                      "linear-gradient(135deg, #3B82F6 0%, #2563eb 100%)",
+                      "linear-gradient(135deg, #D97732 0%, #E8984F 100%)",
                   }}
                 >
                   Get Started
@@ -222,24 +220,22 @@ const ImsNavbar = ({ onOpenModal }) => {
 };
 
 /* ─── Footer ────────────────────────────────────────────────────────────────── */
-const ImsFooter = () => {
+const VottoFooter = () => {
   return (
-    <footer className="relative z-10 border-t border-white/[0.06]">
+    <footer className="relative z-10 border-t border-[#2A3148]">
       {/* Bottom bar */}
-      <div className="border-t border-white/[0.05] bg-[#020617]">
+      <div className="border-t border-[#1F2937] bg-[#0A0E1A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-gray-500">
-              <span>
-                © 2025 Institute Management System. All rights reserved.
-              </span>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-[#6B7280]">
+              <span>© 2025 Votto Sanitary Ware. All rights reserved.</span>
               {["Privacy Policy", "Terms of Service", "Contact Us"].map(
                 (item, i) => (
                   <motion.a
                     key={i}
                     href="#"
                     whileHover={{ color: "#9ca3af" }}
-                    className="hover:text-gray-400 transition-colors"
+                    className="hover:text-[#B0B0B0] transition-colors"
                   >
                     {item}
                   </motion.a>
@@ -254,7 +250,7 @@ const ImsFooter = () => {
 };
 
 /* ─── Main component ────────────────────────────────────────────────────────── */
-const ImsLanding = () => {
+const VottoLanding = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -282,11 +278,11 @@ const ImsLanding = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const docName = `Ims_${formData.name.replace(/\s+/g, "_")}_${Date.now()}`;
+      const docName = `Votto_${formData.name.replace(/\s+/g, "_")}_${Date.now()}`;
       await setDoc(doc(db, "Client Enquiry", docName), {
         ...formData,
-        source: "IMS Landing",
-        application: "Institute Management System",
+        source: "Votto Landing",
+        application: "Votto Sanitary Ware Management System",
         timestamp: serverTimestamp(),
       });
       setSubmitSuccess(true);
@@ -306,53 +302,84 @@ const ImsLanding = () => {
   const features = [
     {
       icon: <Users className="w-5 h-5" />,
-      title: "Student Management",
-      desc: "Complete student lifecycle management from admission to graduation with automated workflows.",
-      color: "from-[#3B82F6] to-[#2563eb]",
+      title: "Dealer Management",
+      desc: "Complete dealer lifecycle management from onboarding to performance tracking with automated workflows.",
+      color: "from-[#D97732] to-[#E8984F]",
       metrics: "100% Customizable",
     },
     {
-      icon: <BookOpen className="w-5 h-5" />,
-      title: "Course Management",
-      desc: "Create and manage courses, modules, and curriculum with drag-and-drop simplicity.",
-      color: "from-[#3B82F6] to-[#1d4ed8]",
+      icon: <ShoppingCart className="w-5 h-5" />,
+      title: "Procurement & Orders",
+      desc: "Track orders, approve requests, and manage fulfillment with real-time status updates and admin remarks.",
+      color: "from-[#D97732] to-[#B8611F]",
       metrics: "Enterprise Grade",
     },
     {
-      icon: <UserCheck className="w-5 h-5" />,
-      title: "Faculty & Staff Management",
-      desc: "Streamline faculty profiles, attendance tracking, payroll, and performance reviews.",
-      color: "from-[#3B82F6] to-[#1e3a8a]",
-      metrics: "SOC2 Compliant",
-    },
-    {
-      icon: <CalendarCheck className="w-5 h-5" />,
-      title: "Attendance Tracking",
-      desc: "Real-time digital attendance with biometric integration and detailed analytics.",
-      color: "from-[#3B82F6] to-[#2563eb]",
+      icon: <MapPin className="w-5 h-5" />,
+      title: "Real-time Location Tracking",
+      desc: "GPS-based tracking for field teams with territory mapping and route optimization capabilities.",
+      color: "from-[#D97732] to-[#E8984F]",
       metrics: "40% Faster",
     },
     {
-      icon: <CreditCard className="w-5 h-5" />,
-      title: "Fee & Finance Management",
-      desc: "Automated fee collection, expense tracking, and comprehensive financial reporting.",
-      color: "from-[#3B82F6] to-[#1d4ed8]",
+      icon: <BarChart3 className="w-5 h-5" />,
+      title: "Analytics & Reporting",
+      desc: "Interactive charts and visualizations for sales metrics, performance analytics, and territory analysis.",
+      color: "from-[#D97732] to-[#B8611F]",
+      metrics: "Real-time",
+    },
+    {
+      icon: <FileText className="w-5 h-5" />,
+      title: "PDF Generation & Printing",
+      desc: "Generate invoices, reports, and documents with printing and sharing capabilities.",
+      color: "from-[#D97732] to-[#E8984F]",
       metrics: "Zero Stockouts",
     },
     {
-      icon: <FileCheck className="w-5 h-5" />,
-      title: "Exam & Result Management",
-      desc: "Digital exam scheduling, online assessments, and real-time result generation.",
-      color: "from-[#3B82F6] to-[#1e3a8a]",
-      metrics: "Real-time",
+      icon: <Shield className="w-5 h-5" />,
+      title: "Role-based Access Control",
+      desc: "Secure multi-role system with custom permissions for Admin, Dealer, Salesman, and Marketing teams.",
+      color: "from-[#D97732] to-[#B8611F]",
+      metrics: "SOC2 Compliant",
+    },
+  ];
+
+  const roles = [
+    {
+      icon: <Award className="w-6 h-6" />,
+      title: "Admin",
+      desc: "Full system access, dealer and staff management, order processing, global inventory, and performance analytics.",
+      color: "from-orange-500/20 to-amber-500/10",
+      border: "border-orange-500/20",
+    },
+    {
+      icon: <Building2 className="w-6 h-6" />,
+      title: "Dealer",
+      desc: "Inventory management, procurement, salesman tracking, performance analytics, and service ticket management.",
+      color: "from-amber-500/20 to-orange-500/10",
+      border: "border-amber-500/20",
+    },
+    {
+      icon: <UserCheck className="w-6 h-6" />,
+      title: "Salesman",
+      desc: "Record sales, view personal performance, leaderboard rankings, and submit service requests for customers.",
+      color: "from-orange-500/20 to-red-500/10",
+      border: "border-orange-500/20",
+    },
+    {
+      icon: <MapPin className="w-6 h-6" />,
+      title: "Marketing",
+      desc: "Field visit tracking, order capture, territory analytics, location tracking, and conversion rate analysis.",
+      color: "from-amber-500/20 to-yellow-500/10",
+      border: "border-amber-500/20",
     },
   ];
 
   const benefits = [
-    "Centralized student data with secure role-based access",
-    "Real-time updates across all institute departments",
-    "Automated fee and finance management",
-    "Comprehensive academic and operational analytics",
+    "Centralized data with secure role-based access",
+    "Real-time updates across all departments",
+    "Automated procurement and inventory management",
+    "Comprehensive sales and operational analytics",
     "Secure architecture with audit trails",
     "24/7 dedicated support and regular updates",
   ];
@@ -360,58 +387,58 @@ const ImsLanding = () => {
   const processSteps = [
     {
       number: "01",
-      title: "Student Registration",
-      desc: "Quick digital intake with complete demographic details",
+      title: "Dealer Onboarding",
+      desc: "Quick digital intake with complete business details",
     },
     {
       number: "02",
-      title: "Course Enrollment",
-      desc: "Easy course selection and enrollment management",
+      title: "Order Placement",
+      desc: "Easy order creation and fulfillment tracking",
     },
     {
       number: "03",
-      title: "Attendance Tracking",
-      desc: "Digital attendance with real-time monitoring",
+      title: "Inventory Tracking",
+      desc: "Real-time stock management and updates",
     },
     {
       number: "04",
-      title: "Fee Collection",
-      desc: "Automated invoicing and payment processing",
+      title: "Sales Recording",
+      desc: "Field sales capture and leaderboard updates",
     },
     {
       number: "05",
       title: "Reporting & Analytics",
-      desc: "Comprehensive insights and regulatory compliance reports",
+      desc: "Comprehensive insights and business performance reports",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white antialiased overflow-x-hidden">
+    <div className="min-h-screen bg-[#0A0E1A] text-white antialiased overflow-x-hidden">
       {/* ══ Global ambient background ══════════════════════════════════════ */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,_#3B82F628,_transparent)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_80%_90%,_#2563eb18,_transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,_#D9773228,_transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_80%_90%,_#B8611F18,_transparent)]" />
         <div
           className="absolute inset-0 opacity-[0.06]"
           style={{
-            backgroundImage: `linear-gradient(rgba(59,130,246,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.4) 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(rgba(217,119,50,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(217,119,50,0.4) 1px, transparent 1px)`,
             backgroundSize: "60px 60px",
           }}
         />
         <motion.div
           animate={{ x: [0, 90, -40, 0], y: [0, -80, 60, 0] }}
           transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-16 left-[10%] w-[480px] h-[480px] bg-[#3B82F6]/25 rounded-full blur-[120px]"
+          className="absolute top-16 left-[10%] w-[480px] h-[480px] bg-[#D97732]/25 rounded-full blur-[120px]"
         />
         <motion.div
           animate={{ x: [0, -70, 50, 0], y: [0, 100, -60, 0] }}
           transition={{ duration: 35, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-24 right-[8%] w-[560px] h-[560px] bg-[#1e3a8a]/20 rounded-full blur-[140px]"
+          className="absolute bottom-24 right-[8%] w-[560px] h-[560px] bg-[#E8984F]/20 rounded-full blur-[140px]"
         />
       </div>
 
       {/* ══ NAVBAR ══════════════════════════════════════════════════════════ */}
-      <ImsNavbar onOpenModal={() => setIsModalOpen(true)} />
+      <VottoNavbar onOpenModal={() => setIsModalOpen(true)} />
 
       {/* ══ HERO ════════════════════════════════════════════════════════════ */}
       <section
@@ -428,7 +455,7 @@ const ImsLanding = () => {
             className="space-y-7"
           >
             <motion.div variants={fadeUp} custom={0}>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3B82F6]/20 border border-[#3B82F6]/30 backdrop-blur-md text-[#60a5fa] text-sm font-medium tracking-wide">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D97732]/20 border border-[#D97732]/30 backdrop-blur-md text-[#E8984F] text-sm font-medium tracking-wide">
                 <motion.span
                   animate={{ rotate: [0, 15, -10, 0] }}
                   transition={{
@@ -439,7 +466,7 @@ const ImsLanding = () => {
                 >
                   <Sparkles className="w-4 h-4" />
                 </motion.span>
-                Institute Management Solution
+                Sanitary Ware Management Solution
               </span>
             </motion.div>
 
@@ -454,7 +481,7 @@ const ImsLanding = () => {
                 className="text-transparent bg-clip-text"
                 style={{
                   backgroundImage:
-                    "linear-gradient(135deg, #60a5fa 0%, #3B82F6 30%, #2563eb 65%, #1e3a8a 100%)",
+                    "linear-gradient(135deg, #E8984F 0%, #D97732 30%, #B8611F 65%, #300808 100%)",
                   backgroundSize: "200% 100%",
                 }}
               >
@@ -475,7 +502,7 @@ const ImsLanding = () => {
                     backgroundSize: "200% 100%",
                   }}
                 >
-                  Institute Management
+                  Sanitary Ware Business
                 </motion.span>
               </span>
             </motion.h1>
@@ -483,11 +510,11 @@ const ImsLanding = () => {
             <motion.p
               variants={fadeUp}
               custom={2}
-              className="text-gray-400 text-lg leading-relaxed max-w-[520px]"
+              className="text-[#B0B0B0] text-lg leading-relaxed max-w-[520px]"
             >
-              Streamline admissions, courses, students, faculty, staff,
-              finances, and more with our powerful, user-friendly Institute
-              Management System.
+              Streamline your entire sanitary ware business with our powerful,
+              user-friendly Management System designed for dealers, salesmen,
+              and marketing teams.
             </motion.p>
 
             <motion.div
@@ -499,13 +526,13 @@ const ImsLanding = () => {
                 onClick={() => setIsModalOpen(true)}
                 whileHover={{
                   scale: 1.04,
-                  boxShadow: "0 0 32px 4px rgba(59,130,246,0.55)",
+                  boxShadow: "0 0 32px 4px rgba(217,119,50,0.55)",
                 }}
                 whileTap={{ scale: 0.97 }}
                 className="relative group px-8 py-3.5 rounded-xl font-semibold text-sm overflow-hidden"
                 style={{
                   background:
-                    "linear-gradient(135deg, #3B82F6 0%, #2563eb 100%)",
+                    "linear-gradient(135deg, #D97732 0%, #E8984F 100%)",
                 }}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
@@ -523,65 +550,19 @@ const ImsLanding = () => {
             </motion.div>
           </motion.div>
 
-          {/* Right – dashboard mockup */}
+          {/* Right – Votto Page Image */}
           <motion.div
             variants={fadeScale}
             initial="hidden"
             animate={isHeroInView ? "visible" : "hidden"}
             className="relative"
           >
-            <div className="absolute inset-[-20px] bg-gradient-to-br from-[#3B82F6]/30 to-[#2563eb]/10 rounded-3xl blur-2xl" />
-            <div className="relative bg-gradient-to-br from-[#111111]/95 to-[#020617]/95 rounded-2xl p-6 border border-[#3B82F6]/30 backdrop-blur-sm shadow-2xl shadow-[#3B82F6]/20">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-[#3B82F6] to-[#2563eb] rounded-xl flex items-center justify-center shadow-lg">
-                    <BookOpen className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold">
-                      IMS Dashboard
-                    </div>
-                    <div className="text-gray-500 text-xs">
-                      Institute Overview
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                  <div className="text-xs text-gray-500">Total Students</div>
-                  <div className="text-xl font-bold">2,847</div>
-                </div>
-                <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                  <div className="text-xs text-gray-500">Faculty</div>
-                  <div className="text-xl font-bold">156</div>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500">Recent Activity</span>
-                  <span className="text-blue-400">View all</span>
-                </div>
-                {[
-                  "New admission – John Doe",
-                  "Fee payment received",
-                  "Exam scheduled",
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between text-xs group hover:bg-white/5 p-2 rounded-lg transition-colors"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-400" />
-                      <span className="text-gray-400">{item}</span>
-                    </div>
-                    <span className="text-gray-600">{i + 1}m ago</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <div className="absolute inset-[-20px] bg-gradient-to-br from-[#D97732]/30 to-[#B8611F]/10 rounded-3xl blur-2xl" />
+            <img
+              src={vottoPageImage}
+              alt="Votto Platform"
+              className="w-full h-auto rounded-2xl shadow-2xl shadow-[#D97732]/20 relative z-10"
+            />
           </motion.div>
         </div>
       </section>
@@ -599,19 +580,20 @@ const ImsLanding = () => {
             transition={{ duration: 0.7, ease: EASE }}
             className="text-center max-w-2xl mx-auto mb-16"
           >
-            <span className="inline-block px-4 py-1.5 bg-[#3B82F6]/20 border border-[#3B82F6]/15 rounded-full text-[#60a5fa] text-xs font-semibold uppercase tracking-widest mb-5">
+            <span className="inline-block px-4 py-1.5 bg-[#D97732]/20 border border-[#D97732]/15 rounded-full text-[#E8984F] text-xs font-semibold uppercase tracking-widest mb-5">
               Powerful Features
             </span>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-[-0.02em] mb-5">
               Everything You Need to
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60a5fa] via-[#3B82F6] to-[#2563eb]">
-                Manage Your Institute
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E8984F] via-[#D97732] to-[#B8611F]">
+                Manage Your Business
               </span>
             </h2>
-            <p className="text-gray-400 text-base leading-relaxed">
+            <p className="text-[#B0B0B0] text-base leading-relaxed">
               A complete suite of tools designed to streamline operations,
-              enhance productivity, and improve efficiency.
+              enhance productivity, and improve efficiency for your sanitary
+              ware business.
             </p>
           </motion.div>
 
@@ -631,22 +613,22 @@ const ImsLanding = () => {
                   y: -6,
                   transition: { duration: 0.3, ease: EASE },
                 }}
-                className="group relative p-6 rounded-2xl border border-white/[0.07] bg-white/[0.025] backdrop-blur-sm overflow-hidden cursor-default"
+                className="group relative p-6 rounded-2xl border border-[#2A3148] bg-white/[0.025] backdrop-blur-sm overflow-hidden cursor-default"
               >
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${feat.color} opacity-0 group-hover:opacity-[0.08] transition-opacity duration-500 rounded-2xl`}
                 />
                 <motion.div
-                  className="absolute bottom-0 left-0 h-[1.5px] bg-gradient-to-r from-[#3B82F6] via-[#60a5fa] to-[#3B82F6]"
+                  className="absolute bottom-0 left-0 h-[1.5px] bg-gradient-to-r from-[#D97732] via-[#E8984F] to-[#D97732]"
                   initial={{ scaleX: 0, originX: 0 }}
                   whileHover={{ scaleX: 1 }}
                   transition={{ duration: 0.4, ease: EASE }}
                 />
-                <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#60a5fa]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#E8984F]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="relative z-10">
                   <div className="flex items-start justify-between mb-5">
                     <div
-                      className={`p-2.5 bg-gradient-to-br ${feat.color} rounded-xl shadow-lg shadow-[#3B82F6]/30`}
+                      className={`p-2.5 bg-gradient-to-br ${feat.color} rounded-xl shadow-lg shadow-[#D97732]/30`}
                     >
                       <motion.span
                         className="block"
@@ -656,15 +638,86 @@ const ImsLanding = () => {
                         {feat.icon}
                       </motion.span>
                     </div>
-                    <span className="text-[11px] font-semibold text-[#60a5fa] bg-[#3B82F6]/30 border border-[#3B82F6]/15 px-2.5 py-1 rounded-full">
+                    <span className="text-[11px] font-semibold text-[#E8984F] bg-[#D97732]/30 border border-[#D97732]/15 px-2.5 py-1 rounded-full">
                       {feat.metrics}
                     </span>
                   </div>
                   <h3 className="font-semibold text-base mb-2 text-white/90 group-hover:text-white transition-colors">
                     {feat.title}
                   </h3>
-                  <p className="text-gray-500 text-sm leading-relaxed group-hover:text-gray-400 transition-colors">
+                  <p className="text-[#6B7280] text-sm leading-relaxed group-hover:text-[#B0B0B0] transition-colors">
                     {feat.desc}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══ ROLES ════════════════════════════════════════════════════════ */}
+      <section
+        id="roles"
+        className="relative py-28 px-4 sm:px-6 lg:px-8 z-10 scroll-mt-[70px]"
+      >
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: EASE }}
+            className="text-center max-w-2xl mx-auto mb-16"
+          >
+            <span className="inline-block px-4 py-1.5 bg-[#D97732]/20 border border-[#D97732]/15 rounded-full text-[#E8984F] text-xs font-semibold uppercase tracking-widest mb-5">
+              User Roles
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-[-0.02em] mb-5">
+              Designed for Every
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E8984F] via-[#D97732] to-[#B8611F]">
+                Role in Your Business
+              </span>
+            </h2>
+            <p className="text-[#B0B0B0] text-base leading-relaxed">
+              Our system provides tailored experiences for Admin, Dealers,
+              Salesmen, and Marketing teams.
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-5"
+          >
+            {roles.map((role, i) => (
+              <motion.div
+                key={i}
+                variants={fadeUp}
+                custom={i}
+                whileHover={{
+                  y: -6,
+                  transition: { duration: 0.3, ease: EASE },
+                }}
+                className={`group relative p-6 rounded-2xl border ${role.border} bg-gradient-to-br ${role.color} backdrop-blur-sm overflow-hidden cursor-default`}
+              >
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#D97732]/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10">
+                  <div className="mb-5 p-3 bg-gradient-to-br from-[#D97732] to-[#E8984F] rounded-xl w-fit shadow-lg shadow-[#D97732]/30">
+                    <motion.span
+                      className="block"
+                      whileHover={{ scale: 1.2, rotate: 8 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      {role.icon}
+                    </motion.span>
+                  </div>
+                  <h3 className="font-semibold text-lg mb-3 text-white/90 group-hover:text-white transition-colors">
+                    {role.title}
+                  </h3>
+                  <p className="text-[#B0B0B0] text-sm leading-relaxed group-hover:text-[#D0D0D0] transition-colors">
+                    {role.desc}
                   </p>
                 </div>
               </motion.div>
@@ -686,20 +739,20 @@ const ImsLanding = () => {
             transition={{ duration: 0.85, ease: EASE }}
             className="space-y-6"
           >
-            <span className="inline-block px-4 py-1.5 bg-[#3B82F6]/20 border border-[#3B82F6]/15 rounded-full text-[#60a5fa] text-xs font-semibold uppercase tracking-widest">
-              Why Choose Our IMS
+            <span className="inline-block px-4 py-1.5 bg-[#D97732]/20 border border-[#D97732]/15 rounded-full text-[#E8984F] text-xs font-semibold uppercase tracking-widest">
+              Why Choose Votto
             </span>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-[-0.02em]">
-              Built for Modern
+              Built for Your
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60a5fa] via-[#3B82F6] to-[#2563eb]">
-                Institute Workflows
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E8984F] via-[#D97732] to-[#B8611F]">
+                Sanitary Ware Business
               </span>
             </h2>
-            <p className="text-gray-400 text-base leading-relaxed max-w-lg">
-              Our Institute Management System is designed to simplify
-              administrative tasks, enhance communication, and improve overall
-              efficiency for educational institutions of all sizes.
+            <p className="text-[#B0B0B0] text-base leading-relaxed max-w-lg">
+              Our system is designed specifically for the sanitary ware industry
+              to simplify operations, enhance communication, and boost your
+              overall efficiency.
             </p>
             <div className="space-y-3.5 pt-2">
               {benefits.map((b, i) => (
@@ -713,11 +766,11 @@ const ImsLanding = () => {
                 >
                   <motion.div
                     whileHover={{ scale: 1.2, rotate: 10 }}
-                    className="mt-0.5 flex-shrink-0 p-0.5 bg-gradient-to-br from-[#3B82F6] to-[#60a5fa] rounded-full"
+                    className="mt-0.5 flex-shrink-0 p-0.5 bg-gradient-to-br from-[#D97732] to-[#E8984F] rounded-full"
                   >
                     <CheckCircle2 className="w-4 h-4 text-white" />
                   </motion.div>
-                  <span className="text-gray-400 text-sm group-hover:text-gray-200 transition-colors leading-relaxed">
+                  <span className="text-[#B0B0B0] text-sm group-hover:text-[#D0D0D0] transition-colors leading-relaxed">
                     {b}
                   </span>
                 </motion.div>
@@ -734,28 +787,28 @@ const ImsLanding = () => {
           >
             {[
               {
-                label: "Students",
-                value: "10K+",
-                color: "from-blue-500/20 to-cyan-500/10",
-                border: "border-blue-500/20",
-              },
-              {
-                label: "Institutes",
+                label: "Dealers",
                 value: "500+",
-                color: "from-blue-500/20 to-indigo-500/10",
-                border: "border-blue-500/20",
+                color: "from-orange-500/20 to-amber-500/10",
+                border: "border-orange-500/20",
               },
               {
-                label: "Active Users",
-                value: "5K+",
-                color: "from-blue-500/20 to-sky-500/10",
-                border: "border-blue-500/20",
+                label: "Salesmen",
+                value: "2K+",
+                color: "from-amber-500/20 to-orange-500/10",
+                border: "border-amber-500/20",
               },
               {
-                label: "Data Points",
+                label: "Orders/Day",
+                value: "1K+",
+                color: "from-orange-500/20 to-red-500/10",
+                border: "border-orange-500/20",
+              },
+              {
+                label: "Transactions",
                 value: "1M+",
-                color: "from-blue-500/20 to-blue-600/10",
-                border: "border-blue-500/20",
+                color: "from-amber-500/20 to-yellow-500/10",
+                border: "border-amber-500/20",
               },
             ].map((item, i) => (
               <motion.div
@@ -769,7 +822,7 @@ const ImsLanding = () => {
                   <div className="text-3xl font-bold mb-1 tracking-tight">
                     {item.value}
                   </div>
-                  <div className="text-sm text-gray-400">{item.label}</div>
+                  <div className="text-sm text-[#B0B0B0]">{item.label}</div>
                 </div>
               </motion.div>
             ))}
@@ -778,10 +831,7 @@ const ImsLanding = () => {
       </section>
 
       {/* ══ PROCESS ═════════════════════════════════════════════════════════ */}
-      <section
-        id="contact"
-        className="relative py-28 px-4 sm:px-6 lg:px-8 z-10 scroll-mt-[70px]"
-      >
+      <section className="relative py-28 px-4 sm:px-6 lg:px-8 z-10 scroll-mt-[70px]">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -790,18 +840,18 @@ const ImsLanding = () => {
             transition={{ duration: 0.7, ease: EASE }}
             className="text-center max-w-2xl mx-auto mb-16"
           >
-            <span className="inline-block px-4 py-1.5 bg-[#3B82F6]/20 border border-[#3B82F6]/15 rounded-full text-[#60a5fa] text-xs font-semibold uppercase tracking-widest mb-5">
+            <span className="inline-block px-4 py-1.5 bg-[#D97732]/20 border border-[#D97732]/15 rounded-full text-[#E8984F] text-xs font-semibold uppercase tracking-widest mb-5">
               Simple Workflow
             </span>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-[-0.02em] mb-5">
               How It Works in{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60a5fa] via-[#3B82F6] to-[#2563eb]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E8984F] via-[#D97732] to-[#B8611F]">
                 5 Simple Steps
               </span>
             </h2>
-            <p className="text-gray-400 text-base leading-relaxed">
-              From student registration to graduation, streamline your entire
-              workflow with our intuitive platform.
+            <p className="text-[#B0B0B0] text-base leading-relaxed">
+              From dealer onboarding to transaction recording, streamline your
+              entire workflow with our intuitive platform.
             </p>
           </motion.div>
 
@@ -812,7 +862,7 @@ const ImsLanding = () => {
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.4, ease: EASE, delay: 0.3 }}
-                className="h-full bg-gradient-to-r from-[#3B82F6]/30 via-[#60a5fa]/40 to-[#3B82F6]/30"
+                className="h-full bg-gradient-to-r from-[#D97732]/30 via-[#E8984F]/40 to-[#D97732]/30"
               />
             </div>
             <div className="grid lg:grid-cols-5 gap-7">
@@ -830,17 +880,17 @@ const ImsLanding = () => {
                   className="group text-center relative"
                 >
                   <div className="relative inline-flex items-center justify-center mb-5">
-                    <div className="w-14 h-14 rounded-full bg-black border border-[#3B82F6]/50 flex items-center justify-center shadow-lg shadow-[#3B82F6]/20 group-hover:border-[#60a5fa]/50 group-hover:shadow-[#60a5fa]/20 transition-all duration-400">
-                      <span className="text-base font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#60a5fa] to-[#2563eb]">
+                    <div className="w-14 h-14 rounded-full bg-[#0A0E1A] border border-[#D97732]/50 flex items-center justify-center shadow-lg shadow-[#D97732]/20 group-hover:border-[#E8984F]/50 group-hover:shadow-[#E8984F]/20 transition-all duration-400">
+                      <span className="text-base font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#E8984F] to-[#B8611F]">
                         {step.number}
                       </span>
                     </div>
-                    <div className="absolute inset-0 rounded-full bg-[#60a5fa]/10 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-500 blur-md" />
+                    <div className="absolute inset-0 rounded-full bg-[#E8984F]/10 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-500 blur-md" />
                   </div>
                   <h3 className="font-semibold text-sm mb-2 text-white/90">
                     {step.title}
                   </h3>
-                  <p className="text-xs text-gray-500 leading-relaxed">
+                  <p className="text-xs text-[#6B7280] leading-relaxed">
                     {step.desc}
                   </p>
                 </motion.div>
@@ -860,7 +910,7 @@ const ImsLanding = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="relative overflow-hidden bg-gradient-to-br from-[#3B82F6] via-[#2563eb] to-[#3B82F6] p-16 rounded-3xl text-center shadow-2xl shadow-[#3B82F6]/30"
+            className="relative overflow-hidden bg-gradient-to-br from-[#050A19] via-[#D97732]/20 to-[#300808] p-16 rounded-3xl text-center shadow-2xl shadow-[#D97732]/30 border border-[#2A3148]"
           >
             {/* Background Effects */}
             <div className="absolute inset-0">
@@ -875,7 +925,7 @@ const ImsLanding = () => {
               >
                 <defs>
                   <pattern
-                    id="grid-ims"
+                    id="grid-votto"
                     width="20"
                     height="20"
                     patternUnits="userSpaceOnUse"
@@ -888,7 +938,7 @@ const ImsLanding = () => {
                     />
                   </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#grid-ims)" />
+                <rect width="100%" height="100%" fill="url(#grid-votto)" />
               </svg>
             </div>
 
@@ -900,12 +950,7 @@ const ImsLanding = () => {
                 transition={{ delay: 0.1 }}
                 className="flex items-center justify-center gap-3 mb-6"
               >
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                  <BookOpen className="w-6 h-6 text-white" />
-                </div>
-                <span className="text-2xl font-bold text-white tracking-tight">
-                  IMS
-                </span>
+                <img src={vottoLogo} alt="Votto" className="h-24 w-auto" />
               </motion.div>
 
               <motion.h2
@@ -914,7 +959,7 @@ const ImsLanding = () => {
                 transition={{ delay: 0.2 }}
                 className="text-5xl font-bold mb-4 text-white"
               >
-                Experience the Future of Institute Management
+                Experience the Future of Sanitary Ware Management
               </motion.h2>
 
               <motion.p
@@ -923,8 +968,8 @@ const ImsLanding = () => {
                 transition={{ delay: 0.3 }}
                 className="mb-8 text-xl text-white/90"
               >
-                Streamline admissions, courses, students, faculty, and finances
-                - all from one powerful platform.
+                Streamline orders, inventory, sales, and your entire team - all
+                from one powerful platform.
               </motion.p>
 
               <motion.button
@@ -934,7 +979,7 @@ const ImsLanding = () => {
                 onClick={() => setIsModalOpen(true)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-3 px-10 py-4 bg-white text-[#3B82F6] rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all"
+                className="inline-flex items-center gap-3 px-10 py-4 bg-white text-[#D97732] rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all"
               >
                 <svg
                   className="w-6 h-6"
@@ -1010,7 +1055,7 @@ const ImsLanding = () => {
       </section>
 
       {/* ══ FOOTER ══════════════════════════════════════════════════════════ */}
-      <ImsFooter />
+      <VottoFooter />
 
       {/* ══ CONTACT MODAL ════════════════════════════════════════════════════ */}
       <AnimatePresence>
@@ -1026,19 +1071,19 @@ const ImsLanding = () => {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-[#020617] w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl shadow-[#3B82F6]/30 relative flex flex-col md:flex-row min-h-[500px]"
+              className="bg-[#111827] w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl shadow-[#D97732]/30 relative flex flex-col md:flex-row min-h-[500px]"
             >
               {/* Close Button */}
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/5 hover:bg-white/10 text-[#B0B0B0] hover:text-white transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
 
               {/* Left Side: Image/Branding */}
-              <div className="md:w-1/2 bg-gradient-to-br from-[#111111] to-[#020617] flex flex-col items-center justify-center p-12 relative overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#3B82F6/20,_transparent_50%)] pointer-events-none" />
+              <div className="md:w-1/2 bg-gradient-to-br from-[#1A2035] to-[#111827] flex flex-col items-center justify-center p-12 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#D97732/20,_transparent_50%)] pointer-events-none" />
                 <motion.img
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -1049,22 +1094,22 @@ const ImsLanding = () => {
                 />
                 <div className="mt-8 text-center relative z-10">
                   <div className="flex items-center justify-center gap-2 mb-2">
-                    <div className="w-2 h-2 rounded-full bg-[#3B82F6] animate-pulse" />
-                    <span className="text-[#60a5fa] font-bold uppercase tracking-widest text-xs">
+                    <div className="w-2 h-2 rounded-full bg-[#D97732] animate-pulse" />
+                    <span className="text-[#E8984F] font-bold uppercase tracking-widest text-xs">
                       Customer Service
                     </span>
                   </div>
-                  <p className="text-gray-400 text-sm max-w-[200px]">
+                  <p className="text-[#B0B0B0] text-sm max-w-[200px]">
                     Our expert team is here to help you revolutionize your
-                    institute management.
+                    sanitary ware business.
                   </p>
                 </div>
                 {/* Decorative circle */}
-                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-[#3B82F6]/20 rounded-full blur-3xl" />
+                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-[#D97732]/20 rounded-full blur-3xl" />
               </div>
 
               {/* Right Side: Form */}
-              <div className="md:w-1/2 p-8 md:p-12 bg-[#020617] flex flex-col justify-center">
+              <div className="md:w-1/2 p-8 md:p-12 bg-[#111827] flex flex-col justify-center">
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -1072,29 +1117,29 @@ const ImsLanding = () => {
                 >
                   {submitSuccess ? (
                     <div className="text-center space-y-4">
-                      <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto text-green-400 border border-green-500/20">
+                      <div className="w-20 h-20 bg-[#10B981]/10 rounded-full flex items-center justify-center mx-auto text-[#10B981] border border-[#10B981]/20">
                         <CheckCircle2 className="w-10 h-10" />
                       </div>
                       <h3 className="text-3xl font-bold text-white">
                         Thank You!
                       </h3>
-                      <p className="text-gray-400 text-lg">
+                      <p className="text-[#B0B0B0] text-lg">
                         Your enquiry has been received. We'll get back to you
                         soon.
                       </p>
                     </div>
                   ) : (
                     <>
-                      <h3 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#60a5fa] to-[#3B82F6] mb-2">
+                      <h3 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#E8984F] to-[#D97732] mb-2">
                         Need support?
                       </h3>
-                      <p className="text-gray-400 mb-8">
+                      <p className="text-[#B0B0B0] mb-8">
                         Contact us if you need further assistance.
                       </p>
 
                       <form className="space-y-4" onSubmit={handleFormSubmit}>
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-1">
+                          <label className="block text-sm font-medium text-[#D0D0D0] mb-1">
                             Name and surname
                           </label>
                           <input
@@ -1104,14 +1149,14 @@ const ImsLanding = () => {
                             onChange={(e) =>
                               setFormData({ ...formData, name: e.target.value })
                             }
-                            className="w-full px-4 py-3 bg-[#1A1A1A] border border-white/10 rounded-xl focus:bg-[#1A1A1A] focus:ring-2 focus:ring-[#3B82F6] transition-all outline-none text-white"
+                            className="w-full px-4 py-3 bg-[#1A2035] border border-[#2A3148] rounded-xl focus:bg-[#1A2035] focus:ring-2 focus:ring-[#D97732] transition-all outline-none text-white"
                             placeholder="Enter your name"
                           />
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-1">
+                            <label className="block text-sm font-medium text-[#D0D0D0] mb-1">
                               Email
                             </label>
                             <input
@@ -1124,12 +1169,12 @@ const ImsLanding = () => {
                                   email: e.target.value,
                                 })
                               }
-                              className="w-full px-4 py-3 bg-[#1A1A1A] border border-white/10 rounded-xl focus:bg-[#1A1A1A] focus:ring-2 focus:ring-[#3B82F6] transition-all outline-none text-white"
+                              className="w-full px-4 py-3 bg-[#1A2035] border border-[#2A3148] rounded-xl focus:bg-[#1A2035] focus:ring-2 focus:ring-[#D97732] transition-all outline-none text-white"
                               placeholder="mail@example.com"
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-1">
+                            <label className="block text-sm font-medium text-[#D0D0D0] mb-1">
                               Phone number
                             </label>
                             <input
@@ -1142,14 +1187,14 @@ const ImsLanding = () => {
                                   phone: e.target.value,
                                 })
                               }
-                              className="w-full px-4 py-3 bg-[#1A1A1A] border border-white/10 rounded-xl focus:bg-[#1A1A1A] focus:ring-2 focus:ring-[#3B82F6] transition-all outline-none text-white"
+                              className="w-full px-4 py-3 bg-[#1A2035] border border-[#2A3148] rounded-xl focus:bg-[#1A2035] focus:ring-2 focus:ring-[#D97732] transition-all outline-none text-white"
                               placeholder="+1 (234) 567-890"
                             />
                           </div>
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-1">
+                          <label className="block text-sm font-medium text-[#D0D0D0] mb-1">
                             Please enter the details of your request.
                           </label>
                           <textarea
@@ -1162,7 +1207,7 @@ const ImsLanding = () => {
                                 message: e.target.value,
                               })
                             }
-                            className="w-full px-4 py-3 bg-[#1A1A1A] border border-white/10 rounded-xl focus:bg-[#1A1A1A] focus:ring-2 focus:ring-[#3B82F6] transition-all outline-none text-white resize-none"
+                            className="w-full px-4 py-3 bg-[#1A2035] border border-[#2A3148] rounded-xl focus:bg-[#1A2035] focus:ring-2 focus:ring-[#D97732] transition-all outline-none text-white resize-none"
                             placeholder="How can we help you?"
                           />
                         </div>
@@ -1171,10 +1216,10 @@ const ImsLanding = () => {
                           disabled={isSubmitting}
                           whileHover={{
                             scale: 1.02,
-                            boxShadow: "0 0 30px rgba(59, 130, 246, 0.5)",
+                            boxShadow: "0 0 30px rgba(217,119,50,0.5)",
                           }}
                           whileTap={{ scale: 0.98 }}
-                          className="w-full py-4 bg-gradient-to-r from-[#3B82F6] to-[#2563eb] text-white font-bold rounded-xl shadow-lg shadow-[#3B82F6]/30 transition-all uppercase tracking-widest text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                          className="w-full py-4 bg-gradient-to-r from-[#D97732] to-[#E8984F] text-white font-bold rounded-xl shadow-lg shadow-[#D97732]/30 transition-all uppercase tracking-widest text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
                           {isSubmitting ? (
                             <>
@@ -1198,4 +1243,4 @@ const ImsLanding = () => {
   );
 };
 
-export default ImsLanding;
+export default VottoLanding;

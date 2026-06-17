@@ -5,7 +5,7 @@
     "description": "Servnex is a SaaS-based white-label mobile app for managing service tickets, customer support, and engineer workflows with customizable branding and subscription plans.",
     "technologies": ["Flutter", "Firebase", "Node.js", "Payment Gateway"],
     "image": "/mobile_apps_asstes/servnex.png",
-    "link": "/works/servnex"
+    "link": "/work/servnex"
   },
   {
     "id": 2,
@@ -13,7 +13,7 @@
     "description": "eBricks is a SaaS-based platform for managing construction and civil engineering projects, including sites, workforce, materials, approvals, expenses, and operations.",
     "technologies": ["Flutter", "Firebase", "Node.js", "Payment Gateway"],
     "image": "/mobile_apps_asstes/ebricks.png",
-    "link": "/works/ebricks"
+    "link": "/work/rooks-cst"
   },
   {
     "id": 3,
@@ -21,7 +21,7 @@
     "description": "A inventory management system that helps businesses track stock levels, forecast demand, and automate warehouse operations through real-time analytics and AI-driven insights.",
     "technologies": ["Flutter", "Firebase"],
     "image": "/mobile_apps_asstes/votto.png",
-    "link": "/works/vottoapp"
+    "link": "/work/votto-sanitaryware-management-system"
   },
   {
     "id": 4,

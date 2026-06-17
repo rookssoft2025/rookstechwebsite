@@ -30,6 +30,8 @@ import RooksCstLanding from "./pages/works/RooksCstLanding.jsx";
 import RooksHmsLanding from "./pages/works/RooksHmsLanding.jsx";
 import FmsLanding from "./pages/works/FmsLanding.jsx";
 import ImsLanding from "./pages/works/ImsLanding.jsx";
+import VottoLanding from "./pages/works/VottoLanding.jsx";
+
 import RooksservnexLanding from "./pages/works/RooksservnexLanding.jsx";
 import RookscharityLanding from "./pages/works/RookscharityLanding.jsx";
 import TaskManagementLanding from "./pages/works/TaskManagementLanding.jsx";
@@ -67,6 +69,7 @@ function App() {
         <Route path="/work/servnex" element={<RooksservnexLanding />} />
         <Route path="/work/charity-financial" element={<RookscharityLanding />} />
         <Route path="/work/task-management" element={<TaskManagementLanding />} />
+        <Route path="/work/votto-sanitaryware-management-system" element={<VottoLanding />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/careers/apply" element={<JobApplication />} />
         <Route path="/careers/assessment" element={<AssessmentLogin />} />

@@ -49,6 +49,7 @@ import cloudImage from "../../assets/work/cloud_support_servnex_1773896047966.pn
 import ServnexNavbar from "../../components/layout/ServnexNavbar";
 import ServnexFooter from "../../components/layout/ServnexFooter";
 import servnexLogo from "../../assets/mobile_apps_asstes/servnex.png";
+import servnexPageImage from "../../assets/mobile_apps_asstes/servnexpage.jpg";
 
 const RooksservnexLanding = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -304,7 +305,7 @@ const RooksservnexLanding = () => {
               </motion.div>
             </motion.div>
 
-            {/* RIGHT - Enhanced Dashboard Preview */}
+            {/* RIGHT - Servnex Page Image */}
             <motion.div
               variants={fadeInScale}
               initial="hidden"
@@ -312,111 +313,11 @@ const RooksservnexLanding = () => {
               className="relative"
             >
               <motion.div animate={floatAnimation} className="relative z-10">
-                {/* Professional Dashboard Preview */}
-                <div className="bg-gradient-to-br from-[#1a1f2e]/95 to-[#0f1419]/95 rounded-2xl p-6 border border-[#2d5a9b]/40 backdrop-blur-sm shadow-2xl shadow-[#2d5a9b]/20">
-                  {/* Header */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-[#2d5a9b] to-[#5e72e4] rounded-xl flex items-center justify-center shadow-lg">
-                        <Cloud className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <div className="text-white font-semibold">
-                          Servnex Platform
-                        </div>
-                        <div className="text-gray-400 text-xs">
-                          Enterprise Dashboard
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-                      <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
-                      <div className="w-2 h-2 rounded-full bg-red-400"></div>
-                    </div>
-                  </div>
-
-                  {/* Chart Area */}
-                  <div className="bg-gradient-to-br from-white/5 to-white/[0.02] rounded-xl p-4 mb-6">
-                    <div className="flex justify-between items-center mb-4">
-                      <div className="text-sm font-medium">
-                        Performance Overview
-                      </div>
-                      {/* <select className="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs">
-                                                <option>Last 7 days</option>
-                                                <option>Last 30 days</option>
-                                                <option>Last 90 days</option>
-                                            </select> */}
-                    </div>
-                    <div className="h-24 flex items-end justify-between gap-1">
-                      {[35, 45, 55, 65, 75, 85, 70, 60, 50, 40, 45, 55].map(
-                        (height, i) => (
-                          <motion.div
-                            key={i}
-                            initial={{ height: 0 }}
-                            animate={{ height }}
-                            transition={{ delay: i * 0.05, duration: 0.5 }}
-                            className="w-full bg-gradient-to-t from-[#2d5a9b] to-[#6dd5ff] rounded-t-lg hover:from-[#5e72e4] hover:to-[#6dd5ff] transition-all cursor-pointer"
-                            style={{ height: `${height}%` }}
-                          />
-                        ),
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Enhanced Activity Feed */}
-                  <div className="space-y-3">
-                    <div className="text-xs font-medium text-gray-400 flex items-center justify-between">
-                      <span>Recent Activity</span>
-                      <span className="text-cyan-400">View all</span>
-                    </div>
-                    {[
-                      {
-                        action: "New user registration",
-                        time: "2m ago",
-                        type: "user",
-                        status: "success",
-                      },
-                      {
-                        action: "Payment processed",
-                        time: "5m ago",
-                        type: "payment",
-                        status: "success",
-                      },
-                      {
-                        action: "System backup",
-                        time: "1h ago",
-                        type: "system",
-                        status: "pending",
-                      },
-                      {
-                        action: "API key generated",
-                        time: "2h ago",
-                        type: "api",
-                        status: "success",
-                      },
-                    ].map((activity, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center justify-between text-xs group hover:bg-white/5 p-2 rounded-lg transition-colors"
-                      >
-                        <div className="flex items-center gap-2">
-                          <div
-                            className={`w-2 h-2 rounded-full ${
-                              activity.status === "success"
-                                ? "bg-green-400"
-                                : "bg-yellow-400"
-                            }`}
-                          />
-                          <span className="text-gray-300">
-                            {activity.action}
-                          </span>
-                        </div>
-                        <span className="text-gray-500">{activity.time}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <img
+                  src={servnexPageImage}
+                  alt="Servnex Platform"
+                  className="w-full h-auto rounded-2xl shadow-2xl shadow-[#2d5a9b]/20"
+                />
               </motion.div>
 
               {/* Decorative elements */}
