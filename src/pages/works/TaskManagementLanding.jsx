@@ -3,48 +3,87 @@ import { motion, useScroll, useTransform, useInView, AnimatePresence } from "fra
 import { db } from "../../firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import {
-    CheckSquare, ArrowRight, Play, Users, BarChart3,
-    Clock, Zap, Shield, ChevronDown, Layers, Target, Activity,
-    PlusCircle, ArrowUpRight, Check, X, SendHorizontal, Mail, Phone, MessageSquare
+  CheckSquare, ArrowRight, Play, Users, BarChart3,
+  Clock, Zap, Shield, ChevronDown, Layers, Target, Activity,
+  PlusCircle, ArrowUpRight, Check, X, SendHorizontal, Mail, Phone, MessageCircle,
+  Bell, Briefcase, Globe, Lock, Star, Calendar, Smartphone,
+  TrendingUp, Award
 } from "lucide-react";
+import ROOKSNavbar from "../../components/layout/ROOKSNavbar";
+import ROOKSFooter from "../../components/layout/ROOKSFooter";
+import rookstodoLogo from "../../assets/mobile_apps_asstes/rookstodo.png";
 import tmsimg from "../../assets/work/tsm.jpg";
 
-/* ─── Design Tokens ─────────────────────────────────────────── */
 const FONTS = `
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 `;
 
-/* ─── Data ─────────────────────────────────────────────────── */
 const FEATURES = [
-    { icon: <Layers size={20} />, color: "#1D6EF0", label: "Workspace Isolation", desc: "Dedicated environments for every project. Separate contexts, separate teams — no noise bleeding through." },
-    { icon: <PlusCircle size={20} />, color: "#8B5CF6", label: "Dynamic Task Engine", desc: "Spin up tasks, link dependencies, and set priorities in seconds with a keyboard-first interface." },
-    { icon: <Users size={20} />, color: "#059669", label: "Smart Assignment", desc: "Role-based member allocation ensures accountability is never ambiguous across the organisation." },
-    { icon: <Clock size={20} />, color: "#D97706", label: "Deadline Intelligence", desc: "Automated alerts and timeline views that surface risk before it becomes a crisis." },
-    { icon: <Target size={20} />, color: "#DC2626", label: "Progress Analytics", desc: "Real-time dashboards and velocity metrics that turn guesswork into data-driven decisions." },
-    { icon: <Shield size={20} />, color: "#0D9488", label: "Enterprise Security", desc: "SOC 2 compliant. Role-based access controls, end-to-end encryption, and full audit trails." },
+    { 
+        icon: <CheckSquare size={24} />, 
+        color: "#3B82F6", 
+        title: "Task Management", 
+        desc: "Create, organize, and manage tasks effortlessly with priority-based scheduling, due date tracking, and progress monitoring."
+    },
+    { 
+        icon: <Users size={24} />, 
+        color: "#8B5CF6", 
+        title: "Team Collaboration", 
+        desc: "Work together efficiently from anywhere with shared workspaces, team member management, and real-time updates."
+    },
+    { 
+        icon: <Bell size={24} />, 
+        color: "#F59E0B", 
+        title: "Smart Notifications", 
+        desc: "Stay informed and never miss important deadlines with task reminders, due date alerts, and timezone-aware scheduling."
+    },
+    { 
+        icon: <Briefcase size={24} />, 
+        color: "#10B981", 
+        title: "Workspace Management", 
+        desc: "Manage projects and teams in a structured environment with multiple workspaces, role-based access, and activity logs."
+    }
 ];
 
 const STEPS = [
-    { n: "01", title: "Create a Workspace", body: "Define your project boundary. Invite stakeholders, set the scope, assign an owner." },
-    { n: "02", title: "Build Your Task Graph", body: "Break work into atomic tasks. Link dependencies. Visualise the critical path instantly." },
-    { n: "03", title: "Assign & Prioritise", body: "Distribute work intelligently. Balanced loads. Clear owners. Zero ambiguity." },
-    { n: "04", title: "Track in Real Time", body: "Watch progress on a live dashboard. Catch bottlenecks before they cascade." },
-    { n: "05", title: "Analyse & Improve", body: "Close the loop with retrospective insights. Ship faster with every iteration." },
+    { num: "01", title: "Create Workspace", desc: "Create your workspace and invite team members to get started." },
+    { num: "02", title: "Add Tasks", desc: "Create tasks, assign responsibilities, and set priorities for your team." },
+    { num: "03", title: "Track Progress", desc: "Monitor progress with real-time updates and notifications." },
+    { num: "04", title: "Achieve Goals", desc: "Complete projects faster with streamlined collaboration." }
 ];
 
-const METRICS = [
-    { value: "+28%", label: "Avg. efficiency gain", sub: "Measured across enterprise clients" },
-    { value: "0 ms", label: "Deadline misses", sub: "With proactive alerting enabled" },
-    { value: "4.9★", label: "User satisfaction", sub: "Based on 2 400+ reviews" },
-    { value: "99.9%", label: "Uptime SLA", sub: "Guaranteed enterprise tier" },
+const DESIGNED_FOR = [
+    { title: "Individuals", desc: "Manage personal goals, daily tasks, and schedules efficiently." },
+    { title: "Teams", desc: "Collaborate on projects and keep everyone aligned." },
+    { title: "Startups", desc: "Organize growing teams and manage workloads effectively." },
+    { title: "Enterprises", desc: "Improve operational efficiency with structured workflows." },
+    { title: "Remote Teams", desc: "Stay connected and productive regardless of location." }
 ];
 
-/* ─── Nav items ───────────────────────── */
-const NAV_LINKS = [
-    { label: "Features", id: "features" },
-    { label: "Workflows", id: "workflows" },
-    { label: "Analytics", id: "analytics" },
-    { label: "Pricing", id: "cta" },
+const BENEFITS = [
+    { title: "Increase Productivity", desc: "Focus on important tasks and reduce manual follow-ups." },
+    { title: "Improve Team Collaboration", desc: "Enhance communication and accountability across teams." },
+    { title: "Meet Every Deadline", desc: "Receive timely reminders and track project milestones." },
+    { title: "Gain Complete Visibility", desc: "Monitor tasks, projects, and team performance in real time." }
+];
+
+const FAQs = [
+    {
+        question: "Can I use ROOKS To Do on mobile devices?",
+        answer: "Yes. ROOKS To Do is optimized for mobile, tablet, and desktop platforms."
+    },
+    {
+        question: "Can multiple team members work together?",
+        answer: "Absolutely. Create shared workspaces, assign tasks, and collaborate in real time."
+    },
+    {
+        question: "Does the platform provide reminders?",
+        answer: "Yes. Smart reminders and notifications help you stay on top of deadlines and priorities."
+    },
+    {
+        question: "Is my data secure?",
+        answer: "Yes. ROOKS To Do uses secure authentication and cloud-based infrastructure to protect your information."
+    }
 ];
 
 const TaskManagementLanding = () => {
@@ -52,9 +91,7 @@ const TaskManagementLanding = () => {
     const heroRef = useRef(null);
     const isHeroInView = useInView(heroRef, { once: true });
     const [activeStep, setActiveStep] = useState(0);
-    const [activeNav, setActiveNav] = useState("");
     const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -64,16 +101,17 @@ const TaskManagementLanding = () => {
         phone: "",
         message: ""
     });
+    const [openFAQ, setOpenFAQ] = useState(null);
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const docName = `TaskMS_${formData.name.replace(/\s+/g, '_')}_${Date.now()}`;
+            const docName = `RooksToDo_${formData.name.replace(/\s+/g, '_')}_${Date.now()}`;
             await setDoc(doc(db, "Client Enquiry", docName), {
                 ...formData,
-                application: "Rooks Task Management System",
-                source: "Task Management Landing",
+                application: "ROOKS To Do",
+                source: "ROOKS To Do Landing",
                 timestamp: serverTimestamp()
             });
             setSubmitSuccess(true);
@@ -90,40 +128,14 @@ const TaskManagementLanding = () => {
         }
     };
 
-    const scrollToSection = (id) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const offset = 72;
-        const top = el.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({ top, behavior: "smooth" });
-        setActiveNav(id);
-    };
-
-    useEffect(() => {
-        const handler = () => {
-            const scrollY = window.scrollY + 100;
-            for (const link of [...NAV_LINKS].reverse()) {
-                const el = document.getElementById(link.id);
-                if (el && el.offsetTop <= scrollY) {
-                    setActiveNav(link.id);
-                    return;
-                }
-            }
-            setActiveNav("");
-        };
-        window.addEventListener("scroll", handler, { passive: true });
-        return () => window.removeEventListener("scroll", handler);
-    }, []);
-
     useEffect(() => {
         window.scrollTo(0, 0);
-        const id = setInterval(() => setActiveStep(p => (p + 1) % STEPS.length), 3200);
+        const id = setInterval(() => setActiveStep(p => (p + 1) % STEPS.length), 4000);
         return () => clearInterval(id);
     }, []);
 
-    // Helper components to keep JSX cleaner
-    const Chip = ({ children }) => (
-        <span className="inline-flex items-center gap-x-1.5 bg-blue-500/10 border border-blue-500/20 text-[#7BAFF5] text-[11px] font-bold tracking-[0.12em] uppercase px-3.5 py-1.5 rounded-full">
+    const Chip = ({ children, className = "" }) => (
+        <span className={`inline-flex items-center gap-x-2 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full ${className}`}>
             {children}
         </span>
     );
@@ -131,468 +143,576 @@ const TaskManagementLanding = () => {
     const PrimaryButton = ({ children, className = "", onClick }) => (
         <button
             onClick={onClick}
-            className={`inline-flex items-center gap-2.5 bg-[#1D6EF0] hover:bg-[#1a5fd6] text-white font-medium text-sm tracking-wide px-7 py-3.5 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 ${className}`}
+            className={`inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold px-8 py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-105 active:scale-95 ${className}`}
         >
             {children}
         </button>
     );
 
-    const GhostButton = ({ children, className = "", onClick }) => (
+    const SecondaryButton = ({ children, className = "", onClick }) => (
         <button
             onClick={onClick}
-            className={`inline-flex items-center gap-2.5 bg-transparent text-white/60 hover:text-white font-medium text-sm px-7 py-3.5 rounded-xl border border-white/5 hover:border-white/20 hover:bg-white/5 transition-all ${className}`}
+            className={`inline-flex items-center gap-3 bg-white/5 hover:bg-white/10 text-white font-semibold px-8 py-4 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300 ${className}`}
         >
             {children}
         </button>
     );
-
-    const noiseFilter = `data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E`;
 
     return (
         <>
             <style>{FONTS}</style>
-            <div className={`min-h-screen bg-[#0A0C0F] text-white font-['DM_Sans'] overflow-x-hidden relative selection:bg-blue-500/30 before:content-[''] before:fixed before:inset-0 before:z-0 before:bg-[url("${noiseFilter}")] before:pointer-events-none before:opacity-[0.03]`}>
-
-                {/* ── Progress Bar ── */}
+            <div className="min-h-screen bg-[#071730] text-white font-['Inter'] overflow-x-hidden relative selection:bg-blue-500/30">
+                {/* Progress Bar */}
                 <motion.div
-                    className="fixed top-0 left-0 h-0.5 bg-gradient-to-r from-[#1D6EF0] to-[#7BAFF5] z-[200]"
+                    className="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-600 to-purple-600 z-[200]"
                     style={{ width: progressWidth }}
                 />
 
-                {/* ── Nav ── */}
-                <nav className="fixed top-0 left-0 right-0 h-16 px-5 md:px-12 flex items-center justify-between bg-[#0A0C0F]/70 backdrop-blur-2xl border-b border-white/5 z-[100]">
-                    <div className="flex items-center gap-2.5 group cursor-pointer">
-                        <div className="w-8 h-8 bg-[#1D6EF0] rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <CheckSquare size={16} color="#fff" />
-                        </div>
-                        <span className="font-bold text-base tracking-tight">Rooks Task</span>
+                {/* ROOKS Navbar */}
+      <ROOKSNavbar onCTAClick={() => setIsModalOpen(true)} />
+
+      {/* Hero Section */}
+      <section id="hero" ref={heroRef} className="relative min-h-screen flex items-center pt-32 pb-20 px-4 sm:px-6">
+                    <div className="absolute inset-0 z-0 overflow-hidden">
+                        <div className="absolute top-[-100px] left-[-100px] w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+                        <div className="absolute bottom-[-100px] right-[-100px] w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
                     </div>
-
-                    <div className="hidden md:flex gap-8">
-                        {NAV_LINKS.map(({ label, id }) => (
-                            <button
-                                key={id}
-                                className={`text-[13px] font-medium transition-colors relative py-1 ${activeNav === id ? "text-white after:scale-x-100" : "text-gray-500 hover:text-white after:scale-x-0"} after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-blue-500 after:transition-transform after:duration-300 after:origin-left`}
-                                onClick={() => scrollToSection(id)}
-                            >
-                                {label}
-                            </button>
-                        ))}
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <PrimaryButton
-                            onClick={() => setIsModalOpen(true)}
-                            className="!py-2.5 !px-5 !text-[13px]"
-                        >
-                            Contact Us <ArrowRight size={14} />
-                        </PrimaryButton>
-                    </div>
-                </nav>
-
-                {/* ══════════════ HERO ══════════════ */}
-                <section ref={heroRef} className="relative min-h-screen flex items-center pt-16">
-                    {/* Gradient Mesh Background */}
-                    <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_60%_50%_at_75%_40%,rgba(29,110,240,0.12)_0%,transparent_70%),radial-gradient(ellipse_40%_60%_at_10%_80%,rgba(201,168,76,0.05)_0%,transparent_60%)]" />
-
-                    {/* Vertical Rule */}
-                    <div className="hidden md:block absolute left-12 top-0 bottom-0 w-px bg-white/5" />
-
-                    <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col lg:flex-row items-center gap-16 relative z-10 w-full py-20">
+                    <div className="max-w-7xl mx-auto relative z-10 grid lg:grid-cols-2 gap-12 items-center py-20">
                         <motion.div
-                            initial={{ opacity: 0, y: 24 }}
-                            animate={isHeroInView ? { opacity: 1, y: 0 } : {}}
-                            transition={{ duration: 0.7 }}
-                            className="flex-1"
+                            initial={{ opacity: 0, x: -50 }}
+                            animate={isHeroInView ? { opacity: 1, x: 0 } : {}}
+                            transition={{ duration: 0.8 }}
                         >
-                            <div className="flex flex-wrap items-center gap-3 mb-9">
-                                <Chip><Zap size={10} className="mr-1" />Next-Gen Productivity</Chip>
-                                <span className="text-xs text-gray-500 font-medium">— Trusted by 12,000+ teams</span>
-                            </div>
-
-                            <h1 className="text-[clamp(42px,6vw,84px)] font-light leading-[1.1] tracking-tighter mb-8">
-                                The operating system<br />
-                                <span className="font-['Instrument_Serif'] italic text-[#3B82F6]">for high-output teams.</span>
+                            <Chip className="mb-6">
+                                <Zap size={14} /> Next-Gen Productivity
+                            </Chip>
+                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+                                Organize Tasks.{" "}
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                                    Collaborate Seamlessly.
+                                </span>{" "}
+                                Achieve More.
                             </h1>
-
-                            <p className="text-gray-400 text-lg md:text-xl leading-relaxed max-w-lg mb-12">
-                                Centralise every workspace, task, and deadline in one place. Move from scattered threads to a single source of truth.
+                            <p className="text-xl text-gray-300 mb-8 leading-relaxed">
+                                ROOKS To Do is an all-in-one task and workspace management platform designed to help individuals and teams plan, track, and complete work efficiently. Stay organized, meet deadlines, and boost productivity with powerful collaboration tools.
                             </p>
-
-                            <div className="flex flex-wrap items-center gap-4">
+                            <div className="flex flex-wrap gap-4 mb-8">
                                 <PrimaryButton onClick={() => setIsModalOpen(true)}>
-                                    Contact Us <ArrowRight size={15} />
+                                    Get Started Free
+                                    <ArrowRight size={18} />
                                 </PrimaryButton>
+                                <SecondaryButton onClick={() => setIsModalOpen(true)}>
+                                    Book a Demo
+                                </SecondaryButton>
                             </div>
-                        </motion.div>
-
-                        {/* Mockup Container */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 48 }}
-                            animate={isHeroInView ? { opacity: 1, y: 0 } : {}}
-                            transition={{ delay: 0.35, duration: 0.9 }}
-                            className="flex-1 relative w-full lg:max-w-2xl"
-                        >
-                            <div className="relative p-[1px] rounded-[22px] bg-gradient-to-br from-blue-500/30 via-blue-500/5 to-transparent">
-                                <div className="bg-[#1A1D24] rounded-[21px] overflow-hidden border border-white/5 shadow-2xl shadow-black/60">
-                                    <div className="bg-[#1A1D24] border-b border-white/5 px-5 py-3 flex items-center gap-2">
-                                        {["#FF5F57", "#FFBD2E", "#28C840"].map(c => (
-                                            <div key={c} className="w-3 h-3 rounded-full" style={{ background: c }} />
-                                        ))}
-                                        <div className="flex-1 flex justify-center">
-                                            <div className="bg-[#2C3040] rounded-md px-4 py-1 text-[10px] text-gray-500 font-medium tracking-wide">
-                                                app.rookstask.io/workspace
-                                            </div>
-                                        </div>
+                            <div className="flex flex-wrap gap-6 text-sm text-gray-400">
+                                {[
+                                    { icon: <CheckSquare size={16} />, label: "Task & Project Management" },
+                                    { icon: <Users size={16} />, label: "Team Collaboration" },
+                                    { icon: <Bell size={16} />, label: "Smart Reminders" }
+                                ].map((item, i) => (
+                                    <div key={i} className="flex items-center gap-2">
+                                        <div className="text-blue-400">{item.icon}</div>
+                                        <span>{item.label}</span>
                                     </div>
-                                    <img src={tmsimg} alt="Platform Preview" className="w-[85%] mx-auto block opacity-90 transition-opacity hover:opacity-100 duration-500" />
-                                </div>
-                            </div>
-
-                            {/* Floating Stats */}
-                            <motion.div
-                                animate={{ y: [0, -12, 0] }}
-                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute -top-6 -right-4 md:right-12 bg-[#0A0C0F]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-4 md:p-5 shadow-2xl min-w-[160px] hidden sm:block"
-                            >
-                                <div className="flex items-center gap-2 mb-2">
-                                    <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22C55E] animate-pulse" />
-                                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sprint Velocity</span>
-                                </div>
-                                <div className="text-3xl font-bold tracking-tight">87%</div>
-                                <div className="mt-2.5 h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                                    <div className="h-full bg-[#1D6EF0] rounded-full" style={{ width: '87%' }} />
-                                </div>
-                            </motion.div>
-
-                            <motion.div
-                                animate={{ y: [0, 14, 0] }}
-                                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                                className="absolute -bottom-6 -left-4 md:left-8 bg-[#0A0C0F]/90 backdrop-blur-xl border border-blue-500/20 rounded-2xl p-4 md:p-5 shadow-2xl hidden sm:block"
-                            >
-                                <div className="text-[11px] font-bold text-[#3B82F6] mb-3 uppercase tracking-wide">Team Collaborative</div>
-                                <div className="flex -space-x-2">
-                                    {["#1D6EF0", "#8B5CF6", "#059669", "#D97706"].map((c, i) => (
-                                        <div key={i} className="w-8 h-8 rounded-full border-2 border-[#0A0C0F] shadow-sm" style={{ background: c }} />
-                                    ))}
-                                    <div className="w-8 h-8 rounded-full border-2 border-[#0A0C0F] bg-[#1A1D24] flex items-center justify-center text-[10px] font-bold">+12</div>
-                                </div>
-                            </motion.div>
-                        </motion.div>
-                    </div>
-
-                    {/* Scroll Cue */}
-                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2.5 text-gray-600">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Explore</span>
-                        <ChevronDown size={14} className="animate-bounce" />
-                    </div>
-                </section>
-
-                {/* ══════════════ MARQUEE ══════════════ */}
-                <div className="border-y border-white/5 py-3.5 overflow-hidden bg-white/[0.01]">
-                    <motion.div
-                        animate={{ x: ["0%", "-50%"] }}
-                        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                        className="flex whitespace-nowrap"
-                    >
-                        {[...Array(2)].map((_, ri) => (
-                            <div key={ri} className="flex">
-                                {["Workspace Automation", "Deadline Intelligence", "Role-Based Access", "Real-Time Analytics", "Dependency Mapping", "Team Velocity Reports", "Daily Stand-up Digest", "SOC 2 Compliant"].map((t, i) => (
-                                    <span key={i} className="flex items-center gap-9 px-9 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/20">
-                                        {t} <span className="text-[#1D6EF0] h-1.5 w-1.5 rounded-full bg-current" />
-                                    </span>
                                 ))}
                             </div>
-                        ))}
-                    </motion.div>
-                </div>
-
-                {/* ══════════════ METRICS ══════════════ */}
-                <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {METRICS.map((m, i) => (
+                        </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, x: 50 }}
+                            animate={isHeroInView ? { opacity: 1, x: 0 } : {}}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="relative"
+                        >
+                            <div className="relative bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-3xl p-2 backdrop-blur-xl">
+                                <img src={tmsimg} alt="ROOKS To Do Dashboard" className="rounded-2xl w-full h-auto" />
+                            </div>
                             <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.1 }}
-                                viewport={{ once: true }}
-                                className="bg-white/5 border border-white/5 hover:border-blue-500/20 rounded-2xl p-8 transition-colors group"
+                                animate={{ y: [0, -10, 0] }}
+                                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                                className="absolute -top-8 -right-8 bg-[#0a1a3a] border border-blue-500/20 rounded-2xl p-4 shadow-xl backdrop-blur-xl"
                             >
-                                <div className="text-4xl font-bold tracking-tighter mb-2 group-hover:text-blue-400 transition-colors">{m.value}</div>
-                                <div className="text-[13px] font-semibold text-gray-400 mb-1">{m.label}</div>
-                                <div className="text-[11px] text-gray-600 font-medium">{m.sub}</div>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                                        <Check size={20} className="text-blue-400" />
+                                    </div>
+                                    <div>
+                                        <div className="text-2xl font-bold">98%</div>
+                                        <div className="text-xs text-gray-400">Task Completion</div>
+                                    </div>
+                                </div>
                             </motion.div>
-                        ))}
+                        </motion.div>
                     </div>
                 </section>
 
-                <hr className="border-none h-px bg-white/5 m-0" />
-
-                {/* ══════════════ FEATURES ══════════════ */}
-                <section id="features" className="py-32 px-6 md:px-12 max-w-7xl mx-auto">
-                    <div className="grid lg:grid-cols-[1fr_2fr] gap-20 lg:gap-32 items-start">
-                        {/* Sticky Label Section */}
-                        <div className="lg:sticky lg:top-32">
-                            <Chip>Platform</Chip>
-                            <h2 className="text-[clamp(32px,4vw,48px)] font-light leading-[1.2] tracking-tight my-6">
-                                Every tool<br />
-                                <span className="font-['Instrument_Serif'] italic text-[#3B82F6]">your team needs.</span>
+                {/* Why Choose ROOKS To Do */}
+                <section className="py-24 bg-gradient-to-b from-transparent to-white/[0.02] px-4 sm:px-6">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-16">
+                            <Chip className="mb-4 mx-auto">
+                                Why Choose Us
+                            </Chip>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                                Why Choose{" "}
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                                    ROOKS To Do
+                                </span>
                             </h2>
-                            <p className="text-gray-500 text-[15px] leading-relaxed max-w-[280px] mb-8">
-                                Built for teams who ship. Six core modules that integrate seamlessly into how you already work.
+                            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                                ROOKS To Do simplifies task management and team collaboration, enabling businesses and professionals to stay focused, organized, and productive.
                             </p>
-
                         </div>
-
-                        {/* Features Grid */}
-                        <div className="grid sm:grid-cols-2 gap-5">
-                            {FEATURES.map((f, i) => (
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {[
+                                { icon: <CheckSquare size={28} />, title: "Centralized Task Management", color: "#3B82F6" },
+                                { icon: <Users size={28} />, title: "Real-Time Collaboration", color: "#8B5CF6" },
+                                { icon: <Bell size={28} />, title: "Automated Notifications", color: "#F59E0B" },
+                                { icon: <Lock size={28} />, title: "Secure Cloud Storage", color: "#10B981" }
+                            ].map((benefit, i) => (
                                 <motion.div
                                     key={i}
-                                    initial={{ opacity: 0, y: 24 }}
+                                    initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
-                                    transition={{ delay: i * 0.08 }}
-                                    className="bg-white/[0.02] border border-white/5 rounded-[22px] p-9 transition-all hover:translate-y-[-4px] hover:bg-blue-500/[0.04] hover:border-blue-500/20 group relative overflow-hidden"
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-blue-500/30 transition-all duration-300"
                                 >
-                                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    <div
-                                        className="w-11 h-11 rounded-xl flex items-center justify-center mb-6 border transition-colors group-hover:bg-opacity-20"
-                                        style={{ background: `${f.color}15`, borderColor: `${f.color}30`, color: f.color }}
-                                    >
-                                        {f.icon}
+                                    <div style={{ background: `${benefit.color}20` }} className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4">
+                                        <div style={{ color: benefit.color }}>{benefit.icon}</div>
                                     </div>
-                                    <h3 className="text-lg font-bold mb-3 tracking-tight">{f.label}</h3>
-                                    <p className="text-gray-500 text-[13.5px] leading-relaxed">{f.desc}</p>
+                                    <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
                                 </motion.div>
                             ))}
                         </div>
                     </div>
                 </section>
 
-                <hr className="border-none h-px bg-white/5 m-0" />
-
-                {/* ══════════════ HOW IT WORKS ══════════════ */}
-                <section id="workflows" className="py-32 px-6 md:px-12 bg-white/[0.01]">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="mb-20 max-w-xl">
-                            <Chip>Workflows</Chip>
-                            <h2 className="text-[clamp(32px,4vw,48px)] font-light leading-[1.2] tracking-tight my-6">
-                                From chaos<br />
-                                <span className="font-['Instrument_Serif'] italic text-[#3B82F6]">to clarity in five steps.</span>
+                {/* Powerful Features */}
+      <section id="features" className="py-24 px-4 sm:px-6">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-16">
+                            <Chip className="mb-4 mx-auto">
+                                Features
+                            </Chip>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                                Powerful Features
                             </h2>
                         </div>
-
-                        <div className="grid lg:grid-cols-2 gap-20 lg:gap-32 items-center">
-                            {/* Steps List */}
-                            <div className="flex flex-col">
-                                {STEPS.map((s, i) => (
-                                    <div
-                                        key={i}
-                                        onClick={() => setActiveStep(i)}
-                                        className={`flex gap-6 py-7 border-b border-white/5 cursor-pointer group transition-all duration-300 ${activeStep === i ? "opacity-100" : "opacity-40 hover:opacity-100"}`}
-                                    >
-                                        <div className={`w-10 h-10 rounded-full border flex items-center justify-center text-[13px] font-bold flex-shrink-0 transition-all ${activeStep === i ? "border-blue-500 text-blue-500 bg-blue-500/10" : "border-white/10 text-gray-500"}`}>
-                                            {s.n}
-                                        </div>
-                                        <div>
-                                            <h4 className={`text-base font-bold transition-colors ${activeStep === i ? "text-white" : "text-gray-400 group-hover:text-white"}`}>
-                                                {s.title}
-                                            </h4>
-                                            {activeStep === i && (
-                                                <motion.p
-                                                    initial={{ height: 0, opacity: 0 }}
-                                                    animate={{ height: "auto", opacity: 1 }}
-                                                    className="text-gray-500 text-sm leading-relaxed mt-3 overflow-hidden"
-                                                >
-                                                    {s.body}
-                                                </motion.p>
-                                            )}
-                                        </div>
+                        <div className="grid md:grid-cols-2 gap-6">
+                            {FEATURES.map((feature, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-3xl p-8 hover:bg-white/10 hover:border-blue-500/30 transition-all duration-300"
+                                >
+                                    <div style={{ background: `${feature.color}20` }} className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border border-white/10">
+                                        <div style={{ color: feature.color }}>{feature.icon}</div>
                                     </div>
-                                ))}
-                            </div>
+                                    <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
+                                    <p className="text-gray-300 mb-6">{feature.desc}</p>
+                                    <div className="space-y-2">
+                                        {feature.title === "Task Management" && (
+                                            <>
+                                                {["Create & Assign Tasks", "Priority-Based Task Management", "Due Date Tracking", "Subtasks & Checklists", "Progress Monitoring", "Task Pinning & Archiving"].map((item, j) => (
+                                                    <div key={j} className="flex items-center gap-2 text-gray-300 text-sm">
+                                                        <Check size={14} className="text-blue-400 flex-shrink-0" />
+                                                        {item}
+                                                    </div>
+                                                ))}
+                                            </>
+                                        )}
+                                        {feature.title === "Team Collaboration" && (
+                                            <>
+                                                {["Shared Workspaces", "Team Member Management", "Task Discussions & Comments", "Activity Tracking", "Instant Updates", "Collaborative Planning"].map((item, j) => (
+                                                    <div key={j} className="flex items-center gap-2 text-gray-300 text-sm">
+                                                        <Check size={14} className="text-purple-400 flex-shrink-0" />
+                                                        {item}
+                                                    </div>
+                                                ))}
+                                            </>
+                                        )}
+                                        {feature.title === "Smart Notifications" && (
+                                            <>
+                                                {["Task Reminders", "Due Date Alerts", "Overdue Notifications", "Recurring Reminders", "Mobile Notifications", "Timezone-Aware Scheduling"].map((item, j) => (
+                                                    <div key={j} className="flex items-center gap-2 text-gray-300 text-sm">
+                                                        <Check size={14} className="text-amber-400 flex-shrink-0" />
+                                                        {item}
+                                                    </div>
+                                                ))}
+                                            </>
+                                        )}
+                                        {feature.title === "Workspace Management" && (
+                                            <>
+                                                {["Multiple Workspaces", "Member Invitations", "Role & Access Management", "Activity Logs", "Team Performance Visibility", "Workspace Collaboration"].map((item, j) => (
+                                                    <div key={j} className="flex items-center gap-2 text-gray-300 text-sm">
+                                                        <Check size={14} className="text-green-400 flex-shrink-0" />
+                                                        {item}
+                                                    </div>
+                                                ))}
+                                            </>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
 
-                            {/* Visual Preview */}
+                {/* How It Works */}
+      <section id="how-it-works" className="py-24 bg-gradient-to-b from-white/[0.02] to-transparent px-4 sm:px-6">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-16">
+                            <Chip className="mb-4 mx-auto">
+                                How It Works
+                            </Chip>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                                How ROOKS To Do Works
+                            </h2>
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-12 items-center">
+                            <motion.div
+                                initial={{ opacity: 0, x: -50 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                className="space-y-6"
+                            >
+                                {STEPS.map((step, i) => (
+                                    <motion.div
+                                        key={i}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        whileInView={{ opacity: 1, x: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: i * 0.15 }}
+                                        onClick={() => setActiveStep(i)}
+                                        className={`flex gap-6 p-6 rounded-2xl cursor-pointer transition-all duration-300 ${activeStep === i ? "bg-blue-500/10 border border-blue-500/30" : "bg-white/5 border border-white/10 hover:bg-white/10"}`}
+                                    >
+                                        <div className="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center text-2xl font-bold">
+                                            {step.num}
+                                        </div>
+                                        <div className="flex-1">
+                                            <h3 className="text-2xl font-bold mb-2">{step.title}</h3>
+                                            <p className="text-gray-300">{step.desc}</p>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </motion.div>
                             <motion.div
                                 key={activeStep}
-                                initial={{ opacity: 0, scale: 0.98 }}
+                                initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="bg-[#1A1D24] rounded-3xl border border-white/10 p-10 md:p-12 shadow-2xl"
+                                transition={{ duration: 0.5 }}
+                                className="relative bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-white/10 rounded-3xl p-8 backdrop-blur-xl"
                             >
-                                <div className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-8">
-                                    Step {STEPS[activeStep].n} — {STEPS[activeStep].title}
-                                </div>
-
-                                <div className="flex flex-col gap-4">
-                                    {[90, 65, 40, 80, 55].map((w, i) => (
-                                        <div key={i} className="flex items-center gap-5">
-                                            <div
-                                                className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm"
-                                                style={{ background: ["#1D6EF0", "#8B5CF6", "#059669", "#D97706", "#DC2626"][i] + "30" }}
-                                            >
-                                                <div className="w-2 h-2 rounded-full" style={{ background: ["#1D6EF0", "#8B5CF6", "#059669", "#D97706", "#DC2626"][i] }} />
-                                            </div>
-                                            <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                                <motion.div
-                                                    initial={{ width: 0 }}
-                                                    animate={{ width: `${w}%` }}
-                                                    className="h-full rounded-full"
-                                                    style={{ background: ["#1D6EF0", "#8B5CF6", "#059669", "#D97706", "#DC2626"][i] }}
-                                                    transition={{ duration: 0.8, delay: i * 0.1 }}
-                                                />
-                                            </div>
-                                            <span className="text-xs font-bold text-gray-500 w-8 text-right">{w}%</span>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="mt-10 p-5 bg-blue-500/[0.04] border border-blue-500/10 rounded-xl">
-                                    <div className="text-xs font-bold text-blue-400 mb-1.5">{STEPS[activeStep].title}</div>
-                                    <p className="text-xs text-gray-500 leading-relaxed">{STEPS[activeStep].body}</p>
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-3xl"></div>
+                                <div className="relative">
+                                    <div className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6">
+                                        {STEPS[activeStep].num}
+                                    </div>
+                                    <h3 className="text-3xl font-bold mb-4">{STEPS[activeStep].title}</h3>
+                                    <p className="text-xl text-gray-200">{STEPS[activeStep].desc}</p>
                                 </div>
                             </motion.div>
                         </div>
                     </div>
                 </section>
 
-                <hr className="border-none h-px bg-white/5 m-0" />
-
-                {/* ══════════════ ANALYTICS ══════════════ */}
-                <section id="analytics" className="py-32 px-6 md:px-12 max-w-7xl mx-auto">
-                    <div className="grid lg:grid-cols-2 gap-20 lg:gap-32 items-center">
-                        <motion.div
-                            initial={{ opacity: 0, x: -32 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                        >
-                            <Chip><Activity size={10} className="mr-1.5" />Insights</Chip>
-                            <h2 className="text-[clamp(32px,4vw,48px)] font-light leading-[1.2] tracking-tight my-6">
-                                Data that<br />
-                                <span className="font-['Instrument_Serif'] italic text-[#3B82F6]">drives decisions.</span>
+                {/* Designed For */}
+      <section id="designed-for" className="py-24 px-4 sm:px-6">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-16">
+                            <Chip className="mb-4 mx-auto">
+                                Designed For
+                            </Chip>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                                Designed For Everyone
                             </h2>
-                            <p className="text-gray-500 text-[15px] leading-relaxed max-w-md mb-10">
-                                Our analytics engine surfaces velocity trends, completion rates, and individual performance scores — transforming guesswork into evidence-based leadership.
+                        </div>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {DESIGNED_FOR.map((item, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-blue-500/30 transition-all duration-300"
+                                >
+                                    <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                                    <p className="text-gray-300">{item.desc}</p>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Benefits That Drive Results */}
+      <section id="benefits" className="py-24 bg-gradient-to-b from-transparent to-white/[0.02] px-4 sm:px-6">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-16">
+                            <Chip className="mb-4 mx-auto">
+                                Benefits
+                            </Chip>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                                Benefits That Drive Results
+                            </h2>
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-6">
+                            {BENEFITS.map((benefit, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-white/10 rounded-3xl p-8 hover:from-blue-500/15 hover:to-purple-500/15 transition-all duration-300"
+                                >
+                                    <h3 className="text-2xl font-bold mb-4">{benefit.title}</h3>
+                                    <p className="text-gray-300">{benefit.desc}</p>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Security & Reliability */}
+                <section className="py-24 px-4 sm:px-6">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-16">
+                            <Chip className="mb-4 mx-auto">
+                                Security
+                            </Chip>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                                Security & Reliability
+                            </h2>
+                            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                                Your data is protected with enterprise-grade security and cloud infrastructure.
                             </p>
-
-                            <div className="flex flex-col gap-4">
-                                {["Completion velocity per sprint", "Individual contributor heatmaps", "Bottleneck detection with root-cause tags", "Executive-ready PDF exports"].map((t, i) => (
-                                    <div key={i} className="flex items-center gap-3.5">
-                                        <div className="w-5 h-5 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                                            <Check size={11} className="text-blue-500" strokeWidth={4} />
-                                        </div>
-                                        <span className="text-[14px] text-gray-300 font-medium">{t}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ opacity: 0, x: 32 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            className="bg-[#1A1D24] rounded-[28px] border border-white/5 p-10 md:p-12 shadow-2xl"
-                        >
-                            <div className="flex justify-between items-center mb-10">
-                                <span className="text-sm font-bold tracking-tight">Sprint Completion — Q3</span>
-                                <BarChart3 size={20} className="text-blue-400" />
-                            </div>
-
+                        </div>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {[
-                                { name: "Frontend", pct: 92, color: "#1D6EF0" },
-                                { name: "Backend", pct: 78, color: "#8B5CF6" },
-                                { name: "Design", pct: 100, color: "#059669" },
-                                { name: "QA", pct: 55, color: "#D97706" },
-                            ].map((r, i) => (
-                                <div key={i} className="mb-7 last:mb-0">
-                                    <div className="flex justify-between mb-2 text-[13px] font-bold">
-                                        <span className="text-gray-500">{r.name}</span>
-                                        <span className={r.pct === 100 ? "text-green-500" : "text-white"}>{r.pct}%</span>
+                                { icon: <Lock size={28} />, title: "Secure User Authentication" },
+                                { icon: <Shield size={28} />, title: "Protected Cloud Storage" },
+                                { icon: <Users size={28} />, title: "Role-Based Access Control" },
+                                { icon: <Clock size={28} />, title: "Reliable Data Backup" },
+                                { icon: <Lock size={28} />, title: "Privacy-Focused Architecture" }
+                            ].map((item, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:bg-white/10 transition-all duration-300"
+                                >
+                                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-green-500/20 flex items-center justify-center">
+                                        <div className="text-green-400">{item.icon}</div>
                                     </div>
-                                    <div className="h-2 bg-white/5 rounded-full overflow-hidden shadow-inner">
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            whileInView={{ width: `${r.pct}%` }}
-                                            transition={{ duration: 1.2, delay: i * 0.1 }}
-                                            className="h-full rounded-full"
-                                            style={{ background: r.color }}
+                                    <h3 className="text-lg font-semibold">{item.title}</h3>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Why Teams Love Us */}
+                <section className="py-24 bg-gradient-to-b from-white/[0.02] to-transparent px-4 sm:px-6">
+                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-16">
+                            <Chip className="mb-4 mx-auto">
+                                Testimonials
+                            </Chip>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                                Why Teams Love ROOKS To Do
+                            </h2>
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-6">
+                            {[
+                                "Easy to Use Interface",
+                                "Faster Task Completion",
+                                "Better Team Coordination",
+                                "Real-Time Collaboration",
+                                "Smart Notification System",
+                                "Scalable for Any Team Size"
+                            ].map((item, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300"
+                                >
+                                    <div className="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                                        <Star size={20} className="text-yellow-400" />
+                                    </div>
+                                    <span className="text-lg font-medium">{item}</span>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* FAQs */}
+                <section className="py-24 px-4 sm:px-6">
+                    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-16">
+                            <Chip className="mb-4 mx-auto">
+                                FAQ
+                            </Chip>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                                Frequently Asked Questions
+                            </h2>
+                        </div>
+                        <div className="space-y-4">
+                            {FAQs.map((faq, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden"
+                                >
+                                    <button
+                                        onClick={() => setOpenFAQ(openFAQ === i ? null : i)}
+                                        className="w-full px-6 py-6 flex items-center justify-between text-left font-semibold text-lg hover:bg-white/10 transition-colors"
+                                    >
+                                        {faq.question}
+                                        <ChevronDown
+                                            size={20}
+                                            className={`transition-transform duration-300 ${openFAQ === i ? "rotate-180" : ""}`}
+                                        />
+                                    </button>
+                                    <AnimatePresence>
+                                        {openFAQ === i && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                className="px-6 pb-6 text-gray-300"
+                                            >
+                                                {faq.answer}
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Download App */}
+                <section id="cta" className="py-32 px-4 bg-gradient-to-b from-transparent to-white/[0.02]">
+                    <div className="max-w-4xl mx-auto relative z-10">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                            className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-500 to-blue-600 p-16 rounded-3xl text-center shadow-2xl shadow-blue-500/30"
+                        >
+                            {/* Animated background */}
+                            <div className="absolute inset-0">
+                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_white_0%,_transparent_50%)] opacity-10" />
+                                <motion.div
+                                    animate={{
+                                        x: [0, 100, 0],
+                                        y: [0, -100, 0],
+                                    }}
+                                    transition={{ duration: 15, repeat: Infinity }}
+                                    className="absolute -top-20 -right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl"
+                                />
+                                <motion.div
+                                    animate={{
+                                        x: [0, -100, 0],
+                                        y: [0, 100, 0],
+                                    }}
+                                    transition={{ duration: 20, repeat: Infinity }}
+                                    className="absolute -bottom-20 -left-20 w-60 h-60 bg-white/10 rounded-full blur-3xl"
+                                />
+                            </div>
+
+                            <div className="relative z-10">
+                                {/* ROOKS To Do Logo */}
+                                <div className="flex items-center justify-center gap-3 mb-8">
+                                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
+                                        <img
+                                            src={rookstodoLogo}
+                                            alt="ROOKS To Do"
+                                            className="h-12 w-auto object-contain"
                                         />
                                     </div>
+                                    <span className="font-bold text-xl text-white">ROOKS To Do</span>
                                 </div>
-                            ))}
 
-                            <div className="mt-10 p-5 bg-green-500/5 border border-green-500/20 rounded-2xl flex items-center gap-4">
-                                <div className="w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0 shadow-[0_0_8px_#22C55E]" />
-                                <span className="text-[12.5px] text-green-300/90 font-medium leading-tight">
-                                    Design team hit 100% capacity — sprint velocity up 14% YoY
-                                </span>
+                                <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                                    Experience the Future of Task Management
+                                </h2>
+                                <p className="mb-8 text-xl text-white/90">
+                                    Our app is now available on the Google Play Store.
+                                </p>
+
+                                <div className="flex flex-col items-center gap-6">
+                                    <motion.a
+                                        href="https://play.google.com/store/apps/details?id=com.rooks.task_management_app&pcampaignid=web_share"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="group px-10 py-4 bg-white text-blue-600 rounded-xl font-bold text-lg flex items-center gap-3 shadow-xl transition-all"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 48 48"
+                                            width="24px"
+                                            height="24px"
+                                        >
+                                            <path
+                                                fill="#4caf50"
+                                                d="M10,4.5c-0.2,0.2-0.4,0.6-0.4,1.1v36.8c0,0.5,0.2,0.9,0.4,1.1l0.1,0.1L30.2,24l-20.1-20.1L10,4.5z"
+                                            />
+                                            <path
+                                                fill="#ffeb3b"
+                                                d="M36.2,30l-6-6l-6,6l0.1,0.1l7.1,4.1C33.2,35.3,34.9,35.3,36.2,30.7L36.2,30z"
+                                            />
+                                            <path
+                                                fill="#f44336"
+                                                d="M10.1,43.4c0.1,0.1,0.3,0.1,0.5,0.1c0.7,0,1.4-0.2,1.9-0.5l23.7-13.6L30.2,24L10.1,43.4z"
+                                            />
+                                            <path
+                                                fill="#2196f3"
+                                                d="M10.1,4.6l20.1,20.1l6-6L12.5,5.1C11.9,4.8,11.2,4.6,10.6,4.6C10.4,4.6,10.2,4.6,10.1,4.6z"
+                                            />
+                                        </svg>
+                                        <span>Get it on Google Play</span>
+                                    </motion.a>
+                                </div>
+
+                                {/* Trust badges */}
+                                <div className="mt-12 flex justify-center gap-8 text-white/80 text-sm flex-wrap border-t border-white/20 pt-8">
+                                    <span className="flex items-center gap-2">
+                                        <Shield className="w-4 h-4" /> Secure & Encrypted
+                                    </span>
+                                    <span className="flex items-center gap-2">
+                                        <TrendingUp className="w-4 h-4" /> Optimized Performance
+                                    </span>
+                                    <span className="flex items-center gap-2">
+                                        <Award className="w-4 h-4" /> Enterprise Grade
+                                    </span>
+                                </div>
                             </div>
                         </motion.div>
                     </div>
                 </section>
 
-                <hr className="border-none h-px bg-white/5 m-0" />
+                {/* ROOKS Footer */}
+                <ROOKSFooter />
 
-                {/* ══════════════ CTA ══════════════ */}
-                <section id="cta" className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
-                    <motion.div
-                        initial={{ opacity: 0, y: 32 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="bg-gradient-to-br from-[#0D2A5C] via-[#0A1628] to-[#0D1F40] rounded-[40px] p-10 md:p-20 relative overflow-hidden border border-blue-500/20 shadow-2xl"
-                    >
-                        {/* Decorative Background Circles */}
-                        <div className="absolute top-[-80px] right-[-80px] w-96 h-96 rounded-full bg-[radial-gradient(circle,rgba(29,110,240,0.12)_0%,transparent_70%)] pointer-events-none" />
-                        <div className="absolute bottom-[-60px] left-[-60px] w-80 h-80 rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.08)_0%,transparent_70%)] pointer-events-none" />
-
-                        <div className="relative z-10 max-w-2xl">
-                            <Chip>Get Started Today</Chip>
-                            <h2 className="text-[clamp(36px,5.5vw,68px)] font-light leading-[1.05] tracking-tight mt-7 mb-7">
-                                Ready to run a<br />
-                                <span className="font-['Instrument_Serif'] italic text-blue-400">tighter operation?</span>
-                            </h2>
-                            <p className="text-white/50 text-lg leading-relaxed mb-12 max-w-lg">
-                                Start with a free workspace. No credit card, no time limit on the free tier. Upgrade when your team is ready to scale.
-                            </p>
-
-                            <div className="flex flex-wrap gap-4">
-                                <PrimaryButton
-                                    onClick={() => setIsModalOpen(true)}
-                                    className="!px-10 !py-4.5 !text-[15px]"
-                                >
-                                    Contact Us <ArrowRight size={17} />
-                                </PrimaryButton>
-                            </div>
-                        </div>
-                    </motion.div>
-                </section>
-
-                {/* ══════════════ FOOTER ══════════════ */}
-                <footer className="border-t border-white/5 py-12 px-6 md:px-12 max-w-7xl mx-auto">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-10">
-                        <div className="flex items-center gap-3 font-bold group">
-                            <div className="w-8 h-8 bg-[#1D6EF0] rounded-lg flex items-center justify-center transition-transform group-hover:scale-110">
-                                <CheckSquare size={15} color="#fff" />
-                            </div>
-                            <span className="text-[15px]">Rooks Task</span>
-                        </div>
-
-                        <div className="text-[12px] text-gray-500 font-medium">
-                            © 2024 Rooks & Brooks Technologies. All rights reserved.
-                        </div>
-
-                        <div className="flex gap-8">
-                            {["Twitter", "LinkedIn", "GitHub"].map(n => (
-                                <a key={n} href="#" className="text-[13px] font-semibold text-gray-500 hover:text-white transition-colors">
-                                    {n}
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-                </footer>
-
-                {/* ══════════════ MODAL ══════════════ */}
+                {/* Contact Modal */}
                 <AnimatePresence>
                     {isModalOpen && (
                         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
@@ -603,120 +723,90 @@ const TaskManagementLanding = () => {
                                 onClick={() => setIsModalOpen(false)}
                                 className="absolute inset-0 bg-black/80 backdrop-blur-sm"
                             />
-
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                                className="relative w-full max-w-xl bg-[#1A1D24] border border-white/10 rounded-[32px] overflow-hidden shadow-2xl"
+                                className="relative w-full max-w-xl bg-[#0a1a3a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl"
                             >
-                                {/* Modal Header */}
                                 <div className="p-8 pb-0 flex justify-between items-start">
                                     <div>
-                                        <h3 className="text-3xl font-bold tracking-tight mb-2">Get in touch</h3>
+                                        <h3 className="text-3xl font-bold tracking-tight mb-2">Get in Touch</h3>
                                         <p className="text-gray-400 text-sm">Fill out the form below and our team will get back to you shortly.</p>
                                     </div>
                                     <button
                                         onClick={() => setIsModalOpen(false)}
-                                        className="p-2 hover:bg-white/5 rounded-full transition-colors"
+                                        className="p-2 hover:bg-white/10 rounded-full transition-colors"
                                     >
-                                        <X size={20} className="text-gray-500" />
+                                        <X size={24} className="text-gray-400" />
                                     </button>
                                 </div>
-
-                                {/* Form */}
-                                <form onSubmit={handleFormSubmit} className="p-8 space-y-5">
-                                    <div className="grid md:grid-cols-2 gap-5">
-                                        <div className="space-y-2">
-                                            <label className="text-[11px] font-bold text-blue-400 uppercase tracking-widest ml-1">Full Name</label>
-                                            <div className="relative">
-                                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                                                    <Mail size={16} /> {/* Placeholder icon, should be User but Mail is used for style */}
-                                                </div>
-                                                <input
-                                                    required
-                                                    type="text"
-                                                    placeholder="John Doe"
-                                                    className="w-full bg-white/5 border border-white/5 focus:border-blue-500/50 rounded-xl py-3.5 pl-11 pr-4 text-sm transition-all outline-none"
-                                                    value={formData.name}
-                                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[11px] font-bold text-blue-400 uppercase tracking-widest ml-1">Phone Number</label>
-                                            <div className="relative">
-                                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                                                    <Phone size={16} />
-                                                </div>
-                                                <input
-                                                    required
-                                                    type="tel"
-                                                    placeholder="+91 98765 43210"
-                                                    className="w-full bg-white/5 border border-white/5 focus:border-blue-500/50 rounded-xl py-3.5 pl-11 pr-4 text-sm transition-all outline-none"
-                                                    value={formData.phone}
-                                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                                />
-                                            </div>
-                                        </div>
+                                <form onSubmit={handleFormSubmit} className="p-8 space-y-4">
+                                    {submitSuccess && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="p-4 rounded-2xl bg-green-500/10 border border-green-500/20 text-green-300"
+                                        >
+                                            Thank you! Your message has been sent successfully. We'll get back to you soon.
+                                        </motion.div>
+                                    )}
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Full Name</label>
+                                        <input
+                                            required
+                                            type="text"
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-colors"
+                                            placeholder="Your full name"
+                                        />
                                     </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-[11px] font-bold text-blue-400 uppercase tracking-widest ml-1">Email Address</label>
-                                        <div className="relative">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-                                                <Mail size={16} />
-                                            </div>
-                                            <input
-                                                required
-                                                type="email"
-                                                placeholder="john@example.com"
-                                                className="w-full bg-white/5 border border-white/5 focus:border-blue-500/50 rounded-xl py-3.5 pl-11 pr-4 text-sm transition-all outline-none"
-                                                value={formData.email}
-                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            />
-                                        </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Email Address</label>
+                                        <input
+                                            required
+                                            type="email"
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-colors"
+                                            placeholder="your@email.com"
+                                        />
                                     </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-[11px] font-bold text-blue-400 uppercase tracking-widest ml-1">Message</label>
-                                        <div className="relative">
-                                            <div className="absolute left-4 top-4 text-gray-500">
-                                                <MessageSquare size={16} />
-                                            </div>
-                                            <textarea
-                                                required
-                                                rows="4"
-                                                placeholder="How can we help your team?"
-                                                className="w-full bg-white/5 border border-white/5 focus:border-blue-500/50 rounded-xl py-3.5 pl-11 pr-4 text-sm transition-all outline-none resize-none"
-                                                value={formData.message}
-                                                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                            ></textarea>
-                                        </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Phone Number</label>
+                                        <input
+                                            required
+                                            type="tel"
+                                            value={formData.phone}
+                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-colors"
+                                            placeholder="+1 (555) 000-0000"
+                                        />
                                     </div>
-
-                                    <button
-                                        disabled={isSubmitting || submitSuccess}
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Message</label>
+                                        <textarea
+                                            value={formData.message}
+                                            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                                            rows={4}
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-colors resize-none"
+                                            placeholder="Tell us about your project..."
+                                        />
+                                    </div>
+                                    <PrimaryButton
                                         type="submit"
-                                        className={`w-full flex items-center justify-center gap-2.5 py-4 rounded-xl font-bold transition-all ${submitSuccess
-                                            ? "bg-green-500 text-white"
-                                            : "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20"
-                                            } disabled:opacity-70 disabled:cursor-not-allowed`}
+                                        disabled={isSubmitting}
+                                        className="w-full justify-center mt-4"
                                     >
-                                        {isSubmitting ? (
-                                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                        ) : submitSuccess ? (
-                                            <>Enquiry Sent! <Check size={18} /></>
-                                        ) : (
-                                            <>Send Message <SendHorizontal size={18} /></>
-                                        )}
-                                    </button>
+                                        {isSubmitting ? "Sending..." : "Send Message"}
+                                        <SendHorizontal size={18} />
+                                    </PrimaryButton>
                                 </form>
                             </motion.div>
                         </div>
                     )}
                 </AnimatePresence>
-
             </div>
         </>
     );

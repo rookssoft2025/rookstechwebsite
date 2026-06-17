@@ -35,6 +35,7 @@ import VottoLanding from "./pages/works/VottoLanding.jsx";
 import RooksservnexLanding from "./pages/works/RooksservnexLanding.jsx";
 import RookscharityLanding from "./pages/works/RookscharityLanding.jsx";
 import TaskManagementLanding from "./pages/works/TaskManagementLanding.jsx";
+import RooksServicesAppLanding from "./pages/works/RooksServicesAppLanding.jsx";
 import CandidateRegistration from "./pages/careers/assesment/CandidateRegistration.jsx";
 
 export const SplashContext = createContext();
@@ -69,6 +70,7 @@ function App() {
         <Route path="/work/servnex" element={<RooksservnexLanding />} />
         <Route path="/work/charity-financial" element={<RookscharityLanding />} />
         <Route path="/work/task-management" element={<TaskManagementLanding />} />
+        <Route path="/work/rooks-services-app" element={<RooksServicesAppLanding />} />
         <Route path="/work/votto-sanitaryware-management-system" element={<VottoLanding />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/careers/apply" element={<JobApplication />} />
