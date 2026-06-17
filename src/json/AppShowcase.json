@@ -29,7 +29,7 @@
     "description": "Rooks Services App is a user-friendly platform for requesting and managing home services, featuring an enhanced UI for a smoother and more comfortable customer experience.",
     "technologies": ["Flutter", "Firebase", "Cloud Functions", "Node.js"],
     "image": "/mobile_apps_asstes/rookserviceapp (2).png",
-    "link": "/works/rooksserviceapp"
+    "link": "/work/rooks-services-app"
   },
   {
     "id": 5,
@@ -37,6 +37,6 @@
     "description": "Rooks To Do is a smart and simple task management app that helps users stay organized and improve productivity.",
     "technologies": ["Flutter", "Firebase"],
     "image": "/mobile_apps_asstes/rookstodo.png",
-    "link": "/works/rookstodo"
+    "link": "/work/task-management"
   }
 ]

@@ -78,16 +78,16 @@ const ROOKSFooter = () => {
               <div className="flex items-center gap-3 mb-6">
                 <img
                   src={rookstodoLogo}
-                  alt="ROOKS To Do"
+                  alt="Rooks To Do"
                   className="h-12 w-auto object-contain"
                 />
                 <span className="font-bold text-xl bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  ROOKS To Do
+                  Rooks To Do
                 </span>
               </div>
 
               <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                Organize tasks, collaborate seamlessly, and achieve more with ROOKS To Do's intelligent task management platform.
+                Organize tasks, collaborate seamlessly, and achieve more with Rooks To Do's intelligent task management platform.
               </p>
 
               {/* Social Links */}
@@ -312,7 +312,7 @@ const ROOKSFooter = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-gray-500 text-sm"
           >
-            © {new Date().getFullYear()} ROOKS To Do by Rooks & Brooks Technologies.
+            © {new Date().getFullYear()} Rooks To Do by Rooks & Brooks Technologies.
             All rights reserved.
           </motion.p>
 
