@@ -23,6 +23,17 @@
   },
   {
     "id": 3,
+    "title": "Rooks To Do",
+    "category": "Productivity Platform",
+    "type": "web",
+    "description": "Rooks To Do is a software solution designed to organize and manage daily activities such as personal tasks, study plans, and teamwork assignments. In this system, an admin can create workspaces and assign tasks to multiple members. Each workspace allows collaboration, tracking progress, and ensuring timely task completion, improving productivity, coordination, and overall task management efficiency.",
+    "video": "rooks",
+    "link": "/work/task-management",
+    "img": "tsm.jpg",
+    "tags": ["Productivity", "Task Management", "Collaboration"]
+  },
+  {
+    "id": 4,
     "title": "Institute Management System",
     "category": "Education Management Platform",
     "type": "mobile",
@@ -32,8 +43,9 @@
     "img": "ims.jpg",
     "tags": ["Mobile App", "Education", "Institute Management"]
   },
+  
   {
-    "id": 4,
+    "id": 5,
     "title": "Jothi Decor",
     "category": "E-commerce Website",
     "type": "web",
@@ -45,7 +57,7 @@
   },
 
   {
-    "id": 5,
+    "id": 6,
     "title": "Factory Management System",
     "category": "Manufacturing Solution",
     "type": "web",
@@ -56,7 +68,7 @@
     "tags": ["Manufacturing", "ERP", "Inventory"]
   },
   {
-    "id": 6,
+    "id": 7,
     "title": "Charity Financial Management",
     "category": "Non-Profit Solution",
     "type": "web",
@@ -67,7 +79,7 @@
     "tags": ["Financial", "Non-Profit", "Compliance"]
   },
   {
-    "id": 7,
+    "id":8,
     "title": "Hospital Management System",
     "category": "Healthcare Platform",
     "type": "web",
@@ -78,14 +90,16 @@
     "tags": ["Healthcare", "Management", "Patient Care"]
   },
   {
-    "id": 8,
-    "title": "Task Management Application",
-    "category": "Productivity Platform",
-    "type": "web",
-    "description": "Task Management Application is a software solution designed to organize and manage daily activities such as personal tasks, study plans, and teamwork assignments. In this system, an admin can create workspaces and assign tasks to multiple members. Each workspace allows collaboration, tracking progress, and ensuring timely task completion, improving productivity, coordination, and overall task management efficiency.",
+    "id": 9,
+    "title": "Rooks Services App",
+    "category": "Service Management Platform",
+    "type": "mobile",
+    "description": "Rooks Services App is a comprehensive multi-platform service management solution built with Flutter and Firebase. It supports three user roles: Customer (Normal & AMC), Admin, and Engineer, with features like ticket management, barcode scanning, reports generation, and real-time updates.",
     "video": "rooks",
-    "link": "/work/task-management",
-    "img": "tsm.jpg",
-    "tags": ["Productivity", "Task Management", "Collaboration"]
+    "link": "/work/rooks-services-app",
+    "img": "RooksServiceApp.jpg",
+    "tags": ["Service Management", "Mobile App", "Flutter", "Firebase"]
   }
+  
+
 ]

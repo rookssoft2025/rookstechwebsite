@@ -12,6 +12,7 @@ import charityImg from "../../assets/work/charity.jpg";
 import hmsimg from "../../assets/work/hmsImg.jpg";
 import tmsimg from "../../assets/work/tsm.jpg";
 import imsimg from "../../assets/work/ims.jpg";
+import rookserviceapp from "../../assets/mobile_apps_asstes/RooksServiceApp.jpg";
 
 
 
@@ -26,6 +27,7 @@ const assetMap = {
     "hmsImg.jpg": hmsimg,
     "tsm.jpg": tmsimg,
     "ims.jpg": imsimg,
+    "RooksServiceApp.jpg": rookserviceapp,
   },
   videos: {
     jothi: jothiVideo,
