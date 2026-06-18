@@ -43,6 +43,8 @@ import {
   Barcode,
   Printer,
   CreditCard,
+  CheckCircle2,
+  Cloud,
 } from "lucide-react";
 import ROOKSServicesNavbar from "../../components/layout/ROOKSServicesNavbar";
 import ROOKSServicesFooter from "../../components/layout/ROOKSServicesFooter";
