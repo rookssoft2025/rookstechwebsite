@@ -9,7 +9,7 @@ import {
   Twitter,
   Linkedin,
 } from "lucide-react";
-import servnexLogo from "../../assets/mobile_apps_asstes/servnex.png";
+import servnexLogo from "../../assets/mobile_apps_asstes/servenex.png";
 import { useNavigate } from "react-router-dom";
 
 const ServnexFooter = () => {

@@ -109,19 +109,24 @@ const AppShowcaseCarousel = () => {
                 >
                   <motion.div
                     className={`
-                      relative rounded-3xl overflow-hidden border transition-all duration-500
-                      ${
-                        index === activeIndex
-                          ? "border-sky-400/50 scale-100 shadow-[0_0_40px_rgba(56,189,248,0.2)]"
-                          : "border-[#FFFFFF1A] scale-85 opacity-50"
-                      }
-                    `}
+        relative rounded-3xl overflow-hidden border transition-all duration-500
+        ${
+          item.id === 3
+            ? "bg-[#0F2239] border-sky-400/30"
+            : "bg-white border-slate-200"
+        }
+        ${
+          index === activeIndex
+            ? "scale-100 shadow-[0_0_40px_rgba(56,189,248,0.25)]"
+            : "scale-85 opacity-70"
+        }
+      `}
                   >
-                    <div className="aspect-[3/4] bg-[#0F2239] flex items-center justify-center">
+                    <div className="aspect-[3/4] flex items-center justify-center p-8">
                       <img
                         src={item.image}
                         alt={item.title}
-                        className="max-w-full max-h-full object-contain"
+                        className="max-w-[75%] max-h-[75%] object-contain"
                       />
                     </div>
                   </motion.div>

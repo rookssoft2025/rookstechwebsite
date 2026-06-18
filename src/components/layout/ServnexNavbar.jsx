@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronRight, ArrowRight } from "lucide-react";
-import servnexLogo from "../../assets/mobile_apps_asstes/servnex.png";
+import servnexLogo from "../../assets/mobile_apps_asstes/servenex.png";
 
 const ServnexNavbar = ({ onCTAClick }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
