@@ -43,6 +43,8 @@ import {
   Barcode,
   Printer,
   CreditCard,
+  CheckCircle2,
+  Cloud,
 } from "lucide-react";
 import ROOKSServicesNavbar from "../../components/layout/ROOKSServicesNavbar";
 import ROOKSServicesFooter from "../../components/layout/ROOKSServicesFooter";
@@ -304,7 +306,7 @@ const RooksServicesAppLanding = () => {
               </p>
               <div className="flex flex-wrap gap-4 mb-8">
                 <PrimaryButton onClick={() => setIsModalOpen(true)}>
-                  Get Started Free
+                  Contact Us
                   <ArrowRight size={18} />
                 </PrimaryButton>
                 {/* <SecondaryButton onClick={() => setIsModalOpen(true)}>
@@ -852,116 +854,188 @@ const RooksServicesAppLanding = () => {
         {/* Contact Modal */}
         <AnimatePresence>
           {isModalOpen && (
-            <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-black/60"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setIsModalOpen(false);
+              }}
+            >
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setIsModalOpen(false)}
-                className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-              />
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="relative w-full max-w-xl bg-[#0a1a3a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl"
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="bg-[#0f1419] w-full max-w-4xl rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(11,52,112,0.3)] relative flex flex-col md:flex-row min-h-[500px] border border-white/10"
               >
-                <div className="p-8 pb-0 flex justify-between items-start">
-                  <div>
-                    <h3 className="text-3xl font-bold tracking-tight mb-2">
-                      Get in Touch
-                    </h3>
-                    <p className="text-gray-400 text-sm">
-                      Fill out the form below and our team will get back to you
-                      shortly.
+                {/* Close Button */}
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+
+                {/* Left Side: Branding/Visual */}
+                <div className="md:w-1/2 bg-[#1a1f2e] flex flex-col items-center justify-center p-12 relative overflow-hidden border-r border-white/10">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#0B3470]/20 to-transparent pointer-events-none" />
+                  <motion.img
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    src={tmsimg}
+                    alt="Rooks Services App"
+                    className="w-full h-auto max-w-[300px] relative z-10 object-contain rounded-2xl shadow-2xl"
+                  />
+                  <div className="mt-8 text-center relative z-10 w-full">
+                    <div className="flex items-center justify-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-[#0B3470] animate-pulse" />
+                      <span className="text-[#0B3470] font-bold uppercase tracking-widest text-[10px]">
+                        Service Management Cloud
+                      </span>
+                    </div>
+                    <p className="text-gray-400 text-sm max-w-[240px] mx-auto italic">
+                      "Streamlining service operations with powerful simplicity."
                     </p>
                   </div>
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="p-2 hover:bg-white/10 rounded-full transition-colors"
-                  >
-                    <X size={24} className="text-gray-400" />
-                  </button>
+                  {/* Decorative elements */}
+                  <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-[#0B3470]/10 rounded-full blur-3xl" />
+                  <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#1a5a9a]/10 rounded-full blur-3xl" />
                 </div>
-                <form onSubmit={handleFormSubmit} className="p-8 space-y-4">
-                  {submitSuccess && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-4 rounded-2xl bg-green-500/10 border border-green-500/20 text-green-300"
-                    >
-                      Thank you! Your message has been sent successfully. We'll
-                      get back to you soon.
-                    </motion.div>
-                  )}
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#0B3470] uppercase tracking-wider">
-                      Full Name
-                    </label>
-                    <input
-                      required
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
-                      }
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#0B3470]/50 focus:bg-white/10 transition-colors"
-                      placeholder="Your full name"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#0B3470] uppercase tracking-wider">
-                      Email Address
-                    </label>
-                    <input
-                      required
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#0B3470]/50 focus:bg-white/10 transition-colors"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#0B3470] uppercase tracking-wider">
-                      Phone Number
-                    </label>
-                    <input
-                      required
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) =>
-                        setFormData({ ...formData, phone: e.target.value })
-                      }
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#0B3470]/50 focus:bg-white/10 transition-colors"
-                      placeholder="+1 (555) 000-0000"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#0B3470] uppercase tracking-wider">
-                      Message
-                    </label>
-                    <textarea
-                      value={formData.message}
-                      onChange={(e) =>
-                        setFormData({ ...formData, message: e.target.value })
-                      }
-                      rows={4}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#0B3470]/50 focus:bg-white/10 transition-colors resize-none"
-                      placeholder="Tell us about your project..."
-                    />
-                  </div>
-                  <PrimaryButton
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full justify-center mt-4"
+
+                {/* Right Side: Form */}
+                <div className="md:w-1/2 p-8 md:p-12 bg-[#0f1419] flex flex-col justify-center">
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
                   >
-                    {isSubmitting ? "Sending..." : "Send Message"}
-                    <SendHorizontal size={18} />
-                  </PrimaryButton>
-                </form>
+                    {submitSuccess ? (
+                      <div className="text-center space-y-6">
+                        <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto text-green-400 border border-green-500/20">
+                          <CheckCircle2 className="w-10 h-10" />
+                        </div>
+                        <div>
+                          <h3 className="text-3xl font-bold text-white mb-2">
+                            Request Received
+                          </h3>
+                          <p className="text-gray-400">
+                            Our team will reach out to you
+                            within 24 hours.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-2 mb-1">
+                          <Cloud className="w-5 h-5 text-[#0B3470]" />
+                          <span className="text-[#0B3470] font-bold text-sm tracking-widest uppercase">
+                            Rooks Services Support
+                          </span>
+                        </div>
+                        <h3 className="text-4xl font-bold text-white mb-2">
+                          Get in touch
+                        </h3>
+                        <p className="text-gray-400 mb-8">
+                          Ready to streamline your service operations? Let's discuss your needs.
+                        </p>
+
+                        <form className="space-y-4" onSubmit={handleFormSubmit}>
+                          <div>
+                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">
+                              Full Name
+                            </label>
+                            <input
+                              required
+                              type="text"
+                              placeholder="Enter your full name"
+                              value={formData.name}
+                              onChange={(e) =>
+                                setFormData({ ...formData, name: e.target.value })
+                              }
+                              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:bg-white/10 focus:border-[#0B3470] focus:ring-1 focus:ring-[#0B3470] transition-all outline-none text-white placeholder:text-gray-600"
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">
+                                Email Address
+                              </label>
+                              <input
+                                required
+                                type="email"
+                                placeholder="mail@enterprise.com"
+                                value={formData.email}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    email: e.target.value,
+                                  })
+                                }
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:bg-white/10 focus:border-[#0B3470] focus:ring-1 focus:ring-[#0B3470] transition-all outline-none text-white placeholder:text-gray-600"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">
+                                Phone Number
+                              </label>
+                              <input
+                                required
+                                type="tel"
+                                placeholder="+1 (555) 000-0000"
+                                value={formData.phone}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    phone: e.target.value,
+                                  })
+                                }
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:bg-white/10 focus:border-[#0B3470] focus:ring-1 focus:ring-[#0B3470] transition-all outline-none text-white placeholder:text-gray-600"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">
+                              Message
+                            </label>
+                            <textarea
+                              required
+                              rows="3"
+                              placeholder="Tell us about your project or business needs..."
+                              value={formData.message}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  message: e.target.value,
+                                })
+                              }
+                              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:bg-white/10 focus:border-[#0B3470] focus:ring-1 focus:ring-[#0B3470] transition-all outline-none text-white resize-none placeholder:text-gray-600"
+                            />
+                          </div>
+
+                          <motion.button
+                            disabled={isSubmitting}
+                            whileHover={{
+                              scale: 1.02,
+                              boxShadow: "0 0 20px rgba(11,52,112,0.4)",
+                            }}
+                            whileTap={{ scale: 0.98 }}
+                            className="w-full py-4 bg-gradient-to-r from-[#0B3470] to-[#1a5a9a] text-white font-bold rounded-xl transition-all uppercase tracking-widest text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
+                          >
+                            {isSubmitting ? (
+                              <>
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                Processing...
+                              </>
+                            ) : (
+                              "Submit Request"
+                            )}
+                          </motion.button>
+                        </form>
+                      </>
+                    )}
+                  </motion.div>
+                </div>
               </motion.div>
             </div>
           )}
