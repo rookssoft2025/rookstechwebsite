@@ -38,12 +38,21 @@ import {
   PieChart,
   Zap,
   Globe,
+  MapPin,
+  Calendar,
+  Clock,
+  Settings,
+  ChevronRight,
 } from "lucide-react";
 
 import phoneImage from "../../assets/work/red_antique_telephone_1773891893640.png";
 import ebricksLogo from "../../assets/mobile_apps_asstes/ebricks.png";
 import EBricksNavbar from "../../components/layout/eBricksNavbar";
 import EBricksFooter from "../../components/layout/eBricksFooter";
+
+// Note: In production, these would be actual image imports
+// For now, we'll use placeholder images with descriptive content
+// Replace with actual images from your assets folder
 
 const RooksCstLanding = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,6 +94,24 @@ const RooksCstLanding = () => {
       opacity: 1,
       scale: 1,
       transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
+
+  const fadeInLeft = {
+    hidden: { opacity: 0, x: -50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
+  const fadeInRight = {
+    hidden: { opacity: 0, x: 50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
     },
   };
 
@@ -132,6 +159,119 @@ const RooksCstLanding = () => {
     }
   };
 
+  // Enhanced features with visual elements
+  const features = [
+    {
+      icon: <Layout className="w-8 h-8" />,
+      title: "Complete Project Management",
+      desc: "Plan and track every stage of your construction projects, with real-time status updates.",
+      color: "from-[#0B3470] to-[#1e4a8a]",
+      image: "https://via.placeholder.com/400x250/0B3470/FFFFFF?text=Project+Management",
+    },
+    {
+      icon: <Users className="w-8 h-8" />,
+      title: "Team & Labor Management",
+      desc: "Worker onboarding, attendance tracking, labor scheduling, and incentive calculation.",
+      color: "from-[#0B3470] to-[#1a3a6a]",
+      image: "https://via.placeholder.com/400x250/1a3a6a/FFFFFF?text=Team+Management",
+    },
+    {
+      icon: <Package className="w-8 h-8" />,
+      title: "Materials & Inventory Control",
+      desc: "Material request and approval workflow, real-time inventory tracking, and availability management.",
+      color: "from-[#0B3470] to-[#2a5a9a]",
+      image: "https://via.placeholder.com/400x250/2a5a9a/FFFFFF?text=Inventory+Control",
+    },
+    {
+      icon: <DollarSign className="w-8 h-8" />,
+      title: "Financial Management",
+      desc: "Expense tracking, financial status reports, site payment management, and project-wise insights.",
+      color: "from-[#0B3470] to-[#1e4a8a]",
+      image: "https://via.placeholder.com/400x250/1e4a8a/FFFFFF?text=Financial+Management",
+    },
+    {
+      icon: <HardHat className="w-8 h-8" />,
+      title: "Site Supervision",
+      desc: "Daily site reports with photo documentation, site status updates, and manager approval workflows.",
+      color: "from-[#0B3470] to-[#1a3a6a]",
+      image: "https://via.placeholder.com/400x250/1a3a6a/FFFFFF?text=Site+Supervision",
+    },
+    {
+      icon: <Users2 className="w-8 h-8" />,
+      title: "Contractor Management",
+      desc: "Contractor onboarding and tracking, performance reports, and work order management.",
+      color: "from-[#0B3470] to-[#2a5a9a]",
+      image: "https://via.placeholder.com/400x250/2a5a9a/FFFFFF?text=Contractor+Management",
+    },
+    {
+      icon: <Wrench className="w-8 h-8" />,
+      title: "Tools & Equipment",
+      desc: "Tools inventory management, movement tracking, vehicle fleet management, and driver assignment.",
+      color: "from-[#0B3470] to-[#1e4a8a]",
+      image: "https://via.placeholder.com/400x250/1e4a8a/FFFFFF?text=Tools+Equipment",
+    },
+    {
+      icon: <Building2 className="w-8 h-8" />,
+      title: "Client Portal",
+      desc: "Customer dashboard with project visibility, real-time status reports, and financial status sharing.",
+      color: "from-[#0B3470] to-[#1a3a6a]",
+      image: "https://via.placeholder.com/400x250/1a3a6a/FFFFFF?text=Client+Portal",
+    },
+    {
+      icon: <Palette className="w-8 h-8" />,
+      title: "White-label Branding",
+      desc: "Customizable app name and logo, brand color customization, and fully branded experience for your clients.",
+      color: "from-[#0B3470] to-[#2a5a9a]",
+      image: "https://via.placeholder.com/400x250/2a5a9a/FFFFFF?text=White-label+Branding",
+    },
+    {
+      icon: <PieChart className="w-8 h-8" />,
+      title: "Insights & Analytics",
+      desc: "Comprehensive dashboards with real-time insights, project stage analytics, and PDF report generation.",
+      color: "from-[#0B3470] to-[#1e4a8a]",
+      image: "https://via.placeholder.com/400x250/1e4a8a/FFFFFF?text=Analytics+Dashboard",
+    },
+  ];
+
+  // Process workflow steps with images
+  const processSteps = [
+    {
+      step: "01",
+      label: "Project Setup",
+      icon: Settings,
+      desc: "Create and configure your construction project",
+      image: "https://via.placeholder.com/300x200/0B3470/FFFFFF?text=Project+Setup",
+    },
+    {
+      step: "02",
+      label: "Team Onboarding",
+      icon: Users,
+      desc: "Add team members and assign roles",
+      image: "https://via.placeholder.com/300x200/1a3a6a/FFFFFF?text=Team+Onboarding",
+    },
+    {
+      step: "03",
+      label: "Material Procurement",
+      icon: Package,
+      desc: "Manage inventory and material requests",
+      image: "https://via.placeholder.com/300x200/2a5a9a/FFFFFF?text=Procurement",
+    },
+    {
+      step: "04",
+      label: "Site Execution",
+      icon: HardHat,
+      desc: "Monitor daily site activities and progress",
+      image: "https://via.placeholder.com/300x200/1e4a8a/FFFFFF?text=Site+Execution",
+    },
+    {
+      step: "05",
+      label: "Reporting & Analytics",
+      icon: BarChart3,
+      desc: "Generate insights and project reports",
+      image: "https://via.placeholder.com/300x200/0B3470/FFFFFF?text=Reporting",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-[#071324] text-white overflow-hidden">
       {/* eBricks Navbar */}
@@ -175,20 +315,7 @@ const RooksCstLanding = () => {
               variants={fadeInUp}
               className="mb-8 flex items-center gap-4"
             >
-              {/* <img
-                src={ebricksLogo}
-                alt="eBricks Logo"
-                className="h-16 w-auto object-contain"
-              />
-              <div className="h-12 w-px bg-white/20" />
-              <div className="flex flex-col">
-                <span className="text-[#4ec9ff] font-bold text-xl tracking-tight">
-                  eBricks
-                </span>
-                <span className="text-gray-400 text-xs uppercase tracking-widest">
-                  Construction Suite
-                </span>
-              </div> */}
+              {/* Logo placeholder - you can add your logo here */}
             </motion.div>
 
             <motion.h1
@@ -228,37 +355,27 @@ const RooksCstLanding = () => {
                   transition={{ duration: 0.3 }}
                 />
               </motion.button>
-
-              {/* <motion.button
-                onClick={() => setIsModalOpen(true)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="group px-8 py-4 bg-white/5 backdrop-blur-sm rounded-xl flex items-center gap-2 border border-white/10 hover:border-white/20 transition-all"
-              >
-                <Play className="w-4 h-4 group-hover:text-[#4ec9ff] transition-colors" />
-                <span>Book a Demo</span>
-              </motion.button> */}
             </motion.div>
 
-            {/* Stats */}
-            {/* <motion.div
-                            variants={fadeInUp}
-                            className="mt-12 flex gap-8"
-                        >
-                            {[
-                                { value: "500+", label: "Projects" },
-                                { value: "98%", label: "Satisfaction" },
-                                { value: "24/7", label: "Support" }
-                            ].map((stat, i) => (
-                                <div key={i}>
-                                    <div className="text-2xl font-bold text-white">{stat.value}</div>
-                                    <div className="text-sm text-gray-500">{stat.label}</div>
-                                </div>
-                            ))}
-                        </motion.div> */}
+            {/* Trust indicators */}
+            <motion.div
+              variants={fadeInUp}
+              className="mt-12 flex gap-8 flex-wrap"
+            >
+              {[
+                { icon: Shield, label: "Enterprise Grade" },
+                { icon: Award, label: "Industry Certified" },
+                { icon: TrendingUp, label: "98% Satisfaction" },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <item.icon className="w-4 h-4 text-[#4ec9ff]" />
+                  <span className="text-sm text-gray-400">{item.label}</span>
+                </div>
+              ))}
+            </motion.div>
           </motion.div>
 
-          {/* RIGHT IMAGE */}
+          {/* RIGHT IMAGE - Enhanced with glassmorphism */}
           <motion.div
             variants={fadeInScale}
             initial="hidden"
@@ -266,16 +383,51 @@ const RooksCstLanding = () => {
             className="relative"
           >
             <motion.div animate={floatAnimation} className="relative z-10">
-              <img
-                src={cstImg}
-                className="max-w-full h-auto rounded-2xl shadow-2xl shadow-[#0B3470]/20"
-                alt="CST Dashboard"
-              />
+              <div className="relative rounded-2xl overflow-hidden  ">
+                <img
+                  src={cstImg}
+                  className="w-full h-auto"
+                  alt="CST Dashboard"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#071324]/60 via-transparent to-transparent pointer-events-none" />
+              </div>
+            </motion.div>
+
+            {/* Floating metrics */}
+            <motion.div
+              animate={floatAnimation}
+              className="absolute -bottom-4 -right-4 bg-[#071324]/90 backdrop-blur-sm p-4 rounded-xl border border-white/10 shadow-xl"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#0B3470] to-[#1e4a8a] rounded-lg flex items-center justify-center">
+                  <Users className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">500+</p>
+                  <p className="text-xs text-gray-400">Active Projects</p>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              animate={floatAnimation}
+              transition={{ duration: 3, delay: 0.5, repeat: Infinity }}
+              className="absolute -top-4 -left-4 bg-[#071324]/90 backdrop-blur-sm p-4 rounded-xl border border-white/10 shadow-xl"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#4ec9ff] to-[#0B3470] rounded-lg flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">24/7</p>
+                  <p className="text-xs text-gray-400">Support Available</p>
+                </div>
+              </div>
             </motion.div>
 
             {/* Decorative elements */}
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#0B3470]/30 rounded-full blur-2xl" />
-            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-[#1a4a8a]/20 rounded-full blur-2xl" />
+            {/* <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#0B3470]/30 rounded-full blur-2xl" /> */}
+            {/* <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-[#1a4a8a]/20 rounded-full blur-2xl" /> */}
           </motion.div>
         </div>
       </section>
@@ -289,10 +441,10 @@ const RooksCstLanding = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">
+            <span className="text-[#4ec9ff] font-semibold text-sm uppercase tracking-wider px-4 py-2 bg-[#4ec9ff]/10 rounded-full">
               Features
             </span>
-            <h2 className="text-5xl font-bold mb-4 mt-2">
+            <h2 className="text-5xl font-bold mb-4 mt-4">
               Key Features of eBricks
             </h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
@@ -307,90 +459,39 @@ const RooksCstLanding = () => {
             whileInView="visible"
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {[
-              {
-                icon: <Layout className="w-8 h-8" />,
-                title: "Complete Project Management",
-                desc: "Plan and track every stage of your construction projects, with real-time status updates.",
-                color: "from-[#0B3470] to-[#1e4a8a]",
-              },
-              {
-                icon: <Users className="w-8 h-8" />,
-                title: "Team & Labor Management",
-                desc: "Worker onboarding, attendance tracking, labor scheduling, and incentive calculation.",
-                color: "from-[#0B3470] to-[#1a3a6a]",
-              },
-              {
-                icon: <Package className="w-8 h-8" />,
-                title: "Materials & Inventory Control",
-                desc: "Material request and approval workflow, real-time inventory tracking, and availability management.",
-                color: "from-[#0B3470] to-[#2a5a9a]",
-              },
-              {
-                icon: <DollarSign className="w-8 h-8" />,
-                title: "Financial Management",
-                desc: "Expense tracking, financial status reports, site payment management, and project-wise insights.",
-                color: "from-[#0B3470] to-[#1e4a8a]",
-              },
-              {
-                icon: <HardHat className="w-8 h-8" />,
-                title: "Site Supervision",
-                desc: "Daily site reports with photo documentation, site status updates, and manager approval workflows.",
-                color: "from-[#0B3470] to-[#1a3a6a]",
-              },
-              {
-                icon: <Users2 className="w-8 h-8" />,
-                title: "Contractor Management",
-                desc: "Contractor onboarding and tracking, performance reports, and work order management.",
-                color: "from-[#0B3470] to-[#2a5a9a]",
-              },
-              {
-                icon: <Wrench className="w-8 h-8" />,
-                title: "Tools & Equipment",
-                desc: "Tools inventory management, movement tracking, vehicle fleet management, and driver assignment.",
-                color: "from-[#0B3470] to-[#1e4a8a]",
-              },
-              {
-                icon: <Building2 className="w-8 h-8" />,
-                title: "Client Portal",
-                desc: "Customer dashboard with project visibility, real-time status reports, and financial status sharing.",
-                color: "from-[#0B3470] to-[#1a3a6a]",
-              },
-              {
-                icon: <Palette className="w-8 h-8" />,
-                title: "White-label Branding",
-                desc: "Customizable app name and logo, brand color customization, and fully branded experience for your clients.",
-                color: "from-[#0B3470] to-[#2a5a9a]",
-              },
-              {
-                icon: <PieChart className="w-8 h-8" />,
-                title: "Insights & Analytics",
-                desc: "Comprehensive dashboards with real-time insights, project stage analytics, and PDF report generation.",
-                color: "from-[#0B3470] to-[#1e4a8a]",
-              },
-            ].map((item, i) => (
+            {features.map((item, i) => (
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="group relative p-8 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-2xl border border-white/10 hover:border-[#0B3470]/50 transition-all backdrop-blur-sm"
+                whileHover={{ y: -10 }}
+                className="group relative p-8 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-2xl border border-white/10 hover:border-[#0B3470]/50 transition-all backdrop-blur-sm overflow-hidden"
               >
                 {/* Gradient overlay on hover */}
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-300`}
                 />
 
+                {/* Feature Image */}
+                <div className="relative mb-6 rounded-xl overflow-hidden border border-white/10 group-hover:border-[#0B3470]/30 transition-all">
+                  <img 
+                    src={item.image} 
+                    alt={item.title}
+                    className="w-full h-32 object-cover transform group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#071324]/60 via-transparent to-transparent" />
+                </div>
+
                 <div
-                  className={`mb-4 p-3 bg-gradient-to-br ${item.color} rounded-xl w-fit text-white shadow-lg shadow-[#0B3470]/20`}
+                  className={`mb-4 p-3 bg-gradient-to-br ${item.color} rounded-xl w-fit text-white shadow-lg shadow-[#0B3470]/20 relative z-10`}
                 >
                   {item.icon}
                 </div>
 
-                <h3 className="font-bold text-xl mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#4ec9ff] group-hover:to-white transition-all">
+                <h3 className="font-bold text-xl mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#4ec9ff] group-hover:to-white transition-all relative z-10">
                   {item.title}
                 </h3>
 
-                <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
+                <p className="text-gray-400 group-hover:text-gray-300 transition-colors relative z-10">
                   {item.desc}
                 </p>
 
@@ -407,7 +508,7 @@ const RooksCstLanding = () => {
         </div>
       </section>
 
-      {/* ================= WHY CHOOSE US ================= */}
+      {/* ================= WHY CHOOSE US - Alternating Layout ================= */}
       <section id="why-choose" className="py-32 px-4 relative">
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
@@ -416,91 +517,280 @@ const RooksCstLanding = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">
+            <span className="text-[#4ec9ff] font-semibold text-sm uppercase tracking-wider px-4 py-2 bg-[#4ec9ff]/10 rounded-full">
               Why Choose Us
             </span>
-            <h2 className="text-5xl font-bold mb-4 mt-2">
+            <h2 className="text-5xl font-bold mb-4 mt-4">
               Why eBricks is the Best Choice
             </h2>
           </motion.div>
 
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {[
-              {
-                icon: <Layout className="w-8 h-8" />,
-                title: "All-in-One Platform",
-                desc: "No need for multiple tools — manage everything from project planning to client communication in one place.",
-                color: "from-[#0B3470] to-[#1e4a8a]",
-              },
-              {
-                icon: <Palette className="w-8 h-8" />,
-                title: "White-label Ready",
-                desc: "Brand the app as your own and deliver a seamless experience to your clients.",
-                color: "from-[#0B3470] to-[#1a3a6a]",
-              },
-              {
-                icon: <Users className="w-8 h-8" />,
-                title: "Role-based Access",
-                desc: "Different dashboards for Organizations, Managers, Supervisors, Workers, and Clients.",
-                color: "from-[#0B3470] to-[#2a5a9a]",
-              },
-              {
-                icon: <Zap className="w-8 h-8" />,
-                title: "Real-time Updates",
-                desc: "Everyone stays on the same page with instant notifications and updates.",
-                color: "from-[#0B3470] to-[#1e4a8a]",
-              },
-              {
-                icon: <FileText className="w-8 h-8" />,
-                title: "Professional Reports",
-                desc: "Generate professional PDF reports for clients, stakeholders, and internal use.",
-                color: "from-[#0B3470] to-[#1a3a6a]",
-              },
-              {
-                icon: <Globe className="w-8 h-8" />,
-                title: "Cloud-based",
-                desc: "Access from anywhere, anytime — no installation required.",
-                color: "from-[#0B3470] to-[#2a5a9a]",
-              },
-            ].map((item, i) => (
+          {/* Alternating layout */}
+          <div className="space-y-24">
+            {/* Row 1: Image Left, Content Right */}
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
               <motion.div
-                key={i}
-                variants={fadeInUp}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="group relative p-8 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-2xl border border-white/10 hover:border-[#0B3470]/50 transition-all backdrop-blur-sm"
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                className="relative"
               >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-300`}
-                />
-
-                <div
-                  className={`mb-4 p-3 bg-gradient-to-br ${item.color} rounded-xl w-fit text-white shadow-lg shadow-[#0B3470]/20`}
-                >
-                  {item.icon}
+                <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-[#0B3470]/20">
+                  <img 
+                    src="https://via.placeholder.com/800x500/0B3470/FFFFFF?text=All-in-One+Platform"
+                    alt="All-in-One Platform"
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#071324]/60 via-transparent to-transparent" />
                 </div>
-
-                <h3 className="font-bold text-xl mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#4ec9ff] group-hover:to-white transition-all">
-                  {item.title}
-                </h3>
-
-                <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                  {item.desc}
-                </p>
-
-                <motion.div
-                  className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#0B3470] to-[#4ec9ff]"
-                  initial={{ width: 0 }}
-                  whileHover={{ width: "100%" }}
-                  transition={{ duration: 0.3 }}
-                />
+                <div className="absolute -bottom-4 -right-4 bg-[#071324]/90 backdrop-blur-sm p-4 rounded-xl border border-white/10 shadow-xl">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-[#4ec9ff] to-[#0B3470] rounded-lg flex items-center justify-center">
+                      <Layout className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-bold">All-in-One</p>
+                      <p className="text-xs text-gray-400">Complete Solution</p>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
-            ))}
+
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <h3 className="text-3xl font-bold mb-4">
+                  All-in-One{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4ec9ff] to-[#0B3470]">
+                    Platform
+                  </span>
+                </h3>
+                <p className="text-gray-400 mb-6 text-lg leading-relaxed">
+                  No need for multiple tools — manage everything from project planning to client communication in one place. Our integrated platform handles all aspects of construction management.
+                </p>
+                <ul className="space-y-3">
+                  {[
+                    "Project planning and scheduling",
+                    "Team and labor management",
+                    "Materials and inventory control",
+                    "Financial tracking and reporting",
+                  ].map((item, i) => (
+                    <motion.li
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      className="flex items-center gap-3 text-gray-300"
+                    >
+                      <CheckCircle2 className="w-5 h-5 text-[#4ec9ff] flex-shrink-0" />
+                      <span>{item}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
+            </div>
+
+            {/* Row 2: Content Left, Image Right */}
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <h3 className="text-3xl font-bold mb-4">
+                  White-label{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4ec9ff] to-[#0B3470]">
+                    Ready
+                  </span>
+                </h3>
+                <p className="text-gray-400 mb-6 text-lg leading-relaxed">
+                  Brand the app as your own and deliver a seamless experience to your clients. Customize everything from colors to logos for a fully branded solution.
+                </p>
+                <ul className="space-y-3">
+                  {[
+                    "Customizable branding and colors",
+                    "Your logo and company name",
+                    "White-label client portal",
+                    "Fully branded mobile experience",
+                  ].map((item, i) => (
+                    <motion.li
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      className="flex items-center gap-3 text-gray-300"
+                    >
+                      <CheckCircle2 className="w-5 h-5 text-[#4ec9ff] flex-shrink-0" />
+                      <span>{item}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                className="relative"
+              >
+                <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-[#0B3470]/20">
+                  <img 
+                    src="https://via.placeholder.com/800x500/1a3a6a/FFFFFF?text=White-label+Customization"
+                    alt="White-label Customization"
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#071324]/60 via-transparent to-transparent" />
+                </div>
+                <div className="absolute -top-4 -left-4 bg-[#071324]/90 backdrop-blur-sm p-4 rounded-xl border border-white/10 shadow-xl">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-[#0B3470] to-[#1e4a8a] rounded-lg flex items-center justify-center">
+                      <Palette className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-bold">Customizable</p>
+                      <p className="text-xs text-gray-400">Fully Branded</p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Row 3: Image Left, Content Right */}
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                className="relative"
+              >
+                <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-[#0B3470]/20">
+                  <img 
+                    src="https://via.placeholder.com/800x500/2a5a9a/FFFFFF?text=Real-time+Updates"
+                    alt="Real-time Updates"
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#071324]/60 via-transparent to-transparent" />
+                </div>
+                <div className="absolute -bottom-4 -left-4 bg-[#071324]/90 backdrop-blur-sm p-4 rounded-xl border border-white/10 shadow-xl">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-[#4ec9ff] to-[#0B3470] rounded-lg flex items-center justify-center">
+                      <Zap className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-bold">Real-time</p>
+                      <p className="text-xs text-gray-400">Live Updates</p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <h3 className="text-3xl font-bold mb-4">
+                  Real-time{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4ec9ff] to-[#0B3470]">
+                    Updates
+                  </span>
+                </h3>
+                <p className="text-gray-400 mb-6 text-lg leading-relaxed">
+                  Everyone stays on the same page with instant notifications and updates. Keep your team and clients informed with real-time status changes.
+                </p>
+                <ul className="space-y-3">
+                  {[
+                    "Instant notifications",
+                    "Live project status",
+                    "Real-time team updates",
+                    "Automatic report generation",
+                  ].map((item, i) => (
+                    <motion.li
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      className="flex items-center gap-3 text-gray-300"
+                    >
+                      <CheckCircle2 className="w-5 h-5 text-[#4ec9ff] flex-shrink-0" />
+                      <span>{item}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= HOW IT WORKS ================= */}
+      <section id="how-it-works" className="py-32 px-4 relative">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <span className="text-[#4ec9ff] font-semibold text-sm uppercase tracking-wider px-4 py-2 bg-[#4ec9ff]/10 rounded-full">
+              Simple Process
+            </span>
+            <h2 className="text-5xl font-bold mb-4 mt-4">
+              Get Started in{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4ec9ff] to-[#0B3470]">
+                5 Simple Steps
+              </span>
+            </h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              Launch your construction management platform in no time
+            </p>
           </motion.div>
+
+          <div className="grid md:grid-cols-5 gap-4 relative">
+            {/* Connecting line */}
+            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-[#0B3470]/20 via-[#4ec9ff]/20 to-[#0B3470]/20 hidden md:block" />
+
+            {processSteps.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -10 }}
+                  className="relative group"
+                >
+                  <div className="p-6 bg-gradient-to-b from-white/5 to-white/[0.02] rounded-2xl border border-white/10 backdrop-blur-sm">
+                    <div className="relative mb-4">
+                      <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#4ec9ff] to-[#0B3470] opacity-20">
+                        {item.step}
+                      </div>
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <div className="p-3 bg-gradient-to-br from-[#0B3470] to-[#1e4a8a] rounded-xl group-hover:scale-110 transition-transform">
+                          <Icon className="w-6 h-6 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Step Image */}
+                    <div className="mb-4 rounded-xl overflow-hidden border border-white/10">
+                      <img 
+                        src={item.image} 
+                        alt={item.label}
+                        className="w-full h-24 object-cover"
+                      />
+                    </div>
+                    
+                    <h3 className="font-bold text-lg mb-2">{item.label}</h3>
+                    <p className="text-xs text-gray-400">{item.desc}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -513,10 +803,10 @@ const RooksCstLanding = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="text-blue-400 font-semibold text-sm uppercase tracking-wider">
+            <span className="text-[#4ec9ff] font-semibold text-sm uppercase tracking-wider px-4 py-2 bg-[#4ec9ff]/10 rounded-full">
               Pricing Plans
             </span>
-            <h2 className="text-5xl font-bold mb-4 mt-2">
+            <h2 className="text-5xl font-bold mb-4 mt-4">
               Choose the Perfect Plan for You
             </h2>
           </motion.div>
@@ -533,6 +823,7 @@ const RooksCstLanding = () => {
                 desc: "Get started with 1 project and 2 users for 14 days",
                 price: "Free",
                 color: "from-[#0B3470] to-[#1e4a8a]",
+                image: "https://via.placeholder.com/400x150/0B3470/FFFFFF?text=Free+Trial",
                 features: [
                   "1 Project",
                   "2 Users",
@@ -545,6 +836,7 @@ const RooksCstLanding = () => {
                 desc: "Up to 3 projects, 5 users — perfect for small teams",
                 price: "Custom",
                 color: "from-[#0B3470] to-[#1a3a6a]",
+                image: "https://via.placeholder.com/400x150/1a3a6a/FFFFFF?text=Silver+Plan",
                 features: [
                   "3 Projects",
                   "5 Users",
@@ -557,6 +849,7 @@ const RooksCstLanding = () => {
                 desc: "Scalable project capacity for businesses of any size",
                 price: "Custom",
                 color: "from-[#0B3470] to-[#2a5a9a]",
+                image: "https://via.placeholder.com/400x150/2a5a9a/FFFFFF?text=Gold+Plan",
                 features: [
                   "Unlimited Projects",
                   "Unlimited Users",
@@ -569,6 +862,7 @@ const RooksCstLanding = () => {
                 desc: "Unlimited projects and users — enterprise-grade solution",
                 price: "Custom",
                 color: "from-[#0B3470] to-[#1e4a8a]",
+                image: "https://via.placeholder.com/400x150/1e4a8a/FFFFFF?text=Platinum+Plan",
                 features: [
                   "Everything in Gold",
                   "API Access",
@@ -580,17 +874,20 @@ const RooksCstLanding = () => {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="group relative p-8 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-2xl border border-white/10 hover:border-[#0B3470]/50 transition-all backdrop-blur-sm"
+                whileHover={{ y: -10 }}
+                className="group relative p-8 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-2xl border border-white/10 hover:border-[#0B3470]/50 transition-all backdrop-blur-sm overflow-hidden"
               >
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${plan.color} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-300`}
                 />
 
-                <div
-                  className={`mb-4 p-3 bg-gradient-to-br ${plan.color} rounded-xl w-fit text-white shadow-lg shadow-[#0B3470]/20`}
-                >
-                  <div className="w-6 h-6 bg-white rounded-full" />
+                {/* Plan Image */}
+                <div className="relative mb-6 rounded-xl overflow-hidden border border-white/10">
+                  <img 
+                    src={plan.image} 
+                    alt={plan.title}
+                    className="w-full h-24 object-cover"
+                  />
                 </div>
 
                 <h3 className="font-bold text-2xl mb-2 text-white">
@@ -608,7 +905,7 @@ const RooksCstLanding = () => {
                       key={j}
                       className="flex items-center gap-3 text-gray-300"
                     >
-                      <CheckCircle2 className="w-5 h-5 text-[#4ec9ff]" />
+                      <CheckCircle2 className="w-5 h-5 text-[#4ec9ff] flex-shrink-0" />
                       <span>{feature}</span>
                     </li>
                   ))}
@@ -668,6 +965,34 @@ const RooksCstLanding = () => {
             </div>
 
             <div className="relative z-10">
+              {/* Floating App Mockup */}
+              <motion.div
+                animate={floatAnimation}
+                className="flex justify-center mb-8"
+              >
+                <div className="relative">
+                  <div className="w-48 h-96 bg-white/5 rounded-2xl border border-white/20 backdrop-blur-sm shadow-2xl overflow-hidden">
+                    <div className="p-4">
+                      <div className="w-12 h-12 bg-white/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                        <img
+                          src={ebricksLogo}
+                          alt="eBricks"
+                          className="w-8 h-8 object-contain"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <div className="h-4 bg-white/10 rounded w-3/4 mx-auto"></div>
+                        <div className="h-20 bg-white/5 rounded"></div>
+                        <div className="h-10 bg-white/10 rounded"></div>
+                        <div className="h-10 bg-white/10 rounded"></div>
+                        <div className="h-10 bg-white/20 rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute -inset-4 bg-white/5 blur-2xl rounded-3xl -z-10" />
+                </div>
+              </motion.div>
+
               {/* Logo */}
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -743,45 +1068,15 @@ const RooksCstLanding = () => {
                 className="mt-12 pt-8 border-t border-white/20 flex flex-wrap justify-center gap-8 text-white/80 text-sm"
               >
                 <div className="flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"
-                      fill="currentColor"
-                    />
-                  </svg>
+                  <Shield className="w-4 h-4" />
                   Secure & Encrypted
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M16 6L18.29 8.29L13.41 13.17L9.41 9.17L2 16.59L3.41 18L9.41 12L13.41 16L19.71 9.71L22 12V6H16Z"
-                      fill="currentColor"
-                    />
-                  </svg>
+                  <TrendingUp className="w-4 h-4" />
                   Optimized Performance
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12 2L1 21H23L12 2ZM12 6L19.53 19H4.47L12 6ZM11 10V16H13V10H11ZM11 18V20H13V18H11Z"
-                      fill="currentColor"
-                    />
-                  </svg>
+                  <Award className="w-4 h-4" />
                   Enterprise Grade
                 </div>
               </motion.div>
@@ -789,69 +1084,6 @@ const RooksCstLanding = () => {
           </motion.div>
         </div>
       </section>
-
-      {/* ================= CTA ================= */}
-      {/* <section id="cta" className="py-32 px-4 relative">
-          <div className="max-w-4xl mx-auto relative z-10">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              className="relative overflow-hidden bg-gradient-to-br from-[#0B3470] via-[#1a4a8a] to-[#0B3470] p-16 rounded-3xl text-center shadow-2xl shadow-[#0B3470]/30"
-            >
-              <div className="absolute inset-0">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_white_0%,_transparent_50%)] opacity-10" />
-                <motion.div
-                  animate={{ x: [0, 100, 0], y: [0, -100, 0] }}
-                  transition={{ duration: 15, repeat: Infinity }}
-                  className="absolute -top-20 -right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl"
-                />
-              </div>
-
-              <div className="relative z-10">
-                <h2 className="text-5xl font-bold mb-4">
-                  Ready to Transform Your Construction Business?
-                </h2>
-                <p className="mb-8 text-xl text-white/90">
-                  Streamline projects, manage teams, track materials, and keep
-                  clients informed — all from one powerful, customizable platform.
-                </p>
-
-                <div className="flex justify-center gap-4 flex-wrap">
-                  <motion.button
-                    onClick={() => setIsModalOpen(true)}
-                    whileHover={{
-                      scale: 1.05,
-                      boxShadow: "0 20px 25px -5px rgba(0,0,0,0.2)",
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    className="group px-10 py-4 bg-white text-[#0B3470] rounded-xl font-bold text-lg relative overflow-hidden"
-                  >
-                    <span className="relative z-10">
-                      Create Your Free Account Today
-                    </span>
-                  </motion.button>
-                  <motion.button
-                    onClick={() => setIsModalOpen(true)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="group px-10 py-4 border-2 border-white rounded-xl font-bold text-lg hover:bg-white hover:text-[#0B3470] transition-all"
-                  >
-                    Login to Your Dashboard
-                  </motion.button>
-                  <motion.button
-                    onClick={() => setIsModalOpen(true)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="group px-10 py-4 bg-[#0B3470]/30 backdrop-blur-sm border border-white/20 rounded-xl font-bold text-lg hover:bg-white/10 transition-all"
-                  >
-                    Join Organization
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </section> */}
 
       <EBricksFooter />
 

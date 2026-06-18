@@ -235,7 +235,7 @@ const VottoFooter = () => {
                     key={i}
                     href="#"
                     whileHover={{ color: "#9ca3af" }}
-                    className="hover:text-[#B0B0B0] transition-colors"
+                    className="hover:text-[#B0B0B0] transition-colors "
                   >
                     {item}
                   </motion.a>
@@ -299,6 +299,7 @@ const VottoLanding = () => {
     }
   };
 
+  // Enhanced feature data with image URLs (replace with actual screenshots)
   const features = [
     {
       icon: <Users className="w-5 h-5" />,
@@ -306,6 +307,8 @@ const VottoLanding = () => {
       desc: "Complete dealer lifecycle management from onboarding to performance tracking with automated workflows.",
       color: "from-[#D97732] to-[#E8984F]",
       metrics: "100% Customizable",
+      image:
+        "https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&h=400&fit=crop", // Dealer dashboard
     },
     {
       icon: <ShoppingCart className="w-5 h-5" />,
@@ -313,6 +316,8 @@ const VottoLanding = () => {
       desc: "Track orders, approve requests, and manage fulfillment with real-time status updates and admin remarks.",
       color: "from-[#D97732] to-[#B8611F]",
       metrics: "Enterprise Grade",
+      image:
+        "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop", // Order management
     },
     {
       icon: <MapPin className="w-5 h-5" />,
@@ -320,6 +325,8 @@ const VottoLanding = () => {
       desc: "GPS-based tracking for field teams with territory mapping and route optimization capabilities.",
       color: "from-[#D97732] to-[#E8984F]",
       metrics: "40% Faster",
+      image:
+        "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&h=400&fit=crop", // Map tracking
     },
     {
       icon: <BarChart3 className="w-5 h-5" />,
@@ -327,6 +334,8 @@ const VottoLanding = () => {
       desc: "Interactive charts and visualizations for sales metrics, performance analytics, and territory analysis.",
       color: "from-[#D97732] to-[#B8611F]",
       metrics: "Real-time",
+      image:
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop", // Analytics dashboard
     },
     {
       icon: <FileText className="w-5 h-5" />,
@@ -334,6 +343,8 @@ const VottoLanding = () => {
       desc: "Generate invoices, reports, and documents with printing and sharing capabilities.",
       color: "from-[#D97732] to-[#E8984F]",
       metrics: "Zero Stockouts",
+      image:
+        "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop", // Document generation
     },
     {
       icon: <Shield className="w-5 h-5" />,
@@ -341,9 +352,12 @@ const VottoLanding = () => {
       desc: "Secure multi-role system with custom permissions for Admin, Dealer, Salesman, and Marketing teams.",
       color: "from-[#D97732] to-[#B8611F]",
       metrics: "SOC2 Compliant",
+      image:
+        "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&h=400&fit=crop", // Security
     },
   ];
 
+  // Enhanced roles with images
   const roles = [
     {
       icon: <Award className="w-6 h-6" />,
@@ -351,6 +365,8 @@ const VottoLanding = () => {
       desc: "Full system access, dealer and staff management, order processing, global inventory, and performance analytics.",
       color: "from-orange-500/20 to-amber-500/10",
       border: "border-orange-500/20",
+      image:
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=200&fit=crop", // Admin dashboard
     },
     {
       icon: <Building2 className="w-6 h-6" />,
@@ -358,6 +374,8 @@ const VottoLanding = () => {
       desc: "Inventory management, procurement, salesman tracking, performance analytics, and service ticket management.",
       color: "from-amber-500/20 to-orange-500/10",
       border: "border-amber-500/20",
+      image:
+        "https://images.unsplash.com/photo-1556741533-6e6a62bd8b49?w=300&h=200&fit=crop", // Dealer portal
     },
     {
       icon: <UserCheck className="w-6 h-6" />,
@@ -365,6 +383,8 @@ const VottoLanding = () => {
       desc: "Record sales, view personal performance, leaderboard rankings, and submit service requests for customers.",
       color: "from-orange-500/20 to-red-500/10",
       border: "border-orange-500/20",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop", // Sales app
     },
     {
       icon: <MapPin className="w-6 h-6" />,
@@ -372,6 +392,8 @@ const VottoLanding = () => {
       desc: "Field visit tracking, order capture, territory analytics, location tracking, and conversion rate analysis.",
       color: "from-amber-500/20 to-yellow-500/10",
       border: "border-amber-500/20",
+      image:
+        "https://images.unsplash.com/photo-1532619675605-1ede6c2ed2b0?w=300&h=200&fit=crop", // Marketing analytics
     },
   ];
 
@@ -384,31 +406,42 @@ const VottoLanding = () => {
     "24/7 dedicated support and regular updates",
   ];
 
+  // Enhanced process steps with images
   const processSteps = [
     {
       number: "01",
       title: "Dealer Onboarding",
       desc: "Quick digital intake with complete business details",
+      image:
+        "https://images.unsplash.com/photo-1556740758-90de374c12ad?w=120&h=80&fit=crop",
     },
     {
       number: "02",
       title: "Order Placement",
       desc: "Easy order creation and fulfillment tracking",
+      image:
+        "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=120&h=80&fit=crop",
     },
     {
       number: "03",
       title: "Inventory Tracking",
       desc: "Real-time stock management and updates",
+      image:
+        "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=120&h=80&fit=crop",
     },
     {
       number: "04",
       title: "Sales Recording",
       desc: "Field sales capture and leaderboard updates",
+      image:
+        "https://images.unsplash.com/photo-1553484771-371a605b060b?w=120&h=80&fit=crop",
     },
     {
       number: "05",
       title: "Reporting & Analytics",
       desc: "Comprehensive insights and business performance reports",
+      image:
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=120&h=80&fit=crop",
     },
   ];
 
@@ -550,7 +583,7 @@ const VottoLanding = () => {
             </motion.div>
           </motion.div>
 
-          {/* Right – Votto Page Image */}
+          {/* Right – Enhanced Hero Image with Floating Animation */}
           <motion.div
             variants={fadeScale}
             initial="hidden"
@@ -558,11 +591,23 @@ const VottoLanding = () => {
             className="relative"
           >
             <div className="absolute inset-[-20px] bg-gradient-to-br from-[#D97732]/30 to-[#B8611F]/10 rounded-3xl blur-2xl" />
-            <img
-              src={vottoPageImage}
-              alt="Votto Platform"
-              className="w-full h-auto rounded-2xl shadow-2xl shadow-[#D97732]/20 relative z-10"
-            />
+            <motion.div
+              className="relative z-10 rounded-2xl shadow-2xl 0 overflow-hidden "
+              animate={{
+                y: [0, -12, 0, 12, 0],
+              }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <img
+                src={vottoPageImage}
+                alt="Votto Platform Dashboard"
+                className="w-full h-auto object-cover"
+              />
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -626,6 +671,14 @@ const VottoLanding = () => {
                 />
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#E8984F]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="relative z-10">
+                  {/* Feature Image */}
+                  <div className="mb-4 overflow-hidden rounded-xl border border-[#2A3148] bg-[#0A0E1A]">
+                    <img
+                      src={feat.image}
+                      alt={feat.title}
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
                   <div className="flex items-start justify-between mb-5">
                     <div
                       className={`p-2.5 bg-gradient-to-br ${feat.color} rounded-xl shadow-lg shadow-[#D97732]/30`}
@@ -704,6 +757,14 @@ const VottoLanding = () => {
               >
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#D97732]/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="relative z-10">
+                  {/* Role Image */}
+                  <div className="mb-4 overflow-hidden rounded-xl border border-[#2A3148] bg-[#0A0E1A]">
+                    <img
+                      src={role.image}
+                      alt={role.title}
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
                   <div className="mb-5 p-3 bg-gradient-to-br from-[#D97732] to-[#E8984F] rounded-xl w-fit shadow-lg shadow-[#D97732]/30">
                     <motion.span
                       className="block"
@@ -785,6 +846,14 @@ const VottoLanding = () => {
             transition={{ duration: 0.85, ease: EASE }}
             className="grid grid-cols-2 gap-4"
           >
+            {/* Large dashboard image */}
+            <div className="col-span-2 rounded-2xl overflow-hidden border border-[#2A3148] shadow-2xl shadow-[#D97732]/20">
+              <img
+                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop"
+                alt="Analytics Dashboard"
+                className="w-full h-auto object-cover"
+              />
+            </div>
             {[
               {
                 label: "Dealers",
@@ -887,6 +956,14 @@ const VottoLanding = () => {
                     </div>
                     <div className="absolute inset-0 rounded-full bg-[#E8984F]/10 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-500 blur-md" />
                   </div>
+                  {/* Step Image */}
+                  <div className="mb-3 overflow-hidden rounded-lg border border-[#2A3148] bg-[#0A0E1A]">
+                    <img
+                      src={step.image}
+                      alt={step.title}
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
                   <h3 className="font-semibold text-sm mb-2 text-white/90">
                     {step.title}
                   </h3>
@@ -943,14 +1020,20 @@ const VottoLanding = () => {
             </div>
 
             <div className="relative z-10">
-              {/* Logo/Icon */}
+              {/* Floating Mobile App Mockup */}
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
                 className="flex items-center justify-center gap-3 mb-6"
               >
-                <img src={vottoLogo} alt="Votto" className="h-24 w-auto" />
+                <div className="rounded-2xl overflow-hidden border border-[#2A3148] shadow-xl shadow-[#D97732]/30 max-w-xs">
+                  <img
+                    src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop"
+                    alt="Votto Mobile App"
+                    className="w-full h-auto"
+                  />
+                </div>
               </motion.div>
 
               <motion.h2
@@ -992,7 +1075,7 @@ const VottoLanding = () => {
                     fill="currentColor"
                   />
                   <path
-                    d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z"
+                    d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 9.79 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z"
                     fill="currentColor"
                   />
                 </svg>
@@ -1088,9 +1171,9 @@ const VottoLanding = () => {
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.2 }}
-                  src={phoneImage}
+                  src="https://images.unsplash.com/photo-1556740758-90de374c12ad?w=280&h=300&fit=crop"
                   alt="Support"
-                  className="w-full h-auto max-w-[280px] relative z-10 object-contain opacity-90"
+                  className="w-full h-auto max-w-[280px] relative z-10 object-contain opacity-90 rounded-xl"
                 />
                 <div className="mt-8 text-center relative z-10">
                   <div className="flex items-center justify-center gap-2 mb-2">

@@ -43,6 +43,12 @@ import {
   Cpu,
   Network,
   HardDrive,
+  MapPin,
+  FileText,
+  ShoppingCart,
+  UserCheck,
+  Target,
+  Briefcase,
 } from "lucide-react";
 
 import cloudImage from "../../assets/work/cloud_support_servnex_1773896047966.png";
@@ -50,6 +56,11 @@ import ServnexNavbar from "../../components/layout/ServnexNavbar";
 import ServnexFooter from "../../components/layout/ServnexFooter";
 import servnexLogo from "../../assets/mobile_apps_asstes/servnex.png";
 import servnexPageImage from "../../assets/mobile_apps_asstes/servnexpage.jpg";
+
+// Import new images for enhanced visual sections
+// Note: These would be actual image imports in a real project
+// For demo, we'll use placeholder SVGs or descriptive content
+// In production, replace with actual images from assets folder
 
 const RooksservnexLanding = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -148,6 +159,7 @@ const RooksservnexLanding = () => {
       color: "from-[#2d5a9b] to-[#5e72e4]",
       stats: "100% Customizable",
       gradient: "bg-gradient-to-br from-blue-500/20 to-purple-500/20",
+      image: "https://via.placeholder.com/400x300/2d5a9b/FFFFFF?text=White+Label+Dashboard",
     },
     {
       icon: <Users className="w-8 h-8" />,
@@ -156,6 +168,7 @@ const RooksservnexLanding = () => {
       color: "from-[#2d5a9b] to-[#1a3a6a]",
       stats: "Enterprise Grade",
       gradient: "bg-gradient-to-br from-indigo-500/20 to-blue-500/20",
+      image: "https://via.placeholder.com/400x300/1a3a6a/FFFFFF?text=Multi-Tenant+Architecture",
     },
     {
       icon: <Lock className="w-8 h-8" />,
@@ -164,14 +177,15 @@ const RooksservnexLanding = () => {
       color: "from-[#2d5a9b] to-[#4a6a9a]",
       stats: "SOC2 Compliant",
       gradient: "bg-gradient-to-br from-purple-500/20 to-pink-500/20",
+      image: "https://via.placeholder.com/400x300/4a6a9a/FFFFFF?text=Role-Based+Access",
     },
     {
       icon: <CreditCard className="w-8 h-8" />,
       title: "Subscription Management",
       desc: "Built-in billing, payment processing, and subscription tier management with automated invoicing.",
       color: "from-[#2d5a9b] to-[#5e72e4]",
-      // stats: "45+ Currencies",
       gradient: "bg-gradient-to-br from-green-500/20 to-emerald-500/20",
+      image: "https://via.placeholder.com/400x300/5e72e4/FFFFFF?text=Subscription+Management",
     },
     {
       icon: <Code className="w-8 h-8" />,
@@ -180,6 +194,7 @@ const RooksservnexLanding = () => {
       color: "from-[#2d5a9b] to-[#1a3a6a]",
       stats: "99.9% Uptime",
       gradient: "bg-gradient-to-br from-orange-500/20 to-red-500/20",
+      image: "https://via.placeholder.com/400x300/1a3a6a/FFFFFF?text=API+Integration",
     },
     {
       icon: <BarChart3 className="w-8 h-8" />,
@@ -188,6 +203,98 @@ const RooksservnexLanding = () => {
       color: "from-[#2d5a9b] to-[#4a6a9a]",
       stats: "Real-time Data",
       gradient: "bg-gradient-to-br from-cyan-500/20 to-blue-500/20",
+      image: "https://via.placeholder.com/400x300/4a6a9a/FFFFFF?text=Analytics+Dashboard",
+    },
+  ];
+
+  // Enhanced feature data with specific Votto business icons
+  const enhancedFeatures = [
+    {
+      icon: <Users className="w-8 h-8" />,
+      title: "Dealer Management",
+      desc: "Complete dealer lifecycle management with onboarding, KYC verification, and performance tracking.",
+      color: "from-[#2d5a9b] to-[#5e72e4]",
+      gradient: "bg-gradient-to-br from-blue-500/20 to-purple-500/20",
+      image: "https://via.placeholder.com/400x300/2d5a9b/FFFFFF?text=Dealer+Management",
+    },
+    {
+      icon: <ShoppingCart className="w-8 h-8" />,
+      title: "Procurement & Orders",
+      desc: "Streamlined procurement workflows with automated order processing and inventory synchronization.",
+      color: "from-[#2d5a9b] to-[#1a3a6a]",
+      gradient: "bg-gradient-to-br from-indigo-500/20 to-blue-500/20",
+      image: "https://via.placeholder.com/400x300/1a3a6a/FFFFFF?text=Procurement+Orders",
+    },
+    {
+      icon: <MapPin className="w-8 h-8" />,
+      title: "Real-time Location Tracking",
+      desc: "Track dealer locations, deliveries, and field operations with GPS-enabled real-time monitoring.",
+      color: "from-[#2d5a9b] to-[#4a6a9a]",
+      gradient: "bg-gradient-to-br from-purple-500/20 to-pink-500/20",
+      image: "https://via.placeholder.com/400x300/4a6a9a/FFFFFF?text=Location+Tracking",
+    },
+    {
+      icon: <BarChart3 className="w-8 h-8" />,
+      title: "Analytics & Reporting",
+      desc: "Comprehensive analytics dashboards with custom reports for sales performance, dealer insights, and market trends.",
+      color: "from-[#2d5a9b] to-[#5e72e4]",
+      gradient: "bg-gradient-to-br from-green-500/20 to-emerald-500/20",
+      image: "https://via.placeholder.com/400x300/5e72e4/FFFFFF?text=Analytics+Reporting",
+    },
+    {
+      icon: <FileText className="w-8 h-8" />,
+      title: "PDF Generation",
+      desc: "Automated PDF report generation for invoices, purchase orders, delivery receipts, and business documents.",
+      color: "from-[#2d5a9b] to-[#1a3a6a]",
+      gradient: "bg-gradient-to-br from-orange-500/20 to-red-500/20",
+      image: "https://via.placeholder.com/400x300/1a3a6a/FFFFFF?text=PDF+Generation",
+    },
+    {
+      icon: <Lock className="w-8 h-8" />,
+      title: "Role-based Access Control",
+      desc: "Granular permissions for admins, dealers, salesmen, and marketing teams with enterprise-grade security.",
+      color: "from-[#2d5a9b] to-[#4a6a9a]",
+      gradient: "bg-gradient-to-br from-cyan-500/20 to-blue-500/20",
+      image: "https://via.placeholder.com/400x300/4a6a9a/FFFFFF?text=Access+Control",
+    },
+  ];
+
+  // Process steps with visual content
+  const processSteps = [
+    {
+      step: "01",
+      label: "Dealer Onboarding",
+      icon: UserCheck,
+      desc: "Seamless registration and KYC verification",
+      image: "https://via.placeholder.com/200x150/2d5a9b/FFFFFF?text=Onboarding",
+    },
+    {
+      step: "02",
+      label: "Order Placement",
+      icon: ShoppingCart,
+      desc: "Streamlined procurement and ordering",
+      image: "https://via.placeholder.com/200x150/1a3a6a/FFFFFF?text=Order+Placement",
+    },
+    {
+      step: "03",
+      label: "Inventory Tracking",
+      icon: Database,
+      desc: "Real-time stock and inventory management",
+      image: "https://via.placeholder.com/200x150/4a6a9a/FFFFFF?text=Inventory",
+    },
+    {
+      step: "04",
+      label: "Sales Recording",
+      icon: TrendingUp,
+      desc: "Automated sales logging and tracking",
+      image: "https://via.placeholder.com/200x150/5e72e4/FFFFFF?text=Sales",
+    },
+    {
+      step: "05",
+      label: "Reporting & Analytics",
+      icon: BarChart3,
+      desc: "Comprehensive insights and analytics",
+      image: "https://via.placeholder.com/200x150/2d5a9b/FFFFFF?text=Analytics",
     },
   ];
 
@@ -305,7 +412,7 @@ const RooksservnexLanding = () => {
               </motion.div>
             </motion.div>
 
-            {/* RIGHT - Servnex Page Image */}
+            {/* RIGHT - Enhanced with premium device mockup */}
             <motion.div
               variants={fadeInScale}
               initial="hidden"
@@ -313,11 +420,15 @@ const RooksservnexLanding = () => {
               className="relative"
             >
               <motion.div animate={floatAnimation} className="relative z-10">
-                <img
-                  src={servnexPageImage}
-                  alt="Servnex Platform"
-                  className="w-full h-auto rounded-2xl shadow-2xl shadow-[#2d5a9b]/20"
-                />
+                <div className="relative rounded-2xl shadow-2xl shadow-[#2d5a9b]/20 overflow-hidden border border-white/10 backdrop-blur-sm">
+                  <img
+                    src={servnexPageImage}
+                    alt="Servnex Platform"
+                    className="w-full h-auto"
+                  />
+                  {/* Glassmorphism overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1f]/60 via-transparent to-transparent pointer-events-none" />
+                </div>
               </motion.div>
 
               {/* Decorative elements */}
@@ -359,7 +470,7 @@ const RooksservnexLanding = () => {
             whileInView="visible"
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {features.map((item, i) => (
+            {enhancedFeatures.map((item, i) => (
               <motion.div
                 key={i}
                 variants={fadeInUp}
@@ -372,9 +483,14 @@ const RooksservnexLanding = () => {
                   className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${item.gradient}`}
                 />
 
-                {/* Animated Border */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse" />
+                {/* Image/Illustration */}
+                <div className="relative z-10 mb-6 rounded-xl overflow-hidden border border-white/10 group-hover:border-[#2d5a9b]/30 transition-all">
+                  <img 
+                    src={item.image} 
+                    alt={item.title}
+                    className="w-full h-32 object-cover transform group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1f]/60 via-transparent to-transparent" />
                 </div>
 
                 <div
@@ -387,20 +503,11 @@ const RooksservnexLanding = () => {
                   <h3 className="font-bold text-xl group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#6dd5ff] group-hover:to-white transition-all">
                     {item.title}
                   </h3>
-                  {/* <span className="text-xs px-2 py-1 bg-white/10 rounded-full text-gray-300">
-                                        {item.stats}
-                                    </span> */}
                 </div>
 
                 <p className="text-gray-400 group-hover:text-gray-300 transition-colors relative z-10">
                   {item.desc}
                 </p>
-
-                {/* Learn More Link */}
-                {/* <div className="mt-4 flex items-center gap-1 text-sm text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity relative z-10">
-                  <span>Learn more</span>
-                  <ChevronRight className="w-4 h-4" />
-                </div> */}
 
                 {/* Animated line */}
                 <motion.div
@@ -414,6 +521,7 @@ const RooksservnexLanding = () => {
           </motion.div>
         </div>
       </section>
+
       {/* ================= USER ROLES ================= */}
       <section id="roles" className="py-32 px-4 relative">
         <div className="max-w-7xl mx-auto relative z-10">
@@ -446,6 +554,7 @@ const RooksservnexLanding = () => {
                 role: "Administrator",
                 color: "from-red-500 to-pink-500",
                 icon: Shield,
+                image: "https://via.placeholder.com/400x200/2d5a9b/FFFFFF?text=Admin+Dashboard",
                 permissions: [
                   "Full system access",
                   "User management",
@@ -456,22 +565,24 @@ const RooksservnexLanding = () => {
                 ],
               },
               {
-                role: "Manager",
+                role: "Dealer",
                 color: "from-blue-500 to-cyan-500",
                 icon: Users,
+                image: "https://via.placeholder.com/400x200/1a3a6a/FFFFFF?text=Dealer+Portal",
                 permissions: [
-                  "Team oversight",
-                  "Report access",
-                  "User invitations",
-                  "Content management",
-                  "Activity logs",
-                  "Project settings",
+                  "Inventory management",
+                  "Order processing",
+                  "Dealer analytics",
+                  "Sales reporting",
+                  "Customer management",
+                  "Location tracking",
                 ],
               },
               {
-                role: "User",
+                role: "Salesman",
                 color: "from-green-500 to-emerald-500",
                 icon: Star,
+                image: "https://via.placeholder.com/400x200/4a6a9a/FFFFFF?text=Sales+App",
                 permissions: [
                   "View dashboards",
                   "Submit requests",
@@ -490,11 +601,17 @@ const RooksservnexLanding = () => {
                   whileHover={{ scale: 1.02 }}
                   className={`relative p-8 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-2xl border border-white/10 backdrop-blur-sm group overflow-hidden`}
                 >
-                  {/* Role Icon */}
-                  <div
-                    className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${item.color} opacity-10 rounded-full -mr-10 -mt-10`}
-                  />
+                  {/* Role Image */}
+                  <div className="relative mb-6 rounded-xl overflow-hidden border border-white/10">
+                    <img 
+                      src={item.image} 
+                      alt={item.role}
+                      className="w-full h-32 object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1f]/80 via-transparent to-transparent" />
+                  </div>
 
+                  {/* Role Icon */}
                   <div
                     className={`p-4 bg-gradient-to-br ${item.color} rounded-xl inline-block mb-4 text-white relative z-10`}
                   >
@@ -549,7 +666,7 @@ const RooksservnexLanding = () => {
             <h2 className="text-5xl font-bold mb-4 mt-4">
               Launch in{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
-                4 Simple Steps
+                5 Simple Steps
               </span>
             </h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-16">
@@ -557,36 +674,11 @@ const RooksservnexLanding = () => {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-4 gap-4 relative">
+          <div className="grid md:grid-cols-5 gap-4 relative">
             {/* Connecting line */}
             <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500/20 via-cyan-500/20 to-blue-500/20 hidden md:block" />
 
-            {[
-              {
-                step: "01",
-                label: "Sign Up",
-                icon: Cloud,
-                desc: "Create your account and choose your plan",
-              },
-              {
-                step: "02",
-                label: "Configure",
-                icon: Settings,
-                desc: "Set up your workspace and team",
-              },
-              {
-                step: "03",
-                label: "Customize",
-                icon: Palette,
-                desc: "Add your branding and customize",
-              },
-              {
-                step: "04",
-                label: "Launch",
-                icon: Zap,
-                desc: "Go live and start onboarding clients",
-              },
-            ].map((item, i) => {
+            {processSteps.map((item, i) => {
               const Icon = item.icon;
               return (
                 <motion.div
@@ -608,6 +700,16 @@ const RooksservnexLanding = () => {
                         </div>
                       </div>
                     </div>
+                    
+                    {/* Step Image */}
+                    <div className="mb-4 rounded-xl overflow-hidden border border-white/10">
+                      <img 
+                        src={item.image} 
+                        alt={item.label}
+                        className="w-full h-24 object-cover"
+                      />
+                    </div>
+                    
                     <h3 className="font-bold text-lg mb-2">{item.label}</h3>
                     <p className="text-xs text-gray-400">{item.desc}</p>
                   </div>
@@ -670,51 +772,42 @@ const RooksservnexLanding = () => {
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="grid grid-cols-2 gap-6"
+            className="relative"
           >
-            {[
-              {
-                icon: Database,
-                label: "Cloud Database",
-                color: "from-blue-500 to-cyan-500",
-                desc: "Scalable storage",
-              },
-              {
-                icon: Webhook,
-                label: "API Integration",
-                color: "from-cyan-500 to-teal-500",
-                desc: "RESTful APIs",
-              },
-              {
-                icon: Smartphone,
-                label: "Mobile Ready",
-                color: "from-sky-500 to-blue-500",
-                desc: "Responsive design",
-              },
-              {
-                icon: Shield,
-                label: "Enterprise Security",
-                color: "from-indigo-500 to-blue-500",
-                desc: "SOC2 Type II",
-              },
-            ].map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <motion.div
-                  key={i}
-                  whileHover={{ scale: 1.05, rotate: 2 }}
-                  className={`p-6 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-2xl border border-white/10 backdrop-blur-sm group cursor-pointer`}
-                >
-                  <div
-                    className={`p-4 bg-gradient-to-br ${item.color} rounded-xl inline-block mb-3 group-hover:scale-110 transition-transform`}
-                  >
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
-                  <p className="font-semibold text-white mb-1">{item.label}</p>
-                  <p className="text-xs text-gray-400">{item.desc}</p>
-                </motion.div>
-              );
-            })}
+            {/* Main dashboard image */}
+            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-[#2d5a9b]/20">
+              <img 
+                src="https://via.placeholder.com/800x600/2d5a9b/FFFFFF?text=Business+Analytics+Dashboard"
+                alt="Business Analytics Dashboard"
+                className="w-full h-auto"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1f]/60 via-transparent to-transparent" />
+            </div>
+            
+            {/* Floating metric cards */}
+            <div className="absolute -top-4 -right-4 bg-[#0a0f1f]/90 backdrop-blur-sm p-4 rounded-xl border border-white/10 shadow-xl">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">+47.8%</p>
+                  <p className="text-xs text-gray-400">Revenue Growth</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="absolute -bottom-4 -left-4 bg-[#0a0f1f]/90 backdrop-blur-sm p-4 rounded-xl border border-white/10 shadow-xl">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                  <Users className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">2,847</p>
+                  <p className="text-xs text-gray-400">Active Dealers</p>
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -750,6 +843,32 @@ const RooksservnexLanding = () => {
             </div>
 
             <div className="relative z-10">
+              {/* Premium App Mockup */}
+              <div className="flex justify-center mb-8">
+                <div className="relative">
+                  <div className="w-48 h-96 bg-white/5 rounded-2xl border border-white/20 backdrop-blur-sm shadow-2xl overflow-hidden">
+                    <div className="p-4">
+                      <div className="w-12 h-12 bg-white/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                        <img
+                          src={servnexLogo}
+                          alt="Servnex"
+                          className="h-8 w-auto object-contain"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <div className="h-4 bg-white/10 rounded w-3/4 mx-auto"></div>
+                        <div className="h-20 bg-white/5 rounded"></div>
+                        <div className="h-10 bg-white/10 rounded"></div>
+                        <div className="h-10 bg-white/10 rounded"></div>
+                        <div className="h-10 bg-white/20 rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Glow effects */}
+                  <div className="absolute -inset-4 bg-white/5 blur-2xl rounded-3xl -z-10" />
+                </div>
+              </div>
+
               {/* Original Logo */}
               <div className="flex items-center justify-center gap-3 mb-8">
                 <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
