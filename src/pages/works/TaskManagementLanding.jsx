@@ -47,7 +47,7 @@ import {
 import ROOKSNavbar from "../../components/layout/ROOKSNavbar";
 import ROOKSFooter from "../../components/layout/ROOKSFooter";
 import rookstodoLogo from "../../assets/mobile_apps_asstes/rookstodo.png";
-import tmsimg from "../../assets/work/tsm.jpg";
+import tmsimg from "../../assets/mobile_apps_asstes/rooks to do/rooks to dooo.png";
 
 const FONTS = `
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');

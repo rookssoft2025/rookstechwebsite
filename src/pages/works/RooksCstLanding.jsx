@@ -8,7 +8,31 @@ import {
 } from "framer-motion";
 import { db } from "../../firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-import cstImg from "../../assets/work/cst.png";
+import cstImg from "../../assets/work/cstRight.png";
+import cstS1 from "../../assets/mobile_apps_asstes/ebricks/cstS1.png";
+import cstS2 from "../../assets/mobile_apps_asstes/ebricks/cstS2.png";
+import cstS3 from "../../assets/mobile_apps_asstes/ebricks/cstS3.png";
+import cstS4 from "../../assets/mobile_apps_asstes/ebricks/cstS4.png";
+import cstS5 from "../../assets/mobile_apps_asstes/ebricks/cstS5.png";
+import cstS6 from "../../assets/mobile_apps_asstes/ebricks/cstS6.png";
+import cstS7 from "../../assets/mobile_apps_asstes/ebricks/cstS7.png";
+import cstS8 from "../../assets/mobile_apps_asstes/ebricks/cstS8.png";
+import cstS9 from "../../assets/mobile_apps_asstes/ebricks/cstS9.png";
+import cstS10 from "../../assets/mobile_apps_asstes/ebricks/cstS10.png";
+import ALL_IN_ONE_PLATFORM from "../../assets/mobile_apps_asstes/ebricks/ALL-IN-ONE PLATFORM.png";
+import WHITE_LABEL_READY from "../../assets/mobile_apps_asstes/ebricks/White-label Ready.png";
+import REAL_TIME_UPDATES from "../../assets/mobile_apps_asstes/ebricks/Real-time Updates.png";
+import PROJECT_SETUP from "../../assets/mobile_apps_asstes/ebricks/Project Setup.png";
+import TEAM_ONBOARDING from "../../assets/mobile_apps_asstes/ebricks/Team Onboarding.png";
+import MATERIAL_PROCUREMENT from "../../assets/mobile_apps_asstes/ebricks/Material Procurement.png";
+import REPORTING_ANALYTICS from "../../assets/mobile_apps_asstes/ebricks/Reporting & Analytics.png";
+import SITE_EXECUTION from "../../assets/mobile_apps_asstes/ebricks/Site Execution.png";
+import FREE_TRIAL from "../../assets/mobile_apps_asstes/ebricks/Free Trial.png";
+import SILVER_PLAN from "../../assets/mobile_apps_asstes/ebricks/silverrrr.png";
+import GOLD_PLAN from "../../assets/mobile_apps_asstes/ebricks/gold.png";
+import PLATINUM_PLAN from "../../assets/mobile_apps_asstes/ebricks/paltinum.png";
+import STORE_PNG from "../../assets/mobile_apps_asstes/ebricks/store png.png";
+
 import {
   Cpu,
   ArrowRight,
@@ -166,70 +190,70 @@ const RooksCstLanding = () => {
       title: "Complete Project Management",
       desc: "Plan and track every stage of your construction projects, with real-time status updates.",
       color: "from-[#0B3470] to-[#1e4a8a]",
-      image: "https://via.placeholder.com/400x250/0B3470/FFFFFF?text=Project+Management",
+      image: cstS1,
     },
     {
       icon: <Users className="w-8 h-8" />,
       title: "Team & Labor Management",
       desc: "Worker onboarding, attendance tracking, labor scheduling, and incentive calculation.",
       color: "from-[#0B3470] to-[#1a3a6a]",
-      image: "https://via.placeholder.com/400x250/1a3a6a/FFFFFF?text=Team+Management",
+      image: cstS2,
     },
     {
       icon: <Package className="w-8 h-8" />,
       title: "Materials & Inventory Control",
       desc: "Material request and approval workflow, real-time inventory tracking, and availability management.",
       color: "from-[#0B3470] to-[#2a5a9a]",
-      image: "https://via.placeholder.com/400x250/2a5a9a/FFFFFF?text=Inventory+Control",
+      image: cstS3,
     },
     {
       icon: <DollarSign className="w-8 h-8" />,
       title: "Financial Management",
       desc: "Expense tracking, financial status reports, site payment management, and project-wise insights.",
       color: "from-[#0B3470] to-[#1e4a8a]",
-      image: "https://via.placeholder.com/400x250/1e4a8a/FFFFFF?text=Financial+Management",
+      image: cstS4,
     },
     {
       icon: <HardHat className="w-8 h-8" />,
       title: "Site Supervision",
       desc: "Daily site reports with photo documentation, site status updates, and manager approval workflows.",
       color: "from-[#0B3470] to-[#1a3a6a]",
-      image: "https://via.placeholder.com/400x250/1a3a6a/FFFFFF?text=Site+Supervision",
+      image: cstS5,
     },
     {
       icon: <Users2 className="w-8 h-8" />,
       title: "Contractor Management",
       desc: "Contractor onboarding and tracking, performance reports, and work order management.",
       color: "from-[#0B3470] to-[#2a5a9a]",
-      image: "https://via.placeholder.com/400x250/2a5a9a/FFFFFF?text=Contractor+Management",
+      image: cstS6,
     },
     {
       icon: <Wrench className="w-8 h-8" />,
       title: "Tools & Equipment",
       desc: "Tools inventory management, movement tracking, vehicle fleet management, and driver assignment.",
       color: "from-[#0B3470] to-[#1e4a8a]",
-      image: "https://via.placeholder.com/400x250/1e4a8a/FFFFFF?text=Tools+Equipment",
+      image: cstS7,
     },
     {
       icon: <Building2 className="w-8 h-8" />,
       title: "Client Portal",
       desc: "Customer dashboard with project visibility, real-time status reports, and financial status sharing.",
       color: "from-[#0B3470] to-[#1a3a6a]",
-      image: "https://via.placeholder.com/400x250/1a3a6a/FFFFFF?text=Client+Portal",
+      image: cstS8,
     },
     {
       icon: <Palette className="w-8 h-8" />,
       title: "White-label Branding",
       desc: "Customizable app name and logo, brand color customization, and fully branded experience for your clients.",
       color: "from-[#0B3470] to-[#2a5a9a]",
-      image: "https://via.placeholder.com/400x250/2a5a9a/FFFFFF?text=White-label+Branding",
+      image: cstS9,
     },
     {
       icon: <PieChart className="w-8 h-8" />,
       title: "Insights & Analytics",
       desc: "Comprehensive dashboards with real-time insights, project stage analytics, and PDF report generation.",
       color: "from-[#0B3470] to-[#1e4a8a]",
-      image: "https://via.placeholder.com/400x250/1e4a8a/FFFFFF?text=Analytics+Dashboard",
+      image: cstS10,
     },
   ];
 
@@ -240,35 +264,35 @@ const RooksCstLanding = () => {
       label: "Project Setup",
       icon: Settings,
       desc: "Create and configure your construction project",
-      image: "https://via.placeholder.com/300x200/0B3470/FFFFFF?text=Project+Setup",
+      image: PROJECT_SETUP,
     },
     {
       step: "02",
       label: "Team Onboarding",
       icon: Users,
       desc: "Add team members and assign roles",
-      image: "https://via.placeholder.com/300x200/1a3a6a/FFFFFF?text=Team+Onboarding",
+      image: TEAM_ONBOARDING,
     },
     {
       step: "03",
       label: "Material Procurement",
       icon: Package,
       desc: "Manage inventory and material requests",
-      image: "https://via.placeholder.com/300x200/2a5a9a/FFFFFF?text=Procurement",
+      image: MATERIAL_PROCUREMENT,
     },
     {
       step: "04",
       label: "Site Execution",
       icon: HardHat,
       desc: "Monitor daily site activities and progress",
-      image: "https://via.placeholder.com/300x200/1e4a8a/FFFFFF?text=Site+Execution",
+      image: SITE_EXECUTION,
     },
     {
       step: "05",
       label: "Reporting & Analytics",
       icon: BarChart3,
       desc: "Generate insights and project reports",
-      image: "https://via.placeholder.com/300x200/0B3470/FFFFFF?text=Reporting",
+      image: REPORTING_ANALYTICS,
     },
   ];
 
@@ -393,7 +417,7 @@ const RooksCstLanding = () => {
               </div>
             </motion.div>
 
-            {/* Floating metrics */}
+            {/* Floating metrics
             <motion.div
               animate={floatAnimation}
               className="absolute -bottom-4 -right-4 bg-[#071324]/90 backdrop-blur-sm p-4 rounded-xl border border-white/10 shadow-xl"
@@ -407,9 +431,9 @@ const RooksCstLanding = () => {
                   <p className="text-xs text-gray-400">Active Projects</p>
                 </div>
               </div>
-            </motion.div>
+            </motion.div> */}
 
-            <motion.div
+            {/* <motion.div
               animate={floatAnimation}
               transition={{ duration: 3, delay: 0.5, repeat: Infinity }}
               className="absolute -top-4 -left-4 bg-[#071324]/90 backdrop-blur-sm p-4 rounded-xl border border-white/10 shadow-xl"
@@ -473,8 +497,8 @@ const RooksCstLanding = () => {
 
                 {/* Feature Image */}
                 <div className="relative mb-6 rounded-xl overflow-hidden border border-white/10 group-hover:border-[#0B3470]/30 transition-all">
-                  <img 
-                    src={item.image} 
+                  <img
+                    src={item.image}
                     alt={item.title}
                     className="w-full h-32 object-cover transform group-hover:scale-105 transition-transform duration-500"
                   />
@@ -536,8 +560,8 @@ const RooksCstLanding = () => {
                 className="relative"
               >
                 <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-[#0B3470]/20">
-                  <img 
-                    src="https://via.placeholder.com/800x500/0B3470/FFFFFF?text=All-in-One+Platform"
+                  <img
+                    src={ALL_IN_ONE_PLATFORM}
                     alt="All-in-One Platform"
                     className="w-full h-auto"
                   />
@@ -568,7 +592,9 @@ const RooksCstLanding = () => {
                   </span>
                 </h3>
                 <p className="text-gray-400 mb-6 text-lg leading-relaxed">
-                  No need for multiple tools — manage everything from project planning to client communication in one place. Our integrated platform handles all aspects of construction management.
+                  No need for multiple tools — manage everything from project
+                  planning to client communication in one place. Our integrated
+                  platform handles all aspects of construction management.
                 </p>
                 <ul className="space-y-3">
                   {[
@@ -606,7 +632,9 @@ const RooksCstLanding = () => {
                   </span>
                 </h3>
                 <p className="text-gray-400 mb-6 text-lg leading-relaxed">
-                  Brand the app as your own and deliver a seamless experience to your clients. Customize everything from colors to logos for a fully branded solution.
+                  Brand the app as your own and deliver a seamless experience to
+                  your clients. Customize everything from colors to logos for a
+                  fully branded solution.
                 </p>
                 <ul className="space-y-3">
                   {[
@@ -636,8 +664,8 @@ const RooksCstLanding = () => {
                 className="relative"
               >
                 <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-[#0B3470]/20">
-                  <img 
-                    src="https://via.placeholder.com/800x500/1a3a6a/FFFFFF?text=White-label+Customization"
+                  <img
+                    src={WHITE_LABEL_READY}
                     alt="White-label Customization"
                     className="w-full h-auto"
                   />
@@ -666,8 +694,8 @@ const RooksCstLanding = () => {
                 className="relative"
               >
                 <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-[#0B3470]/20">
-                  <img 
-                    src="https://via.placeholder.com/800x500/2a5a9a/FFFFFF?text=Real-time+Updates"
+                  <img
+                    src={REAL_TIME_UPDATES}
                     alt="Real-time Updates"
                     className="w-full h-auto"
                   />
@@ -698,7 +726,9 @@ const RooksCstLanding = () => {
                   </span>
                 </h3>
                 <p className="text-gray-400 mb-6 text-lg leading-relaxed">
-                  Everyone stays on the same page with instant notifications and updates. Keep your team and clients informed with real-time status changes.
+                  Everyone stays on the same page with instant notifications and
+                  updates. Keep your team and clients informed with real-time
+                  status changes.
                 </p>
                 <ul className="space-y-3">
                   {[
@@ -774,16 +804,16 @@ const RooksCstLanding = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Step Image */}
                     <div className="mb-4 rounded-xl overflow-hidden border border-white/10">
-                      <img 
-                        src={item.image} 
+                      <img
+                        src={item.image}
                         alt={item.label}
                         className="w-full h-24 object-cover"
                       />
                     </div>
-                    
+
                     <h3 className="font-bold text-lg mb-2">{item.label}</h3>
                     <p className="text-xs text-gray-400">{item.desc}</p>
                   </div>
@@ -823,7 +853,7 @@ const RooksCstLanding = () => {
                 desc: "Get started with 1 project and 2 users for 14 days",
                 price: "Free",
                 color: "from-[#0B3470] to-[#1e4a8a]",
-                image: "https://via.placeholder.com/400x150/0B3470/FFFFFF?text=Free+Trial",
+                image: FREE_TRIAL,
                 features: [
                   "1 Project",
                   "2 Users",
@@ -836,7 +866,7 @@ const RooksCstLanding = () => {
                 desc: "Up to 3 projects, 5 users — perfect for small teams",
                 price: "Custom",
                 color: "from-[#0B3470] to-[#1a3a6a]",
-                image: "https://via.placeholder.com/400x150/1a3a6a/FFFFFF?text=Silver+Plan",
+                image: SILVER_PLAN,
                 features: [
                   "3 Projects",
                   "5 Users",
@@ -849,7 +879,7 @@ const RooksCstLanding = () => {
                 desc: "Scalable project capacity for businesses of any size",
                 price: "Custom",
                 color: "from-[#0B3470] to-[#2a5a9a]",
-                image: "https://via.placeholder.com/400x150/2a5a9a/FFFFFF?text=Gold+Plan",
+                image: GOLD_PLAN,
                 features: [
                   "Unlimited Projects",
                   "Unlimited Users",
@@ -862,7 +892,7 @@ const RooksCstLanding = () => {
                 desc: "Unlimited projects and users — enterprise-grade solution",
                 price: "Custom",
                 color: "from-[#0B3470] to-[#1e4a8a]",
-                image: "https://via.placeholder.com/400x150/1e4a8a/FFFFFF?text=Platinum+Plan",
+                image: PLATINUM_PLAN,
                 features: [
                   "Everything in Gold",
                   "API Access",
@@ -883,8 +913,8 @@ const RooksCstLanding = () => {
 
                 {/* Plan Image */}
                 <div className="relative mb-6 rounded-xl overflow-hidden border border-white/10">
-                  <img 
-                    src={plan.image} 
+                  <img
+                    src={plan.image}
                     alt={plan.title}
                     className="w-full h-24 object-cover"
                   />
@@ -925,161 +955,124 @@ const RooksCstLanding = () => {
         </div>
       </section>
 
-      {/* ================= APP CTA ================= */}
-      <section id="app-cta" className="py-32 px-4 relative">
-        <div className="max-w-4xl mx-auto relative z-10">
+      {/* ================= CTA ================= */}
+      <section id="cta" className="py-32 px-4 relative">
+        <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="relative overflow-hidden bg-gradient-to-br from-[#4B6CB7] via-[#6B8DD4] to-[#4B6CB7] p-16 rounded-3xl text-center shadow-2xl shadow-[#4B6CB7]/30"
+            className="relative overflow-hidden bg-gradient-to-br from-[#0B3470] via-[#1e4a8a] to-[#0B3470] rounded-3xl shadow-2xl shadow-[#0B3470]/30"
           >
             {/* Background Effects */}
             <div className="absolute inset-0">
-              <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2" />
-              <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl translate-y-1/2" />
-              {/* Grid pattern */}
-              <svg
-                width="100%"
-                height="100%"
-                xmlns="http://www.w3.org/2000/svg"
-                className="absolute inset-0 opacity-10"
-              >
-                <defs>
-                  <pattern
-                    id="grid"
-                    width="20"
-                    height="20"
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <path
-                      d="M 20 0 L 0 0 0 20"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="0.5"
-                    />
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#grid)" />
-              </svg>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_white_0%,_transparent_50%)] opacity-10" />
+
+              <motion.div
+                animate={{ x: [0, 100, 0], y: [0, -100, 0] }}
+                transition={{ duration: 15, repeat: Infinity }}
+                className="absolute -top-20 -right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl"
+              />
+
+              <motion.div
+                animate={{ x: [0, -100, 0], y: [0, 100, 0] }}
+                transition={{ duration: 20, repeat: Infinity }}
+                className="absolute -bottom-20 -left-20 w-60 h-60 bg-white/10 rounded-full blur-3xl"
+              />
             </div>
 
-            <div className="relative z-10">
-              {/* Floating App Mockup */}
-              <motion.div
-                animate={floatAnimation}
-                className="flex justify-center mb-8"
-              >
-                <div className="relative">
-                  <div className="w-48 h-96 bg-white/5 rounded-2xl border border-white/20 backdrop-blur-sm shadow-2xl overflow-hidden">
-                    <div className="p-4">
-                      <div className="w-12 h-12 bg-white/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
-                        <img
-                          src={ebricksLogo}
-                          alt="eBricks"
-                          className="w-8 h-8 object-contain"
-                        />
-                      </div>
-                      <div className="space-y-3">
-                        <div className="h-4 bg-white/10 rounded w-3/4 mx-auto"></div>
-                        <div className="h-20 bg-white/5 rounded"></div>
-                        <div className="h-10 bg-white/10 rounded"></div>
-                        <div className="h-10 bg-white/10 rounded"></div>
-                        <div className="h-10 bg-white/20 rounded"></div>
-                      </div>
-                    </div>
+            {/* Content */}
+            <div className="relative z-10 p-10 lg:p-5">
+              <div className="grid lg:grid-cols-2 gap-12 items-center ">
+                {/* LEFT SIDE - IMAGE */}
+                <div className="flex justify-center">
+                  <div className="relative  ">
+                    <motion.img
+                      src={STORE_PNG}
+                      alt="CTA"
+                      animate={{ y: [0, -12, 0] }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                      className="h-[620px] lg:h-[700px] w-auto object-contain"
+                    />
                   </div>
-                  <div className="absolute -inset-4 bg-white/5 blur-2xl rounded-3xl -z-10" />
                 </div>
-              </motion.div>
 
-              {/* Logo */}
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="flex items-center justify-center gap-3 mb-6"
-              >
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                  <img
-                    src={ebricksLogo}
-                    alt="eBricks"
-                    className="w-8 h-8 object-contain"
-                  />
+                {/* RIGHT SIDE - CONTENT */}
+                <div className="text-center lg:text-left">
+                  <div className="flex items-center justify-center lg:justify-start gap-3 mb-8">
+                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
+                      <img
+                        src={ebricksLogo}
+                        alt="eBricks"
+                        className="h-8 w-auto object-contain"
+                      />
+                    </div>
+
+                    <span className="font-bold text-2xl text-white">
+                      eBricks
+                    </span>
+                  </div>
+
+                  <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white leading-tight">
+                    Experience the Future of Construction Management
+                  </h2>
+
+                  <p className="mb-8 text-xl text-white/90 leading-relaxed">
+                    Access our powerful construction management platform
+                    directly from your browser. Streamline your projects, manage
+                    teams, and materials with ease.
+                  </p>
+
+                  <div className="flex flex-col lg:items-start items-center gap-6">
+                    <motion.a
+                      href="https://rooksbrooksit.github.io/cst_white_label_app/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="group px-10 py-4 bg-white text-[#0B3470] rounded-xl font-bold text-lg flex items-center gap-3 shadow-xl transition-all"
+                    >
+                      <svg
+                        className="w-6 h-6"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
+                          fill="currentColor"
+                        />
+                        <path
+                          d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12 16Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                      <span>Open Web App</span>
+                    </motion.a>
+                  </div>
+
+                  <div className="mt-12 flex flex-wrap lg:justify-start justify-center gap-8 text-white/80 text-sm border-t border-white/10 pt-8">
+                    <span className="flex items-center gap-2">
+                      <Shield className="w-4 h-4" />
+                      Secure & Encrypted
+                    </span>
+
+                    <span className="flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4" />
+                      Optimized Performance
+                    </span>
+
+                    <span className="flex items-center gap-2">
+                      <Award className="w-4 h-4" />
+                      Enterprise Grade
+                    </span>
+                  </div>
                 </div>
-                <span className="text-2xl font-bold text-white tracking-tight">
-                  eBricks
-                </span>
-              </motion.div>
-
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-5xl font-bold mb-4 text-white"
-              >
-                Experience the Future of Management
-              </motion.h2>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mb-8 text-xl text-white/90"
-              >
-                Access our powerful construction management platform directly
-                from your browser.
-              </motion.p>
-
-              <motion.a
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                href="https://rooksbrooksit.github.io/cst_white_label_app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-3 px-10 py-4 bg-white text-[#4B6CB7] rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all"
-              >
-                <svg
-                  className="w-6 h-6"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
-                    fill="currentColor"
-                  />
-                  <path
-                    d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z"
-                    fill="currentColor"
-                  />
-                </svg>
-                Open Web App
-              </motion.a>
-
-              {/* Trust Badges */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="mt-12 pt-8 border-t border-white/20 flex flex-wrap justify-center gap-8 text-white/80 text-sm"
-              >
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4" />
-                  Secure & Encrypted
-                </div>
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4" />
-                  Optimized Performance
-                </div>
-                <div className="flex items-center gap-2">
-                  <Award className="w-4 h-4" />
-                  Enterprise Grade
-                </div>
-              </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>
