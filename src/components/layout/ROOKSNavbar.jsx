@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronRight, ArrowRight } from "lucide-react";
-import rookstodoLogo from "../../assets/mobile_apps_asstes/rookstodo.png";
+import rookstodoLogo from "../../assets/mobile_apps_asstes/rookstodologo.png";
 
 const ROOKSNavbar = ({ onCTAClick }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

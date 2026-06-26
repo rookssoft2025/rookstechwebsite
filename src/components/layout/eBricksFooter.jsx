@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Github, Twitter, Linkedin } from "lucide-react";
-import ebricksLogo from "../../assets/mobile_apps_asstes/ebricks.png";
+import { Mail, Phone, MapPin } from "lucide-react";
+import { FaXTwitter as Twitter, FaLinkedin as Linkedin, FaGithub as Github } from "react-icons/fa6";
+import ebricksLogo from "../../assets/mobile_apps_asstes/ebrickslogog.png";
 import { useNavigate } from "react-router-dom";
 
 const EBricksFooter = () => {
@@ -71,7 +72,7 @@ const EBricksFooter = () => {
                 <img
                   src={ebricksLogo}
                   alt="eBricks"
-                  className="h-12 w-auto object-contain"
+                  className="h-15 w-auto object-contain"
                 />
                  <span className="font-bold text-xl bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                   eBricks

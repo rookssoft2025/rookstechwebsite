@@ -35,10 +35,6 @@ import {
   Menu,
   X,
   ChevronDown,
-  Twitter,
-  Linkedin,
-  Facebook,
-  Youtube,
   Mail,
   Phone,
   MapPin,
@@ -46,8 +42,21 @@ import {
   Heart,
   SendHorizontal,
 } from "lucide-react";
-import hmsImg from "../../assets/work/hmsImg.jpg";
+import { FaXTwitter as Twitter, FaLinkedin as Linkedin, FaFacebook as Facebook, FaYoutube as Youtube } from "react-icons/fa6";
+
 import hospitalImage from "../../assets/work/hospital_hms_support_1773896875537.png";
+import PatientManagementImg from "../../assets/mobile_apps_asstes/HMS/Patient Management.png";
+import AppointmentSchedulingImg from "../../assets/mobile_apps_asstes/HMS/Appointment Scheduling.png";
+import PharmacyManagementImg from "../../assets/mobile_apps_asstes/HMS/Pharmacy Management.png";
+import BillingInsuranceImg from "../../assets/mobile_apps_asstes/HMS/Billing & Insurance.png";
+import SecurityComplianceImg from "../../assets/mobile_apps_asstes/HMS/Why Choose Rooks HMS.png";
+import WardManagementImg from "../../assets/mobile_apps_asstes/HMS/Ward Management.png";
+import ClinicalDocumentationImg from "../../assets/mobile_apps_asstes/HMS/Clinical Documentation.png";
+import AnalyticsReportsImg from "../../assets/mobile_apps_asstes/HMS/Analytics & Reports.png";
+import StaffManagementImg from "../../assets/mobile_apps_asstes/HMS/Staff Management.png";
+import CtaImg from "../../assets/mobile_apps_asstes/HMS/cta.png";
+import HMSAppLogo from "../../assets/mobile_apps_asstes/HMS/HMS app  logo-01.svg";
+import front from "../../assets/mobile_apps_asstes/HMS/123.png";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -105,10 +114,11 @@ const Navbar = ({ onOpenModal }) => {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, ease: EASE }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-          ? "bg-[#060f1e]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_4px_40px_rgba(11,52,112,0.3)]"
-          : "bg-transparent"
-          }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled
+            ? "bg-[#060f1e]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_4px_40px_rgba(26,77,58,0.3)]"
+            : "bg-transparent"
+        }`}
       >
         <div className="w-full px-5 md:px-8 lg:px-12">
           <div className="flex items-center justify-between h-[70px]">
@@ -117,21 +127,16 @@ const Navbar = ({ onOpenModal }) => {
               whileHover={{ scale: 1.02 }}
               className="flex items-center gap-2.5 cursor-pointer select-none"
             >
-              <div className="relative">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#0B3470] to-[#2563eb] flex items-center justify-center shadow-lg shadow-[#0B3470]/40">
-                  <HeartPulse className="w-5 h-5 text-white" />
-                </div>
-                <motion.div
-                  animate={{ scale: [1, 1.4, 1], opacity: [0.5, 0, 0.5] }}
-                  transition={{ duration: 2.5, repeat: Infinity }}
-                  className="absolute inset-0 rounded-xl bg-[#4ec9ff]/30 blur-sm"
-                />
-              </div>
+              <img
+                src={HMSAppLogo}
+                alt="Rooks HMS Logo"
+                className="h-10 w-auto"
+              />
               <div>
                 <span className="font-bold text-lg tracking-tight text-white">
                   Rooks
                 </span>
-                <span className="font-bold text-lg tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#4ec9ff] to-[#2563eb]">
+                <span className="font-bold text-lg tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#ACE3CE] to-[#6CC9A6]">
                   {" "}
                   HMS
                 </span>
@@ -158,13 +163,13 @@ const Navbar = ({ onOpenModal }) => {
                 onClick={onOpenModal}
                 whileHover={{
                   scale: 1.04,
-                  boxShadow: "0 0 24px 4px rgba(11,52,112,0.5)",
+                  boxShadow: "0 0 24px 4px rgba(26,77,58,0.5)",
                 }}
                 whileTap={{ scale: 0.97 }}
                 className="relative group px-5 py-2.5 rounded-lg font-semibold text-sm overflow-hidden"
                 style={{
                   background:
-                    "linear-gradient(135deg, #0B3470 0%, #1e4a8a 60%, #2563eb 100%)",
+                    "linear-gradient(135deg, #1A4D3A 0%, #2D6B52 60%, #6CC9A6 100%)",
                 }}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
@@ -217,7 +222,7 @@ const Navbar = ({ onOpenModal }) => {
                   className="px-4 py-3 rounded-xl text-sm font-semibold text-white text-center"
                   style={{
                     background:
-                      "linear-gradient(135deg, #0B3470 0%, #2563eb 100%)",
+                      "linear-gradient(135deg, #1A4D3A 0%, #6CC9A6 100%)",
                   }}
                 >
                   Get Started
@@ -270,7 +275,7 @@ const Footer = () => {
   return (
     <footer className="relative z-10 border-t border-white/[0.06]">
       {/* Top gradient accent */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#4ec9ff]/30 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#ACE3CE]/30 to-transparent" />
 
       {/* Main footer */}
       <div className="bg-[#040d19]">
@@ -385,64 +390,73 @@ const RooksHmsLanding = () => {
       icon: <Users className="w-5 h-5" />,
       title: "Patient Management",
       desc: "Comprehensive EHR with medical history, admissions, discharge records, and real-time patient tracking.",
-      color: "from-[#0B3470] to-[#1e4a8a]",
-      metrics: "50K+ records",
+      color: "from-[#1A4D3A] to-[#2D6B52]",
+      metrics: "500K+ records",
+      image: PatientManagementImg,
     },
     {
       icon: <Calendar className="w-5 h-5" />,
       title: "Appointment Scheduling",
       desc: "Intelligent scheduling with automated reminders, wait time optimization, and resource allocation.",
-      color: "from-[#0B3470] to-[#1a3a6a]",
-      metrics: "98% efficiency",
+      color: "from-[#1A4D3A] to-[#245844]",
+      metrics: "99.9% efficiency",
+      image: AppointmentSchedulingImg,
     },
     {
       icon: <Pill className="w-5 h-5" />,
       title: "Pharmacy Management",
       desc: "Real-time inventory tracking, expiry alerts, automated reordering, and prescription management.",
-      color: "from-[#0B3470] to-[#2a5a9a]",
+      color: "from-[#1A4D3A] to-[#3A8A66]",
       metrics: "Zero stockouts",
+      image: PharmacyManagementImg,
     },
     {
       icon: <DollarSign className="w-5 h-5" />,
       title: "Billing & Insurance",
       desc: "Automated invoicing, insurance claim processing, payment tracking, and financial reporting.",
-      color: "from-[#0B3470] to-[#1e4a8a]",
+      color: "from-[#1A4D3A] to-[#2D6B52]",
       metrics: "40% faster",
+      image: BillingInsuranceImg,
     },
     {
       icon: <Shield className="w-5 h-5" />,
       title: "Security & Compliance",
       desc: "HIPAA-compliant architecture, role-based access, audit trails, and data encryption.",
-      color: "from-[#0B3470] to-[#1a3a6a]",
+      color: "from-[#1A4D3A] to-[#245844]",
       metrics: "100% compliant",
+      image: SecurityComplianceImg,
     },
     {
       icon: <BedDouble className="w-5 h-5" />,
       title: "Ward Management",
       desc: "Real-time bed availability, staff scheduling, resource allocation, and occupancy tracking.",
-      color: "from-[#0B3470] to-[#1b4b8b]",
+      color: "from-[#1A4D3A] to-[#327A5A]",
       metrics: "Real-time",
+      image: WardManagementImg,
     },
     {
       icon: <HeartPulse className="w-5 h-5" />,
       title: "Clinical Documentation",
       desc: "Digital clinical notes, treatment plans, progress tracking, and voice-to-text integration.",
-      color: "from-[#0B3470] to-[#1e4a8a]",
+      color: "from-[#1A4D3A] to-[#2D6B52]",
       metrics: "50% time saved",
+      image: ClinicalDocumentationImg,
     },
     {
       icon: <FileBarChart className="w-5 h-5" />,
       title: "Analytics & Reports",
       desc: "Customizable dashboards, predictive analytics, and automated regulatory reporting.",
-      color: "from-[#0B3470] to-[#1a3a6a]",
+      color: "from-[#1A4D3A] to-[#245844]",
       metrics: "Real-time insights",
+      image: AnalyticsReportsImg,
     },
     {
       icon: <UserCog className="w-5 h-5" />,
       title: "Staff Management",
       desc: "HR tools for scheduling, payroll, performance tracking, and credential management.",
-      color: "from-[#0B3470] to-[#1b4b8b]",
+      color: "from-[#1A4D3A] to-[#327A5A]",
       metrics: "500+ staff",
+      image: StaffManagementImg,
     },
   ];
 
@@ -496,29 +510,29 @@ const RooksHmsLanding = () => {
           className="absolute inset-0 opacity-[0.35]"
           style={{ backgroundImage: noiseSvg }}
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,_#0B347028,_transparent)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_80%_90%,_#1e4a8a18,_transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,_#1A4D3A28,_transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_80%_90%,_#2D6B5218,_transparent)]" />
         <div
           className="absolute inset-0 opacity-[0.06]"
           style={{
-            backgroundImage: `linear-gradient(rgba(78,201,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(78,201,255,0.4) 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(rgba(172,227,206,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(172,227,206,0.4) 1px, transparent 1px)`,
             backgroundSize: "60px 60px",
           }}
         />
         <motion.div
           animate={{ x: [0, 90, -40, 0], y: [0, -80, 60, 0] }}
           transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-16 left-[10%] w-[480px] h-[480px] bg-[#0B3470]/25 rounded-full blur-[120px]"
+          className="absolute top-16 left-[10%] w-[480px] h-[480px] bg-[#1A4D3A]/25 rounded-full blur-[120px]"
         />
         <motion.div
           animate={{ x: [0, -70, 50, 0], y: [0, 100, -60, 0] }}
           transition={{ duration: 35, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-24 right-[8%] w-[560px] h-[560px] bg-[#0d2a5e]/20 rounded-full blur-[140px]"
+          className="absolute bottom-24 right-[8%] w-[560px] h-[560px] bg-[#0F2E22]/20 rounded-full blur-[140px]"
         />
         <motion.div
           animate={{ x: [0, 60, 0], y: [0, -50, 0] }}
           transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] bg-[#4ec9ff]/4 rounded-full blur-[100px]"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] bg-[#ACE3CE]/4 rounded-full blur-[100px]"
         />
       </div>
 
@@ -539,7 +553,7 @@ const RooksHmsLanding = () => {
             className="space-y-7"
           >
             <motion.div variants={fadeUp} custom={0}>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0B3470]/20 border border-[#4ec9ff]/20 backdrop-blur-md text-[#4ec9ff] text-sm font-medium tracking-wide">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1A4D3A]/20 border border-[#ACE3CE]/20 backdrop-blur-md text-[#ACE3CE] text-sm font-medium tracking-wide">
                 <motion.span
                   animate={{ rotate: [0, 15, -10, 0] }}
                   transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
@@ -561,7 +575,7 @@ const RooksHmsLanding = () => {
                 className="text-transparent bg-clip-text"
                 style={{
                   backgroundImage:
-                    "linear-gradient(135deg, #7dd3fc 0%, #4ec9ff 30%, #2563eb 65%, #1e4a8a 100%)",
+                    "linear-gradient(135deg, #D4F0E6 0%, #ACE3CE 30%, #6CC9A6 65%, #2D6B52 100%)",
                   backgroundSize: "200% 100%",
                 }}
               >
@@ -606,13 +620,13 @@ const RooksHmsLanding = () => {
                 onClick={() => setIsModalOpen(true)}
                 whileHover={{
                   scale: 1.04,
-                  boxShadow: "0 0 32px 4px rgba(11,52,112,0.55)",
+                  boxShadow: "0 0 32px 4px rgba(26,77,58,0.55)",
                 }}
                 whileTap={{ scale: 0.97 }}
                 className="relative group px-8 py-3.5 rounded-xl font-semibold text-sm overflow-hidden"
                 style={{
                   background:
-                    "linear-gradient(135deg, #0B3470 0%, #1e4a8a 60%, #2563eb 100%)",
+                    "linear-gradient(135deg, #1A4D3A 0%, #2D6B52 60%, #6CC9A6 100%)",
                 }}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
@@ -638,7 +652,7 @@ const RooksHmsLanding = () => {
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-[#0B3470] to-[#2563eb] border-2 border-[#060f1e] flex items-center justify-center text-[10px] font-bold shadow-md"
+                    className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1A4D3A] to-[#6CC9A6] border-2 border-[#060f1e] flex items-center justify-center text-[10px] font-bold shadow-md"
                   >
                     {i}
                   </div>
@@ -659,16 +673,16 @@ const RooksHmsLanding = () => {
             style={{ y: heroImgY, opacity: heroOpacity }}
             className="relative"
           >
-            <div className="absolute inset-[-20px] bg-gradient-to-br from-[#0B3470]/30 to-[#4ec9ff]/10 rounded-3xl blur-2xl" />
-            <div className="relative rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_30px_80px_-10px_rgba(11,52,112,0.5)] bg-[#0B3470]/20 h-80 flex items-center justify-center">
-              <div className="relative rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_30px_80px_-10px_rgba(11,52,112,0.5)]">
+            <div className="absolute inset-[-20px]  blur-2xl" />
+            <div className="relative overflow-hidden h-80 flex items-center justify-center">
+              <div className="relative  overflow-hidden ">
                 <img
-                  src={hmsImg}
+                  src={front}
                   alt="HMS Dashboard"
                   className="w-full h-auto block"
                 />
                 {/* Overlay shimmer */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#060f1e]/30 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0  via-transparent to-transparent pointer-events-none" />
               </div>
             </div>
 
@@ -721,7 +735,10 @@ const RooksHmsLanding = () => {
       </section>
 
       {/* ══ FEATURES ════════════════════════════════════════════════════════ */}
-      <section id="features" className="relative py-28 px-5 md:px-8 lg:px-12 z-10 scroll-mt-[70px]">
+      <section
+        id="features"
+        className="relative py-28 px-5 md:px-8 lg:px-12 z-10 scroll-mt-[70px]"
+      >
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -730,13 +747,13 @@ const RooksHmsLanding = () => {
             transition={{ duration: 0.7, ease: EASE }}
             className="text-center max-w-2xl mx-auto mb-16"
           >
-            <span className="inline-block px-4 py-1.5 bg-[#0B3470]/20 border border-[#4ec9ff]/15 rounded-full text-[#4ec9ff] text-xs font-semibold uppercase tracking-widest mb-5">
+            <span className="inline-block px-4 py-1.5 bg-[#1A4D3A]/20 border border-[#ACE3CE]/15 rounded-full text-[#ACE3CE] text-xs font-semibold uppercase tracking-widest mb-5">
               Comprehensive Features
             </span>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-[-0.02em] mb-5">
               Everything You Need to
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7dd3fc] via-[#4ec9ff] to-[#2563eb]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4F0E6] via-[#ACE3CE] to-[#6CC9A6]">
                 Manage Your Hospital
               </span>
             </h2>
@@ -768,16 +785,23 @@ const RooksHmsLanding = () => {
                   className={`absolute inset-0 bg-gradient-to-br ${feat.color} opacity-0 group-hover:opacity-[0.08] transition-opacity duration-500 rounded-2xl`}
                 />
                 <motion.div
-                  className="absolute bottom-0 left-0 h-[1.5px] bg-gradient-to-r from-[#0B3470] via-[#4ec9ff] to-[#0B3470]"
+                  className="absolute bottom-0 left-0 h-[1.5px] bg-gradient-to-r from-[#1A4D3A] via-[#ACE3CE] to-[#1A4D3A]"
                   initial={{ scaleX: 0, originX: 0 }}
                   whileHover={{ scaleX: 1 }}
                   transition={{ duration: 0.4, ease: EASE }}
                 />
-                <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#4ec9ff]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#ACE3CE]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="relative z-10">
+                  <div className="mb-5 overflow-hidden rounded-xl border border-white/10 bg-black/20">
+                    <img
+                      src={feat.image}
+                      alt={feat.title}
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
                   <div className="flex items-start justify-between mb-5">
                     <div
-                      className={`p-2.5 bg-gradient-to-br ${feat.color} rounded-xl shadow-lg shadow-[#0B3470]/30`}
+                      className={`p-2.5 bg-gradient-to-br ${feat.color} rounded-xl shadow-lg shadow-[#1A4D3A]/30`}
                     >
                       <motion.span
                         className="block"
@@ -787,7 +811,7 @@ const RooksHmsLanding = () => {
                         {feat.icon}
                       </motion.span>
                     </div>
-                    <span className="text-[11px] font-semibold text-[#4ec9ff] bg-[#0B3470]/30 border border-[#4ec9ff]/15 px-2.5 py-1 rounded-full">
+                    <span className="text-[11px] font-semibold text-[#ACE3CE] bg-[#1A4D3A]/30 border border-[#ACE3CE]/15 px-2.5 py-1 rounded-full">
                       {feat.metrics}
                     </span>
                   </div>
@@ -805,7 +829,10 @@ const RooksHmsLanding = () => {
       </section>
 
       {/* ══ ABOUT ════════════════════════════════════════════════════════════ */}
-      <section id="solutions" className="relative py-28 px-5 md:px-8 lg:px-12 z-10 scroll-mt-[70px]">
+      <section
+        id="solutions"
+        className="relative py-28 px-5 md:px-8 lg:px-12 z-10 scroll-mt-[70px]"
+      >
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, x: -36 }}
@@ -814,13 +841,13 @@ const RooksHmsLanding = () => {
             transition={{ duration: 0.85, ease: EASE }}
             className="space-y-6"
           >
-            <span className="inline-block px-4 py-1.5 bg-[#0B3470]/20 border border-[#4ec9ff]/15 rounded-full text-[#4ec9ff] text-xs font-semibold uppercase tracking-widest">
+            <span className="inline-block px-4 py-1.5 bg-[#1A4D3A]/20 border border-[#ACE3CE]/15 rounded-full text-[#ACE3CE] text-xs font-semibold uppercase tracking-widest">
               Why Choose Rooks HMS
             </span>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-[-0.02em]">
               Built for Modern
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7dd3fc] via-[#4ec9ff] to-[#2563eb]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4F0E6] via-[#ACE3CE] to-[#6CC9A6]">
                 Healthcare Workflows
               </span>
             </h2>
@@ -841,7 +868,7 @@ const RooksHmsLanding = () => {
                 >
                   <motion.div
                     whileHover={{ scale: 1.2, rotate: 10 }}
-                    className="mt-0.5 flex-shrink-0 p-0.5 bg-gradient-to-br from-[#0B3470] to-[#4ec9ff] rounded-full"
+                    className="mt-0.5 flex-shrink-0 p-0.5 bg-gradient-to-br from-[#1A4D3A] to-[#ACE3CE] rounded-full"
                   >
                     <CheckCircle2 className="w-4 h-4 text-white" />
                   </motion.div>
@@ -851,7 +878,6 @@ const RooksHmsLanding = () => {
                 </motion.div>
               ))}
             </div>
-
           </motion.div>
 
           <motion.div
@@ -907,7 +933,10 @@ const RooksHmsLanding = () => {
       </section>
 
       {/* ══ PROCESS ═════════════════════════════════════════════════════════ */}
-      <section id="resources" className="relative py-28 px-5 md:px-8 lg:px-12 z-10 scroll-mt-[70px]">
+      <section
+        id="resources"
+        className="relative py-28 px-5 md:px-8 lg:px-12 z-10 scroll-mt-[70px]"
+      >
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -916,12 +945,12 @@ const RooksHmsLanding = () => {
             transition={{ duration: 0.7, ease: EASE }}
             className="text-center max-w-2xl mx-auto mb-16"
           >
-            <span className="inline-block px-4 py-1.5 bg-[#0B3470]/20 border border-[#4ec9ff]/15 rounded-full text-[#4ec9ff] text-xs font-semibold uppercase tracking-widest mb-5">
+            <span className="inline-block px-4 py-1.5 bg-[#1A4D3A]/20 border border-[#ACE3CE]/15 rounded-full text-[#ACE3CE] text-xs font-semibold uppercase tracking-widest mb-5">
               Simple Workflow
             </span>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-[-0.02em] mb-5">
-              How It Works in{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7dd3fc] via-[#4ec9ff] to-[#2563eb]">
+              How It Works in
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4F0E6] via-[#ACE3CE] to-[#6CC9A6]">
                 5 Simple Steps
               </span>
             </h2>
@@ -938,7 +967,7 @@ const RooksHmsLanding = () => {
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.4, ease: EASE, delay: 0.3 }}
-                className="h-full bg-gradient-to-r from-[#0B3470]/30 via-[#4ec9ff]/40 to-[#0B3470]/30"
+                className="h-full bg-gradient-to-r from-[#1A4D3A]/30 via-[#ACE3CE]/40 to-[#1A4D3A]/30"
               />
             </div>
             <div className="grid lg:grid-cols-5 gap-7">
@@ -956,12 +985,12 @@ const RooksHmsLanding = () => {
                   className="group text-center relative"
                 >
                   <div className="relative inline-flex items-center justify-center mb-5">
-                    <div className="w-14 h-14 rounded-full bg-[#060f1e] border border-[#0B3470]/50 flex items-center justify-center shadow-lg shadow-[#0B3470]/20 group-hover:border-[#4ec9ff]/50 group-hover:shadow-[#4ec9ff]/20 transition-all duration-400">
-                      <span className="text-base font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#7dd3fc] to-[#2563eb]">
+                    <div className="w-14 h-14 rounded-full bg-[#060f1e] border border-[#1A4D3A]/50 flex items-center justify-center shadow-lg shadow-[#1A4D3A]/20 group-hover:border-[#ACE3CE]/50 group-hover:shadow-[#ACE3CE]/20 transition-all duration-400">
+                      <span className="text-base font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#D4F0E6] to-[#6CC9A6]">
                         {step.number}
                       </span>
                     </div>
-                    <div className="absolute inset-0 rounded-full bg-[#4ec9ff]/10 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-500 blur-md" />
+                    <div className="absolute inset-0 rounded-full bg-[#ACE3CE]/10 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-500 blur-md" />
                   </div>
                   <h3 className="font-semibold text-sm mb-2 text-white/90">
                     {step.title}
@@ -977,7 +1006,10 @@ const RooksHmsLanding = () => {
       </section>
 
       {/* ══ REPORTS & ANALYTICS ═════════════════════════════════════════════ */}
-      <section id="about" className="relative py-28 px-5 md:px-8 lg:px-12 z-10 scroll-mt-[70px]">
+      <section
+        id="about"
+        className="relative py-28 px-5 md:px-8 lg:px-12 z-10 scroll-mt-[70px]"
+      >
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -986,12 +1018,12 @@ const RooksHmsLanding = () => {
             transition={{ duration: 0.7, ease: EASE }}
             className="text-center max-w-2xl mx-auto mb-16"
           >
-            <span className="inline-block px-4 py-1.5 bg-[#0B3470]/20 border border-[#4ec9ff]/15 rounded-full text-[#4ec9ff] text-xs font-semibold uppercase tracking-widest mb-5">
+            <span className="inline-block px-4 py-1.5 bg-[#1A4D3A]/20 border border-[#ACE3CE]/15 rounded-full text-[#ACE3CE] text-xs font-semibold uppercase tracking-widest mb-5">
               Analytics & Insights
             </span>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-[-0.02em] mb-5">
-              Data-Driven Decisions with{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7dd3fc] via-[#4ec9ff] to-[#2563eb]">
+              Data-Driven Decisions with
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4F0E6] via-[#ACE3CE] to-[#6CC9A6]">
                 Real-Time Reports
               </span>
             </h2>
@@ -1026,7 +1058,7 @@ const RooksHmsLanding = () => {
                 >
                   <motion.div
                     whileHover={{ scale: 1.2, rotate: 10 }}
-                    className="mt-0.5 flex-shrink-0 p-0.5 bg-gradient-to-br from-[#0B3470] to-[#4ec9ff] rounded-full"
+                    className="mt-0.5 flex-shrink-0 p-0.5 bg-gradient-to-br from-[#1A4D3A] to-[#ACE3CE] rounded-full"
                   >
                     <CheckCircle2 className="w-4 h-4 text-white" />
                   </motion.div>
@@ -1035,7 +1067,6 @@ const RooksHmsLanding = () => {
                   </span>
                 </motion.div>
               ))}
-
             </motion.div>
 
             <motion.div
@@ -1080,10 +1111,10 @@ const RooksHmsLanding = () => {
                   whileHover={{ scale: 1.07, y: -4 }}
                   className="group p-5 rounded-2xl border border-white/[0.07] bg-white/[0.025] text-center cursor-pointer relative overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#4ec9ff]/0 to-[#0B3470]/0 group-hover:from-[#4ec9ff]/8 group-hover:to-[#0B3470]/20 transition-all duration-400 rounded-2xl" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#ACE3CE]/0 to-[#1A4D3A]/0 group-hover:from-[#ACE3CE]/8 group-hover:to-[#1A4D3A]/20 transition-all duration-400 rounded-2xl" />
                   <div className="relative z-10">
                     <motion.span
-                      className="inline-block mb-2.5 text-[#4ec9ff]"
+                      className="inline-block mb-2.5 text-[#ACE3CE]"
                       whileHover={{ scale: 1.2, rotate: -8 }}
                       transition={{ type: "spring", stiffness: 300 }}
                     >
@@ -1102,7 +1133,7 @@ const RooksHmsLanding = () => {
 
       {/* ══ CTA ══════════════════════════════════════════════════════════════ */}
       <section className="relative py-24 px-5 md:px-8 lg:px-12 z-10">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.94 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -1111,18 +1142,18 @@ const RooksHmsLanding = () => {
             className="relative overflow-hidden rounded-3xl p-[1px]"
             style={{
               background:
-                "linear-gradient(135deg, rgba(11,52,112,0.8), rgba(78,201,255,0.3), rgba(11,52,112,0.8))",
+                "linear-gradient(135deg, rgba(26,77,58,0.8), rgba(172,227,206,0.3), rgba(26,77,58,0.8))",
             }}
           >
             <div
-              className="relative rounded-3xl p-12 md:p-16 text-center overflow-hidden"
+              className="relative rounded-3xl p-8 md:p-16 overflow-hidden"
               style={{
                 background:
-                  "linear-gradient(135deg, #0B3470 0%, #14326a 40%, #1a4a8a 70%, #0d2a5e 100%)",
+                  "linear-gradient(135deg, #1A4D3A 0%, #245844 40%, #2D6B52 70%, #0F2E22 100%)",
               }}
             >
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(255,255,255,0.08),_transparent_60%)]" />
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(78,201,255,0.08),_transparent_60%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(172,227,206,0.08),_transparent_60%)]" />
               <motion.div
                 animate={{ x: [0, 80, 0], y: [0, -80, 0] }}
                 transition={{
@@ -1139,85 +1170,102 @@ const RooksHmsLanding = () => {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="absolute -bottom-16 -left-16 w-48 h-48 bg-[#4ec9ff]/10 rounded-full blur-3xl"
+                className="absolute -bottom-16 -left-16 w-48 h-48 bg-[#ACE3CE]/10 rounded-full blur-3xl"
               />
               <div
                 className="absolute inset-0 opacity-30"
                 style={{ backgroundImage: noiseSvg }}
               />
-              <div className="relative z-10">
-                <motion.h2
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7, ease: EASE }}
-                  className="text-4xl md:text-5xl font-bold mb-4 tracking-[-0.02em]"
-                >
-                  Ready to Transform Your Hospital?
-                </motion.h2>
-                <motion.p
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-                  className="text-lg text-white/75 mb-10 max-w-xl mx-auto leading-relaxed"
-                >
-                  Join 500+ healthcare institutions already using Rooks HMS to
-                  streamline operations and improve patient care.
-                </motion.p>
+              <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
                 <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
-                  className="flex flex-wrap justify-center gap-4"
+                  animate={{ y: [0, -15, 0] }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="flex justify-center"
                 >
-                  <motion.button
-                    onClick={() => setIsModalOpen(true)}
-                    whileHover={{
-                      scale: 1.06,
-                      boxShadow: "0 0 36px 6px rgba(255,255,255,0.25)",
-                    }}
-                    whileTap={{ scale: 0.97 }}
-                    className="relative group px-10 py-4 bg-white text-[#0B3470] rounded-xl font-bold text-base shadow-lg overflow-hidden"
+                  <img
+                    src={CtaImg}
+                    alt="Rooks HMS Platform"
+                    className="w-full max-w-sm h-auto "
+                  />
+                </motion.div>
+                <div className="text-center md:text-left">
+                  <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, ease: EASE }}
+                    className="text-4xl md:text-5xl font-bold mb-4 tracking-[-0.02em]"
                   >
-                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#4ec9ff]/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-600" />
-                    <span className="relative">Contact Us</span>
-                  </motion.button>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 }}
-                  className="mt-10 flex flex-wrap justify-center gap-7 text-sm text-white/60"
-                >
-                  {[
-                    {
-                      icon: <Shield className="w-4 h-4" />,
-                      text: "HIPAA Compliant",
-                    },
-                    {
-                      icon: <Globe className="w-4 h-4" />,
-                      text: "24/7 Support",
-                    },
-                    {
-                      icon: <Clock className="w-4 h-4" />,
-                      text: "99.9% Uptime",
-                    },
-                  ].map((b, i) => (
-                    <motion.span
-                      key={i}
+                    Ready to Transform Your Hospital?
+                  </motion.h2>
+                  <motion.p
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
+                    className="text-lg text-white/75 mb-10 max-w-xl leading-relaxed"
+                  >
+                    Join 500+ healthcare institutions already using Rooks HMS to
+                    streamline operations and improve patient care.
+                  </motion.p>
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
+                    className="flex flex-wrap justify-center md:justify-start gap-4"
+                  >
+                    <motion.button
+                      onClick={() => setIsModalOpen(true)}
                       whileHover={{
-                        color: "rgba(255,255,255,0.9)",
-                        scale: 1.05,
+                        scale: 1.06,
+                        boxShadow: "0 0 36px 6px rgba(255,255,255,0.25)",
                       }}
-                      className="flex items-center gap-2 transition-colors cursor-default"
+                      whileTap={{ scale: 0.97 }}
+                      className="relative group px-10 py-4 bg-white text-[#1A4D3A] rounded-xl font-bold text-base shadow-lg overflow-hidden"
                     >
-                      {b.icon} {b.text}
-                    </motion.span>
-                  ))}
-                </motion.div>
+                      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#ACE3CE]/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-600" />
+                      <span className="relative">Contact Us</span>
+                    </motion.button>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.4 }}
+                    className="mt-10 flex flex-wrap justify-center md:justify-start gap-7 text-sm text-white/60"
+                  >
+                    {[
+                      {
+                        icon: <Shield className="w-4 h-4" />,
+                        text: "HIPAA Compliant",
+                      },
+                      {
+                        icon: <Globe className="w-4 h-4" />,
+                        text: "24/7 Support",
+                      },
+                      {
+                        icon: <Clock className="w-4 h-4" />,
+                        text: "99.9% Uptime",
+                      },
+                    ].map((b, i) => (
+                      <motion.span
+                        key={i}
+                        whileHover={{
+                          color: "rgba(255,255,255,0.9)",
+                          scale: 1.05,
+                        }}
+                        className="flex items-center gap-2 transition-colors cursor-default"
+                      >
+                        {b.icon} {b.text}
+                      </motion.span>
+                    ))}
+                  </motion.div>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -1256,7 +1304,7 @@ const RooksHmsLanding = () => {
 
               {/* Left Side: Illustration Area */}
               <div className="md:w-1/2 bg-[#161b26] flex flex-col items-center justify-center p-12 relative overflow-hidden border-r border-white/5">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(78,201,255,0.1),transparent)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(172,227,206,0.1),transparent)]" />
                 <motion.img
                   initial={{ scale: 0.85, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -1267,14 +1315,21 @@ const RooksHmsLanding = () => {
                 />
                 <div className="mt-10 text-center relative z-10 w-full">
                   <div className="flex items-center justify-center gap-2 mb-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#4ec9ff] animate-pulse" />
-                    <span className="text-[#4ec9ff] font-bold uppercase tracking-widest text-[10px]">Medical Command Center</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#ACE3CE] animate-pulse" />
+                    <span className="text-[#ACE3CE] font-bold uppercase tracking-widest text-[10px]">
+                      Medical Command Center
+                    </span>
                   </div>
-                  <h4 className="heading-font text-xl text-white mb-2">Empowering Digital Healthcare</h4>
-                  <p className="text-white/40 text-xs italic text-center mx-auto max-w-[200px]">"Streamlining clinic and hospital operations with intelligent automation."</p>
+                  <h4 className="heading-font text-xl text-white mb-2">
+                    Empowering Digital Healthcare
+                  </h4>
+                  <p className="text-white/40 text-xs italic text-center mx-auto max-w-[200px]">
+                    "Streamlining clinic and hospital operations with
+                    intelligent automation."
+                  </p>
                 </div>
-                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-[#0B3470]/5 rounded-full blur-3xl" />
-                <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl" />
+                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-[#1A4D3A]/5 rounded-full blur-3xl" />
+                <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#6CC9A6]/5 rounded-full blur-3xl" />
               </div>
 
               {/* Right Side: Form Content */}
@@ -1286,76 +1341,116 @@ const RooksHmsLanding = () => {
                 >
                   {submitSuccess ? (
                     <div className="text-center py-10">
-                      <div className="w-20 h-20 bg-[#0B3470]/10 rounded-full flex items-center justify-center mx-auto text-[#4ec9ff] border border-[#4ec9ff]/20 mb-8">
+                      <div className="w-20 h-20 bg-[#1A4D3A]/10 rounded-full flex items-center justify-center mx-auto text-[#ACE3CE] border border-[#ACE3CE]/20 mb-8">
                         <CheckCircle2 className="w-10 h-10" />
                       </div>
-                      <h3 className="heading-font text-3xl font-bold text-white mb-4">Enquiry Received</h3>
-                      <p className="text-white/40 text-sm">Our healthcare transformation specialist will contact you shortly to discuss your institution's needs.</p>
+                      <h3 className="heading-font text-3xl font-bold text-white mb-4">
+                        Enquiry Received
+                      </h3>
+                      <p className="text-white/40 text-sm">
+                        Our healthcare transformation specialist will contact
+                        you shortly to discuss your institution's needs.
+                      </p>
                     </div>
                   ) : (
                     <>
                       <div className="flex items-center gap-2 mb-2">
-                        <HeartPulse className="w-5 h-5 text-[#4ec9ff]" />
-                        <span className="text-[#4ec9ff] font-bold text-xs tracking-widest uppercase">HMS Support</span>
+                        <HeartPulse className="w-5 h-5 text-[#ACE3CE]" />
+                        <span className="text-[#ACE3CE] font-bold text-xs tracking-widest uppercase">
+                          HMS Support
+                        </span>
                       </div>
-                      <h3 className="heading-font text-4xl font-bold text-white mb-3">Partner with Us</h3>
-                      <p className="text-white/40 mb-8 text-sm">Please fill out the form below and we'll help digitize your healthcare facility.</p>
+                      <h3 className="heading-font text-4xl font-bold text-white mb-3">
+                        Partner with Us
+                      </h3>
+                      <p className="text-white/40 mb-8 text-sm">
+                        Please fill out the form below and we'll help digitize
+                        your healthcare facility.
+                      </p>
 
                       <form onSubmit={handleFormSubmit} className="space-y-5">
                         <div>
-                          <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">Full Name</label>
+                          <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">
+                            Full Name
+                          </label>
                           <input
                             required
                             type="text"
                             placeholder="Dr. Rajesh Patel"
                             value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#4ec9ff]/50 focus:ring-1 focus:ring-[#4ec9ff]/50 transition-all outline-none text-white placeholder:text-white/10"
+                            onChange={(e) =>
+                              setFormData({ ...formData, name: e.target.value })
+                            }
+                            className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#ACE3CE]/50 focus:ring-1 focus:ring-[#ACE3CE]/50 transition-all outline-none text-white placeholder:text-white/10"
                           />
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                           <div>
-                            <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">Email Address</label>
+                            <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">
+                              Email Address
+                            </label>
                             <input
                               required
                               type="email"
                               placeholder="admin@hospital.com"
                               value={formData.email}
-                              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                              className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#4ec9ff]/50 focus:ring-1 focus:ring-[#4ec9ff]/50 transition-all outline-none text-white placeholder:text-white/10"
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  email: e.target.value,
+                                })
+                              }
+                              className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#ACE3CE]/50 focus:ring-1 focus:ring-[#ACE3CE]/50 transition-all outline-none text-white placeholder:text-white/10"
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">Phone Number</label>
+                            <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">
+                              Phone Number
+                            </label>
                             <input
                               required
                               type="tel"
                               placeholder="+91 98765 43210"
                               value={formData.phone}
-                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                              className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#4ec9ff]/50 focus:ring-1 focus:ring-[#4ec9ff]/50 transition-all outline-none text-white placeholder:text-white/10"
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  phone: e.target.value,
+                                })
+                              }
+                              className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#ACE3CE]/50 focus:ring-1 focus:ring-[#ACE3CE]/50 transition-all outline-none text-white placeholder:text-white/10"
                             />
                           </div>
                         </div>
 
                         <div>
-                          <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">Message</label>
+                          <label className="block text-[10px] font-bold text-white/30 mb-1.5 uppercase tracking-widest">
+                            Message
+                          </label>
                           <textarea
                             required
                             rows="3"
                             placeholder="Tell us about your facility (e.g., number of beds, specialty, key requirements)..."
                             value={formData.message}
-                            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                            className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#4ec9ff]/50 focus:ring-1 focus:ring-[#4ec9ff]/50 transition-all outline-none text-white resize-none placeholder:text-white/10"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                message: e.target.value,
+                              })
+                            }
+                            className="w-full px-5 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl focus:bg-white/[0.06] focus:border-[#ACE3CE]/50 focus:ring-1 focus:ring-[#ACE3CE]/50 transition-all outline-none text-white resize-none placeholder:text-white/10"
                           />
                         </div>
 
                         <motion.button
                           disabled={isSubmitting}
-                          whileHover={{ scale: 1.02, boxShadow: "0 10px 30px -10px rgba(11,52,112,0.5)" }}
+                          whileHover={{
+                            scale: 1.02,
+                            boxShadow: "0 10px 30px -10px rgba(26,77,58,0.5)",
+                          }}
                           whileTap={{ scale: 0.98 }}
-                          className="w-full py-4 bg-gradient-to-r from-[#0B3470] to-[#2563eb] text-white font-bold rounded-xl transition-all uppercase tracking-widest text-xs disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+                          className="w-full py-4 bg-gradient-to-r from-[#1A4D3A] to-[#6CC9A6] text-white font-bold rounded-xl transition-all uppercase tracking-widest text-xs disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
                         >
                           {isSubmitting ? (
                             <>

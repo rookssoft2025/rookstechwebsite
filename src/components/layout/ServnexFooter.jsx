@@ -5,10 +5,8 @@ import {
   Phone,
   MapPin,
   ArrowUpRight,
-  Github,
-  Twitter,
-  Linkedin,
 } from "lucide-react";
+import { FaXTwitter as Twitter, FaLinkedin as Linkedin, FaGithub as Github } from "react-icons/fa6";
 import servnexLogo from "../../assets/mobile_apps_asstes/servenex.png";
 import { useNavigate } from "react-router-dom";
 

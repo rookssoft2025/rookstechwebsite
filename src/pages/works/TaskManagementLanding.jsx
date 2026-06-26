@@ -46,8 +46,26 @@ import {
 } from "lucide-react";
 import ROOKSNavbar from "../../components/layout/ROOKSNavbar";
 import ROOKSFooter from "../../components/layout/ROOKSFooter";
-import rookstodoLogo from "../../assets/mobile_apps_asstes/rookstodo.png";
+import rookstodoLogo from "../../assets/mobile_apps_asstes/rookstodologo.png";
 import tmsimg from "../../assets/mobile_apps_asstes/rooks to do/rooks to dooo.png";
+import CENTRALIZED_TASK_MANAGEMENT from "../../assets/mobile_apps_asstes/rooks to do/CENTRALIZED TASK MANAGEMENT.png";
+import REAL_TIME_COLLABORATION from "../../assets/mobile_apps_asstes/rooks to do/REAL-TIME COLLABORATION.png";
+import AUTOMATED_NOTIFICATIONS from "../../assets/mobile_apps_asstes/rooks to do/AUTOMATED NOTIFICATIONS.png";
+import SECURE_CLOUD_STORAGE from "../../assets/mobile_apps_asstes/rooks to do/SECURE CLOUD STORAGE.png";
+import TaskManagement from "../../assets/mobile_apps_asstes/rooks to do/TASK MANAGEMENT.png";
+import TeamCollaboration from "../../assets/mobile_apps_asstes/rooks to do/TEAM COLLABORATION.png";
+import Notification from "../../assets/mobile_apps_asstes/rooks to do/Notification  alert UI.png";
+import ProjectWorkspaceDashboard from "../../assets/mobile_apps_asstes/rooks to do/Project  workspace dashboard.png";
+import ChatGPTImage from "../../assets/mobile_apps_asstes/rooks to do/ChatGPT Image Jun 20, 2026, 01_23_49 PM.png";
+import TodoPlayStore from "../../assets/mobile_apps_asstes/rooks to do/to do paly store.png";
+import Increase_Productivity from "../../assets/mobile_apps_asstes/rooks to do/Increase Productivity.png";
+import Improve_Team_Collaboration from "../../assets/mobile_apps_asstes/rooks to do/Improve Team Collaboration.png";
+import Meet_Every_Deadline from "../../assets/mobile_apps_asstes/rooks to do/Meet Every Deadline.png";
+import Gain_Complete_Visibility from "../../assets/mobile_apps_asstes/rooks to do/Gain Complete Visibility.png";
+import Secure_User_Authentication from "../../assets/mobile_apps_asstes/rooks to do/Secure User Authentication.png";
+import Protected_Cloud_Storage from "../../assets/mobile_apps_asstes/rooks to do/Protected Cloud Storage.png";
+import Privacy_Focused_Architecture from "../../assets/mobile_apps_asstes/rooks to do/Privacy-Focused Architecture.png";
+import Reliable_Data_Backup from "../../assets/mobile_apps_asstes/rooks to do/Reliable Data Backup.png";
 
 const FONTS = `
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -59,32 +77,28 @@ const FEATURES = [
     color: "#3B82F6",
     title: "Task Management",
     desc: "Create, organize, and manage tasks effortlessly with priority-based scheduling, due date tracking, and progress monitoring.",
-    image:
-      "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=600&h=300&fit=crop",
+    image: TaskManagement,
   },
   {
     icon: <Users size={24} />,
     color: "#8B5CF6",
     title: "Team Collaboration",
     desc: "Work together efficiently from anywhere with shared workspaces, team member management, and real-time updates.",
-    image:
-      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=300&fit=crop",
+    image: TeamCollaboration,
   },
   {
     icon: <Bell size={24} />,
     color: "#F59E0B",
     title: "Smart Notifications",
     desc: "Stay informed and never miss important deadlines with task reminders, due date alerts, and timezone-aware scheduling.",
-    image:
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=300&fit=crop",
+    image: Notification,
   },
   {
     icon: <Briefcase size={24} />,
     color: "#10B981",
     title: "Workspace Management",
     desc: "Manage projects and teams in a structured environment with multiple workspaces, role-based access, and activity logs.",
-    image:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=300&fit=crop",
+    image: ProjectWorkspaceDashboard,
   },
 ];
 
@@ -151,26 +165,22 @@ const BENEFITS = [
   {
     title: "Increase Productivity",
     desc: "Focus on important tasks and reduce manual follow-ups.",
-    image:
-      "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&h=300&fit=crop",
+    image: Increase_Productivity,
   },
   {
     title: "Improve Team Collaboration",
     desc: "Enhance communication and accountability across teams.",
-    image:
-      "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=600&h=300&fit=crop",
+    image: Improve_Team_Collaboration,
   },
   {
     title: "Meet Every Deadline",
     desc: "Receive timely reminders and track project milestones.",
-    image:
-      "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=600&h=300&fit=crop",
+    image: Meet_Every_Deadline,
   },
   {
     title: "Gain Complete Visibility",
     desc: "Monitor tasks, projects, and team performance in real time.",
-    image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=300&fit=crop",
+    image: Gain_Complete_Visibility,
   },
 ];
 
@@ -354,15 +364,15 @@ const TaskManagementLanding = () => {
               initial={{ opacity: 0, x: 50 }}
               animate={isHeroInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
+              className="relative flex justify-center items-center"
             >
-              <div className="relative bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-3xl p-2 backdrop-blur-xl overflow-hidden">
+              <div className="relative overflow-hidden  h-[600px] w-full flex items-center justify-center">
                 <img
                   src={tmsimg}
                   alt="Rooks To Do Dashboard"
-                  className="rounded-2xl w-full h-auto"
+                  className=" w-full h-auto`"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#071730]/60 via-transparent to-transparent rounded-2xl pointer-events-none" />
+                {/* <div className="absolute inset-0 bg-gradient-to-t from-[#071730]/60 via-transparent to-transparent rounded-3xl pointer-events-none" /> */}
               </div>
 
               {/* Floating Metrics */}
@@ -373,15 +383,15 @@ const TaskManagementLanding = () => {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="absolute -top-8 -right-8 bg-[#0a1a3a] border border-blue-500/20 rounded-2xl p-4 shadow-xl backdrop-blur-xl"
+                className="absolute top-0 right-0 bg-[#0a1a3a] border border-blue-500/20 rounded-2xl p-5 shadow-xl backdrop-blur-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <Check size={20} className="text-blue-400" />
+                  <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <Check size={24} className="text-blue-400" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold">98%</div>
-                    <div className="text-xs text-gray-400">Task Completion</div>
+                    <div className="text-3xl font-bold">98%</div>
+                    <div className="text-sm text-gray-400">Task Completion</div>
                   </div>
                 </div>
               </motion.div>
@@ -394,15 +404,15 @@ const TaskManagementLanding = () => {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="absolute -bottom-4 -left-4 bg-[#0a1a3a] border border-purple-500/20 rounded-2xl p-4 shadow-xl backdrop-blur-xl"
+                className="absolute bottom-0 left-0 bg-[#0a1a3a] border border-purple-500/20 rounded-2xl p-5 shadow-xl backdrop-blur-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
-                    <Users size={20} className="text-purple-400" />
+                  <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
+                    <Users size={24} className="text-purple-400" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold">500+</div>
-                    <div className="text-xs text-gray-400">Active Teams</div>
+                    <div className="text-3xl font-bold">500+</div>
+                    <div className="text-sm text-gray-400">Active Teams</div>
                   </div>
                 </div>
               </motion.div>
@@ -433,29 +443,25 @@ const TaskManagementLanding = () => {
                   icon: <CheckSquare size={28} />,
                   title: "Centralized Task Management",
                   color: "#3B82F6",
-                  image:
-                    "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=300&h=150&fit=crop",
+                  image: TaskManagement,
                 },
                 {
                   icon: <Users size={28} />,
                   title: "Real-Time Collaboration",
                   color: "#8B5CF6",
-                  image:
-                    "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=300&h=150&fit=crop",
+                  image: REAL_TIME_COLLABORATION,
                 },
                 {
                   icon: <Bell size={28} />,
                   title: "Automated Notifications",
                   color: "#F59E0B",
-                  image:
-                    "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=300&h=150&fit=crop",
+                  image: AUTOMATED_NOTIFICATIONS,
                 },
                 {
                   icon: <Lock size={28} />,
                   title: "Secure Cloud Storage",
                   color: "#10B981",
-                  image:
-                    "https://images.unsplash.com/photo-1497366216548-37526070297c?w=300&h=150&fit=crop",
+                  image: SECURE_CLOUD_STORAGE,
                 },
               ].map((benefit, i) => (
                 <motion.div
@@ -466,7 +472,7 @@ const TaskManagementLanding = () => {
                   transition={{ delay: i * 0.1 }}
                   className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:border-blue-500/30 transition-all duration-300"
                 >
-                  <div className="relative h-24 overflow-hidden">
+                  <div className="relative h-30 overflow-hidden">
                     <img
                       src={benefit.image}
                       alt={benefit.title}
@@ -474,16 +480,16 @@ const TaskManagementLanding = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#071730]/80 via-transparent to-transparent" />
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 flex items-center justify-evenly">
                     <div
                       style={{ background: `${benefit.color}20` }}
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
+                      className="w-10 h-10 rounded-2xl flex items-center justify-center mb-4"
                     >
                       <div style={{ color: benefit.color }}>{benefit.icon}</div>
                     </div>
-                    <h3 className="text-xl font-semibold mb-2">
+                    <span className="text-sm font-semibold mb-2">
                       {benefit.title}
-                    </h3>
+                    </span>
                   </div>
                 </motion.div>
               ))}
@@ -510,7 +516,7 @@ const TaskManagementLanding = () => {
                   transition={{ delay: i * 0.1 }}
                   className="bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-3xl overflow-hidden hover:bg-white/10 hover:border-blue-500/30 transition-all duration-300"
                 >
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative h-48 overflow-hidden ">
                     <img
                       src={feature.image}
                       alt={feature.title}
@@ -631,7 +637,7 @@ const TaskManagementLanding = () => {
         {/* ================= HOW IT WORKS ================= */}
         <section
           id="how-it-works"
-          className="py-24 bg-gradient-to-b from-white/[0.02] to-transparent px-4 sm:px-6"
+          className="py-22 bg-gradient-to-b from-white/[0.02] to-transparent px-4 sm:px-6"
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
@@ -640,59 +646,12 @@ const TaskManagementLanding = () => {
                 How Rooks To Do Works
               </h2>
             </div>
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="space-y-6"
-              >
-                {STEPS.map((step, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.15 }}
-                    onClick={() => setActiveStep(i)}
-                    className={`flex gap-6 p-6 rounded-2xl cursor-pointer transition-all duration-300 ${activeStep === i ? "bg-blue-500/10 border border-blue-500/30" : "bg-white/5 border border-white/10 hover:bg-white/10"}`}
-                  >
-                    <div className="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center text-2xl font-bold">
-                      {step.num}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-2xl font-bold mb-2">{step.title}</h3>
-                      <p className="text-gray-300">{step.desc}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-
-              <motion.div
-                key={activeStep}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                className="relative"
-              >
-                <div className="relative bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-xl">
-                  <img
-                    src={STEPS[activeStep].image}
-                    alt={STEPS[activeStep].title}
-                    className="w-full h-auto"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#071730]/80 via-transparent to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-8">
-                    <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2">
-                      {STEPS[activeStep].num}
-                    </div>
-                    <h3 className="text-2xl font-bold mb-2">
-                      {STEPS[activeStep].title}
-                    </h3>
-                    <p className="text-gray-300">{STEPS[activeStep].desc}</p>
-                  </div>
-                </div>
-              </motion.div>
+            <div>
+              <img
+                src={ChatGPTImage}
+                alt=""
+                className="w-full h-auto rounded-xl"
+              />
             </div>
           </div>
         </section>
@@ -706,23 +665,45 @@ const TaskManagementLanding = () => {
                 Designed For Everyone
               </h2>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {DESIGNED_FOR.map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-blue-500/30 transition-all duration-300"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4">
-                    <div className="text-blue-400">{item.icon}</div>
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                  <p className="text-gray-300">{item.desc}</p>
-                </motion.div>
-              ))}
+            <div className="grid gap-6">
+              {/* First row: 2 columns */}
+              <div className="grid md:grid-cols-2 gap-6">
+                {DESIGNED_FOR.slice(0, 2).map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-blue-500/30 transition-all duration-300"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4">
+                      <div className="text-blue-400">{item.icon}</div>
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                    <p className="text-gray-300">{item.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+              {/* Second row: 3 columns */}
+              <div className="grid md:grid-cols-3 gap-6">
+                {DESIGNED_FOR.slice(2).map((item, i) => (
+                  <motion.div
+                    key={i + 2}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: (i + 2) * 0.1 }}
+                    className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-blue-500/30 transition-all duration-300"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4">
+                      <div className="text-blue-400">{item.icon}</div>
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                    <p className="text-gray-300">{item.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -780,37 +761,28 @@ const TaskManagementLanding = () => {
                 infrastructure.
               </p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-2">
               {[
                 {
                   icon: <Lock size={28} />,
                   title: "Secure User Authentication",
-                  image:
-                    "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=400&h=200&fit=crop",
+                  image: Secure_User_Authentication,
                 },
                 {
                   icon: <Shield size={28} />,
                   title: "Protected Cloud Storage",
-                  image:
-                    "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=200&fit=crop",
+                  image: Protected_Cloud_Storage,
                 },
-                {
-                  icon: <Users size={28} />,
-                  title: "Role-Based Access Control",
-                  image:
-                    "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&h=200&fit=crop",
-                },
+
                 {
                   icon: <Clock size={28} />,
                   title: "Reliable Data Backup",
-                  image:
-                    "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=200&fit=crop",
+                  image: Reliable_Data_Backup,
                 },
                 {
                   icon: <Eye size={28} />,
                   title: "Privacy-Focused Architecture",
-                  image:
-                    "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=200&fit=crop",
+                  image: Privacy_Focused_Architecture,
                 },
               ].map((item, i) => (
                 <motion.div
@@ -944,13 +916,13 @@ const TaskManagementLanding = () => {
           id="cta"
           className="py-32 px-4 bg-gradient-to-b from-transparent to-white/[0.02]"
         >
-          <div className="max-w-4xl mx-auto relative z-10">
+          <div className="max-w-6xl mx-auto relative z-10">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-500 to-blue-600 p-16 rounded-3xl text-center shadow-2xl shadow-blue-500/30"
+              className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-500 to-blue-600 p-8 md:p-16 rounded-3xl shadow-2xl shadow-blue-500/30"
             >
               {/* Animated background */}
               <div className="absolute inset-0">
@@ -973,104 +945,95 @@ const TaskManagementLanding = () => {
                 />
               </div>
 
-              <div className="relative z-10">
-                {/* Floating App Mockup */}
+              <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+                {/* Left side: Floating image */}
                 <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="flex justify-center mb-8"
+                  animate={{ y: [0, -15, 0] }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="flex justify-center"
                 >
-                  <div className="relative">
-                    <div className="w-48 h-96 bg-white/5 rounded-2xl border border-white/20 backdrop-blur-sm shadow-2xl overflow-hidden">
-                      <div className="p-4">
-                        <div className="w-12 h-12 bg-white/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
-                          <img
-                            src={rookstodoLogo}
-                            alt="Rooks To Do"
-                            className="h-8 w-auto object-contain"
-                          />
-                        </div>
-                        <div className="space-y-3">
-                          <div className="h-4 bg-white/10 rounded w-3/4 mx-auto"></div>
-                          <div className="h-20 bg-white/5 rounded"></div>
-                          <div className="h-10 bg-white/10 rounded"></div>
-                          <div className="h-10 bg-white/10 rounded"></div>
-                          <div className="h-10 bg-white/20 rounded"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="absolute -inset-4 bg-white/5 blur-2xl rounded-3xl -z-10" />
-                  </div>
+                  <img
+                    src={TodoPlayStore}
+                    alt="Rooks To Do Play Store"
+                    className="w-full max-w-sm h-auto "
+                  />
                 </motion.div>
 
-                {/* Logo */}
-                <div className="flex items-center justify-center gap-3 mb-8">
-                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
-                    <img
-                      src={rookstodoLogo}
-                      alt="Rooks To Do"
-                      className="h-12 w-auto object-contain"
-                    />
+                {/* Right side: Content */}
+                <div className="text-center md:text-left">
+                  {/* Logo */}
+                  <div className="flex items-center justify-center md:justify-start gap-3 mb-8">
+                    <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
+                      <img
+                        src={rookstodoLogo}
+                        alt="Rooks To Do"
+                        className="h-12 w-auto object-contain"
+                      />
+                    </div>
+                    <span className="font-bold text-xl text-white">
+                      Rooks To Do
+                    </span>
                   </div>
-                  <span className="font-bold text-xl text-white">
-                    Rooks To Do
-                  </span>
-                </div>
 
-                <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                  Experience the Future of Task Management
-                </h2>
-                <p className="mb-8 text-xl text-white/90">
-                  Our app is now available on the Google Play Store.
-                </p>
+                  <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                    Experience the Future of Task Management
+                  </h2>
+                  <p className="mb-8 text-xl text-white/90">
+                    Our app is now available on the Google Play Store.
+                  </p>
 
-                <div className="flex flex-col items-center gap-6">
-                  <motion.a
-                    href="https://play.google.com/store/apps/details?id=com.rooks.task_management_app&pcampaignid=web_share"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="group px-10 py-4 bg-white text-blue-600 rounded-xl font-bold text-lg flex items-center gap-3 shadow-xl transition-all"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 48 48"
-                      width="24px"
-                      height="24px"
+                  <div className="flex flex-col items-center md:items-start gap-6">
+                    <motion.a
+                      href="https://play.google.com/store/apps/details?id=com.rooks.task_management_app&pcampaignid=web_share"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="group px-10 py-4 bg-white text-blue-600 rounded-xl font-bold text-lg flex items-center gap-3 shadow-xl transition-all"
                     >
-                      <path
-                        fill="#4caf50"
-                        d="M10,4.5c-0.2,0.2-0.4,0.6-0.4,1.1v36.8c0,0.5,0.2,0.9,0.4,1.1l0.1,0.1L30.2,24l-20.1-20.1L10,4.5z"
-                      />
-                      <path
-                        fill="#ffeb3b"
-                        d="M36.2,30l-6-6l-6,6l0.1,0.1l7.1,4.1C33.2,35.3,34.9,35.3,36.2,30.7L36.2,30z"
-                      />
-                      <path
-                        fill="#f44336"
-                        d="M10.1,43.4c0.1,0.1,0.3,0.1,0.5,0.1c0.7,0,1.4-0.2,1.9-0.5l23.7-13.6L30.2,24L10.1,43.4z"
-                      />
-                      <path
-                        fill="#2196f3"
-                        d="M10.1,4.6l20.1,20.1l6-6L12.5,5.1C11.9,4.8,11.2,4.6,10.6,4.6C10.4,4.6,10.2,4.6,10.1,4.6z"
-                      />
-                    </svg>
-                    <span>Get it on Google Play</span>
-                  </motion.a>
-                </div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 48 48"
+                        width="24px"
+                        height="24px"
+                      >
+                        <path
+                          fill="#4caf50"
+                          d="M10,4.5c-0.2,0.2-0.4,0.6-0.4,1.1v36.8c0,0.5,0.2,0.9,0.4,1.1l0.1,0.1L30.2,24l-20.1-20.1L10,4.5z"
+                        />
+                        <path
+                          fill="#ffeb3b"
+                          d="M36.2,30l-6-6l-6,6l0.1,0.1l7.1,4.1C33.2,35.3,34.9,35.3,36.2,30.7L36.2,30z"
+                        />
+                        <path
+                          fill="#f44336"
+                          d="M10.1,43.4c0.1,0.1,0.3,0.1,0.5,0.1c0.7,0,1.4-0.2,1.9-0.5l23.7-13.6L30.2,24L10.1,43.4z"
+                        />
+                        <path
+                          fill="#2196f3"
+                          d="M10.1,4.6l20.1,20.1l6-6L12.5,5.1C11.9,4.8,11.2,4.6,10.6,4.6C10.4,4.6,10.2,4.6,10.1,4.6z"
+                        />
+                      </svg>
+                      <span>Get it on Google Play</span>
+                    </motion.a>
+                  </div>
 
-                {/* Trust badges */}
-                <div className="mt-12 flex justify-center gap-8 text-white/80 text-sm flex-wrap border-t border-white/20 pt-8">
-                  <span className="flex items-center gap-2">
-                    <Shield className="w-4 h-4" /> Secure & Encrypted
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4" /> Optimized Performance
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <Award className="w-4 h-4" /> Enterprise Grade
-                  </span>
+                  {/* Trust badges */}
+                  <div className="mt-12 flex justify-center md:justify-start gap-8 text-white/80 text-sm flex-wrap border-t border-white/20 pt-8">
+                    <span className="flex items-center gap-2">
+                      <Shield className="w-4 h-4" /> Secure & Encrypted
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4" /> Optimized Performance
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <Award className="w-4 h-4" /> Enterprise Grade
+                    </span>
+                  </div>
                 </div>
               </div>
             </motion.div>

@@ -30,6 +30,14 @@ import {
   MapPin,
 } from "lucide-react";
 import phoneImage from "../../assets/work/red_antique_telephone_1773891893640.png";
+import ImsMockup from "../../assets/mobile_apps_asstes/IMS/1st.png";
+import StudentManagementImage from "../../assets/mobile_apps_asstes/IMS/student Management.png";
+import CourseManagementImage from "../../assets/mobile_apps_asstes/IMS/Course Management.png";
+import FacultyStaffImage from "../../assets/mobile_apps_asstes/IMS/Faculty & Staff.png";
+import AttendanceTrackingImage from "../../assets/mobile_apps_asstes/IMS/Attendance Tracking.png";
+import FeeFinanceImage from "../../assets/mobile_apps_asstes/IMS/Fee & Finance Management.png";
+import ExamResultImage from "../../assets/mobile_apps_asstes/IMS/Exam & Result Management.png";
+
 // import imsLogo from "../../assets/mobile_apps_asstes/ims-logo.svg"; // Update with actual logo path
 
 // Color palette from Flutter app
@@ -310,6 +318,7 @@ const ImsLanding = () => {
       desc: "Complete student lifecycle management from admission to graduation with automated workflows.",
       color: "from-[#3B82F6] to-[#2563eb]",
       metrics: "100% Customizable",
+      image: StudentManagementImage,
     },
     {
       icon: <BookOpen className="w-5 h-5" />,
@@ -317,6 +326,7 @@ const ImsLanding = () => {
       desc: "Create and manage courses, modules, and curriculum with drag-and-drop simplicity.",
       color: "from-[#3B82F6] to-[#1d4ed8]",
       metrics: "Enterprise Grade",
+      image: CourseManagementImage,
     },
     {
       icon: <UserCheck className="w-5 h-5" />,
@@ -324,6 +334,7 @@ const ImsLanding = () => {
       desc: "Streamline faculty profiles, attendance tracking, payroll, and performance reviews.",
       color: "from-[#3B82F6] to-[#1e3a8a]",
       metrics: "SOC2 Compliant",
+      image: FacultyStaffImage,
     },
     {
       icon: <CalendarCheck className="w-5 h-5" />,
@@ -331,6 +342,7 @@ const ImsLanding = () => {
       desc: "Real-time digital attendance with biometric integration and detailed analytics.",
       color: "from-[#3B82F6] to-[#2563eb]",
       metrics: "40% Faster",
+      image: AttendanceTrackingImage,
     },
     {
       icon: <CreditCard className="w-5 h-5" />,
@@ -338,6 +350,7 @@ const ImsLanding = () => {
       desc: "Automated fee collection, expense tracking, and comprehensive financial reporting.",
       color: "from-[#3B82F6] to-[#1d4ed8]",
       metrics: "Zero Stockouts",
+      image: FeeFinanceImage,
     },
     {
       icon: <FileCheck className="w-5 h-5" />,
@@ -345,6 +358,7 @@ const ImsLanding = () => {
       desc: "Digital exam scheduling, online assessments, and real-time result generation.",
       color: "from-[#3B82F6] to-[#1e3a8a]",
       metrics: "Real-time",
+      image: ExamResultImage,
     },
   ];
 
@@ -471,7 +485,7 @@ const ImsLanding = () => {
                   style={{
                     backgroundImage: "inherit",
                     WebkitBackgroundClip: "text",
-                    color: "transparent",
+                    color: "#3B82F6",
                     backgroundSize: "200% 100%",
                   }}
                 >
@@ -505,7 +519,7 @@ const ImsLanding = () => {
                 className="relative group px-8 py-3.5 rounded-xl font-semibold text-sm overflow-hidden"
                 style={{
                   background:
-                    "linear-gradient(135deg, #3B82F6 0%, #2563eb 100%)",
+                    "linear-gradient(135deg, #3B82F6 0%, #3B82F5 100%)",
                 }}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
@@ -530,58 +544,14 @@ const ImsLanding = () => {
             animate={isHeroInView ? "visible" : "hidden"}
             className="relative"
           >
-            <div className="absolute inset-[-20px] bg-gradient-to-br from-[#3B82F6]/30 to-[#2563eb]/10 rounded-3xl blur-2xl" />
-            <div className="relative bg-gradient-to-br from-[#111111]/95 to-[#020617]/95 rounded-2xl p-6 border border-[#3B82F6]/30 backdrop-blur-sm shadow-2xl shadow-[#3B82F6]/20">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-[#3B82F6] to-[#2563eb] rounded-xl flex items-center justify-center shadow-lg">
-                    <BookOpen className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold">
-                      IMS Dashboard
-                    </div>
-                    <div className="text-gray-500 text-xs">
-                      Institute Overview
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                  <div className="text-xs text-gray-500">Total Students</div>
-                  <div className="text-xl font-bold">2,847</div>
-                </div>
-                <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                  <div className="text-xs text-gray-500">Faculty</div>
-                  <div className="text-xl font-bold">156</div>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500">Recent Activity</span>
-                  <span className="text-blue-400">View all</span>
-                </div>
-                {[
-                  "New admission – John Doe",
-                  "Fee payment received",
-                  "Exam scheduled",
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between text-xs group hover:bg-white/5 p-2 rounded-lg transition-colors"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-400" />
-                      <span className="text-gray-400">{item}</span>
-                    </div>
-                    <span className="text-gray-600">{i + 1}m ago</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <div className="absolute inset-[-20px]  blur-2xl" />
+            <motion.img
+              animate={{ y: [0, -12, 0, 12, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              src={ImsMockup}
+              alt="IMS Dashboard"
+              className="w-full h-auto rounded-2xl shadow-2xl"
+            />
           </motion.div>
         </div>
       </section>
@@ -599,13 +569,13 @@ const ImsLanding = () => {
             transition={{ duration: 0.7, ease: EASE }}
             className="text-center max-w-2xl mx-auto mb-16"
           >
-            <span className="inline-block px-4 py-1.5 bg-[#3B82F6]/20 border border-[#3B82F6]/15 rounded-full text-[#60a5fa] text-xs font-semibold uppercase tracking-widest mb-5">
+            <span className="inline-block px-4 py-1.5 bg-[#3B82F6]/20 border border-[#3B82F6]/15 rounded-full text-[#3B82F6] text-xs font-semibold uppercase tracking-widest mb-5">
               Powerful Features
             </span>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-[-0.02em] mb-5">
               Everything You Need to
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60a5fa] via-[#3B82F6] to-[#2563eb]">
+              <span className=" text-[#3B82F6]">
                 Manage Your Institute
               </span>
             </h2>
@@ -637,16 +607,23 @@ const ImsLanding = () => {
                   className={`absolute inset-0 bg-gradient-to-br ${feat.color} opacity-0 group-hover:opacity-[0.08] transition-opacity duration-500 rounded-2xl`}
                 />
                 <motion.div
-                  className="absolute bottom-0 left-0 h-[1.5px] bg-gradient-to-r from-[#3B82F6] via-[#60a5fa] to-[#3B82F6]"
+                  className="absolute bottom-0 left-0 h-[1.5px] bg-[#3B82F6]"
                   initial={{ scaleX: 0, originX: 0 }}
                   whileHover={{ scaleX: 1 }}
                   transition={{ duration: 0.4, ease: EASE }}
                 />
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#60a5fa]/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="relative z-10">
+                  <div className="mb-4 overflow-hidden rounded-xl border border-white/10 bg-black/20">
+                    <img
+                      src={feat.image}
+                      alt={feat.title}
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
                   <div className="flex items-start justify-between mb-5">
                     <div
-                      className={`p-2.5 bg-gradient-to-br ${feat.color} rounded-xl shadow-lg shadow-[#3B82F6]/30`}
+                      className={`p-2.5 bg-[#3B82F6] text-white rounded-xl`}
                     >
                       <motion.span
                         className="block"
@@ -692,7 +669,7 @@ const ImsLanding = () => {
             <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-[-0.02em]">
               Built for Modern
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60a5fa] via-[#3B82F6] to-[#2563eb]">
+              <span className="text-[#3B82F6]">
                 Institute Workflows
               </span>
             </h2>
@@ -795,7 +772,7 @@ const ImsLanding = () => {
             </span>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-[-0.02em] mb-5">
               How It Works in{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60a5fa] via-[#3B82F6] to-[#2563eb]">
+              <span className="text-[#3B82F6]">
                 5 Simple Steps
               </span>
             </h2>
@@ -855,12 +832,12 @@ const ImsLanding = () => {
         id="contact"
         className="py-28 px-4 sm:px-6 lg:px-8 relative z-10"
       >
-        <div className="max-w-4xl mx-auto relative z-10">
+        <div className="max-w-6xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="relative overflow-hidden bg-gradient-to-br from-[#3B82F6] via-[#2563eb] to-[#3B82F6] p-16 rounded-3xl text-center shadow-2xl shadow-[#3B82F6]/30"
+            className="relative overflow-hidden bg-gradient-to-br from-[#3B82F6] via-[#3B82F6] to-[#3B82F6] p-8 md:p-16 rounded-3xl "
           >
             {/* Background Effects */}
             <div className="absolute inset-0">
@@ -892,118 +869,138 @@ const ImsLanding = () => {
               </svg>
             </div>
 
-            <div className="relative z-10">
-              {/* Logo/Icon */}
+            <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+              {/* Left side: Image */}
               <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="flex items-center justify-center gap-3 mb-6"
+                animate={{ y: [0, -15, 0] }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="flex justify-center"
               >
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                  <BookOpen className="w-6 h-6 text-white" />
-                </div>
-                <span className="text-2xl font-bold text-white tracking-tight">
-                  IMS
-                </span>
+                <img
+                  src={ImsMockup}
+                  alt="IMS Platform"
+                  className="w-full max-w-sm h-auto "
+                />
               </motion.div>
 
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-5xl font-bold mb-4 text-white"
-              >
-                Experience the Future of Institute Management
-              </motion.h2>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mb-8 text-xl text-white/90"
-              >
-                Streamline admissions, courses, students, faculty, and finances
-                - all from one powerful platform.
-              </motion.p>
-
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                onClick={() => setIsModalOpen(true)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-3 px-10 py-4 bg-white text-[#3B82F6] rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all"
-              >
-                <svg
-                  className="w-6 h-6"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+              {/* Right side: Content */}
+              <div className="text-center md:text-left">
+                {/* Logo/Icon */}
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="flex items-center justify-center md:justify-start gap-3 mb-6"
                 >
-                  <path
-                    d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
-                    fill="currentColor"
-                  />
-                  <path
-                    d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z"
-                    fill="currentColor"
-                  />
-                </svg>
-                Get In Touch
-              </motion.button>
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                    <BookOpen className="w-6 h-6 text-white" />
+                  </div>
+                  <span className="text-2xl font-bold text-white tracking-tight">
+                    IMS
+                  </span>
+                </motion.div>
 
-              {/* Trust Badges */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="mt-12 pt-8 border-t border-white/20 flex flex-wrap justify-center gap-8 text-white/80 text-sm"
-              >
-                <div className="flex items-center gap-2">
+                <motion.h2
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-5xl font-bold mb-4 text-white"
+                >
+                  Experience the Future of Institute Management
+                </motion.h2>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mb-8 text-xl text-white/90"
+                >
+                  Streamline admissions, courses, students, faculty, and
+                  finances - all from one powerful platform.
+                </motion.p>
+
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  onClick={() => setIsModalOpen(true)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center gap-3 px-10 py-4 bg-white text-[#3B82F6] rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all"
+                >
                   <svg
-                    className="w-4 h-4"
+                    className="w-6 h-6"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"
+                      d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
                       fill="currentColor"
                     />
-                  </svg>
-                  Secure & Encrypted
-                </div>
-                <div className="flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
                     <path
-                      d="M16 6L18.29 8.29L13.41 13.17L9.41 9.17L2 16.59L3.41 18L9.41 12L13.41 16L19.71 9.71L22 12V6H16Z"
+                      d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z"
                       fill="currentColor"
                     />
                   </svg>
-                  Optimized Performance
-                </div>
-                <div className="flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12 2L1 21H23L12 2ZM12 6L19.53 19H4.47L12 6ZM11 10V16H13V10H11ZM11 18V20H13V18H11Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Enterprise Grade
-                </div>
-              </motion.div>
+                  Get In Touch
+                </motion.button>
+
+                {/* Trust Badges */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                  className="mt-12 pt-8 border-t border-white/20 flex flex-wrap justify-center md:justify-start gap-8 text-white/80 text-sm"
+                >
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                    Secure & Encrypted
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M16 6L18.29 8.29L13.41 13.17L9.41 9.17L2 16.59L3.41 18L9.41 12L13.41 16L19.71 9.71L22 12V6H16Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                    Optimized Performance
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2L1 21H23L12 2ZM12 6L19.53 19H4.47L12 6ZM11 10V16H13V10H11ZM11 18V20H13V18H11Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                    Enterprise Grade
+                  </div>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>

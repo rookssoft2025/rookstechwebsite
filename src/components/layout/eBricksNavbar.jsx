@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronRight, ArrowRight } from "lucide-react";
-import ebricksLogo from "../../assets/mobile_apps_asstes/ebricks.png";
+import ebricksLogo from "../../assets/mobile_apps_asstes/ebrickslogog.png";
 
 const EBricksNavbar = ({ onCTAClick }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -70,7 +70,7 @@ const EBricksNavbar = ({ onCTAClick }) => {
             <img
               src={ebricksLogo}
               alt="eBricks"
-              className="h-12 w-auto object-contain"
+              className="h-14 w-auto object-contain"
             />
             <span className="font-bold text-xl bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
               eBricks

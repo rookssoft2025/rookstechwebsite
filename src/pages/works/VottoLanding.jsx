@@ -33,7 +33,23 @@ import {
 import phoneImage from "../../assets/work/red_antique_telephone_1773891893640.png";
 import vottoLogo from "../../assets/mobile_apps_asstes/votto.png";
 import vottoPageImage from "../../assets/mobile_apps_asstes/vottopage.png";
-
+import RealTimeLocationTracking from "../../assets/mobile_apps_asstes/votto/Real-time Location Tracking.png";
+import DealerManagement from "../../assets/mobile_apps_asstes/votto/Dealer Management.png";
+import ProcurementOrders from "../../assets/mobile_apps_asstes/votto/Procurement & Orders.png";
+import AnalyticsReporting from "../../assets/mobile_apps_asstes/votto/Analytics & Reporting.png";
+import PDFGenerationPrinting from "../../assets/mobile_apps_asstes/votto/PDF Generation & Printing.png";
+import RoleBasedAccessControl from "../../assets/mobile_apps_asstes/votto/Role-Based Access Control.png";
+import Admin from "../../assets/mobile_apps_asstes/votto/Admin.png";
+import Dealer from "../../assets/mobile_apps_asstes/votto/Dealer.png";
+import Salesman from "../../assets/mobile_apps_asstes/votto/Salesman.png";
+import Marketing from "../../assets/mobile_apps_asstes/votto/Marketing.png";
+import DealerOnboarding from "../../assets/mobile_apps_asstes/votto/Dealer Onboarding.png";
+import ReportingAnalytics from "../../assets/mobile_apps_asstes/votto/Reporting & Analytics.png";
+import SalesRecording from "../../assets/mobile_apps_asstes/votto/Sales Recording.png";
+import InventoryTracking from "../../assets/mobile_apps_asstes/votto/Inventory Tracking.png";
+import OrderPlacement from "../../assets/mobile_apps_asstes/votto/Order Placement.png";
+import BuiltForYour from "../../assets/mobile_apps_asstes/votto/Built for Your.png";
+import VottoMockup from "../../assets/mobile_apps_asstes/votto/votto mockup.png";
 // Votto color palette from Flutter app
 const colors = {
   primary: "#D97732",
@@ -307,8 +323,7 @@ const VottoLanding = () => {
       desc: "Complete dealer lifecycle management from onboarding to performance tracking with automated workflows.",
       color: "from-[#D97732] to-[#E8984F]",
       metrics: "100% Customizable",
-      image:
-        "https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&h=400&fit=crop", // Dealer dashboard
+      image: DealerManagement, // Dealer dashboard
     },
     {
       icon: <ShoppingCart className="w-5 h-5" />,
@@ -316,8 +331,7 @@ const VottoLanding = () => {
       desc: "Track orders, approve requests, and manage fulfillment with real-time status updates and admin remarks.",
       color: "from-[#D97732] to-[#B8611F]",
       metrics: "Enterprise Grade",
-      image:
-        "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop", // Order management
+      image: ProcurementOrders, // Order management
     },
     {
       icon: <MapPin className="w-5 h-5" />,
@@ -325,8 +339,7 @@ const VottoLanding = () => {
       desc: "GPS-based tracking for field teams with territory mapping and route optimization capabilities.",
       color: "from-[#D97732] to-[#E8984F]",
       metrics: "40% Faster",
-      image:
-        "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&h=400&fit=crop", // Map tracking
+      image: RealTimeLocationTracking, // Map tracking
     },
     {
       icon: <BarChart3 className="w-5 h-5" />,
@@ -334,8 +347,7 @@ const VottoLanding = () => {
       desc: "Interactive charts and visualizations for sales metrics, performance analytics, and territory analysis.",
       color: "from-[#D97732] to-[#B8611F]",
       metrics: "Real-time",
-      image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop", // Analytics dashboard
+      image: AnalyticsReporting, // Analytics dashboard
     },
     {
       icon: <FileText className="w-5 h-5" />,
@@ -343,8 +355,7 @@ const VottoLanding = () => {
       desc: "Generate invoices, reports, and documents with printing and sharing capabilities.",
       color: "from-[#D97732] to-[#E8984F]",
       metrics: "Zero Stockouts",
-      image:
-        "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop", // Document generation
+      image: PDFGenerationPrinting, // Document generation
     },
     {
       icon: <Shield className="w-5 h-5" />,
@@ -352,8 +363,7 @@ const VottoLanding = () => {
       desc: "Secure multi-role system with custom permissions for Admin, Dealer, Salesman, and Marketing teams.",
       color: "from-[#D97732] to-[#B8611F]",
       metrics: "SOC2 Compliant",
-      image:
-        "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&h=400&fit=crop", // Security
+      image: RoleBasedAccessControl, // Security
     },
   ];
 
@@ -365,8 +375,7 @@ const VottoLanding = () => {
       desc: "Full system access, dealer and staff management, order processing, global inventory, and performance analytics.",
       color: "from-orange-500/20 to-amber-500/10",
       border: "border-orange-500/20",
-      image:
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=200&fit=crop", // Admin dashboard
+      image: Admin, // Admin dashboard
     },
     {
       icon: <Building2 className="w-6 h-6" />,
@@ -374,8 +383,7 @@ const VottoLanding = () => {
       desc: "Inventory management, procurement, salesman tracking, performance analytics, and service ticket management.",
       color: "from-amber-500/20 to-orange-500/10",
       border: "border-amber-500/20",
-      image:
-        "https://images.unsplash.com/photo-1556741533-6e6a62bd8b49?w=300&h=200&fit=crop", // Dealer portal
+      image: Dealer, // Dealer portal
     },
     {
       icon: <UserCheck className="w-6 h-6" />,
@@ -383,8 +391,7 @@ const VottoLanding = () => {
       desc: "Record sales, view personal performance, leaderboard rankings, and submit service requests for customers.",
       color: "from-orange-500/20 to-red-500/10",
       border: "border-orange-500/20",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop", // Sales app
+      image: Salesman, // Sales app
     },
     {
       icon: <MapPin className="w-6 h-6" />,
@@ -392,8 +399,7 @@ const VottoLanding = () => {
       desc: "Field visit tracking, order capture, territory analytics, location tracking, and conversion rate analysis.",
       color: "from-amber-500/20 to-yellow-500/10",
       border: "border-amber-500/20",
-      image:
-        "https://images.unsplash.com/photo-1532619675605-1ede6c2ed2b0?w=300&h=200&fit=crop", // Marketing analytics
+      image: Marketing, // Marketing analytics
     },
   ];
 
@@ -412,36 +418,31 @@ const VottoLanding = () => {
       number: "01",
       title: "Dealer Onboarding",
       desc: "Quick digital intake with complete business details",
-      image:
-        "https://images.unsplash.com/photo-1556740758-90de374c12ad?w=120&h=80&fit=crop",
+      image: DealerOnboarding,
     },
     {
       number: "02",
       title: "Order Placement",
       desc: "Easy order creation and fulfillment tracking",
-      image:
-        "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=120&h=80&fit=crop",
+      image: OrderPlacement,
     },
     {
       number: "03",
       title: "Inventory Tracking",
       desc: "Real-time stock management and updates",
-      image:
-        "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=120&h=80&fit=crop",
+      image: InventoryTracking,
     },
     {
       number: "04",
       title: "Sales Recording",
       desc: "Field sales capture and leaderboard updates",
-      image:
-        "https://images.unsplash.com/photo-1553484771-371a605b060b?w=120&h=80&fit=crop",
+      image: SalesRecording,
     },
     {
       number: "05",
       title: "Reporting & Analytics",
       desc: "Comprehensive insights and business performance reports",
-      image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=120&h=80&fit=crop",
+      image: ReportingAnalytics,
     },
   ];
 
@@ -849,7 +850,7 @@ const VottoLanding = () => {
             {/* Large dashboard image */}
             <div className="col-span-2 rounded-2xl overflow-hidden border border-[#2A3148] shadow-2xl shadow-[#D97732]/20">
               <img
-                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop"
+                src={BuiltForYour}
                 alt="Analytics Dashboard"
                 className="w-full h-auto object-cover"
               />
@@ -982,12 +983,12 @@ const VottoLanding = () => {
         id="contact"
         className="py-28 px-4 sm:px-6 lg:px-8 relative z-10"
       >
-        <div className="max-w-4xl mx-auto relative z-10">
+        <div className="max-w-6xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="relative overflow-hidden bg-gradient-to-br from-[#050A19] via-[#D97732]/20 to-[#300808] p-16 rounded-3xl text-center shadow-2xl shadow-[#D97732]/30 border border-[#2A3148]"
+            className="relative overflow-hidden bg-gradient-to-br from-[#050A19] via-[#D97732]/20 to-[#300808] p-8 md:p-16 rounded-3xl shadow-2xl shadow-[#D97732]/30 border border-[#2A3148]"
           >
             {/* Background Effects */}
             <div className="absolute inset-0">
@@ -1019,119 +1020,127 @@ const VottoLanding = () => {
               </svg>
             </div>
 
-            <div className="relative z-10">
-              {/* Floating Mobile App Mockup */}
+            <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+              {/* Left side: Floating mockup image */}
               <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="flex items-center justify-center gap-3 mb-6"
+                animate={{ y: [0, -15, 0] }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="flex justify-center"
               >
-                <div className="rounded-2xl overflow-hidden border border-[#2A3148] shadow-xl shadow-[#D97732]/30 max-w-xs">
-                  <img
-                    src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop"
-                    alt="Votto Mobile App"
-                    className="w-full h-auto"
-                  />
-                </div>
+                <img
+                  src={VottoMockup}
+                  alt="Votto Mobile App"
+                  className="w-full max-w-sm h-auto  "
+                />
               </motion.div>
 
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-5xl font-bold mb-4 text-white"
-              >
-                Experience the Future of Sanitary Ware Management
-              </motion.h2>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mb-8 text-xl text-white/90"
-              >
-                Streamline orders, inventory, sales, and your entire team - all
-                from one powerful platform.
-              </motion.p>
-
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                onClick={() => setIsModalOpen(true)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-3 px-10 py-4 bg-white text-[#D97732] rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all"
-              >
-                <svg
-                  className="w-6 h-6"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+              {/* Right side: Content */}
+              <div className="text-center md:text-left">
+                <motion.h2
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 }}
+                  className="text-5xl font-bold mb-4 text-white"
                 >
-                  <path
-                    d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
-                    fill="currentColor"
-                  />
-                  <path
-                    d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 9.79 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z"
-                    fill="currentColor"
-                  />
-                </svg>
-                Get In Touch
-              </motion.button>
+                  Experience the Future of Sanitary Ware Management
+                </motion.h2>
 
-              {/* Trust Badges */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="mt-12 pt-8 border-t border-white/20 flex flex-wrap justify-center gap-8 text-white/80 text-sm"
-              >
-                <div className="flex items-center gap-2">
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 }}
+                  className="mb-8 text-xl text-white/90"
+                >
+                  Streamline orders, inventory, sales, and your entire team -
+                  all from one powerful platform.
+                </motion.p>
+
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4 }}
+                  onClick={() => setIsModalOpen(true)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center gap-3 px-10 py-4 bg-white text-[#D97732] rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all"
+                >
                   <svg
-                    className="w-4 h-4"
+                    className="w-6 h-6"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"
+                      d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
                       fill="currentColor"
                     />
-                  </svg>
-                  Secure & Encrypted
-                </div>
-                <div className="flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
                     <path
-                      d="M16 6L18.29 8.29L13.41 13.17L9.41 9.17L2 16.59L3.41 18L9.41 12L13.41 16L19.71 9.71L22 12V6H16Z"
+                      d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 9.79 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z"
                       fill="currentColor"
                     />
                   </svg>
-                  Optimized Performance
-                </div>
-                <div className="flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12 2L1 21H23L12 2ZM12 6L19.53 19H4.47L12 6ZM11 10V16H13V10H11ZM11 18V20H13V18H11Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Enterprise Grade
-                </div>
-              </motion.div>
+                  Get In Touch
+                </motion.button>
+
+                {/* Trust Badges */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.6 }}
+                  className="mt-12 pt-8 border-t border-white/20 flex flex-wrap justify-center md:justify-start gap-8 text-white/80 text-sm"
+                >
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                    Secure & Encrypted
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M16 6L18.29 8.29L13.41 13.17L9.41 9.17L2 16.59L3.41 18L9.41 12L13.41 16L19.71 9.71L22 12V6H16Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                    Optimized Performance
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2L1 21H23L12 2ZM12 6L19.53 19H4.47L12 6ZM11 10V16H13V10H11ZM11 18V20H13V18H11Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                    Enterprise Grade
+                  </div>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>

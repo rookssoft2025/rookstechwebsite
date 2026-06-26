@@ -31,7 +31,7 @@ import FREE_TRIAL from "../../assets/mobile_apps_asstes/ebricks/Free Trial.png";
 import SILVER_PLAN from "../../assets/mobile_apps_asstes/ebricks/silverrrr.png";
 import GOLD_PLAN from "../../assets/mobile_apps_asstes/ebricks/gold.png";
 import PLATINUM_PLAN from "../../assets/mobile_apps_asstes/ebricks/paltinum.png";
-import STORE_PNG from "../../assets/mobile_apps_asstes/ebricks/store png.png";
+import STORE_PNG from "../../assets/mobile_apps_asstes/ebricks/eBricks playstore.png";
 
 import {
   Cpu,
@@ -70,7 +70,7 @@ import {
 } from "lucide-react";
 
 import phoneImage from "../../assets/work/red_antique_telephone_1773891893640.png";
-import ebricksLogo from "../../assets/mobile_apps_asstes/ebricks.png";
+import ebricksLogo from "../../assets/mobile_apps_asstes/ebrickslogog.png";
 import EBricksNavbar from "../../components/layout/eBricksNavbar";
 import EBricksFooter from "../../components/layout/eBricksFooter";
 
@@ -1004,11 +1004,11 @@ const RooksCstLanding = () => {
                 {/* RIGHT SIDE - CONTENT */}
                 <div className="text-center lg:text-left">
                   <div className="flex items-center justify-center lg:justify-start gap-3 mb-8">
-                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
+                    <div className="w-12 h-12 bg-[#00006B] rounded-xl flex items-center justify-center backdrop-blur-md">
                       <img
                         src={ebricksLogo}
                         alt="eBricks"
-                        className="h-8 w-auto object-contain"
+                        className="h-16 w-auto object-contain"
                       />
                     </div>
 

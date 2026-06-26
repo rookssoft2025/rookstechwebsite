@@ -3,11 +3,11 @@ import {
     Mail, Clock, User, Phone, MessageSquare, Trash2,
     Search, Filter, ChevronDown, XCircle, CheckCircle,
     Download, Star, Eye, Reply, Copy, Check,
-    Calendar, MapPin, Briefcase, Globe, Facebook,
-    Twitter, Linkedin, Instagram, Send, FileText,
+    Calendar, MapPin, Briefcase, Globe, Send, FileText,
     Tag, Bookmark, MoreHorizontal, AlertCircle,
     ArrowUpDown, DownloadCloud, Printer, RefreshCw
 } from "lucide-react";
+import { FaFacebook as Facebook, FaXTwitter as Twitter, FaLinkedin as Linkedin, FaInstagram as Instagram } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import ReserchLayout from "../../../../components/loginLayout/ReserchLayout";
 import { db } from "../../../../firebase";
@@ -773,11 +773,11 @@ const EnquiryDetailModal = ({ enquiry, onClose, onDelete, onCopy, copiedId }) =>
                 </div>
 
                 {/* Social Links (if available) */}
-                {(enquiry.facebook || enquiry.twitter || enquiry.linkedin) && (
+                {(enquiry.FacebookIcon || enquiry.twitter || enquiry.linkedin) && (
                     <div className="flex items-center gap-2 pt-2">
                         <span className="text-sm text-slate-500">Social:</span>
-                        {enquiry.facebook && (
-                            <a href={enquiry.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-100 rounded-lg hover:bg-blue-100 transition-all">
+                        {enquiry.FacebookIcon && (
+                            <a href={enquiry.FacebookIcon} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-100 rounded-lg hover:bg-blue-100 transition-all">
                                 <Facebook size={16} className="text-blue-600" />
                             </a>
                         )}
